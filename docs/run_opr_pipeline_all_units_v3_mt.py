@@ -925,50 +925,164 @@ def parse_stage1_W_items(w_value: str) -> List[Tuple[str, Optional[int], Optiona
 
     return out
 
+# =========================================================
+# Weapon Grouping System - Groups by matching rules (range, AP, tags)
+# =========================================================
+@dataclass
+class WeaponGroup:
+    """Represents a group of weapons with identical rules but potentially different attacks."""
+    group_id: str
+    rng: Optional[int]
+    ap: Optional[int]
+    tags: Tuple[str, ...]
+    total_attacks: int
+    total_count: int
+    source_weapons: List[Tuple[str, int, int]]  # List of (name, attacks, count)
+
+def _weapon_rules_key(rng: Optional[int], ap: Optional[int], tags: Tuple[str, ...]) -> str:
+    """Create a grouping key based on range, AP, and special rules."""
+    r_str = "" if rng is None else str(rng)
+    ap_str = "" if ap is None else str(ap)
+    tags_str = ";".join(tags)
+    return f"R={r_str}|AP={ap_str}|T={tags_str}"
+
+def group_weapons_by_rules(items: List[Tuple[str, Optional[int], Optional[int], Tuple[str, ...], int, int]]) -> Tuple[List[WeaponGroup], Dict[str, List[str]]]:
+    """
+    Group weapons that have identical rules (range, AP, special rules).
+    Weapons can differ in attack values - attacks are summed.
+
+    Returns:
+        - List of WeaponGroup objects
+        - Dict mapping group_id -> list of source weapon names
+    """
+    # Group by rules key
+    groups_map: Dict[str, List[Tuple[str, Optional[int], Optional[int], Tuple[str, ...], int, int]]] = {}
+
+    for item in items:
+        name, rng, ap, tags, attacks, count = item
+        key = _weapon_rules_key(rng, ap, tags)
+        groups_map.setdefault(key, []).append(item)
+
+    # Build WeaponGroup objects
+    weapon_groups: List[WeaponGroup] = []
+    lineage: Dict[str, List[str]] = {}
+
+    # Sort keys for deterministic ordering (melee first, then by range, then by AP)
+    def sort_group_key(key: str) -> Tuple[int, int, str]:
+        parts = dict(p.split("=", 1) for p in key.split("|") if "=" in p)
+        r = parts.get("R", "")
+        ap = parts.get("AP", "")
+        rng_val = -1 if r == "" else int(r)
+        ap_val = 0 if ap == "" else int(ap)
+        return (rng_val, ap_val, parts.get("T", ""))
+
+    sorted_keys = sorted(groups_map.keys(), key=sort_group_key)
+
+    for idx, key in enumerate(sorted_keys, start=1):
+        group_items = groups_map[key]
+
+        # Extract common properties from first item
+        _, rng, ap, tags, _, _ = group_items[0]
+
+        # Sum attacks and collect source weapons
+        total_attacks = 0
+        total_count = 0
+        source_weapons: List[Tuple[str, int, int]] = []
+        source_names: List[str] = []
+
+        for name, _, _, _, attacks, count in group_items:
+            total_attacks += attacks * count
+            total_count += count
+            source_weapons.append((name, attacks, count))
+            source_names.append(name)
+
+        # Generate group ID
+        group_id = f"WG{idx:03d}"
+
+        weapon_groups.append(WeaponGroup(
+            group_id=group_id,
+            rng=rng,
+            ap=ap,
+            tags=tags,
+            total_attacks=total_attacks,
+            total_count=total_count,
+            source_weapons=source_weapons
+        ))
+
+        lineage[group_id] = source_names
+
+    return weapon_groups, lineage
+
 def condensed_weapons_key_from_stage1_signature(stage1_sig: str) -> str:
     """
-    Build a weapons key preserving individual weapon names (no grouping).
+    Build a weapons key that groups weapons by rules (range, AP, tags).
+    Weapons with different attacks but same rules are grouped together.
     """
     kv = split_sig_kv(parse_signature_parts(stage1_sig))
     items = parse_stage1_W_items(kv.get("W", ""))
 
-    # No grouping - each weapon stays separate with its name
+    weapon_groups, _ = group_weapons_by_rules(items)
+
+    # Build condensed key from groups
     parts_out: List[str] = []
-    for name, rng, ap, tags, attacks, count in sorted(items, key=lambda x: (x[0].lower(), x[1] or -1)):
-        parts_out.append(f"N={name},R={'' if rng is None else rng},AP={'' if ap is None else ap},T={';'.join(tags)},A={attacks},C={count}")
+    for wg in weapon_groups:
+        r_str = "" if wg.rng is None else str(wg.rng)
+        ap_str = "" if wg.ap is None else str(wg.ap)
+        tags_str = ";".join(wg.tags)
+        parts_out.append(f"GID={wg.group_id},R={r_str},AP={ap_str},T={tags_str},A={wg.total_attacks},C={wg.total_count}")
+
     return " | ".join(parts_out)
 
 def condensed_weapons_line(stage1_sig: str) -> str:
     """
-    Generate human-readable weapons line preserving original weapon names.
+    Generate human-readable weapons line in OPR format.
+    Format: WeaponName (A#, AP(#), SpecialRules)
+
+    Groups weapons by rules - weapons with same range/AP/tags are combined.
     """
     kv = split_sig_kv(parse_signature_parts(stage1_sig))
     items = parse_stage1_W_items(kv.get("W", ""))
 
-    # Sort by name, then by range (melee first)
-    def sort_key(item: Tuple[str, Optional[int], Optional[int], Tuple[str, ...], int, int]) -> Tuple[str, int]:
-        name, rng, ap, tags, attacks, count = item
-        return (name.lower(), rng if rng is not None else -1)
+    weapon_groups, lineage = group_weapons_by_rules(items)
 
     chunks: List[str] = []
-    for name, rng, ap, tags, attacks, count in sorted(items, key=sort_key):
-        # Display format: count x WeaponName (range, attacks, AP, tags)
-        if rng is None:
-            r_disp = "Melee"
+    for wg in weapon_groups:
+        # Determine display name
+        if len(wg.source_weapons) == 1:
+            # Single weapon - use its original name
+            display_name = wg.source_weapons[0][0]
         else:
-            r_disp = f'{rng}"'
+            # Multiple weapons grouped - use group ID with source names
+            display_name = wg.group_id
 
-        inner: List[str] = [r_disp, f"A{attacks}"]
-        if ap is not None:
-            inner.append(f"AP({ap})")
-        inner.extend(list(tags))
+        # Build stats in OPR format: (A#, AP(#), rules)
+        inner: List[str] = [f"A{wg.total_attacks}"]
+        if wg.ap is not None:
+            inner.append(f"AP({wg.ap})")
+        inner.extend(list(wg.tags))
 
-        if count > 1:
-            chunks.append(f"{count}x {name} ({', '.join(inner)})")
+        # Build range prefix for ranged weapons
+        if wg.rng is not None:
+            range_prefix = f'{wg.rng}" '
         else:
-            chunks.append(f"{name} ({', '.join(inner)})")
+            range_prefix = ""
+
+        # Format: [count]x [range]Name (stats)
+        if wg.total_count > 1 and len(wg.source_weapons) == 1:
+            chunks.append(f"{wg.total_count}x {range_prefix}{display_name} ({', '.join(inner)})")
+        else:
+            chunks.append(f"{range_prefix}{display_name} ({', '.join(inner)})")
 
     return ", ".join(chunks)
+
+def get_weapon_lineage(stage1_sig: str) -> Dict[str, List[str]]:
+    """
+    Get the mapping of weapon group IDs to source weapon names.
+    """
+    kv = split_sig_kv(parse_signature_parts(stage1_sig))
+    items = parse_stage1_W_items(kv.get("W", ""))
+    _, lineage = group_weapons_by_rules(items)
+    return lineage
 
 def inject_sg_into_header(header: str, sg_id: str, meta: str) -> str:
     # Header is already in expected format; just inject after unit name
@@ -1019,6 +1133,9 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
         rep_header = ((rep_child.get("representative") or {}) or {}).get("header", "")
         rep_sig = str(rep_child.get("signature", ""))
 
+        # Get weapon lineage for this supergroup
+        weapon_lineage = get_weapon_lineage(rep_sig)
+
         out_supergroups.append({
             "sg_id": sg_id,
             "supergroup_hash": sha1(super_sig)[:10],
@@ -1037,6 +1154,7 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
                 "signature": rep_sig,
                 "representative": rep_child.get("representative"),
                 "condensed_weapons_line": condensed_weapons_line(rep_sig),
+                "weapon_group_lineage": weapon_lineage,
             },
         })
 
@@ -1044,6 +1162,7 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
             "supergroup_hash": sha1(super_sig)[:10],
             "child_group_ids": child_group_ids,
             "members_total": members_total,
+            "weapon_group_lineage": weapon_lineage,
             "child_groups": [{
                 "group_id": c.get("group_id"),
                 "count": c.get("count"),
@@ -1061,9 +1180,11 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
     out_stage2_json.write_text(json.dumps({
         "settings": {
             "IGNORE_POINTS": True,
-            "CONDENSE_WEAPONS": False,  # Changed: weapons are no longer condensed
-            "PRESERVE_WEAPON_NAMES": True,  # New: weapon names are preserved
+            "WEAPON_GROUPING": "by_rules",  # Group weapons with same range/AP/tags
+            "WEAPON_GROUP_ID_FORMAT": "WG001..",  # Format for weapon group IDs
             "SG_ID_FORMAT": "SG0001..",
+            "NOTE": "Weapons with identical rules (range, AP, special rules) are grouped. "
+                    "Attacks are summed. weapon_group_lineage maps group IDs to source weapon names.",
         },
         "total_stage1_groups": len(stage1_groups),
         "total_supergroups": len(out_supergroups),
