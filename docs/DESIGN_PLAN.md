@@ -680,7 +680,11 @@ Cheap Unit X (100pts) beats Expensive Unit Y (400pts) 54% of the time!
    - Unit rules: Tough, Regeneration, Fear, Fearless, Fast, Strider, Flying, Relentless, Scout, Ambush, Hero, Stealth, etc.
    - Weapon rules: AP, Blast, Deadly, Reliable, Rending, Poison, Bane, Indirect, Furious, Lance, etc.
 
-4. **Multi-model weapon distribution**: (Pending clarification from unit data format)
+4. **Multi-model weapon distribution**: CONFIRMED from sample data
+   - Format: `[count]x [range"] WeaponName (A[total_attacks], AP([value]), [rules])`
+   - The "A" value is TOTAL attacks for that weapon line (already summed)
+   - Example: `5x Energy Swords (A10, AP(1), Rending)` = 5 swords, 10 total attacks
+   - Example: `4x 12" Heavy Pistols (A4, AP(1))` = 4 pistols at 12", 4 total attacks
 
 5. **Output**:
    - Queryable matchup database (filter by unit, faction, points, etc.)
@@ -688,7 +692,39 @@ Cheap Unit X (100pts) beats Expensive Unit Y (400pts) 54% of the time!
 
 ---
 
-## Appendix: Risk Assessment
+## Appendix A: Input Data Format (Confirmed)
+
+### Unit File Format (.txt)
+```
+UnitName [model_count] QX+ DX+ | Xpts | Rule1, Rule2, Rule3(value), ...
+WeaponList (comma-separated)
+
+Example:
+─────────
+Assault Walker [1] Q4+ D2+ | 350pts | Devout, Fear(2), Fearless, Piercing Assault, Regeneration, Tough(9)
+Stomp (A3, AP(1)), Heavy Claw (A4, AP(1), Rending), Light Chainsaw (A1, AP(2), Deadly(3)), Heavy Fist (A4, AP(4))
+
+Assault Sisters [5] Q4+ D4+ | 195pts | Devout
+5x Energy Swords (A10, AP(1), Rending), 6" Fusion Pistol (A1, AP(4), Deadly(3)), 4x 12" Heavy Pistols (A4, AP(1))
+```
+
+### Weapon Format
+```
+[count]x [range"] WeaponName (A[attacks], AP([value]), [special_rules])
+
+Melee:    Stomp (A3, AP(1))
+Ranged:   24" Storm Rifle (A3, AP(1))
+Multiple: 5x Energy Swords (A10, AP(1), Rending)
+```
+
+### Data Pipeline
+1. `run_opr_pipeline_all_units_v3_mt.py` generates loadouts from OPR PDFs
+2. Output: `{Faction}_pipeline.final.merged.txt` with all valid loadouts
+3. Each faction produces thousands of unique loadout combinations
+
+---
+
+## Appendix B: Risk Assessment
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
