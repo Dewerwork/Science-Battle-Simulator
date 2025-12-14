@@ -40,6 +40,10 @@ INCLUDE_POINTS_IN_STAGE1_SIGNATURE = True  # stage-2 ignores points anyway, but 
 RANGE_BUCKETS = [6, 12, 18, 24]     # anything above -> "32+"
 RANGE_BUCKET_HIGH = "32+"
 
+# Attack-agnostic grouping: If True, weapons with same range/AP/tags are grouped
+# even if they have different attack counts. This dramatically reduces output size.
+ATTACK_AGNOSTIC_GROUPING = True
+
 # TXT formatting
 ADD_BLANK_LINE_BETWEEN_UNITS = True
 
@@ -277,8 +281,62 @@ def load_rule_policy_xlsx(xlsx_path: Path) -> Tuple[Dict[str, str], Dict[str, st
 
     return exact_map, base_map
 
+# Patterns for filtering invalid/artifact rules
+_COST_MODIFIER_RE = re.compile(r"^\+\d+pts$", re.IGNORECASE)
+_TRAILING_PAREN_RE = re.compile(r"^(.+)\)$")  # Rules ending with unmatched )
+_WEAPON_PROFILE_IN_RULE_RE = re.compile(r'\(\s*\d+"\s*,\s*A\d+')  # Weapon profiles like (24", A1, ...)
+_TRUNCATED_RULE_FIXES = {
+    "casting debu": "Casting(1)",  # Common truncation fix
+    "casting debug": "Casting(1)",
+}
+
+def _clean_rule(rule: str) -> Optional[str]:
+    """
+    Clean up a rule string, returning None if it should be filtered out.
+    Fixes common parsing artifacts.
+    """
+    r = norm_ws(rule)
+    if not r:
+        return None
+
+    # Filter out cost modifiers (+20pts, +55pts, etc.)
+    if _COST_MODIFIER_RE.match(r):
+        return None
+
+    # Filter out rules that contain weapon profiles (parsing artifacts)
+    if _WEAPON_PROFILE_IN_RULE_RE.search(r):
+        return None
+
+    # Filter out standalone "(A1)" type artifacts
+    if re.match(r"^\(A\d+\)$", r):
+        return None
+
+    # Fix truncated rules
+    r_lower = r.lower()
+    for truncated, fixed in _TRUNCATED_RULE_FIXES.items():
+        if r_lower.startswith(truncated):
+            r = fixed + r[len(truncated):]
+            break
+
+    # Fix trailing unmatched parenthesis
+    if r.count(")") > r.count("("):
+        r = r.rstrip(")")
+
+    # Fix leading unmatched parenthesis
+    if r.count("(") > r.count(")"):
+        r = r.lstrip("(")
+
+    r = r.strip()
+    return r if r else None
+
 def normalize_rules_for_signature(rules_in: List[str], exact_map: Dict[str, str], base_map: Dict[str, str]) -> Tuple[str, ...]:
-    rules = [norm_ws(r) for r in rules_in if norm_ws(r)]
+    # First clean all rules
+    rules = []
+    for r in rules_in:
+        cleaned = _clean_rule(r)
+        if cleaned:
+            rules.append(cleaned)
+
     out: List[str] = []
     for r in rules:
         rk_exact = _norm_rule_key(r)
@@ -1016,7 +1074,9 @@ def group_weapons_by_rules(items: List[Tuple[str, Optional[int], Optional[int], 
 def condensed_weapons_key_from_stage1_signature(stage1_sig: str) -> str:
     """
     Build a weapons key that groups weapons by rules (range, AP, tags).
-    Weapons with different attacks but same rules are grouped together.
+
+    If ATTACK_AGNOSTIC_GROUPING is True, attacks are excluded from the key,
+    allowing units with different attack totals but same weapon rules to be grouped.
     """
     kv = split_sig_kv(parse_signature_parts(stage1_sig))
     items = parse_stage1_W_items(kv.get("W", ""))
@@ -1029,9 +1089,41 @@ def condensed_weapons_key_from_stage1_signature(stage1_sig: str) -> str:
         r_str = "" if wg.rng is None else str(wg.rng)
         ap_str = "" if wg.ap is None else str(wg.ap)
         tags_str = ";".join(wg.tags)
-        parts_out.append(f"GID={wg.group_id},R={r_str},AP={ap_str},T={tags_str},A={wg.total_attacks},C={wg.total_count}")
 
+        if ATTACK_AGNOSTIC_GROUPING:
+            # Exclude attack count from key - group by rules only
+            parts_out.append(f"R={r_str},AP={ap_str},T={tags_str}")
+        else:
+            # Include attack count in key
+            parts_out.append(f"R={r_str},AP={ap_str},T={tags_str},A={wg.total_attacks},C={wg.total_count}")
+
+    # Sort for deterministic key generation
+    parts_out.sort()
     return " | ".join(parts_out)
+
+def _get_weapon_display_name(wg: WeaponGroup) -> str:
+    """
+    Get a display name for a weapon group.
+    Handles empty names and provides sensible fallbacks.
+    """
+    if len(wg.source_weapons) == 1:
+        name = wg.source_weapons[0][0]
+        # If name is empty or just whitespace, generate a descriptive name
+        if not name or not name.strip():
+            if wg.rng is None:
+                return "Melee"
+            else:
+                return f"Ranged"
+        return name.strip()
+    else:
+        # Multiple weapons grouped - collect unique non-empty names
+        names = [w[0].strip() for w in wg.source_weapons if w[0] and w[0].strip()]
+        if names:
+            # Use first unique name or group ID if too many
+            unique_names = list(dict.fromkeys(names))  # Preserve order, remove dupes
+            if len(unique_names) <= 2:
+                return " + ".join(unique_names)
+        return wg.group_id
 
 def condensed_weapons_line(stage1_sig: str) -> str:
     """
@@ -1047,13 +1139,7 @@ def condensed_weapons_line(stage1_sig: str) -> str:
 
     chunks: List[str] = []
     for wg in weapon_groups:
-        # Determine display name
-        if len(wg.source_weapons) == 1:
-            # Single weapon - use its original name
-            display_name = wg.source_weapons[0][0]
-        else:
-            # Multiple weapons grouped - use group ID with source names
-            display_name = wg.group_id
+        display_name = _get_weapon_display_name(wg)
 
         # Build stats in OPR format: (A#, AP(#), rules)
         inner: List[str] = [f"A{wg.total_attacks}"]
@@ -1061,17 +1147,19 @@ def condensed_weapons_line(stage1_sig: str) -> str:
             inner.append(f"AP({wg.ap})")
         inner.extend(list(wg.tags))
 
-        # Build range prefix for ranged weapons
+        # Format based on range
         if wg.rng is not None:
-            range_prefix = f'{wg.rng}" '
+            # Ranged weapon: show range before name
+            weapon_str = f'{wg.rng}" {display_name} ({", ".join(inner)})'
         else:
-            range_prefix = ""
+            # Melee weapon: just name and stats
+            weapon_str = f'{display_name} ({", ".join(inner)})'
 
-        # Format: [count]x [range]Name (stats)
+        # Add count prefix if multiple of same weapon
         if wg.total_count > 1 and len(wg.source_weapons) == 1:
-            chunks.append(f"{wg.total_count}x {range_prefix}{display_name} ({', '.join(inner)})")
-        else:
-            chunks.append(f"{range_prefix}{display_name} ({', '.join(inner)})")
+            weapon_str = f"{wg.total_count}x {weapon_str}"
+
+        chunks.append(weapon_str)
 
     return ", ".join(chunks)
 
@@ -1180,11 +1268,18 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
     out_stage2_json.write_text(json.dumps({
         "settings": {
             "IGNORE_POINTS": True,
-            "WEAPON_GROUPING": "by_rules",  # Group weapons with same range/AP/tags
-            "WEAPON_GROUP_ID_FORMAT": "WG001..",  # Format for weapon group IDs
+            "ATTACK_AGNOSTIC_GROUPING": ATTACK_AGNOSTIC_GROUPING,
+            "WEAPON_GROUPING": "by_rules_attack_agnostic" if ATTACK_AGNOSTIC_GROUPING else "by_rules",
+            "WEAPON_GROUP_ID_FORMAT": "WG001..",
             "SG_ID_FORMAT": "SG0001..",
+            "RULE_CLEANUP": {
+                "FILTER_COST_MODIFIERS": True,  # Removes +20pts, +55pts from rules
+                "FILTER_WEAPON_PROFILES_IN_RULES": True,  # Removes weapon profiles from rules
+                "FIX_TRUNCATED_RULES": True,  # Fixes common truncations like "Casting Debu"
+            },
             "NOTE": "Weapons with identical rules (range, AP, special rules) are grouped. "
-                    "Attacks are summed. weapon_group_lineage maps group IDs to source weapon names.",
+                    + ("Attacks are IGNORED for grouping. " if ATTACK_AGNOSTIC_GROUPING else "Attacks are summed. ")
+                    + "weapon_group_lineage maps group IDs to source weapon names.",
         },
         "total_stage1_groups": len(stage1_groups),
         "total_supergroups": len(out_supergroups),
