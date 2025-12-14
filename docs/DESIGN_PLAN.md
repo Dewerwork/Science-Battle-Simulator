@@ -541,15 +541,32 @@ Every N matchups (e.g., 10 million):
 
 ## Part 5: Output & Analysis
 
-### 5.1 Primary Output File
+### 5.1 Primary Output Files
 
 ```
-Binary format for speed:
-- Header: magic number, version, unit_count
-- Unit index: [unit_id → name mapping]
-- Results: [MatchResult × N]
+1. RESULTS DATABASE (Binary, queryable):
+   - Header: magic number, version, unit_count
+   - Unit index: [unit_id → name, faction, points mapping]
+   - Results: [MatchResult × N]
+   - Indexes for fast queries by unit_id, faction, points range
 
-Can convert to CSV/JSON after simulation completes
+2. REPLAY DATA (Compressed, selective storage):
+   - Match ID
+   - Per-game data:
+     - Round-by-round state snapshots
+     - Actions taken (movement, shooting, charges)
+     - Dice rolls and outcomes
+     - Casualties per round
+   - Compressed with LZ4 for speed
+   - ~500 bytes per replay
+   - SELECTIVE STORAGE (to manage disk space):
+     - Always keep: Close matches (45-55% win margin)
+     - Always keep: Upsets (lower points beats higher by >10%)
+     - Always keep: Perfect sweeps (2-0 with early victories)
+     - Sample: 0.1% random sample of all other matches
+   - Estimated: ~10-50GB of replay data
+
+Can export to CSV/JSON for analysis tools
 ```
 
 ### 5.2 Analysis Queries
@@ -653,27 +670,21 @@ Cheap Unit X (100pts) beats Expensive Unit Y (400pts) 54% of the time!
 
 ---
 
-## Part 7: Open Questions
+## Part 7: Design Decisions (Confirmed)
 
-### Questions for You
+1. **Terrain**: Open field (no cover) - keeps simulation clean and comparable
 
-1. **Terrain**: Should we include cover terrain, or keep it simple (open field)?
-   - Cover adds realism but complexity
-   - Could do: 50% of games have cover in the middle
+2. **Starting distance**: 24" apart (standard deployment)
 
-2. **Starting distance**: 24" apart (standard), or variable?
+3. **Special rules**: Implement ALL special rules from the game
+   - Unit rules: Tough, Regeneration, Fear, Fearless, Fast, Strider, Flying, Relentless, Scout, Ambush, Hero, Stealth, etc.
+   - Weapon rules: AP, Blast, Deadly, Reliable, Rending, Poison, Bane, Indirect, Furious, Lance, etc.
 
-3. **Special rules priority**: Which of these do we MUST have vs nice-to-have?
-   - Must have: Tough, Regeneration, Furious, Deadly, Blast, AP, Fear, Fearless
-   - Nice to have: Flying, Strider, Scout, Ambush, Transport, Caster
-   - Skip for now: Psychic powers, Transports, Aircraft
+4. **Multi-model weapon distribution**: (Pending clarification from unit data format)
 
-4. **Multi-model weapon distribution**: In your format, "16x Razor Claws, 4x Serrated Claws" - does this mean 16 models have Razor Claws and 4 have Serrated Claws? Or some models have both?
-
-5. **Output preferences**:
-   - Just want final rankings?
-   - Want to query specific matchups?
-   - Want round-by-round replay data for interesting matches?
+5. **Output**:
+   - Queryable matchup database (filter by unit, faction, points, etc.)
+   - Round-by-round replay data for all matches (allows deep analysis and video content)
 
 ---
 
