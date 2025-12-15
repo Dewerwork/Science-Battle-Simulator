@@ -15,12 +15,10 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # =========================================================
 # HARD-CODED SETTINGS (edit these in PyCharm)
 # =========================================================
-PDF_PATH = r"C:\Users\David\Documents\Army Factions\GF - Blessed Sisters 3.5.1.pdf"
+# PDF input: Can be a single PDF file OR a folder containing multiple PDFs
+PDF_INPUT_PATH = r"C:\Users\David\Documents\Army Factions"
 RULES_XLSX_PATH = r"C:\Users\David\Desktop\Special Rules Exclusion List.xlsx"
-OUTPUT_DIR = r"C:\Users\David\Documents\Army Factions\Blessed_Sisters_pipeline"
-
-FACTION_NAME = "Blessed Sisters"
-FACTION_VERSION = "3.5.1"
+OUTPUT_DIR = r"C:\Users\David\Documents\Army Factions\pipeline_output"
 
 # 0 = no limit (can explode!)
 MAX_LOADOUTS_PER_UNIT = 0
@@ -44,8 +42,18 @@ RANGE_BUCKET_HIGH = "32+"
 # even if they have different attack counts. This dramatically reduces output size.
 ATTACK_AGNOSTIC_GROUPING = True
 
+# Rule-agnostic grouping: If True, units are grouped by weapon sets only,
+# ignoring unit special rules. This provides maximum reduction while maintaining
+# full traceability via the lineage chain in JSON output.
+RULE_AGNOSTIC_GROUPING = True
+
 # TXT formatting
 ADD_BLANK_LINE_BETWEEN_UNITS = True
+
+# Merge settings: After processing all units, merge *.final.txt into one file
+MERGE_FINAL_TXTS = True
+STRIP_SG_LABELS = True  # Remove " - SG#### (...)" from header lines
+ADD_BLANK_LINE_BETWEEN_FILES = True
 
 # =========================================================
 # Utilities
@@ -1196,7 +1204,15 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
         kv = split_sig_kv([p for p in parse_signature_parts(stage1_sig) if not p.startswith("PTS=")])  # ignore points
         rules = kv.get("RULES", "")
         wcond = condensed_weapons_key_from_stage1_signature(stage1_sig)
-        super_sig = f"RULES={rules}||W={wcond}"
+
+        # Build supergroup signature based on grouping settings
+        if RULE_AGNOSTIC_GROUPING:
+            # Group by weapons only - ignore rules entirely for maximum reduction
+            super_sig = f"W={wcond}"
+        else:
+            # Group by rules + weapons
+            super_sig = f"RULES={rules}||W={wcond}"
+
         super_map.setdefault(super_sig, []).append(g)
 
     sorted_super_sigs = sorted(super_map.keys(), key=lambda s: sha1(s))
@@ -1215,6 +1231,21 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
         child_count = len(children)
         members_total = sum(int(c.get("count", 0) or 0) for c in children)
 
+        # Compute points range for traceability
+        points_list = [int(c.get("points", 0) or 0) for c in children]
+        points_min = min(points_list) if points_list else 0
+        points_max = max(points_list) if points_list else 0
+
+        # Collect all unique rules variations for traceability
+        rules_variations: Set[str] = set()
+        for c in children:
+            c_sig = c.get("signature", "")
+            if isinstance(c_sig, str):
+                c_kv = split_sig_kv(parse_signature_parts(c_sig))
+                rules_str = c_kv.get("RULES", "")
+                if rules_str:
+                    rules_variations.add(rules_str)
+
         # pick rep within children: smallest rep_combo_index wins
         rep_child = min(children, key=lambda c: int((c.get("representative", {}) or {}).get("combo_index_0based", 10**18)))
 
@@ -1231,9 +1262,12 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
             "unit": rep_child.get("unit"),
             "count_child_groups": child_count,
             "count_members": members_total,
+            "points_range": {"min": points_min, "max": points_max},
+            "rules_variations": sorted(rules_variations),
             "child_group_ids": child_group_ids,
             "child_groups": [{
                 "group_id": c.get("group_id"),
+                "points": c.get("points"),
                 "count": c.get("count"),
                 "representative_combo_index_0based": ((c.get("representative") or {}) or {}).get("combo_index_0based"),
             } for c in children],
@@ -1248,11 +1282,15 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
 
         lineage_index[sg_id] = {
             "supergroup_hash": sha1(super_sig)[:10],
+            "unit": rep_child.get("unit"),
+            "points_range": {"min": points_min, "max": points_max},
+            "rules_variations_count": len(rules_variations),
             "child_group_ids": child_group_ids,
             "members_total": members_total,
             "weapon_group_lineage": weapon_lineage,
             "child_groups": [{
                 "group_id": c.get("group_id"),
+                "points": c.get("points"),
                 "count": c.get("count"),
                 "representative_combo_index_0based": ((c.get("representative") or {}) or {}).get("combo_index_0based"),
             } for c in children],
@@ -1269,17 +1307,25 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
         "settings": {
             "IGNORE_POINTS": True,
             "ATTACK_AGNOSTIC_GROUPING": ATTACK_AGNOSTIC_GROUPING,
-            "WEAPON_GROUPING": "by_rules_attack_agnostic" if ATTACK_AGNOSTIC_GROUPING else "by_rules",
+            "RULE_AGNOSTIC_GROUPING": RULE_AGNOSTIC_GROUPING,
+            "WEAPON_GROUPING": "by_weapons_only" if RULE_AGNOSTIC_GROUPING else (
+                "by_rules_attack_agnostic" if ATTACK_AGNOSTIC_GROUPING else "by_rules"
+            ),
             "WEAPON_GROUP_ID_FORMAT": "WG001..",
             "SG_ID_FORMAT": "SG0001..",
             "RULE_CLEANUP": {
-                "FILTER_COST_MODIFIERS": True,  # Removes +20pts, +55pts from rules
-                "FILTER_WEAPON_PROFILES_IN_RULES": True,  # Removes weapon profiles from rules
-                "FIX_TRUNCATED_RULES": True,  # Fixes common truncations like "Casting Debu"
+                "FILTER_COST_MODIFIERS": True,
+                "FILTER_WEAPON_PROFILES_IN_RULES": True,
+                "FIX_TRUNCATED_RULES": True,
             },
-            "NOTE": "Weapons with identical rules (range, AP, special rules) are grouped. "
-                    + ("Attacks are IGNORED for grouping. " if ATTACK_AGNOSTIC_GROUPING else "Attacks are summed. ")
-                    + "weapon_group_lineage maps group IDs to source weapon names.",
+            "TRACEABILITY": {
+                "points_range": "Each supergroup includes min/max points of child groups",
+                "rules_variations": "All unique rule sets within the supergroup are listed",
+                "child_groups": "Each child group includes points and combo_index for exact loadout reconstruction",
+                "weapon_group_lineage": "Maps weapon group IDs to source weapon names",
+            },
+            "NOTE": "Full traceability maintained. Use child_groups[].group_id + combo_index to trace "
+                    "simulation results back to specific ungrouped unit loadouts.",
         },
         "total_stage1_groups": len(stage1_groups),
         "total_supergroups": len(out_supergroups),
@@ -1392,40 +1438,156 @@ def stage1_reduce_inline_parallel(unit: Dict[str, Any],
 # =========================================================
 # Runner
 # =========================================================
-def run() -> None:
-    pdf_path = Path(PDF_PATH).expanduser()
-    xlsx_path = Path(RULES_XLSX_PATH).expanduser()
-    out_dir = Path(OUTPUT_DIR).expanduser()
+def parse_faction_from_filename(filename: str) -> Tuple[str, str]:
+    """
+    Parse faction name and version from PDF filename.
+    Expected formats:
+      - "GF - Blessed Sisters 3.5.1.pdf" -> ("Blessed Sisters", "3.5.1")
+      - "AoF - Dark Elves 2.0.pdf" -> ("Dark Elves", "2.0")
+      - "Blessed Sisters.pdf" -> ("Blessed Sisters", "unknown")
+    """
+    name = filename
+    # Remove .pdf extension
+    if name.lower().endswith(".pdf"):
+        name = name[:-4]
 
-    if not pdf_path.exists():
-        raise FileNotFoundError(f"PDF not found: {pdf_path}")
-    if not xlsx_path.exists():
-        raise FileNotFoundError(f"Rules XLSX not found: {xlsx_path}")
+    # Remove common prefixes like "GF - ", "AoF - ", "AoFS - ", "GFF - "
+    prefix_match = re.match(r"^(GF|AoF|AoFS|GFF|FF)\s*-\s*", name, re.IGNORECASE)
+    if prefix_match:
+        name = name[prefix_match.end():]
 
-    ensure_dir(out_dir)
+    # Try to extract version number at the end (e.g., "3.5.1", "2.0", "v2.1")
+    version_match = re.search(r"\s+v?(\d+(?:\.\d+)+)\s*$", name, re.IGNORECASE)
+    if version_match:
+        version = version_match.group(1)
+        faction_name = name[:version_match.start()].strip()
+    else:
+        version = "unknown"
+        faction_name = name.strip()
 
-    # Load rule policy ONCE
-    exact_map, base_map = load_rule_policy_xlsx(xlsx_path)
+    return faction_name, version
+
+def find_pdf_files(input_path: Path) -> List[Path]:
+    """
+    Find all PDF files to process.
+    If input_path is a file, return it as a single-item list.
+    If input_path is a directory, return all PDF files in it.
+    """
+    if input_path.is_file():
+        if input_path.suffix.lower() == ".pdf":
+            return [input_path]
+        else:
+            raise ValueError(f"Input file is not a PDF: {input_path}")
+    elif input_path.is_dir():
+        pdf_files = sorted(input_path.glob("*.pdf"))
+        if not pdf_files:
+            raise FileNotFoundError(f"No PDF files found in directory: {input_path}")
+        return pdf_files
+    else:
+        raise FileNotFoundError(f"Input path not found: {input_path}")
+
+# =========================================================
+# Merge all *.final.txt files into one army TXT
+# =========================================================
+# Matches: " - SG0001 (child_groups=... members=...)"
+_SG_LABEL_RE = re.compile(r"\s+-\s+SG\d{4,}\s+\([^)]*\)")
+
+def _looks_like_header(line: str) -> bool:
+    """Check if a line looks like a unit header."""
+    s = line.strip()
+    # Headers have "Q" "D" and "pts |"
+    return (" Q" in s) and (" D" in s) and ("pts |" in s)
+
+def _maybe_strip_sg(line: str) -> str:
+    """Optionally strip SG labels from header lines."""
+    if STRIP_SG_LABELS and _looks_like_header(line):
+        return _SG_LABEL_RE.sub("", line).rstrip()
+    return line.rstrip()
+
+def merge_final_txts(faction_dir: Path, faction_name: str) -> Optional[Path]:
+    """
+    Merge all *.final.txt files in faction_dir into one merged file.
+    Returns the path to the merged file, or None if no files found.
+    """
+    if not MERGE_FINAL_TXTS:
+        return None
+
+    # Find all *.final.txt files (recursively)
+    final_files = sorted(
+        [p for p in faction_dir.rglob("*.final.txt") if p.is_file()],
+        key=lambda p: (p.parent.name.lower(), p.name.lower())
+    )
+
+    if not final_files:
+        return None
+
+    out_file = faction_dir / f"{safe_filename(faction_name)}.final.merged.txt"
+
+    # Exclude the output file itself if it exists
+    final_files = [f for f in final_files if f.resolve() != out_file.resolve()]
+
+    if not final_files:
+        return None
+
+    out_lines: List[str] = []
+    for f in final_files:
+        lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
+
+        # Strip BOM if present
+        if lines and lines[0].startswith("\ufeff"):
+            lines[0] = lines[0].lstrip("\ufeff")
+
+        # Apply optional SG stripping to header lines
+        lines = [_maybe_strip_sg(ln) for ln in lines]
+
+        # Append with blank line separation
+        if out_lines and ADD_BLANK_LINE_BETWEEN_FILES:
+            if out_lines[-1].strip() != "":
+                out_lines.append("")
+            # Skip leading blanks in the next file
+            while lines and lines[0].strip() == "":
+                lines.pop(0)
+
+        out_lines.extend(lines)
+
+    out_file.write_text("\n".join(out_lines).rstrip() + "\n", encoding="utf-8")
+    return out_file
+
+def process_single_pdf(pdf_path: Path,
+                       out_dir: Path,
+                       exact_map: Dict[str, str],
+                       base_map: Dict[str, str]) -> None:
+    """Process a single PDF file and generate all outputs."""
+    faction_name, faction_version = parse_faction_from_filename(pdf_path.name)
+    faction_dir = out_dir / safe_filename(f"{faction_name}_{faction_version}")
+    ensure_dir(faction_dir)
+
+    print(f"\n{'='*60}")
+    print(f"Processing: {pdf_path.name}")
+    print(f"Faction: {faction_name} | Version: {faction_version}")
+    print(f"Output: {faction_dir}")
+    print(f"{'='*60}")
 
     # Parse PDF
     lines = extract_lines(str(pdf_path))
     units = parse_units(lines)
-    units_payload = {"faction": FACTION_NAME, "version": FACTION_VERSION, "units": units}
-    units_json_path = out_dir / f"{safe_filename(FACTION_NAME)}_{FACTION_VERSION}_units.json"
+
+    if not units:
+        print(f"[WARN] No units found in {pdf_path.name}, skipping...")
+        return
+
+    units_payload = {"faction": faction_name, "version": faction_version, "units": units}
+    units_json_path = faction_dir / f"{safe_filename(faction_name)}_{faction_version}_units.json"
     units_json_path.write_text(json.dumps(units_payload, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(f"[OK] Parsed {len(units)} units -> {units_json_path}")
-    print(f"[INFO] WORKERS_PER_UNIT={WORKERS_PER_UNIT}, TASKS_PER_UNIT={TASKS_PER_UNIT}")
-    print(f"[INFO] Stage-1 is INLINE (no loadouts txt parsing). WRITE_UNGROUPED_LOADOUTS_TXT={WRITE_UNGROUPED_LOADOUTS_TXT}")
-    print(f"[INFO] Weapon names are preserved (no grouping by range bucket)")
-    print(f"[INFO] Optimizations enabled: symmetry reduction, option deduplication, skip self-replacements")
 
     for u in units:
         unit_name = str(u.get("name", "")).strip()
         if not unit_name:
             continue
 
-        unit_dir = out_dir / safe_filename(unit_name)
+        unit_dir = faction_dir / safe_filename(unit_name)
         ensure_dir(unit_dir)
 
         stage1_json_path = unit_dir / f"{safe_filename(unit_name)}.loadouts.reduced.json"
@@ -1433,19 +1595,58 @@ def run() -> None:
         final_json_path = unit_dir / f"{safe_filename(unit_name)}.final.supergroups.json"
         final_idx_path  = unit_dir / f"{safe_filename(unit_name)}.final.lineage_index.json"
 
-        print(f"\n=== {unit_name} ===")
+        print(f"\n  --- {unit_name} ---")
 
         # Stage-1 inline
         stage1_payload = stage1_reduce_inline_parallel(u, exact_map, base_map, limit=MAX_LOADOUTS_PER_UNIT)
         stage1_json_path.write_text(json.dumps(stage1_payload, indent=2), encoding="utf-8")
-        print(f"[OK] Stage-1 inline reduced: {stage1_payload.get('total_groups'):,} groups "
-              f"(from {stage1_payload.get('total_combinations_processed'):,} combos) -> {stage1_json_path}")
+        print(f"  [OK] Stage-1: {stage1_payload.get('total_groups'):,} groups "
+              f"(from {stage1_payload.get('total_combinations_processed'):,} combos)")
 
         # Stage-2 final
         stage2_reduce(stage1_payload["groups"], final_txt_path, final_json_path, final_idx_path)
-        print(f"[OK] Stage-2 final -> {final_txt_path}")
+        print(f"  [OK] Stage-2: -> {final_txt_path.name}")
 
-    print("\nDONE.")
+    # Merge all *.final.txt files into one
+    merged_path = merge_final_txts(faction_dir, faction_name)
+    if merged_path:
+        print(f"\n  [OK] Merged all units -> {merged_path.name}")
+
+def run() -> None:
+    input_path = Path(PDF_INPUT_PATH).expanduser()
+    xlsx_path = Path(RULES_XLSX_PATH).expanduser()
+    out_dir = Path(OUTPUT_DIR).expanduser()
+
+    if not input_path.exists():
+        raise FileNotFoundError(f"PDF input path not found: {input_path}")
+    if not xlsx_path.exists():
+        raise FileNotFoundError(f"Rules XLSX not found: {xlsx_path}")
+
+    ensure_dir(out_dir)
+
+    # Find all PDF files to process
+    pdf_files = find_pdf_files(input_path)
+    print(f"[INFO] Found {len(pdf_files)} PDF file(s) to process")
+    print(f"[INFO] WORKERS_PER_UNIT={WORKERS_PER_UNIT}, TASKS_PER_UNIT={TASKS_PER_UNIT}")
+    print(f"[INFO] ATTACK_AGNOSTIC_GROUPING={ATTACK_AGNOSTIC_GROUPING}, RULE_AGNOSTIC_GROUPING={RULE_AGNOSTIC_GROUPING}")
+
+    # Load rule policy ONCE (shared across all PDFs)
+    exact_map, base_map = load_rule_policy_xlsx(xlsx_path)
+
+    # Process each PDF
+    for pdf_path in pdf_files:
+        try:
+            process_single_pdf(pdf_path, out_dir, exact_map, base_map)
+        except Exception as e:
+            print(f"[ERROR] Failed to process {pdf_path.name}: {e}")
+            import traceback
+            traceback.print_exc()
+            continue
+
+    print(f"\n{'='*60}")
+    print(f"DONE. Processed {len(pdf_files)} PDF file(s).")
+    print(f"Output directory: {out_dir}")
+    print(f"{'='*60}")
 
 if __name__ == "__main__":
     run()
