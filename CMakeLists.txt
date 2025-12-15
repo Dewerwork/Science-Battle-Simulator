@@ -83,6 +83,12 @@ add_executable(test_game src/test_game.cpp)
 target_include_directories(test_game PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_compile_options(test_game PRIVATE ${COMMON_FLAGS})
 
+# Benchmark - parallel simulation
+add_executable(benchmark_sim src/benchmark_sim.cpp)
+target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(benchmark_sim PRIVATE Threads::Threads)
+target_compile_options(benchmark_sim PRIVATE ${COMMON_FLAGS})
+
 # Commented out until source files are implemented:
 # add_executable(test_dice tests/test_dice.cpp)
 # target_link_libraries(test_dice PRIVATE battle_engine)

@@ -1,0 +1,298 @@
+#pragma once
+
+#include "core/types.hpp"
+#include "core/unit.hpp"
+#include "engine/dice.hpp"
+#include "engine/game_runner.hpp"
+#include "simulation/thread_pool.hpp"
+#include <vector>
+#include <atomic>
+#include <chrono>
+#include <iostream>
+#include <fstream>
+#include <mutex>
+#include <functional>
+
+namespace battle {
+
+// ==============================================================================
+// Batch Configuration
+// ==============================================================================
+
+struct BatchConfig {
+    u32 batch_size = 10000;          // Matchups per batch
+    u32 checkpoint_interval = 1000000; // Save progress every N matchups
+    bool enable_progress = true;
+    std::string output_file = "results.bin";
+    std::string checkpoint_file = "checkpoint.bin";
+};
+
+// ==============================================================================
+// Compact Result for Storage (8 bytes)
+// ==============================================================================
+
+struct CompactMatchResult {
+    u32 unit_a_id;        // Unit A ID
+    u32 unit_b_id : 20;   // Unit B ID (20 bits for up to 1M units)
+    u32 winner : 2;       // 0=A, 1=B, 2=Draw
+    u32 games_a : 2;      // Games won by A (0-2)
+    u32 games_b : 2;      // Games won by B (0-2)
+    u32 padding : 6;      // Reserved
+
+    CompactMatchResult() : unit_a_id(0), unit_b_id(0), winner(2),
+                          games_a(0), games_b(0), padding(0) {}
+
+    static CompactMatchResult from_match(const MatchResult& r) {
+        CompactMatchResult c;
+        c.unit_a_id = r.unit_a_id;
+        c.unit_b_id = r.unit_b_id & 0xFFFFF;
+        c.winner = static_cast<u32>(r.overall_winner);
+        c.games_a = r.games_won_a;
+        c.games_b = r.games_won_b;
+        return c;
+    }
+};
+
+static_assert(sizeof(CompactMatchResult) == 8, "CompactMatchResult must be 8 bytes");
+
+// ==============================================================================
+// Progress Callback
+// ==============================================================================
+
+struct ProgressInfo {
+    u64 completed;
+    u64 total;
+    f64 matchups_per_second;
+    f64 elapsed_seconds;
+    f64 estimated_remaining_seconds;
+};
+
+using ProgressCallback = std::function<void(const ProgressInfo&)>;
+
+// ==============================================================================
+// Batch Simulator - Parallel simulation of matchups
+// ==============================================================================
+
+class BatchSimulator {
+public:
+    explicit BatchSimulator(const BatchConfig& config = BatchConfig())
+        : config_(config), pool_() {}
+
+    // Simulate all matchups between two sets of units
+    void simulate_all(
+        const std::vector<Unit>& units_a,
+        const std::vector<Unit>& units_b,
+        ProgressCallback progress = nullptr
+    ) {
+        // Calculate total matchups
+        u64 total_matchups = static_cast<u64>(units_a.size()) * units_b.size();
+
+        // Open output file
+        std::ofstream out(config_.output_file, std::ios::binary);
+        if (!out) {
+            throw std::runtime_error("Cannot open output file: " + config_.output_file);
+        }
+
+        // Write header
+        write_header(out, units_a.size(), units_b.size());
+
+        // Track progress
+        std::atomic<u64> completed{0};
+        auto start_time = std::chrono::high_resolution_clock::now();
+
+        // Create batches
+        std::vector<std::pair<u32, u32>> matchups;
+        matchups.reserve(config_.batch_size);
+
+        std::mutex output_mutex;
+        std::vector<CompactMatchResult> results_buffer;
+        results_buffer.reserve(config_.batch_size);
+
+        // Process all matchups
+        u64 matchup_index = 0;
+        for (u32 i = 0; i < units_a.size(); ++i) {
+            for (u32 j = 0; j < units_b.size(); ++j) {
+                matchups.emplace_back(i, j);
+
+                // Process batch when full
+                if (matchups.size() >= config_.batch_size) {
+                    process_batch(units_a, units_b, matchups, results_buffer, output_mutex);
+
+                    // Write results
+                    {
+                        std::lock_guard<std::mutex> lock(output_mutex);
+                        out.write(reinterpret_cast<const char*>(results_buffer.data()),
+                                 results_buffer.size() * sizeof(CompactMatchResult));
+                        completed += results_buffer.size();
+                        results_buffer.clear();
+                    }
+
+                    matchups.clear();
+
+                    // Report progress
+                    if (progress && config_.enable_progress) {
+                        auto now = std::chrono::high_resolution_clock::now();
+                        f64 elapsed = std::chrono::duration<f64>(now - start_time).count();
+                        u64 done = completed.load();
+                        f64 rate = done / elapsed;
+                        f64 remaining = (total_matchups - done) / rate;
+
+                        progress({done, total_matchups, rate, elapsed, remaining});
+                    }
+
+                    // Checkpoint
+                    if (completed.load() % config_.checkpoint_interval == 0) {
+                        write_checkpoint(completed.load(), total_matchups);
+                    }
+                }
+            }
+        }
+
+        // Process remaining matchups
+        if (!matchups.empty()) {
+            process_batch(units_a, units_b, matchups, results_buffer, output_mutex);
+            out.write(reinterpret_cast<const char*>(results_buffer.data()),
+                     results_buffer.size() * sizeof(CompactMatchResult));
+            completed += results_buffer.size();
+        }
+
+        // Final progress report
+        if (progress) {
+            auto now = std::chrono::high_resolution_clock::now();
+            f64 elapsed = std::chrono::duration<f64>(now - start_time).count();
+            u64 done = completed.load();
+            f64 rate = done / elapsed;
+            progress({done, total_matchups, rate, elapsed, 0.0});
+        }
+    }
+
+    // Resume from checkpoint
+    u64 resume_from_checkpoint() {
+        std::ifstream in(config_.checkpoint_file, std::ios::binary);
+        if (!in) return 0;
+
+        u64 completed;
+        in.read(reinterpret_cast<char*>(&completed), sizeof(completed));
+        return in ? completed : 0;
+    }
+
+    // Get thread count
+    size_t thread_count() const { return pool_.thread_count(); }
+
+private:
+    BatchConfig config_;
+    ThreadPool pool_;
+
+    void write_header(std::ofstream& out, size_t units_a_count, size_t units_b_count) {
+        // Magic number and version
+        u32 magic = 0x42415453;  // "SABS" = Science Battle Sim
+        u32 version = 1;
+        u32 a_count = static_cast<u32>(units_a_count);
+        u32 b_count = static_cast<u32>(units_b_count);
+
+        out.write(reinterpret_cast<const char*>(&magic), sizeof(magic));
+        out.write(reinterpret_cast<const char*>(&version), sizeof(version));
+        out.write(reinterpret_cast<const char*>(&a_count), sizeof(a_count));
+        out.write(reinterpret_cast<const char*>(&b_count), sizeof(b_count));
+    }
+
+    void write_checkpoint(u64 completed, u64 total) {
+        std::ofstream out(config_.checkpoint_file, std::ios::binary);
+        if (out) {
+            out.write(reinterpret_cast<const char*>(&completed), sizeof(completed));
+            out.write(reinterpret_cast<const char*>(&total), sizeof(total));
+        }
+    }
+
+    void process_batch(
+        const std::vector<Unit>& units_a,
+        const std::vector<Unit>& units_b,
+        const std::vector<std::pair<u32, u32>>& matchups,
+        std::vector<CompactMatchResult>& results,
+        std::mutex& results_mutex
+    ) {
+        // Split work across threads
+        size_t num_threads = pool_.thread_count();
+        size_t chunk_size = (matchups.size() + num_threads - 1) / num_threads;
+
+        std::vector<std::future<std::vector<CompactMatchResult>>> futures;
+
+        for (size_t t = 0; t < num_threads; ++t) {
+            size_t start = t * chunk_size;
+            size_t end = std::min(start + chunk_size, matchups.size());
+
+            if (start >= end) continue;
+
+            futures.push_back(pool_.submit([&, start, end]() {
+                // Thread-local dice roller
+                DiceRoller dice;
+                GameRunner runner(dice);
+
+                std::vector<CompactMatchResult> local_results;
+                local_results.reserve(end - start);
+
+                for (size_t i = start; i < end; ++i) {
+                    auto [a_idx, b_idx] = matchups[i];
+                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+                    local_results.push_back(CompactMatchResult::from_match(mr));
+                }
+
+                return local_results;
+            }));
+        }
+
+        // Collect results
+        for (auto& future : futures) {
+            auto local_results = future.get();
+            std::lock_guard<std::mutex> lock(results_mutex);
+            results.insert(results.end(), local_results.begin(), local_results.end());
+        }
+    }
+};
+
+// ==============================================================================
+// Benchmark Helper
+// ==============================================================================
+
+inline void benchmark_simulation(const std::vector<Unit>& units, size_t num_matchups = 10000) {
+    ThreadPool pool;
+    std::atomic<u64> completed{0};
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Submit matchup tasks
+    std::vector<std::future<void>> futures;
+    size_t matchups_per_thread = num_matchups / pool.thread_count();
+
+    for (size_t t = 0; t < pool.thread_count(); ++t) {
+        futures.push_back(pool.submit([&, matchups_per_thread]() {
+            DiceRoller dice;
+            GameRunner runner(dice);
+
+            for (size_t i = 0; i < matchups_per_thread; ++i) {
+                size_t a = i % units.size();
+                size_t b = (i + 1) % units.size();
+                runner.run_match(units[a], units[b]);
+                ++completed;
+            }
+        }));
+    }
+
+    // Wait for completion
+    for (auto& f : futures) {
+        f.get();
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    f64 elapsed = std::chrono::duration<f64>(end - start).count();
+    f64 rate = completed.load() / elapsed;
+
+    std::cout << "Benchmark Results:\n";
+    std::cout << "  Threads: " << pool.thread_count() << "\n";
+    std::cout << "  Matchups: " << completed.load() << "\n";
+    std::cout << "  Time: " << elapsed << " seconds\n";
+    std::cout << "  Rate: " << rate << " matchups/second\n";
+    std::cout << "  Estimated for 1T matchups: " << (1e12 / rate / 86400) << " days\n";
+}
+
+} // namespace battle
