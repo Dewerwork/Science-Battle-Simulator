@@ -195,19 +195,30 @@ int main(int argc, char* argv[]) {
     // CSV stats export
     if (command == "csv-stats" && argc >= 5) {
         ResultAnalyzer analyzer;
+        std::cout << "Loading results from: " << argv[2] << "\n";
         if (!analyzer.load_results(argv[2])) {
             std::cerr << "Failed to load results from: " << argv[2] << "\n";
             return 1;
         }
+        std::cout << "  Results loaded: " << analyzer.result_count() << " entries\n";
+        std::cout << "  Format: " << (analyzer.has_extended_data() ? "Extended" : "Compact") << "\n";
 
+        std::cout << "Loading units from: " << argv[3] << "\n";
         auto parse_result = UnitParser::parse_file(argv[3]);
         if (parse_result.units.empty()) {
             std::cerr << "Failed to load units from: " << argv[3] << "\n";
             return 1;
         }
+        std::cout << "  Units loaded: " << parse_result.units.size() << "\n";
 
-        if (analyzer.export_unit_stats_csv(argv[4], parse_result.units)) {
-            std::cout << "Exported stats to: " << argv[4] << "\n";
+        std::cout << "Exporting to: " << argv[4] << "\n";
+        auto [success, rows] = analyzer.export_unit_stats_csv_with_count(argv[4], parse_result.units);
+        if (success) {
+            std::cout << "Exported " << rows << " unit stats to: " << argv[4] << "\n";
+            if (rows == 0) {
+                std::cerr << "Warning: No rows written. Unit IDs in results may not match the units file.\n";
+                std::cerr << "Make sure you're using the same units file that was used for batch_sim.\n";
+            }
         } else {
             std::cerr << "Failed to export to: " << argv[4] << "\n";
             return 1;
