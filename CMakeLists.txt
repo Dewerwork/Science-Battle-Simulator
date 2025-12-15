@@ -22,19 +22,37 @@ message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERS
 # Compiler Flags for Maximum Performance
 # ==============================================================================
 
-# Common flags for all builds
-set(COMMON_FLAGS -Wall -Wextra -Wpedantic)
+# Platform-specific compiler flags
+if(MSVC)
+    # MSVC (Windows)
+    set(COMMON_FLAGS /W4 /permissive-)
 
-# Release flags - optimized for 100 billion matchups
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native -mtune=native -flto")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math -funroll-loops")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ftree-vectorize")
+    # Release flags - optimized for performance
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG /GL /Oi /Ot /Gy")
 
-# Debug flags
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -DDEBUG -fsanitize=address,undefined")
+    # Debug flags
+    set(CMAKE_CXX_FLAGS_DEBUG "/Od /Zi /DDEBUG /RTC1")
 
-# RelWithDebInfo for profiling
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG -march=native")
+    # RelWithDebInfo for profiling
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/O2 /Zi /DNDEBUG")
+
+    # Link-time optimization for Release
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+else()
+    # GCC/Clang (Linux/macOS)
+    set(COMMON_FLAGS -Wall -Wextra -Wpedantic)
+
+    # Release flags - optimized for 100 billion matchups
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native -mtune=native -flto")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math -funroll-loops")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ftree-vectorize")
+
+    # Debug flags
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -DDEBUG -fsanitize=address,undefined")
+
+    # RelWithDebInfo for profiling
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG -march=native")
+endif()
 
 # ==============================================================================
 # Dependencies
