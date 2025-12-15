@@ -89,6 +89,11 @@ target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(benchmark_sim PRIVATE Threads::Threads)
 target_compile_options(benchmark_sim PRIVATE ${COMMON_FLAGS})
 
+# Analysis tool - result file analysis and export
+add_executable(analyze_results src/analyze_results.cpp)
+target_include_directories(analyze_results PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_options(analyze_results PRIVATE ${COMMON_FLAGS})
+
 # Commented out until source files are implemented:
 # add_executable(test_dice tests/test_dice.cpp)
 # target_link_libraries(test_dice PRIVATE battle_engine)
