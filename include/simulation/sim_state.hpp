@@ -153,10 +153,11 @@ struct UnitView {
     }
 
     // Get wound allocation order (same logic as Unit but uses sim state)
+    // Uses insertion sort for small groups instead of std::sort for better performance
     void get_wound_allocation_order(std::array<u8, MAX_MODELS_PER_UNIT>& order, u8& count) const {
         count = 0;
 
-        // Phase 1: Non-tough, non-hero models
+        // Phase 1: Non-tough, non-hero models (no sorting needed)
         for (u8 i = 0; i < unit->model_count; ++i) {
             const Model& m = unit->models[i];
             if (state->models[i].is_alive() && m.tough == 1 && !m.is_hero) {
@@ -165,33 +166,37 @@ struct UnitView {
         }
 
         // Phase 2: Tough non-hero models (most wounded first)
+        // Use insertion sort for small groups (typically 0-3 elements)
         u8 tough_start = count;
         for (u8 i = 0; i < unit->model_count; ++i) {
             const Model& m = unit->models[i];
             if (state->models[i].is_alive() && m.tough > 1 && !m.is_hero) {
-                order[count++] = i;
+                // Insert in sorted order (descending by wounds_taken)
+                u8 j = count;
+                while (j > tough_start && state->models[order[j-1]].wounds_taken < state->models[i].wounds_taken) {
+                    order[j] = order[j-1];
+                    --j;
+                }
+                order[j] = i;
+                ++count;
             }
-        }
-        if (count > tough_start + 1) {
-            std::sort(order.begin() + tough_start, order.begin() + count,
-                [this](u8 a, u8 b) {
-                    return state->models[a].wounds_taken > state->models[b].wounds_taken;
-                });
         }
 
         // Phase 3: Heroes (most wounded first)
+        // Use insertion sort for small groups (typically 1-2 elements)
         u8 hero_start = count;
         for (u8 i = 0; i < unit->model_count; ++i) {
             const Model& m = unit->models[i];
             if (state->models[i].is_alive() && m.is_hero) {
-                order[count++] = i;
+                // Insert in sorted order (descending by wounds_taken)
+                u8 j = count;
+                while (j > hero_start && state->models[order[j-1]].wounds_taken < state->models[i].wounds_taken) {
+                    order[j] = order[j-1];
+                    --j;
+                }
+                order[j] = i;
+                ++count;
             }
-        }
-        if (count > hero_start + 1) {
-            std::sort(order.begin() + hero_start, order.begin() + count,
-                [this](u8 a, u8 b) {
-                    return state->models[a].wounds_taken > state->models[b].wounds_taken;
-                });
         }
     }
 };
