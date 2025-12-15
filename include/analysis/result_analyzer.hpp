@@ -426,6 +426,361 @@ public:
         return ss.str();
     }
 
+    // ===========================================================================
+    // Comprehensive Export - Full Unit Information
+    // ===========================================================================
+
+    // Helper: Convert RuleId to string name
+    static std::string rule_id_to_string(RuleId id) {
+        switch (id) {
+            case RuleId::None: return "None";
+            case RuleId::AP: return "AP";
+            case RuleId::Blast: return "Blast";
+            case RuleId::Deadly: return "Deadly";
+            case RuleId::Lance: return "Lance";
+            case RuleId::Poison: return "Poison";
+            case RuleId::Precise: return "Precise";
+            case RuleId::Reliable: return "Reliable";
+            case RuleId::Rending: return "Rending";
+            case RuleId::Bane: return "Bane";
+            case RuleId::Impact: return "Impact";
+            case RuleId::Indirect: return "Indirect";
+            case RuleId::Sniper: return "Sniper";
+            case RuleId::Lock_On: return "Lock-On";
+            case RuleId::Purge: return "Purge";
+            case RuleId::Regeneration: return "Regeneration";
+            case RuleId::Tough: return "Tough";
+            case RuleId::Protected: return "Protected";
+            case RuleId::Stealth: return "Stealth";
+            case RuleId::ShieldWall: return "Shield Wall";
+            case RuleId::Fearless: return "Fearless";
+            case RuleId::Furious: return "Furious";
+            case RuleId::Hero: return "Hero";
+            case RuleId::Relentless: return "Relentless";
+            case RuleId::Fear: return "Fear";
+            case RuleId::Counter: return "Counter";
+            case RuleId::Fast: return "Fast";
+            case RuleId::Flying: return "Flying";
+            case RuleId::Strider: return "Strider";
+            case RuleId::Scout: return "Scout";
+            case RuleId::Ambush: return "Ambush";
+            case RuleId::Devout: return "Devout";
+            case RuleId::PiercingAssault: return "Piercing Assault";
+            case RuleId::Unstoppable: return "Unstoppable";
+            case RuleId::Casting: return "Casting";
+            case RuleId::Slow: return "Slow";
+            case RuleId::Surge: return "Surge";
+            case RuleId::Thrust: return "Thrust";
+            case RuleId::Takedown: return "Takedown";
+            case RuleId::Limited: return "Limited";
+            case RuleId::Shielded: return "Shielded";
+            case RuleId::Resistance: return "Resistance";
+            case RuleId::NoRetreat: return "No Retreat";
+            case RuleId::MoraleBoost: return "Morale Boost";
+            case RuleId::Rupture: return "Rupture";
+            case RuleId::Agile: return "Agile";
+            case RuleId::HitAndRun: return "Hit & Run";
+            case RuleId::PointBlankSurge: return "Point-Blank Surge";
+            case RuleId::Shred: return "Shred";
+            case RuleId::Smash: return "Smash";
+            case RuleId::Battleborn: return "Battleborn";
+            case RuleId::PredatorFighter: return "Predator Fighter";
+            case RuleId::RapidCharge: return "Rapid Charge";
+            case RuleId::SelfDestruct: return "Self-Destruct";
+            case RuleId::VersatileAttack: return "Versatile Attack";
+            case RuleId::GoodShot: return "Good Shot";
+            case RuleId::BadShot: return "Bad Shot";
+            case RuleId::MeleeEvasion: return "Melee Evasion";
+            case RuleId::MeleeShrouding: return "Melee Shrouding";
+            case RuleId::RangedShrouding: return "Ranged Shrouding";
+            default: return "Unknown";
+        }
+    }
+
+    // Helper: Format rule with value
+    static std::string format_rule(const CompactRule& rule) {
+        std::string name = rule_id_to_string(rule.id);
+        if (rule.value > 0) {
+            return name + "(" + std::to_string(rule.value) + ")";
+        }
+        return name;
+    }
+
+    // Helper: Get unit rules as string
+    static std::string get_unit_rules_string(const Unit& u) {
+        std::ostringstream ss;
+        bool first = true;
+        for (u8 i = 0; i < u.rule_count; ++i) {
+            if (u.rules[i].id != RuleId::None) {
+                if (!first) ss << ", ";
+                first = false;
+                ss << format_rule(u.rules[i]);
+            }
+        }
+        return ss.str();
+    }
+
+    // Helper: Get weapon info as string
+    static std::string get_weapon_string(const Weapon& w) {
+        std::ostringstream ss;
+        if (w.range > 0) {
+            ss << w.range << "\" ";
+        }
+        ss << w.name.view() << " (A" << (int)w.attacks;
+        if (w.ap > 0) {
+            ss << ", AP(" << (int)w.ap << ")";
+        }
+        // Add weapon rules
+        for (u8 i = 0; i < w.rule_count; ++i) {
+            if (w.rules[i].id != RuleId::None && w.rules[i].id != RuleId::AP) {
+                ss << ", " << format_rule(w.rules[i]);
+            }
+        }
+        ss << ")";
+        return ss.str();
+    }
+
+    // Helper: Get all weapons as string
+    static std::string get_all_weapons_string(const Unit& u) {
+        std::ostringstream ss;
+        bool first = true;
+        for (u8 i = 0; i < u.weapon_count; ++i) {
+            if (!first) ss << "; ";
+            first = false;
+            ss << get_weapon_string(u.weapons[i]);
+        }
+        return ss.str();
+    }
+
+    // Helper: Get AI type as string
+    static std::string ai_type_to_string(AIType type) {
+        switch (type) {
+            case AIType::Melee: return "Melee";
+            case AIType::Shooting: return "Shooting";
+            case AIType::Hybrid: return "Hybrid";
+            default: return "Unknown";
+        }
+    }
+
+    // Export comprehensive unit stats to CSV (includes all unit info)
+    bool export_full_unit_stats_csv(const std::string& filename, const std::vector<Unit>& units) const {
+        std::ofstream out(filename);
+        if (!out) return false;
+
+        auto stats = calculate_unit_stats();
+
+        // Comprehensive header
+        out << "unit_id,name,faction,points,quality,defense,models,tough,max_range,ai_type,"
+            << "rules,weapons,"
+            << "matches,wins,losses,draws,win_rate,loss_rate,draw_rate,"
+            << "games_won,games_lost,game_win_rate,"
+            << "points_efficiency\n";
+
+        // Data rows
+        for (const auto& [id, s] : stats) {
+            if (id < units.size()) {
+                const Unit& u = units[id];
+
+                // Calculate tough value (from first model or rule)
+                u8 tough = 1;
+                if (u.model_count > 0) {
+                    tough = u.models[0].tough;
+                }
+
+                // Points efficiency = win_rate / (points / 100)
+                f64 points_efficiency = u.points_cost > 0
+                    ? s.win_rate() / (u.points_cost / 100.0)
+                    : 0.0;
+
+                out << id << ","
+                    << "\"" << u.name.view() << "\","
+                    << "\"" << u.faction.view() << "\","
+                    << u.points_cost << ","
+                    << (int)u.quality << ","
+                    << (int)u.defense << ","
+                    << (int)u.model_count << ","
+                    << (int)tough << ","
+                    << (int)u.max_range << ","
+                    << "\"" << ai_type_to_string(u.ai_type) << "\","
+                    << "\"" << get_unit_rules_string(u) << "\","
+                    << "\"" << get_all_weapons_string(u) << "\","
+                    << s.matches_played << ","
+                    << s.wins << ","
+                    << s.losses << ","
+                    << s.draws << ","
+                    << s.win_rate() << ","
+                    << (s.matches_played > 0 ? 100.0 * s.losses / s.matches_played : 0.0) << ","
+                    << s.draw_rate() << ","
+                    << s.games_won << ","
+                    << s.games_lost << ","
+                    << s.game_win_rate() << ","
+                    << points_efficiency << "\n";
+            }
+        }
+
+        return true;
+    }
+
+    // Export comprehensive unit stats to JSON (includes all unit info)
+    std::string export_full_unit_stats_json(const std::vector<Unit>& units) const {
+        std::ostringstream ss;
+        auto stats = calculate_unit_stats();
+
+        ss << "{\n  \"units\": [\n";
+
+        bool first = true;
+        for (const auto& [id, s] : stats) {
+            if (id >= units.size()) continue;
+
+            if (!first) ss << ",\n";
+            first = false;
+
+            const Unit& u = units[id];
+
+            // Calculate tough value
+            u8 tough = 1;
+            if (u.model_count > 0) {
+                tough = u.models[0].tough;
+            }
+
+            // Points efficiency
+            f64 points_efficiency = u.points_cost > 0
+                ? s.win_rate() / (u.points_cost / 100.0)
+                : 0.0;
+
+            ss << "    {\n";
+
+            // Unit identification
+            ss << "      \"id\": " << id << ",\n";
+            ss << "      \"name\": \"" << u.name.view() << "\",\n";
+            ss << "      \"faction\": \"" << u.faction.view() << "\",\n";
+
+            // Unit stats
+            ss << "      \"stats\": {\n";
+            ss << "        \"points\": " << u.points_cost << ",\n";
+            ss << "        \"quality\": " << (int)u.quality << ",\n";
+            ss << "        \"defense\": " << (int)u.defense << ",\n";
+            ss << "        \"models\": " << (int)u.model_count << ",\n";
+            ss << "        \"tough\": " << (int)tough << ",\n";
+            ss << "        \"max_range\": " << (int)u.max_range << ",\n";
+            ss << "        \"ai_type\": \"" << ai_type_to_string(u.ai_type) << "\"\n";
+            ss << "      },\n";
+
+            // Rules array
+            ss << "      \"rules\": [";
+            bool first_rule = true;
+            for (u8 i = 0; i < u.rule_count; ++i) {
+                if (u.rules[i].id != RuleId::None) {
+                    if (!first_rule) ss << ", ";
+                    first_rule = false;
+                    ss << "{\"name\": \"" << rule_id_to_string(u.rules[i].id) << "\"";
+                    if (u.rules[i].value > 0) {
+                        ss << ", \"value\": " << (int)u.rules[i].value;
+                    }
+                    ss << "}";
+                }
+            }
+            ss << "],\n";
+
+            // Weapons array
+            ss << "      \"weapons\": [\n";
+            for (u8 i = 0; i < u.weapon_count; ++i) {
+                const Weapon& w = u.weapons[i];
+                if (i > 0) ss << ",\n";
+                ss << "        {\n";
+                ss << "          \"name\": \"" << w.name.view() << "\",\n";
+                ss << "          \"attacks\": " << (int)w.attacks << ",\n";
+                ss << "          \"ap\": " << (int)w.ap << ",\n";
+                ss << "          \"range\": " << (int)w.range << ",\n";
+                ss << "          \"rules\": [";
+                bool first_wrule = true;
+                for (u8 j = 0; j < w.rule_count; ++j) {
+                    if (w.rules[j].id != RuleId::None) {
+                        if (!first_wrule) ss << ", ";
+                        first_wrule = false;
+                        ss << "{\"name\": \"" << rule_id_to_string(w.rules[j].id) << "\"";
+                        if (w.rules[j].value > 0) {
+                            ss << ", \"value\": " << (int)w.rules[j].value;
+                        }
+                        ss << "}";
+                    }
+                }
+                ss << "]\n";
+                ss << "        }";
+            }
+            ss << "\n      ],\n";
+
+            // Performance statistics
+            ss << "      \"performance\": {\n";
+            ss << "        \"matches\": " << s.matches_played << ",\n";
+            ss << "        \"wins\": " << s.wins << ",\n";
+            ss << "        \"losses\": " << s.losses << ",\n";
+            ss << "        \"draws\": " << s.draws << ",\n";
+            ss << "        \"win_rate\": " << s.win_rate() << ",\n";
+            ss << "        \"loss_rate\": " << (s.matches_played > 0 ? 100.0 * s.losses / s.matches_played : 0.0) << ",\n";
+            ss << "        \"draw_rate\": " << s.draw_rate() << ",\n";
+            ss << "        \"games_won\": " << s.games_won << ",\n";
+            ss << "        \"games_lost\": " << s.games_lost << ",\n";
+            ss << "        \"game_win_rate\": " << s.game_win_rate() << ",\n";
+            ss << "        \"points_efficiency\": " << points_efficiency << "\n";
+            ss << "      }\n";
+
+            ss << "    }";
+        }
+
+        ss << "\n  ]\n}\n";
+        return ss.str();
+    }
+
+    // Export matchups with full unit names to CSV
+    bool export_full_matchups_csv(const std::string& filename,
+                                   const std::vector<Unit>& units_a,
+                                   const std::vector<Unit>& units_b) const {
+        std::ofstream out(filename);
+        if (!out) return false;
+
+        // Header with unit names
+        out << "unit_a_id,unit_a_name,unit_a_faction,unit_a_points,"
+            << "unit_b_id,unit_b_name,unit_b_faction,unit_b_points,"
+            << "winner,winner_name,games_a,games_b\n";
+
+        // Data rows
+        for (const auto& r : results_) {
+            std::string a_name = r.unit_a_id < units_a.size()
+                ? std::string(units_a[r.unit_a_id].name.view()) : "Unknown";
+            std::string a_faction = r.unit_a_id < units_a.size()
+                ? std::string(units_a[r.unit_a_id].faction.view()) : "";
+            u16 a_points = r.unit_a_id < units_a.size()
+                ? units_a[r.unit_a_id].points_cost : 0;
+
+            std::string b_name = r.unit_b_id < units_b.size()
+                ? std::string(units_b[r.unit_b_id].name.view()) : "Unknown";
+            std::string b_faction = r.unit_b_id < units_b.size()
+                ? std::string(units_b[r.unit_b_id].faction.view()) : "";
+            u16 b_points = r.unit_b_id < units_b.size()
+                ? units_b[r.unit_b_id].points_cost : 0;
+
+            std::string winner_name = "Draw";
+            if (r.winner == 0) winner_name = a_name;
+            else if (r.winner == 1) winner_name = b_name;
+
+            out << r.unit_a_id << ","
+                << "\"" << a_name << "\","
+                << "\"" << a_faction << "\","
+                << a_points << ","
+                << r.unit_b_id << ","
+                << "\"" << b_name << "\","
+                << "\"" << b_faction << "\","
+                << b_points << ","
+                << r.winner << ","
+                << "\"" << winner_name << "\","
+                << (int)r.games_a << ","
+                << (int)r.games_b << "\n";
+        }
+
+        return true;
+    }
+
 private:
     ResultFileHeader header_{};
     std::vector<CompactMatchResult> results_;
