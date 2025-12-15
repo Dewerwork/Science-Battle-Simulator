@@ -77,12 +77,23 @@ endif()
 # Libraries will be added as source files are implemented
 
 # ==============================================================================
+# Core Library - Faction Rules and Combat Data
+# ==============================================================================
+
+add_library(battle_core STATIC
+    src/core/faction_rules.cpp
+    src/core/special_rule.cpp
+)
+target_include_directories(battle_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_compile_options(battle_core PRIVATE ${COMMON_FLAGS})
+
+# ==============================================================================
 # Main Executable
 # ==============================================================================
 
 add_executable(battle_sim src/battle_sim.cpp)
 target_include_directories(battle_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
-target_link_libraries(battle_sim PRIVATE Threads::Threads)
+target_link_libraries(battle_sim PRIVATE battle_core Threads::Threads)
 target_compile_options(battle_sim PRIVATE ${COMMON_FLAGS})
 
 # ==============================================================================
@@ -91,20 +102,22 @@ target_compile_options(battle_sim PRIVATE ${COMMON_FLAGS})
 
 enable_testing()
 
-# Parser test - header-only, no library dependencies
+# Parser test
 add_executable(test_parser src/test_parser.cpp)
 target_include_directories(test_parser PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_parser PRIVATE battle_core)
 target_compile_options(test_parser PRIVATE ${COMMON_FLAGS})
 
-# Game engine test - header-only
+# Game engine test
 add_executable(test_game src/test_game.cpp)
 target_include_directories(test_game PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_game PRIVATE battle_core)
 target_compile_options(test_game PRIVATE ${COMMON_FLAGS})
 
 # Benchmark - parallel simulation
 add_executable(benchmark_sim src/benchmark_sim.cpp)
 target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
-target_link_libraries(benchmark_sim PRIVATE Threads::Threads)
+target_link_libraries(benchmark_sim PRIVATE battle_core Threads::Threads)
 target_compile_options(benchmark_sim PRIVATE ${COMMON_FLAGS})
 
 # Analysis tool - result file analysis and export
