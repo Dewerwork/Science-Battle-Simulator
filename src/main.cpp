@@ -10,8 +10,10 @@
 #include "core/types.hpp"
 #include "core/unit.hpp"
 #include "core/weapon.hpp"
-#include "simulation/simulator.hpp"
-#include "simulation/thread_pool.hpp"
+#include "core/faction_rules.hpp"
+#include "engine/game_runner.hpp"
+#include "engine/dice.hpp"
+#include "parser/unit_parser.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -84,60 +86,16 @@ private:
 };
 
 // ==============================================================================
-// Demo Unit Creation
+// Demo Unit Definitions (parsed from text format)
 // ==============================================================================
 
-Unit create_demo_assault_squad() {
-    Unit unit("Assault Squad", 150);
+const char* DEMO_UNITS = R"(
+Assault Squad [5] Q3+ D4+ | 150pts | Furious
+5x CCW (A2), 5x 12" Pistol (A1)
 
-    // Create a melee weapon
-    Weapon ccw("CCW", 2, 0, 0);  // 2 attacks, melee, AP 0
-
-    // Create a pistol
-    Weapon pistol("Pistol", 1, 12, 0);  // 1 attack, 12" range, AP 0
-
-    // Add weapons to pool
-    auto& pool = get_weapon_pool();
-    WeaponIndex ccw_idx = pool.add(ccw);
-    WeaponIndex pistol_idx = pool.add(pistol);
-
-    // Add 5 models
-    for (int i = 0; i < 5; ++i) {
-        Model m("Battle Brother", 3, 4, 1);  // Quality 3+, Defense 4+, 1 wound
-        m.add_weapon(ccw_idx);
-        m.add_weapon(pistol_idx);
-        unit.add_model(m);
-    }
-
-    unit.add_rule(RuleId::Furious);  // Extra hits on 6s when charging
-
-    return unit;
-}
-
-Unit create_demo_terminator_squad() {
-    Unit unit("Terminator Squad", 300);
-
-    // Storm bolter
-    Weapon storm_bolter("Storm Bolter", 2, 24, 0);
-
-    // Power fist
-    Weapon power_fist("Power Fist", 2, 0, 3);  // 2 attacks, melee, AP 3
-    power_fist.add_rule(RuleId::Deadly, 3);
-
-    auto& pool = get_weapon_pool();
-    WeaponIndex sb_idx = pool.add(storm_bolter);
-    WeaponIndex pf_idx = pool.add(power_fist);
-
-    // Add 5 terminators
-    for (int i = 0; i < 5; ++i) {
-        Model m("Terminator", 3, 2, 3);  // Quality 3+, Defense 2+, Tough(3)
-        m.add_weapon(sb_idx);
-        m.add_weapon(pf_idx);
-        unit.add_model(m);
-    }
-
-    return unit;
-}
+Terminator Squad [5] Q3+ D2+ | 300pts | Tough(3)
+5x 24" Storm Bolter (A2), 5x Power Fist (A2, AP(3), Deadly(3))
+)";
 
 // ==============================================================================
 // Main Entry Point
@@ -159,43 +117,100 @@ void print_banner() {
 void print_system_info() {
     std::cout << "System Configuration:" << std::endl;
     std::cout << "  Threads: " << std::thread::hardware_concurrency() << std::endl;
-    std::cout << "  Matchup Result Size: " << sizeof(MatchupResult) << " bytes" << std::endl;
+    std::cout << "  Game Result Size: " << sizeof(GameResult) << " bytes" << std::endl;
+    std::cout << "  Game State Size: " << sizeof(GameState) << " bytes" << std::endl;
     std::cout << "  Unit Size: " << sizeof(Unit) << " bytes" << std::endl;
     std::cout << "  Model Size: " << sizeof(Model) << " bytes" << std::endl;
     std::cout << std::endl;
 }
 
 void run_demo_simulation() {
-    std::cout << "Running demo simulation..." << std::endl;
+    std::cout << "Running full game simulation (with movement & objectives)..." << std::endl;
     std::cout << std::endl;
 
-    // Create demo units
-    Unit assault = create_demo_assault_squad();
-    Unit terminators = create_demo_terminator_squad();
+    // Initialize faction rules
+    initialize_faction_rules();
+
+    // Parse demo units
+    auto parse_result = UnitParser::parse_string(DEMO_UNITS, "Demo");
+    if (parse_result.units.size() < 2) {
+        std::cerr << "Failed to parse demo units!" << std::endl;
+        return;
+    }
+
+    Unit& assault = parse_result.units[0];
+    Unit& terminators = parse_result.units[1];
+
+    // Display AI types
+    auto ai_type_str = [](AIType t) -> const char* {
+        switch (t) {
+            case AIType::Melee: return "Melee";
+            case AIType::Shooting: return "Shooting";
+            case AIType::Hybrid: return "Hybrid";
+            default: return "Unknown";
+        }
+    };
 
     std::cout << "Matchup: " << assault.name.c_str() << " vs " << terminators.name.c_str() << std::endl;
     std::cout << "  " << assault.name.c_str() << ": " << (int)assault.model_count << " models, "
-              << assault.points_cost << " pts" << std::endl;
+              << assault.points_cost << " pts, AI: " << ai_type_str(assault.ai_type) << std::endl;
     std::cout << "  " << terminators.name.c_str() << ": " << (int)terminators.model_count << " models, "
-              << terminators.points_cost << " pts" << std::endl;
+              << terminators.points_cost << " pts, AI: " << ai_type_str(terminators.ai_type) << std::endl;
     std::cout << std::endl;
 
-    // Configure simulation
-    SimulationConfig config;
-    config.iterations_per_matchup = 100000;  // 100K iterations for demo
-    config.max_rounds = 10;
+    std::cout << "Game Rules:" << std::endl;
+    std::cout << "  - Units start 24\" apart (12\" from center)" << std::endl;
+    std::cout << "  - Objective at center, control within 3\"" << std::endl;
+    std::cout << "  - 4 rounds maximum" << std::endl;
+    std::cout << "  - Winner: unit controlling objective at end" << std::endl;
+    std::cout << std::endl;
 
-    Simulator sim(config);
+    // Run simulation
+    constexpr u64 NUM_GAMES = 100000;
     ProgressDisplay progress;
+
+    // Statistics accumulators
+    u64 unit_a_wins = 0;
+    u64 unit_b_wins = 0;
+    u64 draws = 0;
+    u64 total_rounds = 0;
+    u64 total_wounds_a = 0;
+    u64 total_wounds_b = 0;
+    u64 total_kills_a = 0;
+    u64 total_kills_b = 0;
+    u64 total_obj_rounds_a = 0;
+    u64 total_obj_rounds_b = 0;
+
+    DiceRoller dice;
+    GameRunner runner(dice);
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Run simulation with progress callback
-    auto stats = sim.simulate_matchup(assault, terminators,
-        [&progress](u64 completed, u64 total, f64 rate) {
-            progress.update(completed, total, rate);
+    for (u64 i = 0; i < NUM_GAMES; ++i) {
+        GameResult result = runner.run_game(assault, terminators);
+
+        switch (result.winner) {
+            case GameWinner::UnitA: unit_a_wins++; break;
+            case GameWinner::UnitB: unit_b_wins++; break;
+            case GameWinner::Draw: draws++; break;
         }
-    );
+
+        total_rounds += result.rounds_played;
+        total_wounds_a += result.stats.wounds_dealt_a;
+        total_wounds_b += result.stats.wounds_dealt_b;
+        total_kills_a += result.stats.models_killed_a;
+        total_kills_b += result.stats.models_killed_b;
+        total_obj_rounds_a += result.stats.rounds_holding_a;
+        total_obj_rounds_b += result.stats.rounds_holding_b;
+
+        // Update progress every 1000 games
+        if ((i + 1) % 1000 == 0) {
+            auto now = std::chrono::high_resolution_clock::now();
+            auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+            f64 rate = (i + 1) * 1000.0 / elapsed_ms;
+            progress.update(i + 1, NUM_GAMES, rate);
+        }
+    }
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -204,34 +219,28 @@ void run_demo_simulation() {
     std::cout << std::endl;
 
     // Print results
-    std::cout << "Results (" << stats.iterations << " iterations):" << std::endl;
+    std::cout << "Results (" << NUM_GAMES << " games):" << std::endl;
     std::cout << std::fixed << std::setprecision(2);
-    std::cout << "  Attacker Win Rate: " << (stats.attacker_win_rate * 100) << "%" << std::endl;
-    std::cout << "  Defender Win Rate: " << (stats.defender_win_rate * 100) << "%" << std::endl;
-    std::cout << "  Draw Rate: " << (stats.draw_rate * 100) << "%" << std::endl;
+    std::cout << "  " << assault.name.c_str() << " Win Rate: " << (100.0 * unit_a_wins / NUM_GAMES) << "%" << std::endl;
+    std::cout << "  " << terminators.name.c_str() << " Win Rate: " << (100.0 * unit_b_wins / NUM_GAMES) << "%" << std::endl;
+    std::cout << "  Draw Rate: " << (100.0 * draws / NUM_GAMES) << "%" << std::endl;
     std::cout << std::endl;
-    std::cout << "  Avg Rounds: " << stats.avg_rounds << std::endl;
-    std::cout << "  Avg Kills by Attacker: " << stats.avg_kills_by_attacker << std::endl;
-    std::cout << "  Avg Kills by Defender: " << stats.avg_kills_by_defender << std::endl;
+    std::cout << "  Avg Rounds Played: " << (1.0 * total_rounds / NUM_GAMES) << std::endl;
     std::cout << std::endl;
-    std::cout << "  Attacker Rout Rate: " << (stats.attacker_rout_rate * 100) << "%" << std::endl;
-    std::cout << "  Defender Rout Rate: " << (stats.defender_rout_rate * 100) << "%" << std::endl;
+    std::cout << "Combat Stats (per game average):" << std::endl;
+    std::cout << "  " << assault.name.c_str() << ":" << std::endl;
+    std::cout << "    Wounds Dealt: " << (1.0 * total_wounds_a / NUM_GAMES) << std::endl;
+    std::cout << "    Models Killed: " << (1.0 * total_kills_a / NUM_GAMES) << std::endl;
+    std::cout << "    Rounds Holding Objective: " << (1.0 * total_obj_rounds_a / NUM_GAMES) << std::endl;
+    std::cout << "  " << terminators.name.c_str() << ":" << std::endl;
+    std::cout << "    Wounds Dealt: " << (1.0 * total_wounds_b / NUM_GAMES) << std::endl;
+    std::cout << "    Models Killed: " << (1.0 * total_kills_b / NUM_GAMES) << std::endl;
+    std::cout << "    Rounds Holding Objective: " << (1.0 * total_obj_rounds_b / NUM_GAMES) << std::endl;
     std::cout << std::endl;
 
-    f64 iterations_per_sec = stats.iterations * 1000.0 / duration.count();
+    f64 games_per_sec = NUM_GAMES * 1000.0 / duration.count();
     std::cout << "Performance: " << std::fixed << std::setprecision(0)
-              << iterations_per_sec << " battles/second" << std::endl;
-
-    // Estimate time for 100B matchups
-    f64 time_for_100b = 100'000'000'000.0 / iterations_per_sec;
-    std::cout << "Estimated time for 100B iterations: ";
-    if (time_for_100b < 3600) {
-        std::cout << static_cast<int>(time_for_100b / 60) << " minutes" << std::endl;
-    } else if (time_for_100b < 86400) {
-        std::cout << static_cast<int>(time_for_100b / 3600) << " hours" << std::endl;
-    } else {
-        std::cout << static_cast<int>(time_for_100b / 86400) << " days" << std::endl;
-    }
+              << games_per_sec << " games/second" << std::endl;
 }
 
 int main(int argc, char* argv[]) {

@@ -92,6 +92,12 @@ target_compile_options(battle_core PRIVATE ${COMMON_FLAGS})
 # ==============================================================================
 
 add_executable(battle_sim src/battle_sim.cpp)
+
+# Demo executable - full game with movement and objectives
+add_executable(demo_game src/main.cpp)
+target_include_directories(demo_game PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(demo_game PRIVATE battle_core Threads::Threads)
+target_compile_options(demo_game PRIVATE ${COMMON_FLAGS})
 target_include_directories(battle_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(battle_sim PRIVATE battle_core Threads::Threads)
 target_compile_options(battle_sim PRIVATE ${COMMON_FLAGS})
