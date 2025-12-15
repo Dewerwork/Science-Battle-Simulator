@@ -14,16 +14,17 @@ class AIController {
 public:
     // Decide action for a unit based on its AI type
     static ActionType decide_action(const GameState& state, bool is_unit_a) {
-        const Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
-        const Unit& enemy = is_unit_a ? state.unit_b : state.unit_a;
+        const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
+        const UnitSimState& unit_state = is_unit_a ? state.state_a : state.state_b;
+        const UnitSimState& enemy_state = is_unit_a ? state.state_b : state.state_a;
 
         // Destroyed or routed units are idle
-        if (unit.is_out_of_action()) {
+        if (unit_state.is_out_of_action()) {
             return ActionType::Idle;
         }
 
         // Shaken units must rally
-        if (unit.is_shaken()) {
+        if (unit_state.is_shaken()) {
             return ActionType::Rally;
         }
 
@@ -33,12 +34,12 @@ public:
         }
 
         // Enemy destroyed - move to objective
-        if (enemy.is_out_of_action()) {
+        if (enemy_state.is_out_of_action()) {
             return decide_move_to_objective(state, is_unit_a);
         }
 
         // Choose based on AI type
-        switch (unit.ai_type) {
+        switch (unit->ai_type) {
             case AIType::Melee:
                 return decide_melee_ai(state, is_unit_a);
             case AIType::Shooting:
@@ -53,10 +54,9 @@ public:
 private:
     // MELEE AI: Aggressive, charge-focused
     static ActionType decide_melee_ai(const GameState& state, bool is_unit_a) {
-        const Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
-        i8 my_pos = is_unit_a ? state.pos_a : state.pos_b;
+        const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
         i8 dist = state.distance_between();
-        u8 move_speed = state.get_move_speed(unit);
+        u8 move_speed = state.get_move_speed(*unit);
 
         // Can we charge?
         if (dist <= CHARGE_DISTANCE) {
@@ -76,10 +76,10 @@ private:
 
     // SHOOTING AI: Maintain distance, shoot
     static ActionType decide_shooting_ai(const GameState& state, bool is_unit_a) {
-        const Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
+        const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
         i8 my_pos = is_unit_a ? state.pos_a : state.pos_b;
         i8 dist = state.distance_between();
-        u8 move_speed = state.get_move_speed(unit);
+        u8 move_speed = state.get_move_speed(*unit);
 
         bool controls = is_unit_a ? state.unit_a_controls_objective() : state.unit_b_controls_objective();
 
@@ -89,7 +89,7 @@ private:
             i8 new_pos = my_pos + (is_unit_a ? move_speed : -move_speed);
             i8 new_dist = is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a);
 
-            if (unit.max_range >= static_cast<u8>(new_dist)) {
+            if (unit->max_range >= static_cast<u8>(new_dist)) {
                 return ActionType::Advance;  // Advance + shoot
             } else {
                 return ActionType::Rush;  // Rush to get in range
@@ -97,7 +97,7 @@ private:
         }
 
         // Controlling objective - try to shoot
-        if (unit.max_range >= static_cast<u8>(dist)) {
+        if (unit->max_range >= static_cast<u8>(dist)) {
             return ActionType::Hold;  // Hold and shoot (Relentless bonus)
         }
 
@@ -107,10 +107,10 @@ private:
 
     // HYBRID AI: Opportunistic - shoot when possible, charge when close
     static ActionType decide_hybrid_ai(const GameState& state, bool is_unit_a) {
-        const Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
+        const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
         i8 my_pos = is_unit_a ? state.pos_a : state.pos_b;
         i8 dist = state.distance_between();
-        u8 move_speed = state.get_move_speed(unit);
+        u8 move_speed = state.get_move_speed(*unit);
 
         bool controls = is_unit_a ? state.unit_a_controls_objective() : state.unit_b_controls_objective();
 
@@ -128,7 +128,7 @@ private:
                 i8 new_pos = my_pos + (is_unit_a ? move_speed : -move_speed);
                 i8 new_dist = is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a);
 
-                if (unit.max_range >= static_cast<u8>(new_dist)) {
+                if (unit->max_range >= static_cast<u8>(new_dist)) {
                     return ActionType::Advance;
                 }
             }
@@ -137,12 +137,12 @@ private:
 
         // Controlling objective
         // Can we shoot?
-        if (unit.max_range >= static_cast<u8>(dist)) {
+        if (unit->max_range >= static_cast<u8>(dist)) {
             // Advance toward enemy to get closer for potential charge next turn
             i8 new_pos = my_pos + (is_unit_a ? move_speed : -move_speed);
             i8 new_dist = is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a);
 
-            if (unit.max_range >= static_cast<u8>(new_dist)) {
+            if (unit->max_range >= static_cast<u8>(new_dist)) {
                 return ActionType::Advance;  // Advance + shoot
             }
             return ActionType::Hold;  // Hold + shoot

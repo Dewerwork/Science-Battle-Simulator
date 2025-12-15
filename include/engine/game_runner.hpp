@@ -11,7 +11,7 @@
 namespace battle {
 
 // ==============================================================================
-// Game Runner - Executes a complete game
+// Game Runner - Executes a complete game (optimized - no unit copying)
 // ==============================================================================
 
 class GameRunner {
@@ -21,15 +21,14 @@ public:
 
     // Run a single game between two units
     GameResult run_game(const Unit& unit_a, const Unit& unit_b) {
-        GameState state;
-        state.init(unit_a, unit_b);
+        state_.init(unit_a, unit_b);
 
         // Run up to MAX_ROUNDS
-        while (!state.is_game_over() && state.current_round <= MAX_ROUNDS) {
-            run_round(state);
+        while (!state_.is_game_over() && state_.current_round <= MAX_ROUNDS) {
+            run_round();
         }
 
-        return GameResult::determine(state);
+        return GameResult::determine(state_);
     }
 
     // Run a best-of-3 match
@@ -73,59 +72,59 @@ public:
 private:
     DiceRoller& dice_;
     CombatEngine combat_;
+    GameState state_;  // Reusable game state
 
-    void run_round(GameState& state) {
+    void run_round() {
         // Determine activation order (random for round 1, alternating after)
         bool a_goes_first;
-        if (state.current_round == 1) {
+        if (state_.current_round == 1) {
             a_goes_first = (dice_.roll_d6() >= 4);
         } else {
             // Loser of initiative last round goes first
             // For simplicity, alternate based on round number
-            a_goes_first = (state.current_round % 2 == 1);
+            a_goes_first = (state_.current_round % 2 == 1);
         }
 
         // First activation
         if (a_goes_first) {
-            activate_unit(state, true);
-            activate_unit(state, false);
+            activate_unit(true);
+            activate_unit(false);
         } else {
-            activate_unit(state, false);
-            activate_unit(state, true);
+            activate_unit(false);
+            activate_unit(true);
         }
 
         // End of round
-        state.update_objective_control();
-        state.next_round();
+        state_.update_objective_control();
+        state_.next_round();
     }
 
-    void activate_unit(GameState& state, bool is_unit_a) {
-        Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
-        Unit& enemy = is_unit_a ? state.unit_b : state.unit_a;
-        i8& my_pos = is_unit_a ? state.pos_a : state.pos_b;
+    void activate_unit(bool is_unit_a) {
+        UnitView unit = state_.view(is_unit_a);
+        i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
 
-        if (is_unit_a) state.unit_a_activated = true;
-        else state.unit_b_activated = true;
+        if (is_unit_a) state_.unit_a_activated = true;
+        else state_.unit_b_activated = true;
 
         // Get AI decision
-        ActionType action = AIController::decide_action(state, is_unit_a);
+        ActionType action = AIController::decide_action(state_, is_unit_a);
 
         // Execute action
         switch (action) {
             case ActionType::Hold:
-                execute_hold(state, is_unit_a);
+                execute_hold(is_unit_a);
                 break;
 
             case ActionType::Advance:
-                execute_advance(state, is_unit_a);
+                execute_advance(is_unit_a);
                 break;
 
             case ActionType::Rush:
-                execute_rush(state, is_unit_a);
+                execute_rush(is_unit_a);
                 break;
 
             case ActionType::Charge:
-                execute_charge(state, is_unit_a);
+                execute_charge(is_unit_a);
                 break;
 
             case ActionType::Rally:
@@ -139,19 +138,19 @@ private:
         }
     }
 
-    void execute_hold(GameState& state, bool is_unit_a) {
-        Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
-        Unit& enemy = is_unit_a ? state.unit_b : state.unit_a;
+    void execute_hold(bool is_unit_a) {
+        UnitView unit = state_.view(is_unit_a);
+        UnitView enemy = state_.view(!is_unit_a);
 
-        if (state.in_melee) {
+        if (state_.in_melee) {
             // Fight in melee
-            execute_melee_round(state, is_unit_a, false);
+            execute_melee_round(is_unit_a, false);
         } else {
             // Shoot if possible
-            i8 dist = state.distance_between();
-            if (unit.max_range >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
+            i8 dist = state_.distance_between();
+            if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
                 CombatResult result = combat_.resolve_shooting(unit, enemy, dist, false);
-                state.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
+                state_.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
 
                 // Check morale for defender if took casualties
                 if (result.models_killed > 0) {
@@ -161,29 +160,29 @@ private:
         }
     }
 
-    void execute_advance(GameState& state, bool is_unit_a) {
-        Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
-        Unit& enemy = is_unit_a ? state.unit_b : state.unit_a;
-        i8& my_pos = is_unit_a ? state.pos_a : state.pos_b;
+    void execute_advance(bool is_unit_a) {
+        UnitView unit = state_.view(is_unit_a);
+        UnitView enemy = state_.view(!is_unit_a);
+        i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
 
-        if (state.in_melee) {
-            execute_melee_round(state, is_unit_a, false);
+        if (state_.in_melee) {
+            execute_melee_round(is_unit_a, false);
             return;
         }
 
         // Move toward center/enemy
-        u8 move_speed = state.get_move_speed(unit);
+        u8 move_speed = state_.get_move_speed(*unit.unit);
         if (is_unit_a) {
-            my_pos = std::min(static_cast<i8>(my_pos + move_speed), state.pos_b);
+            my_pos = std::min(static_cast<i8>(my_pos + move_speed), state_.pos_b);
         } else {
-            my_pos = std::max(static_cast<i8>(my_pos - move_speed), state.pos_a);
+            my_pos = std::max(static_cast<i8>(my_pos - move_speed), state_.pos_a);
         }
 
         // Shoot if possible
-        i8 dist = state.distance_between();
-        if (unit.max_range >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
+        i8 dist = state_.distance_between();
+        if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
             CombatResult result = combat_.resolve_shooting(unit, enemy, dist, true);
-            state.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
+            state_.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
 
             if (result.models_killed > 0) {
                 combat_.check_morale(enemy);
@@ -191,50 +190,50 @@ private:
         }
     }
 
-    void execute_rush(GameState& state, bool is_unit_a) {
-        Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
-        i8& my_pos = is_unit_a ? state.pos_a : state.pos_b;
-        i8& enemy_pos = is_unit_a ? state.pos_b : state.pos_a;
+    void execute_rush(bool is_unit_a) {
+        UnitView unit = state_.view(is_unit_a);
+        i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
+        i8& enemy_pos = is_unit_a ? state_.pos_b : state_.pos_a;
 
-        if (state.in_melee) {
-            execute_melee_round(state, is_unit_a, false);
+        if (state_.in_melee) {
+            execute_melee_round(is_unit_a, false);
             return;
         }
 
         // Rush (double move, no shooting)
-        u8 move_speed = state.get_move_speed(unit) * RUSH_MULTIPLIER;
+        u8 move_speed = state_.get_move_speed(*unit.unit) * RUSH_MULTIPLIER;
         if (is_unit_a) {
             my_pos = std::min(static_cast<i8>(my_pos + move_speed), enemy_pos);
         } else {
-            my_pos = std::max(static_cast<i8>(my_pos - move_speed), state.pos_a);
+            my_pos = std::max(static_cast<i8>(my_pos - move_speed), state_.pos_a);
         }
     }
 
-    void execute_charge(GameState& state, bool is_unit_a) {
-        Unit& unit = is_unit_a ? state.unit_a : state.unit_b;
-        Unit& enemy = is_unit_a ? state.unit_b : state.unit_a;
-        i8& my_pos = is_unit_a ? state.pos_a : state.pos_b;
-        i8& enemy_pos = is_unit_a ? state.pos_b : state.pos_a;
+    void execute_charge(bool is_unit_a) {
+        UnitView unit = state_.view(is_unit_a);
+        UnitView enemy = state_.view(!is_unit_a);
+        i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
+        i8& enemy_pos = is_unit_a ? state_.pos_b : state_.pos_a;
 
         // Move into contact
         if (is_unit_a) {
             my_pos = enemy_pos;
         } else {
-            my_pos = state.pos_a;
+            my_pos = state_.pos_a;
         }
 
-        state.in_melee = true;
+        state_.in_melee = true;
 
         // Resolve charge (attacker strikes first)
-        execute_melee_round(state, is_unit_a, true);
+        execute_melee_round(is_unit_a, true);
     }
 
-    void execute_melee_round(GameState& state, bool is_unit_a, bool is_charging) {
-        Unit& attacker = is_unit_a ? state.unit_a : state.unit_b;
-        Unit& defender = is_unit_a ? state.unit_b : state.unit_a;
+    void execute_melee_round(bool is_unit_a, bool is_charging) {
+        UnitView attacker = state_.view(is_unit_a);
+        UnitView defender = state_.view(!is_unit_a);
 
         if (attacker.is_out_of_action() || defender.is_out_of_action()) {
-            state.in_melee = false;
+            state_.in_melee = false;
             return;
         }
 
@@ -247,25 +246,25 @@ private:
         if (defender_strikes_first && !defender.is_shaken()) {
             // Defender strikes first
             CombatResult def_result = combat_.resolve_melee(defender, attacker, false);
-            state.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
+            state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
             attacker_wounds = def_result.wounds_dealt;
 
             if (!attacker.is_out_of_action()) {
                 // Attacker strikes back
                 CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging);
-                state.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
+                state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
                 defender_wounds = atk_result.wounds_dealt;
             }
         } else {
             // Normal order: attacker first
             CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging);
-            state.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
+            state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
             defender_wounds = atk_result.wounds_dealt;
 
             if (!defender.is_out_of_action() && !defender.is_shaken()) {
                 // Defender strikes back
                 CombatResult def_result = combat_.resolve_melee(defender, attacker, false);
-                state.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
+                state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
                 attacker_wounds = def_result.wounds_dealt;
             }
         }
@@ -279,7 +278,7 @@ private:
 
         // Check if melee is over
         if (attacker.is_out_of_action() || defender.is_out_of_action()) {
-            state.in_melee = false;
+            state_.in_melee = false;
         }
     }
 };
