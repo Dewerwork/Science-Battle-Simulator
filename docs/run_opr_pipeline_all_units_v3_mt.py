@@ -289,14 +289,23 @@ def _clean_rule(rule: str) -> Optional[str]:
     return r if r else None
 
 def normalize_rules_for_signature(rules_in: List[str]) -> Tuple[str, ...]:
-    """Clean and normalize rules for signature generation (no exclusion)."""
+    """Clean and normalize rules for signature generation (no exclusion).
+
+    Rules are deduplicated case-insensitively - e.g., "Fearless", "fearless", "FEARLESS"
+    all collapse to a single entry, preserving the first encountered form.
+    """
     out: List[str] = []
+    seen_lower: Dict[str, str] = {}  # lowercase -> first encountered form
+
     for r in rules_in:
         cleaned = _clean_rule(r)
         if cleaned:
-            out.append(cleaned)
+            key = cleaned.lower()
+            if key not in seen_lower:
+                seen_lower[key] = cleaned
+                out.append(cleaned)
 
-    out = sorted(set(out), key=lambda x: x.lower())
+    out = sorted(out, key=lambda x: x.lower())
     return tuple(out)
 
 # =========================================================
@@ -355,6 +364,9 @@ def weapon_key_from_profile(profile: str, weapon_name: str, rng_fallback: Option
     Parse profile like: 18", A4, AP(1), Rending
     Returns:
       key_str like: N=Sword|R=18|A=4|AP=1|T=Rending;Reliable
+
+    Note: weapon_name is normalized (lowercased, whitespace-collapsed) for consistent
+    key generation across different sources (base weapons vs option text).
     """
     tokens = [t.strip() for t in _split_top_level_commas(profile)]
     rng: Optional[int] = rng_fallback
@@ -380,8 +392,10 @@ def weapon_key_from_profile(profile: str, weapon_name: str, rng_fallback: Option
         tags.append(t)
 
     tags_sorted = tuple(sorted([x for x in tags if x], key=lambda x: x.lower()))
-    # Include weapon name in the key to preserve original names
-    key = f"N={weapon_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
+    # Normalize weapon name for consistent key generation across different sources
+    # This ensures "Heavy Sword" and "Heavy sword" generate the same key
+    normalized_name = norm_ws(weapon_name).lower()
+    key = f"N={normalized_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
     if tags_sorted:
         key += "|T=" + ";".join(tags_sorted)
     return key, rng, attacks, ap, tags_sorted
@@ -458,7 +472,10 @@ def _extract_rules_from_choice(choice_text: str) -> List[str]:
     if inside is not None:
         # If parentheses do NOT look like weapon profile, treat as rule payload.
         if not looks_like_weapon_profile(inside):
-            return [inside.strip()] if inside.strip() else []
+            # Split by comma (respecting nested parentheses) to handle multi-rule options
+            # e.g., "Fear(2), Relentless" -> ["Fear(2)", "Relentless"]
+            rules = _split_top_level_commas(inside)
+            return [r.strip() for r in rules if r.strip()]
         return []
     # No parentheses: treat whole thing as rule-ish
     t = name_part.strip()
@@ -477,7 +494,9 @@ def _compute_option_weapon_key(opt: Dict[str, Any]) -> Tuple[str, int, int, List
     if inside and looks_like_weapon_profile(inside):
         add_key = weapon_key_from_profile(inside, item_name)[0]
     else:
-        add_key = f"N={item_name}|R=|A=0|AP="
+        # Normalize weapon name for consistent key generation
+        normalized_name = norm_ws(item_name).lower()
+        add_key = f"N={normalized_name}|R=|A=0|AP="
 
     rules = _extract_rules_from_choice(txt)
     return (add_key, pts, c, rules)
@@ -501,6 +520,9 @@ def build_base_weapon_multiset(unit: Dict[str, Any]) -> Tuple[Dict[str, int], Di
     Returns:
       base_multiset: weapon_key -> count (now includes weapon name in key)
       name_to_key: normalized weapon name -> weapon_key (first match)
+
+    Note: Weapon names in keys are normalized (lowercased) for consistent matching
+    across different sources (base weapons vs option text).
     """
     base: Dict[str, int] = {}
     name_to_key: Dict[str, str] = {}
@@ -518,8 +540,9 @@ def build_base_weapon_multiset(unit: Dict[str, Any]) -> Tuple[Dict[str, int], Di
         ap = w.get("ap", None)
         tags = tuple(sorted([str(s).strip() for s in (w.get("special") or []) if str(s).strip() and str(s).strip() != "-"], key=lambda x: x.lower()))
 
-        # Include weapon name in the key to preserve original names
-        key = f"N={name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
+        # Normalize weapon name for consistent key generation (same as weapon_key_from_profile)
+        normalized_name = norm_ws(name).lower()
+        key = f"N={normalized_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
         if tags:
             key += "|T=" + ";".join(tags)
 
@@ -664,8 +687,9 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                     add_key = weapon_key_from_profile(inside, item_name)[0]
                 else:
                     # For melee weapons without explicit profile, use the weapon name
-                    # instead of a generic placeholder
-                    add_key = f"N={item_name}|R=|A=0|AP="
+                    # Normalize name for consistent key generation
+                    normalized_name = norm_ws(item_name).lower()
+                    add_key = f"N={normalized_name}|R=|A=0|AP="
 
                 # OPTIMIZATION 3: Skip self-replacements (replacing weapon with itself)
                 if add_key == target_key:
@@ -710,7 +734,9 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                         add_key = weapon_key_from_profile(inside, item_name)[0]
                     else:
                         # For melee weapons without explicit profile, use the weapon name
-                        add_key = f"N={item_name}|R=|A=0|AP="
+                        # Normalize name for consistent key generation
+                        normalized_name = norm_ws(item_name).lower()
+                        add_key = f"N={normalized_name}|R=|A=0|AP="
 
                     # OPTIMIZATION 3: Track if this is a self-replacement
                     if add_key == target_key:
