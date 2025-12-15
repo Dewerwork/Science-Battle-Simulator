@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <algorithm>
 #include <array>
 #include <string>
 #include <string_view>
@@ -112,6 +113,8 @@ enum class RuleId : u8 {
     Impact,         // Impact(X) - Extra attacks on charge
     Indirect,       // Indirect - Ignore cover
     Sniper,         // Sniper - Pick target model
+    Lock_On,        // Lock-On - +1 to hit vs vehicles
+    Purge,          // Purge - +1 to hit vs Tough(3+)
 
     // Defense rules
     Regeneration,   // Regeneration - 5+ to ignore wound
@@ -127,8 +130,25 @@ enum class RuleId : u8 {
     Relentless,     // Relentless - Extra hits on 6s shooting >9"
     Fear,           // Fear(X) - Counts as +X wounds in melee
     Counter,        // Counter - Strikes first when charged
+    Fast,           // Fast - 9" move instead of 6"
+    Flying,         // Flying - Can fly over terrain/units
+    Strider,        // Strider - Ignore difficult terrain
+    Scout,          // Scout - Deploy 12" ahead
+    Ambush,         // Ambush - Can deploy anywhere >9" from enemy
+    Devout,         // Devout - Faction rule
+    PiercingAssault,// Piercing Assault - AP(1) on melee in charge
+    Unstoppable,    // Unstoppable - Ignore difficult/dangerous terrain
+    Casting,        // Casting(X) - Can cast X spells
+    Slow,           // Slow - 4" move instead of 6"
 
     COUNT // Number of rules
+};
+
+// AI behavior type for Solo Play rules
+enum class AIType : u8 {
+    Melee = 0,      // No ranged weapons - charges aggressively
+    Shooting = 1,   // Ranged > melee - maintains distance
+    Hybrid = 2      // Melee >= ranged - opportunistic
 };
 
 // ==============================================================================

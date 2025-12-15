@@ -14,12 +14,22 @@ namespace battle {
 
 struct Unit {
     Name name;
+    Name faction;
     std::array<Model, MAX_MODELS_PER_UNIT> models{};
     std::array<CompactRule, MAX_RULES_PER_ENTITY> rules{};
+    std::array<Weapon, MAX_WEAPONS_PER_MODEL * 2> weapons{};  // Weapon storage
 
+    u32 unit_id      = 0;    // Unique identifier for this loadout
     u16 points_cost  = 0;    // Points value
     u8  model_count  = 0;    // Total models in unit
     u8  rule_count   = 0;    // Number of unit-wide rules
+    u8  weapon_count = 0;    // Total weapons stored
+    u8  quality      = 4;    // Base quality (Q value)
+    u8  defense      = 4;    // Base defense (D value)
+
+    // Computed fields
+    AIType ai_type     = AIType::Hybrid;
+    u8  max_range      = 0;    // Longest weapon range
 
     // Combat state (mutable during simulation)
     UnitStatus status    = UnitStatus::Normal;
@@ -193,6 +203,57 @@ struct Unit {
         Unit copy = *this;
         copy.reset();
         return copy;
+    }
+
+    // Weapon management at unit level
+    u8 add_weapon(const Weapon& weapon) {
+        if (weapon_count < weapons.size()) {
+            weapons[weapon_count] = weapon;
+            if (weapon.range > max_range) {
+                max_range = weapon.range;
+            }
+            return weapon_count++;
+        }
+        return 0;
+    }
+
+    const Weapon& get_weapon(u8 index) const {
+        return weapons[index];
+    }
+
+    // Compute total attacks for AI classification
+    u16 total_melee_attacks() const {
+        u16 total = 0;
+        for (u8 i = 0; i < weapon_count; ++i) {
+            if (weapons[i].is_melee()) {
+                total += weapons[i].attacks;
+            }
+        }
+        return total;
+    }
+
+    u16 total_ranged_attacks() const {
+        u16 total = 0;
+        for (u8 i = 0; i < weapon_count; ++i) {
+            if (weapons[i].is_ranged()) {
+                total += weapons[i].attacks;
+            }
+        }
+        return total;
+    }
+
+    // Compute and set AI type based on weapons
+    void compute_ai_type() {
+        u16 melee = total_melee_attacks();
+        u16 ranged = total_ranged_attacks();
+
+        if (ranged == 0) {
+            ai_type = AIType::Melee;
+        } else if (melee >= ranged) {
+            ai_type = AIType::Hybrid;
+        } else {
+            ai_type = AIType::Shooting;
+        }
     }
 };
 
