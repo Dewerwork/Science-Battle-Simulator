@@ -153,9 +153,10 @@ private:
                 CombatResult result = combat_.resolve_shooting(unit, enemy, dist, false);
                 state.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
 
-                // Check morale for defender if took casualties
-                if (result.models_killed > 0) {
-                    combat_.check_morale(enemy);
+                // Check morale for defender if took wounds (not just kills)
+                // Morale test when unit is at half strength after taking wounds
+                if (result.wounds_dealt > 0) {
+                    combat_.check_morale(enemy, false);  // false = not from melee
                 }
             }
         }
@@ -185,8 +186,9 @@ private:
             CombatResult result = combat_.resolve_shooting(unit, enemy, dist, true);
             state.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
 
-            if (result.models_killed > 0) {
-                combat_.check_morale(enemy);
+            // Check morale for defender if took wounds
+            if (result.wounds_dealt > 0) {
+                combat_.check_morale(enemy, false);  // false = not from melee
             }
         }
     }
@@ -238,42 +240,72 @@ private:
             return;
         }
 
-        // Counter: defender strikes first when charged
-        bool defender_strikes_first = is_charging && defender.has_rule(RuleId::Counter);
+        // Count models with Counter rule in defender (for Impact reduction)
+        u8 counter_models = 0;
+        for (u8 i = 0; i < defender.model_count; ++i) {
+            if (defender.models[i].is_alive() &&
+                (defender.models[i].has_rule(RuleId::Counter) || defender.has_rule(RuleId::Counter))) {
+                counter_models++;
+            }
+        }
+
+        // Counter: defender strikes first when charged (and not shaken)
+        bool defender_strikes_first = is_charging && defender.has_rule(RuleId::Counter) && !defender.is_shaken();
 
         u16 attacker_wounds = 0;
         u16 defender_wounds = 0;
 
-        if (defender_strikes_first && !defender.is_shaken()) {
-            // Defender strikes first
-            CombatResult def_result = combat_.resolve_melee(defender, attacker, false);
+        if (defender_strikes_first) {
+            // Defender with Counter strikes first
+            CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
             state.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
             attacker_wounds = def_result.wounds_dealt;
 
+            // Mark defender as fatigued after striking
+            defender.is_fatigued = true;
+
             if (!attacker.is_out_of_action()) {
-                // Attacker strikes back
-                CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging);
+                // Attacker strikes back (pass counter_models for Impact reduction)
+                CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging, counter_models);
                 state.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
                 defender_wounds = atk_result.wounds_dealt;
+
+                // Mark attacker as fatigued after striking
+                attacker.is_fatigued = true;
             }
         } else {
-            // Normal order: attacker first
-            CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging);
+            // Normal order: attacker first (pass counter_models for Impact reduction)
+            CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging, counter_models);
             state.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
             defender_wounds = atk_result.wounds_dealt;
 
-            if (!defender.is_out_of_action() && !defender.is_shaken()) {
-                // Defender strikes back
-                CombatResult def_result = combat_.resolve_melee(defender, attacker, false);
+            // Mark attacker as fatigued after striking
+            attacker.is_fatigued = true;
+
+            // Defender may strike back if not destroyed
+            // Shaken units CAN strike back, but count as fatigued (only hit on 6s)
+            if (!defender.is_out_of_action()) {
+                // Shaken units strike back counting as fatigued
+                if (defender.is_shaken()) {
+                    defender.is_fatigued = true;
+                }
+                CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
                 state.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
                 attacker_wounds = def_result.wounds_dealt;
+
+                // Mark defender as fatigued after striking
+                defender.is_fatigued = true;
             }
         }
 
-        // Morale checks for melee loser
-        if (defender_wounds > attacker_wounds && !attacker.is_out_of_action()) {
+        // Apply Fear(X) to wound totals for morale comparison
+        u16 attacker_effective_wounds = attacker_wounds + attacker.get_rule_value(RuleId::Fear);
+        u16 defender_effective_wounds = defender_wounds + defender.get_rule_value(RuleId::Fear);
+
+        // Morale checks for melee loser (compare effective wounds with Fear)
+        if (defender_effective_wounds > attacker_effective_wounds && !attacker.is_out_of_action()) {
             combat_.check_morale(attacker, true, attacker_wounds, defender_wounds);
-        } else if (attacker_wounds > defender_wounds && !defender.is_out_of_action()) {
+        } else if (attacker_effective_wounds > defender_effective_wounds && !defender.is_out_of_action()) {
             combat_.check_morale(defender, true, defender_wounds, attacker_wounds);
         }
 
