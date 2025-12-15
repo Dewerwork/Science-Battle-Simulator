@@ -137,9 +137,13 @@ enum class RuleId : u8 {
     Ambush,         // Ambush - Can deploy anywhere >9" from enemy
     Devout,         // Devout - Faction rule
     PiercingAssault,// Piercing Assault - AP(1) on melee in charge
-    Unstoppable,    // Unstoppable - Ignore difficult/dangerous terrain
+    Unstoppable,    // Unstoppable - Ignore regen and negative modifiers
     Casting,        // Casting(X) - Can cast X spells
     Slow,           // Slow - 4" move instead of 6"
+    Surge,          // Surge - 6s to hit deal 1 extra hit
+    Thrust,         // Thrust - +1 to hit and AP(+1) when charging
+    Takedown,       // Takedown - Pick target model, resolve as unit of 1
+    Limited,        // Limited - Weapon may only be used once per game
 
     COUNT // Number of rules
 };

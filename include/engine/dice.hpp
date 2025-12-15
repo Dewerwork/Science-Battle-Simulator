@@ -124,6 +124,12 @@ public:
         return wounds - saved;
     }
 
+    // Roll Impact attacks (hits on 2+)
+    u32 roll_impact(u32 count) {
+        if (count == 0) return 0;
+        return roll_d6_target(count, 2);
+    }
+
     // Generate raw 64-bit value (for custom use)
     u64 next() {
         const u64 result = rotl(state[0] + state[3], 23) + state[0];
