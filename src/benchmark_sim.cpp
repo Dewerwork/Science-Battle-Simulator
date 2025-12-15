@@ -1,11 +1,15 @@
 #include "parser/unit_parser.hpp"
 #include "simulation/batch_simulator.hpp"
+#include "core/faction_rules.hpp"
 #include <iostream>
 #include <iomanip>
 
 using namespace battle;
 
 int main(int argc, char* argv[]) {
+    // Initialize faction rules
+    initialize_faction_rules();
+
     std::cout << "=== Battle Simulator Benchmark ===\n\n";
 
     // Parse command line
