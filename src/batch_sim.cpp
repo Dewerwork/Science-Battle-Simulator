@@ -1,3 +1,14 @@
+/**
+ * Batch Simulator - Large-Scale Matchup Processing
+ *
+ * Designed for running 100 billion+ matchup simulations with:
+ * - Parallel processing across all CPU cores
+ * - Checkpoint/resume support for long-running jobs
+ * - Compact 8-byte result format for efficient storage
+ *
+ * For interactive simulation with fewer matchups, use battle_sim instead.
+ */
+
 #include "parser/unit_parser.hpp"
 #include "simulation/batch_simulator.hpp"
 #include "analysis/result_analyzer.hpp"
@@ -9,6 +20,8 @@
 using namespace battle;
 
 void print_usage(const char* prog) {
+    std::cout << "Batch Simulator - Large-Scale Matchup Processing\n";
+    std::cout << "For 100B+ matchups with checkpoint/resume support.\n\n";
     std::cout << "Usage: " << prog << " <units_file> [options]\n\n";
     std::cout << "Options:\n";
     std::cout << "  -o <file>     Output results file (default: results.bin)\n";
@@ -21,6 +34,7 @@ void print_usage(const char* prog) {
     std::cout << "Example:\n";
     std::cout << "  " << prog << " units.txt -o faction_results.bin -b 50000\n";
     std::cout << "  " << prog << " units.txt -r   # Resume interrupted simulation\n";
+    std::cout << "\nFor interactive simulation, use battle_sim instead.\n";
 }
 
 int main(int argc, char* argv[]) {
@@ -61,7 +75,7 @@ int main(int argc, char* argv[]) {
     initialize_faction_rules();
 
     // Load units
-    std::cout << "=== Battle Simulator ===\n\n";
+    std::cout << "=== Batch Simulator ===\n\n";
     std::cout << "Loading units from: " << unit_file << "\n";
 
     auto start_load = std::chrono::high_resolution_clock::now();
