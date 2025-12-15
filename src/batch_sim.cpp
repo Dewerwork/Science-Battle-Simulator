@@ -28,11 +28,14 @@ void print_usage(const char* prog) {
     std::cout << "  -c <file>     Checkpoint file (default: checkpoint.bin)\n";
     std::cout << "  -b <size>     Batch size (default: 10000)\n";
     std::cout << "  -i <interval> Checkpoint interval (default: 1000000)\n";
+    std::cout << "  -e            Extended format - store full game statistics (24 bytes/result)\n";
+    std::cout << "                Default compact format uses 8 bytes/result\n";
     std::cout << "  -r            Resume from checkpoint if available\n";
     std::cout << "  -q            Quiet mode (no progress output)\n";
     std::cout << "  -h            Show this help\n\n";
     std::cout << "Example:\n";
     std::cout << "  " << prog << " units.txt -o faction_results.bin -b 50000\n";
+    std::cout << "  " << prog << " units.txt -e -o extended_results.bin  # Extended format\n";
     std::cout << "  " << prog << " units.txt -r   # Resume interrupted simulation\n";
     std::cout << "\nFor interactive simulation, use battle_sim instead.\n";
 }
@@ -63,6 +66,8 @@ int main(int argc, char* argv[]) {
             config.batch_size = std::stoul(argv[++i]);
         } else if (arg == "-i" && i + 1 < argc) {
             config.checkpoint_interval = std::stoul(argv[++i]);
+        } else if (arg == "-e") {
+            config.extended_format = true;
         } else if (arg == "-r") {
             try_resume = true;
         } else if (arg == "-q") {
@@ -97,10 +102,12 @@ int main(int argc, char* argv[]) {
 
     // Calculate simulation size
     u64 total_matchups = static_cast<u64>(parse_result.units.size()) * parse_result.units.size();
-    f64 estimated_bytes = total_matchups * 8.0;  // 8 bytes per result
+    f64 bytes_per_result = config.extended_format ? 24.0 : 8.0;
+    f64 estimated_bytes = total_matchups * bytes_per_result;
 
     std::cout << "\n--- Simulation Configuration ---\n";
     std::cout << "Simulation Mode: Full Game (movement, AI, objectives, 4 rounds max)\n";
+    std::cout << "Result Format: " << (config.extended_format ? "Extended (24 bytes - full game stats)" : "Compact (8 bytes)") << "\n";
     std::cout << "Units: " << parse_result.units.size() << "\n";
     std::cout << "Total matchups: " << total_matchups;
     if (total_matchups >= 1e9) {

@@ -15,6 +15,10 @@ void print_usage(const char* prog) {
     std::cout << "  csv-stats <results.bin> <units.txt> <out.csv>  - Export stats to CSV\n";
     std::cout << "  csv-matchups <results.bin> <out.csv>     - Export matchups to CSV\n";
     std::cout << "  json <results.bin> <units.txt>           - Export stats to JSON (stdout)\n";
+    std::cout << "\nFull Game Statistics Commands (requires extended format results):\n";
+    std::cout << "  game-stats <results.bin> <units.txt> [N] - Show game stats report (top N=10)\n";
+    std::cout << "  ext-matchup <results.bin> <units.txt> <id_a> <id_b> - Extended matchup report\n";
+    std::cout << "\nNote: Extended format results are generated using 'batch_sim -e'\n";
 }
 
 int main(int argc, char* argv[]) {
@@ -175,6 +179,45 @@ int main(int argc, char* argv[]) {
         }
 
         std::cout << analyzer.export_unit_stats_json(parse_result.units);
+        return 0;
+    }
+
+    // Game stats report (extended format)
+    if (command == "game-stats" && argc >= 4) {
+        ResultAnalyzer analyzer;
+        if (!analyzer.load_results(argv[2])) {
+            std::cerr << "Failed to load results from: " << argv[2] << "\n";
+            return 1;
+        }
+
+        auto parse_result = UnitParser::parse_file(argv[3]);
+        if (parse_result.units.empty()) {
+            std::cerr << "Failed to load units from: " << argv[3] << "\n";
+            return 1;
+        }
+
+        size_t n = (argc >= 5) ? std::stoul(argv[4]) : 10;
+        std::cout << analyzer.generate_game_stats_report(parse_result.units, n);
+        return 0;
+    }
+
+    // Extended matchup report
+    if (command == "ext-matchup" && argc >= 6) {
+        ResultAnalyzer analyzer;
+        if (!analyzer.load_results(argv[2])) {
+            std::cerr << "Failed to load results from: " << argv[2] << "\n";
+            return 1;
+        }
+
+        auto parse_result = UnitParser::parse_file(argv[3]);
+        if (parse_result.units.empty()) {
+            std::cerr << "Failed to load units from: " << argv[3] << "\n";
+            return 1;
+        }
+
+        u32 id_a = std::stoul(argv[4]);
+        u32 id_b = std::stoul(argv[5]);
+        std::cout << analyzer.generate_extended_matchup_report(id_a, id_b, parse_result.units);
         return 0;
     }
 
