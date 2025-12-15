@@ -125,6 +125,13 @@ add_executable(analyze_results src/analyze_results.cpp)
 target_include_directories(analyze_results PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_compile_options(analyze_results PRIVATE ${COMMON_FLAGS})
 
+# Validation tests - checks rule coverage and simulation correctness
+add_executable(test_validation tests/test_validation.cpp)
+target_include_directories(test_validation PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_validation PRIVATE battle_core Threads::Threads)
+target_compile_options(test_validation PRIVATE ${COMMON_FLAGS})
+add_test(NAME ValidationTests COMMAND test_validation)
+
 # Commented out until source files are implemented:
 # add_executable(test_dice tests/test_dice.cpp)
 # target_link_libraries(test_dice PRIVATE battle_engine)
