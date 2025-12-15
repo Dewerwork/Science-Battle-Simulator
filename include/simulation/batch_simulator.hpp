@@ -71,6 +71,52 @@ static_assert(sizeof(CompactMatchResult) == 8, "CompactMatchResult must be 8 byt
 // Progress Callback
 // ==============================================================================
 
+// Aggregate stats from full game simulation
+struct AggregateGameStats {
+    std::atomic<u64> total_rounds_played{0};
+    std::atomic<u64> total_games_played{0};
+    std::atomic<u64> total_wounds_dealt{0};
+    std::atomic<u64> total_models_killed{0};
+    std::atomic<u64> total_objective_rounds{0};
+    std::atomic<u64> games_ended_by_destruction{0};
+    std::atomic<u64> games_ended_by_objective{0};
+
+    void reset() {
+        total_rounds_played = 0;
+        total_games_played = 0;
+        total_wounds_dealt = 0;
+        total_models_killed = 0;
+        total_objective_rounds = 0;
+        games_ended_by_destruction = 0;
+        games_ended_by_objective = 0;
+    }
+
+    f64 avg_rounds_per_game() const {
+        u64 games = total_games_played.load();
+        return games > 0 ? static_cast<f64>(total_rounds_played.load()) / games : 0.0;
+    }
+
+    f64 avg_wounds_per_game() const {
+        u64 games = total_games_played.load();
+        return games > 0 ? static_cast<f64>(total_wounds_dealt.load()) / games : 0.0;
+    }
+
+    f64 avg_models_killed_per_game() const {
+        u64 games = total_games_played.load();
+        return games > 0 ? static_cast<f64>(total_models_killed.load()) / games : 0.0;
+    }
+
+    f64 objective_game_percent() const {
+        u64 games = total_games_played.load();
+        return games > 0 ? 100.0 * static_cast<f64>(games_ended_by_objective.load()) / games : 0.0;
+    }
+
+    f64 destruction_game_percent() const {
+        u64 games = total_games_played.load();
+        return games > 0 ? 100.0 * static_cast<f64>(games_ended_by_destruction.load()) / games : 0.0;
+    }
+};
+
 struct ProgressInfo {
     u64 completed;
     u64 total;
@@ -78,6 +124,7 @@ struct ProgressInfo {
     f64 elapsed_seconds;
     f64 estimated_remaining_seconds;
     bool resumed;  // True if this is a resumed simulation
+    const AggregateGameStats* game_stats;  // Full game statistics
 };
 
 using ProgressCallback = std::function<void(const ProgressInfo&)>;
@@ -90,6 +137,9 @@ class BatchSimulator {
 public:
     explicit BatchSimulator(const BatchConfig& config = BatchConfig())
         : config_(config), pool_() {}
+
+    // Get aggregate game stats (for display after simulation)
+    const AggregateGameStats& game_stats() const { return game_stats_; }
 
     // Check if we can resume from checkpoint
     CheckpointData check_checkpoint(size_t units_a_count, size_t units_b_count) {
@@ -127,6 +177,9 @@ public:
         u64 total_matchups = static_cast<u64>(units_a.size()) * units_b.size();
         u64 resume_from = 0;
         bool resumed = false;
+
+        // Reset game stats for this simulation
+        game_stats_.reset();
 
         // Check for resume
         if (try_resume) {
@@ -219,7 +272,7 @@ public:
                         f64 rate = done_this_session / elapsed;
                         f64 remaining = (total_matchups - done) / rate;
 
-                        progress({done, total_matchups, rate, elapsed, remaining, resumed});
+                        progress({done, total_matchups, rate, elapsed, remaining, resumed, &game_stats_});
                     }
 
                     // Checkpoint - also flush here to ensure data safety
@@ -252,7 +305,7 @@ public:
             u64 done = completed.load();
             u64 done_this_session = done - resume_from;
             f64 rate = done_this_session / elapsed;
-            progress({done, total_matchups, rate, elapsed, 0.0, resumed});
+            progress({done, total_matchups, rate, elapsed, 0.0, resumed, &game_stats_});
         }
     }
 
@@ -272,6 +325,7 @@ public:
 private:
     BatchConfig config_;
     ThreadPool pool_;
+    AggregateGameStats game_stats_;
 
     void write_header(std::ofstream& out, size_t units_a_count, size_t units_b_count) {
         u32 magic = 0x42415453;  // "SABS" = Science Battle Sim
@@ -332,12 +386,39 @@ private:
                 );
                 thread_local GameRunner runner(dice);
 
+                // Thread-local accumulators to reduce atomic contention
+                u64 local_games = 0;
+                u64 local_wounds = 0;
+                u64 local_models_killed = 0;
+                u64 local_obj_rounds = 0;
+                u64 local_objective_games = 0;
+
                 // Write directly to pre-allocated result slots (no vector allocation)
                 for (size_t i = start; i < end; ++i) {
                     auto [a_idx, b_idx] = matchups[i];
                     MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
                     results[i] = CompactMatchResult::from_match(mr);
+
+                    // Accumulate full game stats
+                    // run_match runs 3 games (best of 3), so we get stats from all 3
+                    local_games += 3;  // Best-of-3 match
+                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+
+                    // Track game endings - we can infer from match results
+                    // If objective rounds are significant, it was likely an objective game
+                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                        local_objective_games += 3;  // Approximate - objective was contested
+                    }
                 }
+
+                // Update global stats atomically (batched to reduce contention)
+                game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
+                game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
+                game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
+                game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
+                game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
 
                 ++threads_done;
             });
