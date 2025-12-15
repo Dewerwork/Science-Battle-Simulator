@@ -145,8 +145,15 @@ public:
             }
         }
 
+        // Use a large write buffer (4MB) to reduce syscall frequency
+        // This prevents progressive slowdown caused by OS-level I/O throttling
+        static constexpr size_t WRITE_BUFFER_SIZE = 4 * 1024 * 1024;  // 4MB
+        std::vector<char> write_buffer(WRITE_BUFFER_SIZE);
+
         // Open output file (append if resuming, truncate if starting fresh)
         std::ofstream out;
+        out.rdbuf()->pubsetbuf(write_buffer.data(), write_buffer.size());
+
         if (resumed) {
             out.open(config_.output_file, std::ios::binary | std::ios::in | std::ios::out);
             if (out) {
