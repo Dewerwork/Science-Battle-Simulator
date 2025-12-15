@@ -59,13 +59,13 @@ endif()
 # Libraries will be added as source files are implemented
 
 # ==============================================================================
-# Main Executable (placeholder until engine is complete)
+# Main Executable
 # ==============================================================================
 
-# add_executable(battle_sim src/main.cpp)
-# target_include_directories(battle_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
-# target_link_libraries(battle_sim PRIVATE Threads::Threads)
-# target_compile_options(battle_sim PRIVATE ${COMMON_FLAGS})
+add_executable(battle_sim src/battle_sim.cpp)
+target_include_directories(battle_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(battle_sim PRIVATE Threads::Threads)
+target_compile_options(battle_sim PRIVATE ${COMMON_FLAGS})
 
 # ==============================================================================
 # Tests
