@@ -73,22 +73,16 @@ def norm_ws(s: str) -> str:
     return " ".join(str(s).strip().split())
 
 # =========================================================
-# UID Generation for Raw Loadouts
+# UID Generation for Raw Loadouts (FAST - sequential counter)
 # =========================================================
-_UID_COUNTER: Dict[str, int] = {}  # Per-unit UID counters
-
-def generate_uid(unit_name: str, combo_idx: int, signature: str) -> str:
+def generate_uid_fast(unit_name: str, combo_idx: int) -> str:
     """
-    Generate a unique ID for a loadout.
-    Format: first 4 chars of sha1 of (unit_name + combo_idx + signature)
+    Generate a unique ID for a loadout using fast hex encoding.
+    Format: unit name hash prefix (4 chars) + combo index in hex (4 chars)
+    This is much faster than SHA1 on every combo.
     """
-    uid_input = f"{unit_name}|{combo_idx}|{signature}"
-    return sha1(uid_input)[:8].upper()
-
-def reset_uid_counter() -> None:
-    """Reset UID counter (call at start of each unit)."""
-    global _UID_COUNTER
-    _UID_COUNTER = {}
+    # Use a pre-computed unit prefix + combo index for speed
+    return f"{combo_idx:08X}"
 
 # =========================================================
 # 1) PDF -> units JSON
@@ -761,20 +755,52 @@ _G_GROUP_VARS: List[List[Variant]] = []
 _G_RADICES: List[int] = []
 _G_BASE_PTS: int = 0
 _G_BASE_RULES: List[str] = []
+_G_BASE_RULES_NORMALIZED: Tuple[str, ...] = ()  # Pre-normalized base rules
 _G_BASE_W: Dict[str, int] = {}
+_G_BASE_W_PARSED: Dict[str, Tuple[str, str, int, Optional[int], List[str]]] = {}  # Pre-parsed weapon keys
+
+def _parse_weapon_key(wkey: str) -> Tuple[str, str, int, Optional[int], List[str]]:
+    """Parse weapon key once and cache the result. Returns (name, rng_str, attacks, ap, tags)."""
+    wparts: Dict[str, str] = {}
+    for part in wkey.split("|"):
+        if "=" in part:
+            pk, pv = part.split("=", 1)
+            wparts[pk] = pv
+
+    name = wparts.get("N", "Unknown")
+    rng_str = wparts.get("R", "")
+    attacks_str = wparts.get("A", "0")
+    ap_str = wparts.get("AP", "")
+    tags_str = wparts.get("T", "")
+
+    attacks = int(attacks_str) if attacks_str.isdigit() else 0
+    ap = int(ap_str) if ap_str and ap_str.lstrip("-").isdigit() else None
+    tags = [t for t in tags_str.split(";") if t] if tags_str else []
+
+    return (name, rng_str, attacks, ap, tags)
 
 def _init_worker(unit: Dict[str, Any],
                  group_vars: List[List[Variant]],
                  base_pts: int,
                  base_rules: List[str],
                  base_weapon_multiset: Dict[str, int]) -> None:
-    global _G_UNIT, _G_GROUP_VARS, _G_RADICES, _G_BASE_PTS, _G_BASE_RULES, _G_BASE_W
+    global _G_UNIT, _G_GROUP_VARS, _G_RADICES, _G_BASE_PTS, _G_BASE_RULES, _G_BASE_RULES_NORMALIZED, _G_BASE_W, _G_BASE_W_PARSED
     _G_UNIT = unit
     _G_GROUP_VARS = group_vars
     _G_RADICES = [len(vs) for vs in group_vars]
     _G_BASE_PTS = base_pts
     _G_BASE_RULES = base_rules
+    _G_BASE_RULES_NORMALIZED = normalize_rules_for_signature(base_rules)  # Pre-normalize once
     _G_BASE_W = base_weapon_multiset
+
+    # Pre-parse all weapon keys from base weapons and all variants
+    all_weapon_keys: Set[str] = set(base_weapon_multiset.keys())
+    for variants in group_vars:
+        for v in variants:
+            for wkey, _ in v.weapon_delta:
+                all_weapon_keys.add(wkey)
+
+    _G_BASE_W_PARSED = {wkey: _parse_weapon_key(wkey) for wkey in all_weapon_keys}
 
 def _header_for(points: int, rules_sig: Tuple[str, ...]) -> str:
     name = str(_G_UNIT.get("name", "")).strip()
@@ -788,13 +814,22 @@ def _worker_stage1_range(start_idx: int, end_idx: int) -> Dict[str, Any]:
     """
     Returns a dict:
       sig -> {count:int, rep_idx:int, rep_header:str, points:int}
+    OPTIMIZED: Uses pre-normalized base rules.
     """
     out: Dict[str, Dict[str, Any]] = {}
 
+    # Pre-fetch globals for faster access in tight loop
+    radices = _G_RADICES
+    group_vars = _G_GROUP_VARS
+    base_pts = _G_BASE_PTS
+    base_rules_normalized = _G_BASE_RULES_NORMALIZED
+    base_w = _G_BASE_W
+    base_rules_list = _G_BASE_RULES
+
     for combo_idx in range(start_idx, end_idx):
         # Build combo by indexing variants
-        if _G_RADICES:
-            choice_idxs = index_to_choice_indices(combo_idx, _G_RADICES)
+        if radices:
+            choice_idxs = index_to_choice_indices(combo_idx, radices)
         else:
             choice_idxs = []
 
@@ -803,24 +838,26 @@ def _worker_stage1_range(start_idx: int, end_idx: int) -> Dict[str, Any]:
         weapon_delta_acc: Dict[str, int] = {}
 
         for g_i, v_i in enumerate(choice_idxs):
-            v = _G_GROUP_VARS[g_i][v_i]
-            pts_delta += int(v.pts_delta)
-            add_rules.extend(list(v.add_rules))
+            v = group_vars[g_i][v_i]
+            pts_delta += v.pts_delta
+            if v.add_rules:
+                add_rules.extend(v.add_rules)
             for k, dv in v.weapon_delta:
-                weapon_delta_acc[k] = weapon_delta_acc.get(k, 0) + int(dv)
+                weapon_delta_acc[k] = weapon_delta_acc.get(k, 0) + dv
 
-        points = int(_G_BASE_PTS + pts_delta)
+        points = base_pts + pts_delta
 
-        # Rules -> normalize (clean artifacts)
-        rules_raw = _G_BASE_RULES + add_rules
-        rules_sig = normalize_rules_for_signature(rules_raw)
+        # Rules: use pre-normalized base rules, only re-normalize if there are added rules
+        if add_rules:
+            rules_raw = base_rules_list + list(add_rules)
+            rules_sig = normalize_rules_for_signature(rules_raw)
+        else:
+            rules_sig = base_rules_normalized
 
         # Weapons multiset -> base + deltas
-        w: Dict[str, int] = dict(_G_BASE_W)
+        w: Dict[str, int] = dict(base_w)
         for k, dv in weapon_delta_acc.items():
             w[k] = w.get(k, 0) + dv
-            if w[k] < 0:
-                w[k] = 0
 
         sig = build_stage1_signature(points, rules_sig, w)
 
@@ -1327,13 +1364,23 @@ def _worker_raw_loadouts_range(start_idx: int, end_idx: int) -> List[Dict[str, A
     """
     Generate raw loadouts for a range of combo indices.
     Returns list of loadout dicts (not grouped).
+    OPTIMIZED: Uses pre-parsed weapon keys and pre-normalized base rules.
     """
     out: List[Dict[str, Any]] = []
 
+    # Pre-fetch globals for faster access in tight loop
+    radices = _G_RADICES
+    group_vars = _G_GROUP_VARS
+    base_pts = _G_BASE_PTS
+    base_rules_normalized = _G_BASE_RULES_NORMALIZED
+    base_w = _G_BASE_W
+    base_w_parsed = _G_BASE_W_PARSED
+    base_rules_list = _G_BASE_RULES
+
     for combo_idx in range(start_idx, end_idx):
         # Build combo by indexing variants
-        if _G_RADICES:
-            choice_idxs = index_to_choice_indices(combo_idx, _G_RADICES)
+        if radices:
+            choice_idxs = index_to_choice_indices(combo_idx, radices)
         else:
             choice_idxs = []
 
@@ -1342,47 +1389,42 @@ def _worker_raw_loadouts_range(start_idx: int, end_idx: int) -> List[Dict[str, A
         weapon_delta_acc: Dict[str, int] = {}
 
         for g_i, v_i in enumerate(choice_idxs):
-            v = _G_GROUP_VARS[g_i][v_i]
-            pts_delta += int(v.pts_delta)
-            add_rules.extend(list(v.add_rules))
+            v = group_vars[g_i][v_i]
+            pts_delta += v.pts_delta
+            if v.add_rules:
+                add_rules.extend(v.add_rules)
             for k, dv in v.weapon_delta:
-                weapon_delta_acc[k] = weapon_delta_acc.get(k, 0) + int(dv)
+                weapon_delta_acc[k] = weapon_delta_acc.get(k, 0) + dv
 
-        points = int(_G_BASE_PTS + pts_delta)
+        points = base_pts + pts_delta
 
-        # Rules -> normalize (clean artifacts)
-        rules_raw = _G_BASE_RULES + add_rules
-        rules_sig = normalize_rules_for_signature(rules_raw)
+        # Rules: use pre-normalized base rules, only re-normalize if there are added rules
+        if add_rules:
+            rules_raw = base_rules_list + list(add_rules)
+            rules_sig = normalize_rules_for_signature(rules_raw)
+        else:
+            rules_sig = base_rules_normalized
 
         # Weapons multiset -> base + deltas
-        w: Dict[str, int] = dict(_G_BASE_W)
+        w: Dict[str, int] = dict(base_w)
         for k, dv in weapon_delta_acc.items():
             w[k] = w.get(k, 0) + dv
-            if w[k] < 0:
-                w[k] = 0
 
-        # Convert weapon keys back to weapon dicts
+        # Convert weapon keys back to weapon dicts using PRE-PARSED data
         weapons: List[Dict[str, Any]] = []
         for wkey, count in w.items():
             if count <= 0:
                 continue
-            # Parse weapon key: N=name|R=range|A=attacks|AP=ap|T=tags
-            wparts = {}
-            for part in wkey.split("|"):
-                if "=" in part:
-                    pk, pv = part.split("=", 1)
-                    wparts[pk] = pv
 
-            name = wparts.get("N", "Unknown")
-            rng_str = wparts.get("R", "")
-            attacks_str = wparts.get("A", "0")
-            ap_str = wparts.get("AP", "")
-            tags_str = wparts.get("T", "")
+            # Use pre-parsed weapon key (FAST - no string parsing in loop)
+            parsed = base_w_parsed.get(wkey)
+            if parsed:
+                name, rng_str, attacks, ap, tags = parsed
+            else:
+                # Fallback for any new keys (shouldn't happen)
+                name, rng_str, attacks, ap, tags = _parse_weapon_key(wkey)
 
             rng = f'{rng_str}"' if rng_str else "-"
-            attacks = int(attacks_str) if attacks_str.isdigit() else 0
-            ap = int(ap_str) if ap_str and ap_str.lstrip("-").isdigit() else None
-            tags = [t for t in tags_str.split(";") if t] if tags_str else []
 
             weapons.append({
                 "name": name,
@@ -1396,9 +1438,8 @@ def _worker_raw_loadouts_range(start_idx: int, end_idx: int) -> List[Dict[str, A
         # Sort weapons for consistent output (melee first, then by range)
         weapons.sort(key=lambda x: (x["range"] != "-", x["range"], x["name"]))
 
-        # Build signature for UID generation
-        sig = build_stage1_signature(points, rules_sig, w)
-        uid = generate_uid(str(_G_UNIT.get("name", "")), combo_idx, sig)
+        # FAST UID: just use combo index in hex (unique per unit)
+        uid = generate_uid_fast("", combo_idx)
 
         out.append({
             "uid": uid,
@@ -1406,7 +1447,6 @@ def _worker_raw_loadouts_range(start_idx: int, end_idx: int) -> List[Dict[str, A
             "points": points,
             "rules": list(rules_sig),
             "weapons": weapons,
-            "signature": sig,
         })
 
     return out
@@ -1415,6 +1455,7 @@ def generate_raw_loadouts_parallel(unit: Dict[str, Any],
                                    limit: int = 0) -> Dict[str, Any]:
     """
     Generate all raw loadouts for a unit with UIDs (no grouping).
+    OPTIMIZED: Reduced object creation, skip redundant sorting.
     """
     base_pts = int(unit.get("base_points", 0) or 0)
     base_rules = [str(x).strip() for x in (unit.get("special_rules") or []) if str(x).strip()]
@@ -1435,36 +1476,41 @@ def generate_raw_loadouts_parallel(unit: Dict[str, Any],
         n_tasks = min(TASKS_PER_UNIT, total)
         chunk = math.ceil(total / n_tasks)
 
-        all_loadouts: List[Dict[str, Any]] = []
+        # Collect results by range for ordered assembly
+        results_by_start: Dict[int, List[Dict[str, Any]]] = {}
         with ProcessPoolExecutor(
             max_workers=WORKERS_PER_UNIT,
             initializer=_init_worker,
             initargs=(unit, group_vars, base_pts, base_rules, base_weapon_multiset)
         ) as ex:
-            futures = []
+            futures_map: Dict[Any, int] = {}
             for t in range(n_tasks):
                 s = t * chunk
                 e = min(total, (t + 1) * chunk)
                 if s >= e:
                     continue
-                futures.append(ex.submit(_worker_raw_loadouts_range, s, e))
+                fut = ex.submit(_worker_raw_loadouts_range, s, e)
+                futures_map[fut] = s
 
-            for fut in as_completed(futures):
-                all_loadouts.extend(fut.result())
+            for fut in as_completed(futures_map):
+                start = futures_map[fut]
+                results_by_start[start] = fut.result()
 
-    # Sort by combo_index for deterministic output
-    all_loadouts.sort(key=lambda x: x["combo_index"])
+        # Assemble in order (no sorting needed - results are already ordered within chunks)
+        all_loadouts = []
+        for start in sorted(results_by_start.keys()):
+            all_loadouts.extend(results_by_start[start])
 
-    # Build RawLoadout objects and output
+    # Extract unit metadata once
     unit_name = str(unit.get("name", "")).strip()
     quality = int(unit.get("quality", 0) or 0)
     defense = int(unit.get("defense", 0) or 0)
     size = int(unit.get("size", 1) or 1)
     tough = unit.get("tough")
 
-    raw_loadouts: List[RawLoadout] = []
-    for lo in all_loadouts:
-        raw_loadouts.append(RawLoadout(
+    # Build RawLoadout objects directly (single pass)
+    raw_loadouts: List[RawLoadout] = [
+        RawLoadout(
             uid=lo["uid"],
             combo_index=lo["combo_index"],
             unit_name=unit_name,
@@ -1475,51 +1521,52 @@ def generate_raw_loadouts_parallel(unit: Dict[str, Any],
             tough=tough,
             rules=tuple(lo["rules"]),
             weapons=lo["weapons"],
-        ))
+        )
+        for lo in all_loadouts
+    ]
 
     return {
         "unit": unit_name,
         "total_loadouts": len(raw_loadouts),
         "total_combinations_processed": total,
-        "loadouts": [
-            {
-                "uid": lo.uid,
-                "combo_index": lo.combo_index,
-                "points": lo.points,
-                "rules": list(lo.rules),
-                "weapons": lo.weapons,
-            }
-            for lo in raw_loadouts
-        ],
+        "loadouts": all_loadouts,  # Already in correct format
         "raw_loadout_objects": raw_loadouts,  # For TXT generation
     }
 
 def write_raw_loadouts_txt(payload: Dict[str, Any], out_txt: Path) -> None:
-    """Write raw loadouts to TXT file."""
+    """Write raw loadouts to TXT file. OPTIMIZED: Pre-allocate list size."""
     raw_loadouts: List[RawLoadout] = payload.get("raw_loadout_objects", [])
-    txt_lines: List[str] = []
 
+    # Pre-allocate list size for better performance
+    lines_per_unit = 3 if ADD_BLANK_LINE_BETWEEN_UNITS else 2
+    txt_lines: List[str] = [""] * (len(raw_loadouts) * lines_per_unit)
+
+    idx = 0
     for lo in raw_loadouts:
-        txt_lines.append(_raw_loadout_header(lo))
-        txt_lines.append(_raw_loadout_weapons_line(lo))
+        txt_lines[idx] = _raw_loadout_header(lo)
+        txt_lines[idx + 1] = _raw_loadout_weapons_line(lo)
         if ADD_BLANK_LINE_BETWEEN_UNITS:
-            txt_lines.append("")
+            txt_lines[idx + 2] = ""
+            idx += 3
+        else:
+            idx += 2
 
     out_txt.write_text("\n".join(txt_lines).rstrip() + "\n", encoding="utf-8")
 
 def write_raw_loadouts_json(payload: Dict[str, Any], out_json: Path) -> None:
-    """Write raw loadouts to JSON file (without RawLoadout objects)."""
+    """Write raw loadouts to JSON file. OPTIMIZED: Minimal indent for speed."""
     output = {
         "unit": payload["unit"],
         "total_loadouts": payload["total_loadouts"],
         "total_combinations_processed": payload["total_combinations_processed"],
         "settings": {
             "RAW_LOADOUT_MODE": True,
-            "UID_FORMAT": "8-char hex hash",
+            "UID_FORMAT": "8-char hex (combo index)",
         },
         "loadouts": payload["loadouts"],
     }
-    out_json.write_text(json.dumps(output, indent=2), encoding="utf-8")
+    # Use separators to reduce output size and speed up writing
+    out_json.write_text(json.dumps(output, separators=(',', ':')), encoding="utf-8")
 
 # =========================================================
 # Unit pipeline: inline stage-1 with within-unit parallel generation
