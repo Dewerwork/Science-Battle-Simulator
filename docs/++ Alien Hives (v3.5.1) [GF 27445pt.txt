@@ -1,0 +1,238 @@
+++ Alien Hives (v3.5.1) [GF 27445pts] [79 Units] ++
+
+Hive Lord - Ranged [1] Q3+ D2+ | 465pts | Fear(2), Fearless, Hero, Hive Bond, Tough(12), Increased Shooting Range, Regeneration
+2x Heavy Razor Claws (A3, AP(1)), Stomp (A4, AP(1)), Acid Cannon (36", A1, AP(2), Deadly(6), Unstoppable)
+
+Hive Lord - Melee [1] Q3+ D2+ | 505pts | Fear(2), Fearless, Hero, Hive Bond, Tough(12), Shielded, Regeneration
+Stomp (A4, AP(1)), 2x Razor Whip (A3, Bane, Precise), Heavy Serrated Blade (A6, AP(4), Reliable)
+
+Hive Lord - Mixed [1] Q3+ D2+ | 470pts | Fear(2), Fearless, Hero, Hive Bond, Tough(12), Shielded, Regeneration
+Stomp (A4, AP(1)), 2x Serrated Blade (A3, AP(4)), Barb Cannon (36", A1, Blast(3), AP(2))
+
+Prime Warrior - Ranged [1] Q4+ D4+ | 145pts | Hero, Tough(6), Hive Bond, Increased Shooting Range Aura
+Heavy Razor Claws (A3, AP(1)), Acid Launcher (30", A1, AP(2), Deadly(3), Unstoppable)
+
+Prime Warrior - Melee [1] Q4+ D4+ | 115pts | Hero, Tough(6), Hive Bond, Furious Aura
+2x Serrated Blade (A2, AP(4))
+
+Prime Warrior - Mixed [1] Q4+ D4+ | 120pts | Hero, Tough(6), Hive Bond, Furious Aura
+Serrated Blade (A2, AP(4)), Heavy Ravager Gun (18", A3, AP(1), Rupture)
+
+Snatcher Lord [1] Q3+ D4+ | 100pts | Fast, Hero, Scout, Strider, Tough(3), Hive Bond, Furious Aura
+Heavy Claws (A4, AP(1), Rending)
+
+Grunt Veteran - High AP [1] Q5+ D5+ | 65pts | Hero, Strider, Tough(3), Hive Bond, Furious Aura, Resistance, Bane in Melee
+Serrated Blade (A2, AP(4))
+
+Grunt Veteran - Blast [1] Q5+ D5+ | 60pts | Hero, Strider, Tough(3), Hive Bond, Furious Aura, Resistance, Bane in Melee
+Smashing Club (A1, Blast(3))
+
+Assault Grunts - Deadly Combined [20] Q5+ D5+ | 260pts | 20x Fast, 20x Strider, 20x Hive Bond, 20x Bane in Melee
+16x Razor Claws (A2), 4x Piercing Claws (A1, AP(1), Deadly(3))
+
+Assault Grunts - Blast Combined [20] Q5+ D5+ | 260pts | 20x Fast, 20x Strider, 20x Hive Bond, 20x Bane in Melee
+16x Razor Claws (A2), 4x Smashing Claws (A1, Blast(3))
+
+Assault Grunts - Blast [10] Q5+ D5+ | 130pts | 10x Fast, 10x Strider, 10x Hive Bond, 10x Bane in Melee
+8x Razor Claws (A2), 2x Smashing Claws (A1, Blast(3))
+
+Assault Grunts - Deadly [10] Q5+ D5+ | 130pts | 10x Fast, 10x Strider, 10x Hive Bond, 10x Bane in Melee
+8x Razor Claws (A2), 2x Piercing Claws (A1, AP(1), Deadly(3))
+
+Shooter Grunts - Deadly [10] Q5+ D5+ | 145pts | 10x Strider, 10x Hive Bond, 10x Agile
+10x Razor Claws (A1), 2x Bio-Fuser (6", A1, AP(4), Deadly(3)), 8x Bio-Ravager (18", A1, AP(1))
+
+Shooter Grunts - Blast [10] Q5+ D5+ | 145pts | 10x Strider, 10x Hive Bond, 10x Bane in Melee
+10x Razor Claws (A1), 2x Bio-Flamer (6", A1, Blast(3), Reliable), 8x Bio-Ravager (18", A1, AP(1))
+
+Shooter Grunts - Rending [10] Q5+ D5+ | 145pts | 10x Strider, 10x Hive Bond, 10x Agile
+10x Razor Claws (A1), 2x Bio-Shredder (9", A2, Rending), 8x Bio-Ravager (18", A1, AP(1))
+
+Shooter Grunts - High AP [10] Q5+ D5+ | 140pts | 10x Strider, 10x Hive Bond
+10x Razor Claws (A1), 2x Bio-Plasma (12", A1, AP(4)), 8x Bio-Ravager (18", A1, AP(1))
+
+Shooter Grunts - Deadly Combined [20] Q5+ D5+ | 290pts | 20x Strider, 20x Hive Bond, 20x Agile
+20x Razor Claws (A1), 4x Bio-Fuser (6", A1, AP(4), Deadly(3)), 16x Bio-Ravager (18", A1, AP(1))
+
+Psycho-Grunts [10] Q5+ D5+ | 115pts | 10x Resistance, 10x Strider, 10x Hive Bond, 10x Bane in Melee
+10x Rending Claws (A1, Rending)
+
+Winged Grunts [10] Q5+ D5+ | 185pts | 10x Ambush, 10x Flying, 10x Hive Bond, 10x Bane in Melee
+10x Razor Claws (A1), 2x Bio-Spiker (18", A1, AP(1), Takedown, Reliable), 8x Bio-Ravager (18", A1, AP(1))
+
+Support Grunts [3] Q5+ D5+ | 155pts | 3x Relentless, 3x Strider, 3x Hive Bond, 3x Bane in Melee
+3x Razor Claws (A1), 3x Bio-Cannon (24", A1, Blast(3), Rending, Indirect)
+
+Soul-Snatchers [5] Q3+ D4+ | 160pts | 5x Fast, 5x Scout, 5x Strider, 5x Hive Bond
+5x Heavy Claws (A2, AP(1), Rending)
+
+Hive Swarms - Spine Shooter [3] Q5+ D6+ | 115pts | 3x Strider, Tough(3), 3x Hive Bond
+3x Swarm Attacks (A3, Bane), 3x Spine Shooter (12", A4, AP(1))
+
+Hive Swarms - No Upgrades [3] Q5+ D6+ | 70pts | 3x Strider, Tough(3), 3x Hive Bond
+3x Swarm Attacks (A3, Bane)
+
+Hive Swarms - No Upgrades combined [6] Q5+ D6+ | 140pts | 6x Strider, Tough(3), 6x Hive Bond
+6x Swarm Attacks (A3, Bane)
+
+Hive Swarms - Spine Shooter Combined [6] Q5+ D6+ | 230pts | 6x Strider, Tough(3), 6x Hive Bond
+6x Swarm Attacks (A3, Bane), 6x Spine Shooter (12", A4, AP(1))
+
+Hive Warriors - Ranged [3] Q4+ D4+ | 180pts | Tough(3), 3x Hive Bond
+3x Razor Claws (A2), Acid Launcher (30", A1, AP(2), Deadly(3), Unstoppable), 2x Twin Spine Guns (12", A4, AP(1))
+
+Hive Warriors - Melee [3] Q4+ D4+ | 195pts | Tough(3), 3x Hive Bond
+5x Serrated Blade (A2, AP(4)), Piercing Spike (A1, AP(2), Deadly(3))
+
+Hive Warriors - Mixed [3] Q4+ D4+ | 220pts | Tough(3), 3x Hive Bond
+Acid Launcher (30", A1, AP(2), Deadly(3), Unstoppable), 4x Serrated Blade (A2, AP(4)), Piercing Spike (A1, AP(2), Deadly(3))
+
+Ravenous Beasts [3] Q4+ D4+ | 220pts | 3x Fast, 3x Strider, Tough(3), 3x Hive Bond
+5x Serrated Blade (A2, AP(4)), Piercing Spike (A1, AP(2), Deadly(3))
+
+Venom Beasts [3] Q4+ D4+ | 195pts | Tough(3), 3x Regeneration, 3x Hive Bond
+3x Whip Limbs (A4, Bane, Precise)
+
+Hive Guardians - Ranged [3] Q3+ D3+ | 375pts | 3x Relentless, Tough(3), 3x Hive Bond
+3x Razor Claws (A2), 3x Skewer Cannon (30", A2, AP(4), Unstoppable)
+
+Hive Guardians - Melee [3] Q3+ D3+ | 240pts | 3x Relentless, Tough(3), 3x Hive Bond
+5x Serrated Blade (A2, AP(4)), Piercing Spike (A1, AP(2), Deadly(3))
+
+Hive Guardians - Mixed [3] Q3+ D3+ | 315pts | 3x Relentless, Tough(3), 3x Hive Bond
+3x Heavy Ravager Gun (18", A3, AP(1), Rupture), 3x Serrated Blade (A2, AP(4))
+
+Shadow Leapers - Bane [3] Q3+ D4+ | 250pts | 3x Stealth, 3x Strider, Tough(3), 3x Hive Bond, 3x Scout
+6x Razor Whip (A2, Bane, Precise)
+
+Shadow Leapers - Deadly [3] Q3+ D4+ | 280pts | 3x Stealth, 3x Strider, Tough(3), 3x Hive Bond, 3x Scout
+Piercing Spike (A1, AP(2), Deadly(3)), 5x Serrated Blade (A2, AP(4))
+
+Shadow Hunter - Bane [1] Q3+ D4+ | 190pts | Fear(1), Stealth, Strider, Tough(6), Hive Bond, Infiltrate
+2x Razor Whip (A4, Bane, Precise)
+
+Shadow Hunter - Blast [1] Q3+ D4+ | 160pts | Fear(1), Stealth, Strider, Tough(6), Hive Bond, Infiltrate
+2x Smashing Club (A1, AP(2), Blast(3))
+
+Shadow Hunter - Deadly [1] Q3+ D4+ | 160pts | Fear(1), Stealth, Strider, Tough(6), Hive Bond, Infiltrate
+2x Piercing Spike (A1, AP(2), Deadly(3))
+
+Mortar Beast [1] Q4+ D3+ | 155pts | Fear(1), Tough(6), Hive Bond
+Spore Gun (24", A2, Blast(3), Indirect, Shred), Heavy Razor Claws (A3, AP(1)), Stomp (A2, AP(1))
+
+Synapse Tyrant [1] Q4+ D4+ | 190pts | Caster(3), Fear(1), Resistance, Tough(6), Hive Bond
+Psy-Shock (A3), Heavy Psy-Blast (18", A2, Blast(3), AP(1))
+
+Flamer Beast [1] Q4+ D3+ | 185pts | Fear(1), Tough(6), Hive Bond
+Spit Flames (18", A2, AP(1), Blast(3), Reliable), Heavy Razor Claws (A3, AP(1)), Stomp (A2, AP(1))
+
+Carnivo-Rex - Ranged [1] Q4+ D2+ | 430pts | Fear(2), Tough(12), Hive Bond, Fearless, Regeneration
+Stomp (A4, AP(1)), Heavy Acid Cannon (36", A2, AP(2), Deadly(6), Unstoppable)
+
+Carnivo-Rex - Melee [1] Q4+ D2+ | 380pts | Fear(2), Tough(12), Hive Bond, Fearless, Regeneration
+Stomp (A4, AP(1)), 3x Whip Limbs (A4, Bane, Precise)
+
+Carnivo-Rex - Mixed [1] Q4+ D2+ | 365pts | Fear(2), Tough(12), Hive Bond, Fearless, Regeneration, Breath Attack
+Stomp (A4, AP(1)), 2x Whip Limbs (A4, Bane, Precise)
+
+Toxico-Rex - Stealth [1] Q4+ D2+ | 390pts | Fear(2), Tough(12), Regeneration, Hive Bond, Fearless, Stealth Buff
+Acid Spurt (12", A2, Blast(3), Bane), Stomp (A4, AP(1)), Whip Limbs (A8, Bane, Precise)
+
+Toxico-Rex - Bane [1] Q4+ D2+ | 390pts | Fear(2), Tough(12), Regeneration, Hive Bond, Fearless
+Acid Spurt (12", A2, Blast(3), Bane), Stomp (A4, AP(1)), Whip Limbs (A8, Bane, Precise), Poison Mist (12", A1, Blast(6), Bane)
+
+Psycho-Rex - Reliable [1] Q4+ D2+ | 410pts | Caster(3), Fear(2), Tough(12), Resistance, Hive Bond, Fearless
+Heavy Razor Claws (A6, AP(1)), Stomp (A4, AP(1)), Heavy Psy-Torrent (9", A2, AP(1), Blast(3), Reliable)
+
+Psycho-Rex - Blast [1] Q4+ D2+ | 410pts | Caster(3), Fear(2), Tough(12), Resistance, Hive Bond, Fearless
+Heavy Razor Claws (A6, AP(1)), Stomp (A4, AP(1)), Heavy Psy-Blast (18", A2, Blast(3), AP(1))
+
+Hive Burrower - Deadly [1] Q4+ D2+ | 400pts | Fear(3), Tough(15), Hive Bond, Fearless, Ambush
+Stomp (A5, AP(2)), 3x Piercing Claws (A1, AP(2), Deadly(3))
+
+Hive Burrower - Bane [1] Q4+ D2+ | 435pts | Fear(3), Tough(15), Hive Bond, Fearless, Ambush
+Stomp (A5, AP(2)), Whip Limbs (A8, Bane, Precise), Acid Spurt (12", A2, Blast(3), Bane)
+
+Hive Burrower - Blast [1] Q4+ D2+ | 400pts | Fear(3), Tough(15), Hive Bond, Fearless, Ambush
+Stomp (A5, AP(2)), 3x Smashing Claws (A1, AP(2), Blast(3))
+
+Hive Burrower - Bane Precise [1] Q4+ D2+ | 445pts | Fear(3), Tough(15), Hive Bond, Fearless, Ambush
+Stomp (A5, AP(2)), 3x Whip Limbs (A4, Bane, Precise)
+
+Tyrant Heavy Beast - Blast [1] Q4+ D2+ | 510pts | Fear(3), Tough(15), Hive Bond, Fearless, Regeneration
+Bio-Pod (24", A12), Stomp (A5, AP(2)), Barb Launcher (18", A2, AP(2), Blast(3))
+
+Tyrant Heavy Beast - Deadly [1] Q4+ D2+ | 460pts | Fear(3), Tough(15), Hive Bond, Fearless
+Bio-Pod (24", A12), Stomp (A5, AP(2)), Acid Spike Launcher (18", A2, AP(2), Deadly(3), Unstoppable)
+
+Spawning Heavy Beast - Blast [1] Q4+ D2+ | 505pts | Fear(3), Tough(15), Hive Bond, Fearless
+Heavy Razor Claws (A3, AP(1)), Stomp (A5, AP(2)), 3x Barb Launcher (18", A2, AP(2), Blast(3))
+
+Spawning Heavy Beast - Deadly [1] Q4+ D2+ | 505pts | Fear(3), Tough(15), Hive Bond, Fearless
+Heavy Razor Claws (A3, AP(1)), Stomp (A5, AP(2)), 3x Acid Spike Launcher (18", A2, AP(2), Deadly(3), Unstoppable)
+
+Devourer Heavy Beast - Deadly [1] Q4+ D2+ | 495pts | Fear(3), Tough(15), Hive Bond, Fearless, Resistance
+Devouring Tongue (12", A3, AP(2), Deadly(3), Takedown), Stomp (A5, AP(2)), 3x Piercing Claws (A1, AP(2), Deadly(3))
+
+Devourer Heavy Beast - Rending [1] Q4+ D2+ | 495pts | Fear(3), Tough(15), Hive Bond, Fearless, Resistance
+Devouring Tongue (12", A3, AP(2), Deadly(3), Takedown), Stomp (A5, AP(2)), 3x Slashing Claws (A3, AP(1), Rending)
+
+Devourer Heavy Beast - Blast [1] Q4+ D2+ | 495pts | Fear(3), Tough(15), Hive Bond, Fearless, Resistance
+Devouring Tongue (12", A3, AP(2), Deadly(3), Takedown), Stomp (A5, AP(2)), 3x Smashing Claws (A1, AP(2), Blast(3))
+
+Devourer Heavy Beast - Bane [1] Q4+ D2+ | 540pts | Fear(3), Tough(15), Hive Bond, Fearless, Resistance
+Devouring Tongue (12", A3, AP(2), Deadly(3), Takedown), Stomp (A5, AP(2)), 3x Whip Limbs (A4, Bane, Precise)
+
+Devourer Heavy Beast - AP(4) [1] Q4+ D2+ | 525pts | Fear(3), Tough(15), Hive Bond, Fearless, Resistance
+Devouring Tongue (12", A3, AP(2), Deadly(3), Takedown), Stomp (A5, AP(2)), 3x Serrated Claws (A3, AP(4))
+
+Artillery Heavy Beast - Blast(3) [1] Q4+ D2+ | 725pts | Fear(3), Tough(15), Hive Bond, Fearless, Resistance
+Stomp (A5, AP(2)), Spitter Bio-Artillery (36", A6, AP(1), Blast(3), Indirect)
+
+Artillery Heavy Beast - Blast(6) [1] Q4+ D2+ | 875pts | Fear(3), Tough(15), Hive Bond, Fearless, Resistance
+Stomp (A5, AP(2)), Plasma Bio-Artillery (36", A3, Blast(6), AP(4), Indirect)
+
+Artillery Heavy Beast - Deadly [1] Q4+ D2+ | 785pts | Fear(3), Tough(15), Hive Bond, Fearless, Resistance
+Stomp (A5, AP(2)), Acid Bio-Artillery (36", A3, AP(3), Deadly(6), Indirect)
+
+Invasion Artillery Spore - Rending [1] Q4+ D3+ | 210pts | Ambush, Artillery, Hive Bond, Tough(6)
+Spore Gun (24", A2, Blast(3), Indirect, Shred), Razor Tendrils (A6, AP(1)), Shredder Gun Array (18", A4, Rending)
+
+Invasion Artillery Spore - Blast [1] Q4+ D3+ | 225pts | Ambush, Artillery, Hive Bond, Tough(6)
+Spore Gun (24", A2, Blast(3), Indirect, Shred), Razor Tendrils (A6, AP(1)), Spitter Gun Array (24", A2, Blast(3))
+
+Invasion Artillery Spore - Blast AP [1] Q4+ D3+ | 280pts | Ambush, Artillery, Hive Bond, Tough(6)
+Spore Gun (24", A2, Blast(3), Indirect, Shred), Razor Tendrils (A6, AP(1)), Barb Cannon Array (30", A2, Blast(3), AP(2))
+
+Invasion Artillery Spore - Deadly [1] Q4+ D3+ | 285pts | Ambush, Artillery, Hive Bond, Tough(6)
+Spore Gun (24", A2, Blast(3), Indirect, Shred), Razor Tendrils (A6, AP(1)), Acid Launcher Array (30", A2, AP(2), Deadly(3), Unstoppable)
+
+Rapacious Beast - No Upgrades [1] Q4+ D2+ | 225pts | Aircraft, Tough(6), Hive Bond, Fearless
+Caustic Cannon (12", A2, Blast(3), Reliable), Spore Bombs (A1, Blast(6), Shred, Strafing)
+
+Rapacious Beast - Regen [1] Q4+ D2+ | 245pts | Aircraft, Tough(6), Hive Bond, Fearless, Regeneration
+Caustic Cannon (12", A2, Blast(3), Reliable), Spore Bombs (A1, Blast(6), Shred, Strafing)
+
+Rapacious Beast - Regen Deadly [1] Q4+ D2+ | 305pts | Aircraft, Tough(6), Hive Bond, Fearless, Regeneration
+Twin Acid Launchers (30", A2, AP(3), Deadly(3), Unstoppable), Stinger Spitter (18", A3, Rupture)
+
+Rapacious Beast - Regen Blast [1] Q4+ D2+ | 285pts | Aircraft, Tough(6), Hive Bond, Fearless, Regeneration
+Twin Barb Guns (30", A2, Blast(3), AP(2)), Stinger Spitter (18", A3, Rupture)
+
+Hive Titan - Resistance [1] Q3+ D2+ | 770pts | Fear(3), Fearless, Hive Bond, Tough(18), Ravage(12), Resistance
+Stomp (A6, AP(2)), Explosive Spit (30", A2, Blast(6), AP(2)), Titanic Claws (A6, AP(2), Rupture)
+
+Hive Titan - Regen [1] Q3+ D2+ | 775pts | Fear(3), Fearless, Hive Bond, Tough(18), Ravage(12), Regeneration
+Stomp (A6, AP(2)), Explosive Spit (30", A2, Blast(6), AP(2)), Titanic Claws (A6, AP(2), Rupture)
+
+Hive Titan - Resistance Takedown [1] Q3+ D2+ | 990pts | Fear(3), Fearless, Hive Bond, Tough(21), Resistance
+Stomp (A6, AP(2)), Explosive Spit (30", A2, Blast(6), AP(2)), Titanic Claws (A6, AP(2), Rupture), Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown)
+
+Hive Titan - Regen Takedown [1] Q3+ D2+ | 995pts | Fear(3), Fearless, Hive Bond, Tough(21), Regeneration
+Stomp (A6, AP(2)), Explosive Spit (30", A2, Blast(6), AP(2)), Titanic Claws (A6, AP(2), Rupture), Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown)
+
+Hive Titan - Resistance Bane [1] Q3+ D2+ | 1055pts | Fear(3), Fearless, Hive Bond, Tough(24), Resistance
+Stomp (A6, AP(2)), Explosive Spit (30", A2, Blast(6), AP(2)), Titanic Claws (A6, AP(2), Rupture), Titan Grasping Tongue (18", A12, Bane, Reliable)
+
+Hive Titan - Regen Bane [1] Q3+ D2+ | 1060pts | Fear(3), Fearless, Hive Bond, Tough(24), Regeneration
+Stomp (A6, AP(2)), Explosive Spit (30", A2, Blast(6), AP(2)), Titanic Claws (A6, AP(2), Rupture), Titan Grasping Tongue (18", A12, Bane, Reliable)
