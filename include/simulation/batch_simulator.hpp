@@ -172,9 +172,9 @@ public:
         std::vector<std::pair<u32, u32>> matchups;
         matchups.reserve(config_.batch_size);
 
-        std::mutex output_mutex;
+        std::mutex output_mutex;  // Kept for API compatibility with process_batch signature
         std::vector<CompactMatchResult> results_buffer;
-        results_buffer.reserve(config_.batch_size);
+        results_buffer.reserve(config_.batch_size + 16);  // Extra space to avoid reallocations
 
         // Calculate starting position if resuming
         u32 start_i = static_cast<u32>(resume_from / units_b.size());
@@ -295,45 +295,50 @@ private:
         const std::vector<Unit>& units_b,
         const std::vector<std::pair<u32, u32>>& matchups,
         std::vector<CompactMatchResult>& results,
-        std::mutex& results_mutex
+        std::mutex& /* unused - kept for API compatibility */
     ) {
-        size_t num_threads = pool_.thread_count();
-        size_t chunk_size = (matchups.size() + num_threads - 1) / num_threads;
+        const size_t batch_size = matchups.size();
+        const size_t num_threads = pool_.thread_count();
+        const size_t chunk_size = (batch_size + num_threads - 1) / num_threads;
 
-        std::vector<std::future<std::vector<CompactMatchResult>>> futures;
+        // Pre-allocate results array - threads write directly to their slots
+        results.resize(batch_size);
+
+        // Atomic counter for completion tracking (no futures needed)
+        std::atomic<size_t> threads_done{0};
 
         for (size_t t = 0; t < num_threads; ++t) {
             size_t start = t * chunk_size;
-            size_t end = std::min(start + chunk_size, matchups.size());
+            size_t end = std::min(start + chunk_size, batch_size);
 
-            if (start >= end) continue;
+            if (start >= end) {
+                ++threads_done;  // Empty chunk, count as done
+                continue;
+            }
 
-            futures.push_back(pool_.submit([&, start, end]() {
-                // Use thread_local to reuse GameRunner across batches (avoids allocation per batch)
+            // Fire-and-forget task (no packaged_task allocation)
+            pool_.submit_detached([&, start, end, t]() {
+                // Use thread_local to reuse GameRunner across batches
                 thread_local DiceRoller dice(
-                    std::hash<std::thread::id>{}(std::this_thread::get_id()) ^
-                    static_cast<u64>(reinterpret_cast<uintptr_t>(&dice))
+                    std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
+                    static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                 );
                 thread_local GameRunner runner(dice);
 
-                std::vector<CompactMatchResult> local_results;
-                local_results.reserve(end - start);
-
+                // Write directly to pre-allocated result slots (no vector allocation)
                 for (size_t i = start; i < end; ++i) {
                     auto [a_idx, b_idx] = matchups[i];
                     MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
-                    local_results.push_back(CompactMatchResult::from_match(mr));
+                    results[i] = CompactMatchResult::from_match(mr);
                 }
 
-                return local_results;
-            }));
+                ++threads_done;
+            });
         }
 
-        // Collect results
-        for (auto& future : futures) {
-            auto local_results = future.get();
-            std::lock_guard<std::mutex> lock(results_mutex);
-            results.insert(results.end(), local_results.begin(), local_results.end());
+        // Wait for all threads to complete (simple spin-wait with yield)
+        while (threads_done.load(std::memory_order_acquire) < num_threads) {
+            std::this_thread::yield();
         }
     }
 };
