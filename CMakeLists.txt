@@ -88,19 +88,20 @@ target_include_directories(battle_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_compile_options(battle_core PRIVATE ${COMMON_FLAGS})
 
 # ==============================================================================
-# Main Executable
+# Main Executable - Full Game Simulator
 # ==============================================================================
 
-add_executable(battle_sim src/battle_sim.cpp)
-
-# Demo executable - full game with movement and objectives
-add_executable(demo_game src/main.cpp)
-target_include_directories(demo_game PRIVATE ${CMAKE_SOURCE_DIR}/include)
-target_link_libraries(demo_game PRIVATE battle_core Threads::Threads)
-target_compile_options(demo_game PRIVATE ${COMMON_FLAGS})
+# battle_sim - primary simulator with full game simulation (movement, AI, objectives)
+add_executable(battle_sim src/main.cpp)
 target_include_directories(battle_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(battle_sim PRIVATE battle_core Threads::Threads)
 target_compile_options(battle_sim PRIVATE ${COMMON_FLAGS})
+
+# batch_sim - large-scale batch processing for 100B+ matchups
+add_executable(batch_sim src/batch_sim.cpp)
+target_include_directories(batch_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(batch_sim PRIVATE battle_core Threads::Threads)
+target_compile_options(batch_sim PRIVATE ${COMMON_FLAGS})
 
 # ==============================================================================
 # Tests
