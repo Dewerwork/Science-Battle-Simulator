@@ -196,7 +196,7 @@ public:
                         std::lock_guard<std::mutex> lock(output_mutex);
                         out.write(reinterpret_cast<const char*>(results_buffer.data()),
                                  results_buffer.size() * sizeof(CompactMatchResult));
-                        out.flush();  // Ensure data is written to disk
+                        // Don't flush every batch - causes progressive slowdown as file grows
                         completed += results_buffer.size();
                         results_buffer.clear();
                     }
@@ -215,9 +215,10 @@ public:
                         progress({done, total_matchups, rate, elapsed, remaining, resumed});
                     }
 
-                    // Checkpoint
+                    // Checkpoint - also flush here to ensure data safety
                     u64 current_completed = completed.load();
                     if (current_completed % config_.checkpoint_interval == 0) {
+                        out.flush();  // Only flush at checkpoints
                         write_checkpoint(current_completed, total_matchups,
                                         units_a.size(), units_b.size());
                     }
@@ -308,8 +309,12 @@ private:
             if (start >= end) continue;
 
             futures.push_back(pool_.submit([&, start, end]() {
-                DiceRoller dice;
-                GameRunner runner(dice);
+                // Use thread_local to reuse GameRunner across batches (avoids allocation per batch)
+                thread_local DiceRoller dice(
+                    std::hash<std::thread::id>{}(std::this_thread::get_id()) ^
+                    static_cast<u64>(reinterpret_cast<uintptr_t>(&dice))
+                );
+                thread_local GameRunner runner(dice);
 
                 std::vector<CompactMatchResult> local_results;
                 local_results.reserve(end - start);
