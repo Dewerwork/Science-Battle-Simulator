@@ -18,6 +18,7 @@ struct Unit {
     std::array<Model, MAX_MODELS_PER_UNIT> models{};
     std::array<CompactRule, MAX_RULES_PER_ENTITY> rules{};
     std::array<Weapon, MAX_WEAPONS_PER_MODEL * 2> weapons{};  // Weapon storage
+    RuleMask rule_mask = 0; // Bitset for O(1) has_rule() lookup
 
     u32 unit_id      = 0;    // Unique identifier for this loadout
     u16 points_cost  = 0;    // Points value
@@ -56,14 +57,12 @@ struct Unit {
     void add_rule(RuleId id, u8 value = 0) {
         if (rule_count < MAX_RULES_PER_ENTITY) {
             rules[rule_count++] = CompactRule(id, value);
+            rule_mask |= rule_bit(id);
         }
     }
 
     bool has_rule(RuleId id) const {
-        for (u8 i = 0; i < rule_count; ++i) {
-            if (rules[i].id == id) return true;
-        }
-        return false;
+        return (rule_mask & rule_bit(id)) != 0;
     }
 
     u8 get_rule_value(RuleId id) const {
@@ -122,7 +121,7 @@ struct Unit {
     void get_wound_allocation_order(std::array<u8, MAX_MODELS_PER_UNIT>& order, u8& count) const {
         count = 0;
 
-        // Phase 1: Non-tough, non-hero models
+        // Phase 1: Non-tough, non-hero models (no sorting needed)
         for (u8 i = 0; i < model_count; ++i) {
             const Model& m = models[i];
             if (m.is_alive() && m.tough == 1 && !m.is_hero) {
@@ -130,36 +129,38 @@ struct Unit {
             }
         }
 
-        // Phase 2: Tough non-hero models (sorted by wounds_taken descending)
+        // Phase 2: Tough non-hero models (most wounded first)
+        // Use insertion sort for small groups (typically 0-3 elements)
         u8 tough_start = count;
         for (u8 i = 0; i < model_count; ++i) {
             const Model& m = models[i];
             if (m.is_alive() && m.tough > 1 && !m.is_hero) {
-                order[count++] = i;
+                // Insert in sorted order (descending by wounds_taken)
+                u8 j = count;
+                while (j > tough_start && models[order[j-1]].wounds_taken < m.wounds_taken) {
+                    order[j] = order[j-1];
+                    --j;
+                }
+                order[j] = i;
+                ++count;
             }
         }
-        // Sort tough models by wounds_taken (most wounded first)
-        if (count > tough_start + 1) {
-            std::sort(order.begin() + tough_start, order.begin() + count,
-                [this](u8 a, u8 b) {
-                    return models[a].wounds_taken > models[b].wounds_taken;
-                });
-        }
 
-        // Phase 3: Heroes (sorted by wounds_taken descending)
+        // Phase 3: Heroes (most wounded first)
+        // Use insertion sort for small groups (typically 1-2 elements)
         u8 hero_start = count;
         for (u8 i = 0; i < model_count; ++i) {
             const Model& m = models[i];
             if (m.is_alive() && m.is_hero) {
-                order[count++] = i;
+                // Insert in sorted order (descending by wounds_taken)
+                u8 j = count;
+                while (j > hero_start && models[order[j-1]].wounds_taken < m.wounds_taken) {
+                    order[j] = order[j-1];
+                    --j;
+                }
+                order[j] = i;
+                ++count;
             }
-        }
-        // Sort heroes by wounds_taken
-        if (count > hero_start + 1) {
-            std::sort(order.begin() + hero_start, order.begin() + count,
-                [this](u8 a, u8 b) {
-                    return models[a].wounds_taken > models[b].wounds_taken;
-                });
         }
     }
 

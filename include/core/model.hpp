@@ -14,6 +14,7 @@ struct alignas(64) Model {
     Name name;
     std::array<CompactRule, MAX_RULES_PER_ENTITY> rules{};
     std::array<WeaponRef, MAX_WEAPONS_PER_MODEL> weapons{};
+    RuleMask rule_mask = 0; // Bitset for O(1) has_rule() lookup
 
     u8 quality     = 4;   // Quality value (2-6, roll this or higher to hit)
     u8 defense     = 4;   // Defense value (2-6, roll this or higher to save)
@@ -64,14 +65,12 @@ struct alignas(64) Model {
     void add_rule(RuleId id, u8 value = 0) {
         if (rule_count < MAX_RULES_PER_ENTITY) {
             rules[rule_count++] = CompactRule(id, value);
+            rule_mask |= rule_bit(id);
         }
     }
 
     bool has_rule(RuleId id) const {
-        for (u8 i = 0; i < rule_count; ++i) {
-            if (rules[i].id == id) return true;
-        }
-        return false;
+        return (rule_mask & rule_bit(id)) != 0;
     }
 
     u8 get_rule_value(RuleId id) const {

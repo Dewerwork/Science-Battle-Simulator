@@ -5,6 +5,7 @@
 #include "engine/combat.hpp"
 #include "engine/dice.hpp"
 #include "simulation/statistics.hpp"
+#include "simulation/sim_state.hpp"
 #include "simulation/thread_pool.hpp"
 #include <vector>
 #include <functional>
@@ -76,17 +77,21 @@ private:
     DiceRoller dice_;
     CombatResolver resolver_;
 
-    // Run a single round of melee combat
+    // Reusable lightweight state objects (avoid allocation per iteration)
+    UnitSimState attacker_state_;
+    UnitSimState defender_state_;
+
+    // Run a single round of melee combat using lightweight views
     void run_melee_round(
-        Unit& attacker,
-        Unit& defender,
+        UnitView& attacker,
+        UnitView& defender,
         bool attacker_charges,
         u16& attacker_wounds,
         u16& defender_wounds
     );
 
-    // Check morale
-    bool check_morale(Unit& unit, bool at_half_strength, bool lost_melee);
+    // Check morale using lightweight view
+    bool check_morale(UnitView& unit, bool at_half_strength, bool lost_melee);
 };
 
 // ==============================================================================
@@ -139,13 +144,17 @@ inline MatchupSimulator::BattleResult MatchupSimulator::run_battle(
     const Unit& defender_template,
     const SimulationConfig& config
 ) {
-    // Create working copies
-    Unit attacker = attacker_template.copy_fresh();
-    Unit defender = defender_template.copy_fresh();
+    // Reset lightweight state objects (no allocation, just reset values)
+    attacker_state_.reset(attacker_template.model_count);
+    defender_state_.reset(defender_template.model_count);
+
+    // Create views combining const unit data with mutable state
+    UnitView attacker(&attacker_template, &attacker_state_);
+    UnitView defender(&defender_template, &defender_state_);
 
     BattleResult result{};
-    result.attacker_remaining = attacker.alive_count;
-    result.defender_remaining = defender.alive_count;
+    result.attacker_remaining = attacker.alive_count();
+    result.defender_remaining = defender.alive_count();
 
     u8 round = 0;
     bool attacker_charges = config.attacker_charges;
@@ -183,10 +192,10 @@ inline MatchupSimulator::BattleResult MatchupSimulator::run_battle(
     }
 
     result.rounds = round;
-    result.attacker_remaining = attacker.alive_count;
-    result.defender_remaining = defender.alive_count;
-    result.kills_by_attacker = defender_template.model_count - defender.alive_count;
-    result.kills_by_defender = attacker_template.model_count - attacker.alive_count;
+    result.attacker_remaining = attacker.alive_count();
+    result.defender_remaining = defender.alive_count();
+    result.kills_by_attacker = defender_template.model_count - defender.alive_count();
+    result.kills_by_defender = attacker_template.model_count - attacker.alive_count();
 
     // Determine winner
     bool attacker_out = attacker.is_out_of_action();
@@ -205,8 +214,8 @@ inline MatchupSimulator::BattleResult MatchupSimulator::run_battle(
             VictoryCondition::DefenderRoutedEnemy : VictoryCondition::DefenderDestroyedEnemy;
     } else {
         // Compare remaining
-        f64 atk_pct = static_cast<f64>(attacker.alive_count) / attacker_template.model_count;
-        f64 def_pct = static_cast<f64>(defender.alive_count) / defender_template.model_count;
+        f64 atk_pct = static_cast<f64>(attacker.alive_count()) / attacker_template.model_count;
+        f64 def_pct = static_cast<f64>(defender.alive_count()) / defender_template.model_count;
 
         if (atk_pct > def_pct) {
             result.winner = BattleWinner::Attacker;
@@ -256,8 +265,8 @@ inline void MatchupSimulator::run_batch(
 }
 
 inline void MatchupSimulator::run_melee_round(
-    Unit& attacker,
-    Unit& defender,
+    UnitView& attacker,
+    UnitView& defender,
     bool attacker_charges,
     u16& attacker_wounds,
     u16& defender_wounds
@@ -269,26 +278,26 @@ inline void MatchupSimulator::run_melee_round(
     ctx.is_charging = attacker_charges;
     ctx.attacker_shaken = attacker.is_shaken();
     ctx.defender_shaken = defender.is_shaken();
-    ctx.attacker_fatigued = attacker.is_fatigued;
+    ctx.attacker_fatigued = attacker.is_fatigued();
 
     CombatResult atk_result = resolver_.resolve_attack(attacker, defender, ctx);
     attacker_wounds = atk_result.total_wounds;
-    attacker.is_fatigued = true;
+    attacker.set_fatigued(true);
 
     // Defender strikes back (if alive)
     if (!defender.is_out_of_action()) {
         ctx.is_charging = false;
         ctx.attacker_shaken = defender.is_shaken();
         ctx.defender_shaken = attacker.is_shaken();
-        ctx.attacker_fatigued = defender.is_fatigued || defender.is_shaken();
+        ctx.attacker_fatigued = defender.is_fatigued() || defender.is_shaken();
 
         CombatResult def_result = resolver_.resolve_attack(defender, attacker, ctx);
         defender_wounds = def_result.total_wounds;
-        defender.is_fatigued = true;
+        defender.set_fatigued(true);
     }
 }
 
-inline bool MatchupSimulator::check_morale(Unit& unit, bool at_half_strength, bool lost_melee) {
+inline bool MatchupSimulator::check_morale(UnitView& unit, bool at_half_strength, bool lost_melee) {
     // Already shaken - fail automatically
     if (unit.is_shaken()) {
         if (at_half_strength) {
@@ -301,7 +310,7 @@ inline bool MatchupSimulator::check_morale(Unit& unit, bool at_half_strength, bo
 
     // Roll morale (quality test)
     u8 roll = dice_.roll_d6();
-    bool passed = roll >= unit.get_base_quality();
+    bool passed = roll >= unit.quality();
 
     // Fearless reroll
     if (!passed && unit.has_rule(RuleId::Fearless)) {

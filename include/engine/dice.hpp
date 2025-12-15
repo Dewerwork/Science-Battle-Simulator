@@ -82,8 +82,21 @@ public:
 
         u32 hits = 0;
         u32 sixes = 0;
+        u32 remaining = attacks;
 
-        for (u32 i = 0; i < attacks; ++i) {
+        // Process 8 dice at a time for better instruction-level parallelism
+        while (remaining >= 8) {
+            u64 r = next();
+            for (int i = 0; i < 8; ++i) {
+                u8 die = static_cast<u8>(((r >> (i * 8)) & 0xFF) % 6) + 1;
+                if (die >= effective) ++hits;
+                if (die == 6) ++sixes;
+            }
+            remaining -= 8;
+        }
+
+        // Handle remaining dice
+        for (u32 i = 0; i < remaining; ++i) {
             u8 roll = roll_d6();
             if (roll >= effective) ++hits;
             if (roll == 6) ++sixes;
@@ -102,16 +115,52 @@ public:
         effective = std::max(i8(2), std::min(i8(6), effective));
 
         u32 saves = 0;
+        u32 remaining = hits;
 
-        for (u32 i = 0; i < hits; ++i) {
-            u8 roll = roll_d6();
+        // Fast path: no poison rerolls needed
+        if (!reroll_sixes) {
+            // Process 8 dice at a time
+            while (remaining >= 8) {
+                u64 r = next();
+                for (int i = 0; i < 8; ++i) {
+                    u8 die = static_cast<u8>(((r >> (i * 8)) & 0xFF) % 6) + 1;
+                    if (die >= effective) ++saves;
+                }
+                remaining -= 8;
+            }
+            // Handle remaining
+            for (u32 i = 0; i < remaining; ++i) {
+                if (roll_d6() >= effective) ++saves;
+            }
+        } else {
+            // Poison path: must handle reroll of 6s
+            u32 sixes_to_reroll = 0;
 
-            // Poison: reroll 6s
-            if (reroll_sixes && roll == 6) {
-                roll = roll_d6();
+            // Process 8 dice at a time, track 6s
+            while (remaining >= 8) {
+                u64 r = next();
+                for (int i = 0; i < 8; ++i) {
+                    u8 die = static_cast<u8>(((r >> (i * 8)) & 0xFF) % 6) + 1;
+                    if (die == 6) {
+                        ++sixes_to_reroll;
+                    } else if (die >= effective) {
+                        ++saves;
+                    }
+                }
+                remaining -= 8;
+            }
+            // Handle remaining
+            for (u32 i = 0; i < remaining; ++i) {
+                u8 roll = roll_d6();
+                if (roll == 6) {
+                    ++sixes_to_reroll;
+                } else if (roll >= effective) {
+                    ++saves;
+                }
             }
 
-            if (roll >= effective) ++saves;
+            // Reroll the 6s
+            saves += roll_d6_target(sixes_to_reroll, static_cast<u8>(effective));
         }
 
         return hits - saves; // Failed saves = wounds

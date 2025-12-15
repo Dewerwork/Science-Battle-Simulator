@@ -13,6 +13,7 @@ namespace battle {
 struct alignas(32) Weapon {
     Name name;                                              // 65 bytes -> padded
     std::array<CompactRule, MAX_RULES_PER_ENTITY> rules{};  // 32 bytes
+    RuleMask rule_mask = 0; // Bitset for O(1) has_rule() lookup
     u8 attacks = 1;     // A value (number of attack dice)
     u8 range   = 0;     // Range in inches (0 = melee)
     u8 ap      = 0;     // Armor Piercing value
@@ -32,14 +33,12 @@ struct alignas(32) Weapon {
     void add_rule(RuleId id, u8 value = 0) {
         if (rule_count < MAX_RULES_PER_ENTITY) {
             rules[rule_count++] = CompactRule(id, value);
+            rule_mask |= rule_bit(id);
         }
     }
 
     bool has_rule(RuleId id) const {
-        for (u8 i = 0; i < rule_count; ++i) {
-            if (rules[i].id == id) return true;
-        }
-        return false;
+        return (rule_mask & rule_bit(id)) != 0;
     }
 
     u8 get_rule_value(RuleId id) const {

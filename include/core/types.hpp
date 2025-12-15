@@ -148,6 +148,16 @@ enum class RuleId : u8 {
     COUNT // Number of rules
 };
 
+// Rule presence bitset - fast O(1) lookup for has_rule()
+// Each bit corresponds to a RuleId (fits in 64 bits since COUNT < 64)
+using RuleMask = u64;
+
+inline constexpr RuleMask rule_bit(RuleId id) {
+    return (id == RuleId::None) ? 0 : (RuleMask(1) << static_cast<u8>(id));
+}
+
+static_assert(static_cast<int>(RuleId::COUNT) <= 64, "RuleMask requires COUNT <= 64");
+
 // AI behavior type for Solo Play rules
 enum class AIType : u8 {
     Melee = 0,      // No ranged weapons - charges aggressively
