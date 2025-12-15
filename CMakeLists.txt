@@ -23,7 +23,7 @@ message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERS
 # ==============================================================================
 
 # Common flags for all builds
-set(COMMON_FLAGS "-Wall -Wextra -Wpedantic")
+set(COMMON_FLAGS -Wall -Wextra -Wpedantic)
 
 # Release flags - optimized for 100 billion matchups
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native -mtune=native -flto")
@@ -52,107 +52,20 @@ else()
 endif()
 
 # ==============================================================================
-# Source Files
+# Phase 1: Parser Test (header-only for now)
 # ==============================================================================
 
-# Core library (data structures)
-set(CORE_SOURCES
-    src/core/unit.cpp
-    src/core/model.cpp
-    src/core/weapon.cpp
-    src/core/special_rule.cpp
-    src/core/army_list.cpp
-)
-
-# Engine library (combat mechanics)
-set(ENGINE_SOURCES
-    src/engine/dice.cpp
-    src/engine/combat.cpp
-    src/engine/wound_allocation.cpp
-    src/engine/morale.cpp
-    src/engine/scenario.cpp
-    src/engine/multi_round.cpp
-)
-
-# Simulation library (Monte Carlo, statistics)
-set(SIMULATION_SOURCES
-    src/simulation/simulator.cpp
-    src/simulation/statistics.cpp
-    src/simulation/thread_pool.cpp
-    src/simulation/batch_processor.cpp
-)
-
-# IO library (parsers, output)
-set(IO_SOURCES
-    src/io/army_parser.cpp
-    src/io/config_loader.cpp
-    src/io/results_exporter.cpp
-)
-
-# Utility library
-set(UTILS_SOURCES
-    src/utils/memory_pool.cpp
-    src/utils/timer.cpp
-    src/utils/progress.cpp
-)
-
-# ==============================================================================
-# Libraries
-# ==============================================================================
-
-# Core library
-add_library(battle_core STATIC ${CORE_SOURCES})
-target_include_directories(battle_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_compile_options(battle_core PRIVATE ${COMMON_FLAGS})
-
-# Engine library
-add_library(battle_engine STATIC ${ENGINE_SOURCES})
-target_include_directories(battle_engine PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_link_libraries(battle_engine PUBLIC battle_core)
-target_compile_options(battle_engine PRIVATE ${COMMON_FLAGS})
-
-# Simulation library
-add_library(battle_simulation STATIC ${SIMULATION_SOURCES})
-target_include_directories(battle_simulation PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_link_libraries(battle_simulation PUBLIC battle_engine Threads::Threads)
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(battle_simulation PUBLIC OpenMP::OpenMP_CXX)
-    target_compile_definitions(battle_simulation PUBLIC USE_OPENMP)
-endif()
-target_compile_options(battle_simulation PRIVATE ${COMMON_FLAGS})
-
-# IO library
-add_library(battle_io STATIC ${IO_SOURCES})
-target_include_directories(battle_io PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_link_libraries(battle_io PUBLIC battle_core)
-target_compile_options(battle_io PRIVATE ${COMMON_FLAGS})
-
-# Utils library
-add_library(battle_utils STATIC ${UTILS_SOURCES})
-target_include_directories(battle_utils PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_compile_options(battle_utils PRIVATE ${COMMON_FLAGS})
+# The parser is header-only, so we just need the test executable
+# Libraries will be added as source files are implemented
 
 # ==============================================================================
 # Main Executable
 # ==============================================================================
 
-add_executable(battle_sim src/main.cpp)
-target_link_libraries(battle_sim PRIVATE
-    battle_simulation
-    battle_io
-    battle_utils
-)
+add_executable(battle_sim src/battle_sim.cpp)
+target_include_directories(battle_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(battle_sim PRIVATE Threads::Threads)
 target_compile_options(battle_sim PRIVATE ${COMMON_FLAGS})
-
-# ==============================================================================
-# Benchmarks
-# ==============================================================================
-
-add_executable(benchmark_dice benchmarks/benchmark_dice.cpp)
-target_link_libraries(benchmark_dice PRIVATE battle_engine battle_utils)
-
-add_executable(benchmark_combat benchmarks/benchmark_combat.cpp)
-target_link_libraries(benchmark_combat PRIVATE battle_simulation battle_utils)
 
 # ==============================================================================
 # Tests
@@ -160,24 +73,46 @@ target_link_libraries(benchmark_combat PRIVATE battle_simulation battle_utils)
 
 enable_testing()
 
-add_executable(test_dice tests/test_dice.cpp)
-target_link_libraries(test_dice PRIVATE battle_engine)
-add_test(NAME DiceTests COMMAND test_dice)
+# Parser test - header-only, no library dependencies
+add_executable(test_parser src/test_parser.cpp)
+target_include_directories(test_parser PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_options(test_parser PRIVATE ${COMMON_FLAGS})
 
-add_executable(test_combat tests/test_combat.cpp)
-target_link_libraries(test_combat PRIVATE battle_engine)
-add_test(NAME CombatTests COMMAND test_combat)
+# Game engine test - header-only
+add_executable(test_game src/test_game.cpp)
+target_include_directories(test_game PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_options(test_game PRIVATE ${COMMON_FLAGS})
 
-add_executable(test_scenarios tests/test_scenarios.cpp)
-target_link_libraries(test_scenarios PRIVATE battle_simulation)
-add_test(NAME ScenarioTests COMMAND test_scenarios)
+# Benchmark - parallel simulation
+add_executable(benchmark_sim src/benchmark_sim.cpp)
+target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(benchmark_sim PRIVATE Threads::Threads)
+target_compile_options(benchmark_sim PRIVATE ${COMMON_FLAGS})
+
+# Analysis tool - result file analysis and export
+add_executable(analyze_results src/analyze_results.cpp)
+target_include_directories(analyze_results PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_options(analyze_results PRIVATE ${COMMON_FLAGS})
+
+# Commented out until source files are implemented:
+# add_executable(test_dice tests/test_dice.cpp)
+# target_link_libraries(test_dice PRIVATE battle_engine)
+# add_test(NAME DiceTests COMMAND test_dice)
+
+# add_executable(test_combat tests/test_combat.cpp)
+# target_link_libraries(test_combat PRIVATE battle_engine)
+# add_test(NAME CombatTests COMMAND test_combat)
+
+# add_executable(test_scenarios tests/test_scenarios.cpp)
+# target_link_libraries(test_scenarios PRIVATE battle_simulation)
+# add_test(NAME ScenarioTests COMMAND test_scenarios)
 
 # ==============================================================================
-# Installation
+# Installation (enabled when battle_sim is ready)
 # ==============================================================================
 
-install(TARGETS battle_sim DESTINATION bin)
-install(DIRECTORY data/ DESTINATION share/battle_sim/data)
+# install(TARGETS battle_sim DESTINATION bin)
+# install(DIRECTORY data/ DESTINATION share/battle_sim/data)
 
 # ==============================================================================
 # Summary
