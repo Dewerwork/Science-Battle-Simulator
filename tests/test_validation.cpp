@@ -137,7 +137,18 @@ RuleValidationResult validate_rules_in_file(const std::string& filepath) {
 
     std::stringstream buffer;
     buffer << file.rdbuf();
-    return validate_rules_in_content(buffer.str());
+    std::string content = buffer.str();
+
+    // Clean content: remove carriage returns and null bytes (like UnitParser does)
+    std::string clean_content;
+    clean_content.reserve(content.size());
+    for (char c : content) {
+        if (c != '\r' && c != '\0') {
+            clean_content.push_back(c);
+        }
+    }
+
+    return validate_rules_in_content(clean_content);
 }
 
 void test_special_rules_coverage() {
@@ -499,10 +510,70 @@ void test_victory_conditions_tracked() {
 }
 
 // ==============================================================================
-// Main
+// File Validation Mode - Check user-provided unit file for unrecognized rules
 // ==============================================================================
 
-int main() {
+int validate_user_file(const std::string& filepath) {
+    std::cout << "=== Unit File Validation ===" << std::endl;
+    std::cout << "Checking file: " << filepath << std::endl;
+    std::cout << std::endl;
+
+    // Check file exists
+    if (!std::filesystem::exists(filepath)) {
+        std::cerr << "ERROR: File not found: " << filepath << std::endl;
+        return 1;
+    }
+
+    // Validate rules in the file
+    auto result = validate_rules_in_file(filepath);
+
+    std::cout << "=== Results ===" << std::endl;
+    std::cout << "Total rule occurrences found: " << result.total_rule_occurrences << std::endl;
+    std::cout << "Unique recognized rules: " << result.recognized_rules.size() << std::endl;
+    std::cout << std::endl;
+
+    // Show recognized rules
+    if (!result.recognized_rules.empty()) {
+        std::cout << "Recognized rules:" << std::endl;
+        for (const auto& rule : result.recognized_rules) {
+            std::cout << "  [OK] " << rule << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
+    // Show unrecognized rules (this is the important part)
+    if (!result.unrecognized_rules.empty()) {
+        std::cout << "*** UNRECOGNIZED RULES FOUND ***" << std::endl;
+        std::cout << "The following rules are NOT implemented in the simulator:" << std::endl;
+        for (const auto& rule : result.unrecognized_rules) {
+            std::cout << "  [MISSING] " << rule << std::endl;
+        }
+        std::cout << std::endl;
+        std::cout << "Total unrecognized occurrences: " << result.unrecognized_occurrences << std::endl;
+        std::cout << std::endl;
+        std::cout << "WARNING: Units with these rules may not simulate correctly!" << std::endl;
+        return 1;  // Return error code to indicate issues found
+    } else {
+        std::cout << "All rules in this file are recognized and supported!" << std::endl;
+        return 0;
+    }
+}
+
+void print_usage(const char* program_name) {
+    std::cout << "Usage: " << program_name << " [OPTIONS] [FILE]" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Options:" << std::endl;
+    std::cout << "  --validate FILE    Validate a unit file for unrecognized special rules" << std::endl;
+    std::cout << "  --test             Run all validation tests (default if no args)" << std::endl;
+    std::cout << "  --help             Show this help message" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Examples:" << std::endl;
+    std::cout << "  " << program_name << " --validate units.txt" << std::endl;
+    std::cout << "  " << program_name << " --validate docs/Blessed_Sisters_pipeline.final.merged.txt" << std::endl;
+    std::cout << "  " << program_name << " --test" << std::endl;
+}
+
+void run_all_tests() {
     std::cout << "=== Validation Tests ===" << std::endl;
     std::cout << "Testing special rule coverage and simulation correctness\n" << std::endl;
 
@@ -522,6 +593,50 @@ int main() {
     std::cout << "\n========================================" << std::endl;
     std::cout << "All validation tests passed!" << std::endl;
     std::cout << "========================================" << std::endl;
+}
 
-    return 0;
+// ==============================================================================
+// Main
+// ==============================================================================
+
+int main(int argc, char* argv[]) {
+    // No arguments - run all tests
+    if (argc == 1) {
+        run_all_tests();
+        return 0;
+    }
+
+    std::string arg1 = argv[1];
+
+    // Help
+    if (arg1 == "--help" || arg1 == "-h") {
+        print_usage(argv[0]);
+        return 0;
+    }
+
+    // Run tests
+    if (arg1 == "--test" || arg1 == "-t") {
+        run_all_tests();
+        return 0;
+    }
+
+    // Validate a specific file
+    if (arg1 == "--validate" || arg1 == "-v") {
+        if (argc < 3) {
+            std::cerr << "ERROR: --validate requires a file path" << std::endl;
+            print_usage(argv[0]);
+            return 1;
+        }
+        return validate_user_file(argv[2]);
+    }
+
+    // If first arg is a file path (doesn't start with -), validate it
+    if (arg1[0] != '-') {
+        return validate_user_file(arg1);
+    }
+
+    // Unknown option
+    std::cerr << "Unknown option: " << arg1 << std::endl;
+    print_usage(argv[0]);
+    return 1;
 }
