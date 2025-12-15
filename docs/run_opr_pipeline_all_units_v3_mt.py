@@ -47,6 +47,10 @@ ATTACK_AGNOSTIC_GROUPING = True
 # full traceability via the lineage chain in JSON output.
 RULE_AGNOSTIC_GROUPING = True
 
+# RAW LOADOUT MODE: If True, outputs each unique loadout combo separately
+# with a UID in the unit name (no Stage-1/Stage-2 grouping). Format: "UnitName [UID:xxxx]"
+RAW_LOADOUT_MODE = True
+
 # TXT formatting
 ADD_BLANK_LINE_BETWEEN_UNITS = True
 
@@ -70,6 +74,24 @@ def ensure_dir(p: Path) -> None:
 
 def norm_ws(s: str) -> str:
     return " ".join(str(s).strip().split())
+
+# =========================================================
+# UID Generation for Raw Loadouts
+# =========================================================
+_UID_COUNTER: Dict[str, int] = {}  # Per-unit UID counters
+
+def generate_uid(unit_name: str, combo_idx: int, signature: str) -> str:
+    """
+    Generate a unique ID for a loadout.
+    Format: first 4 chars of sha1 of (unit_name + combo_idx + signature)
+    """
+    uid_input = f"{unit_name}|{combo_idx}|{signature}"
+    return sha1(uid_input)[:8].upper()
+
+def reset_uid_counter() -> None:
+    """Reset UID counter (call at start of each unit)."""
+    global _UID_COUNTER
+    _UID_COUNTER = {}
 
 # =========================================================
 # 1) PDF -> units JSON
@@ -1340,6 +1362,265 @@ def stage2_reduce(stage1_groups: List[Dict[str, Any]],
     out_txt.write_text("\n".join(txt_lines).rstrip() + "\n", encoding="utf-8")
 
 # =========================================================
+# Raw Loadout Mode: No grouping, each combo gets a UID
+# =========================================================
+@dataclass
+class RawLoadout:
+    """Represents a single unit loadout with UID."""
+    uid: str
+    combo_index: int
+    unit_name: str
+    points: int
+    quality: int
+    defense: int
+    size: int
+    tough: Optional[int]
+    rules: Tuple[str, ...]
+    weapons: List[Dict[str, Any]]  # Full weapon details
+
+def _format_weapon_for_display(w: Dict[str, Any]) -> str:
+    """Format a single weapon for display in OPR format."""
+    name = w.get("name", "Unknown")
+    count = w.get("count", 1)
+    rng = w.get("range", "-")
+    attacks = w.get("attacks", 0)
+    ap = w.get("ap")
+    special = w.get("special", [])
+
+    # Build inner stats
+    inner: List[str] = [f"A{attacks}"]
+    if ap is not None:
+        inner.append(f"AP({ap})")
+    if special:
+        inner.extend(special)
+
+    # Format based on range
+    if rng and rng != "-":
+        weapon_str = f'{rng} {name} ({", ".join(inner)})'
+    else:
+        weapon_str = f'{name} ({", ".join(inner)})'
+
+    # Add count prefix
+    if count > 1:
+        weapon_str = f"{count}x {weapon_str}"
+
+    return weapon_str
+
+def _raw_loadout_header(loadout: RawLoadout) -> str:
+    """Generate header line for a raw loadout with UID in unit name."""
+    # Format: "UnitName [UID:XXXXXXXX] [size] Qn+ Dn+ | pts | rules"
+    rules_str = ", ".join(loadout.rules) if loadout.rules else "-"
+    return (f"{loadout.unit_name} [UID:{loadout.uid}] [{loadout.size}] "
+            f"Q{loadout.quality}+ D{loadout.defense}+ | {loadout.points}pts | {rules_str}")
+
+def _raw_loadout_weapons_line(loadout: RawLoadout) -> str:
+    """Generate weapons line for a raw loadout."""
+    if not loadout.weapons:
+        return "-"
+    return ", ".join(_format_weapon_for_display(w) for w in loadout.weapons)
+
+def _worker_raw_loadouts_range(start_idx: int, end_idx: int) -> List[Dict[str, Any]]:
+    """
+    Generate raw loadouts for a range of combo indices.
+    Returns list of loadout dicts (not grouped).
+    """
+    out: List[Dict[str, Any]] = []
+
+    for combo_idx in range(start_idx, end_idx):
+        # Build combo by indexing variants
+        if _G_RADICES:
+            choice_idxs = index_to_choice_indices(combo_idx, _G_RADICES)
+        else:
+            choice_idxs = []
+
+        pts_delta = 0
+        add_rules: List[str] = []
+        weapon_delta_acc: Dict[str, int] = {}
+
+        for g_i, v_i in enumerate(choice_idxs):
+            v = _G_GROUP_VARS[g_i][v_i]
+            pts_delta += int(v.pts_delta)
+            add_rules.extend(list(v.add_rules))
+            for k, dv in v.weapon_delta:
+                weapon_delta_acc[k] = weapon_delta_acc.get(k, 0) + int(dv)
+
+        points = int(_G_BASE_PTS + pts_delta)
+
+        # Rules -> normalize via XLSX policy
+        rules_raw = _G_BASE_RULES + add_rules
+        rules_sig = normalize_rules_for_signature(rules_raw, _G_EXACT_MAP, _G_BASE_MAP)
+
+        # Weapons multiset -> base + deltas
+        w: Dict[str, int] = dict(_G_BASE_W)
+        for k, dv in weapon_delta_acc.items():
+            w[k] = w.get(k, 0) + dv
+            if w[k] < 0:
+                w[k] = 0
+
+        # Convert weapon keys back to weapon dicts
+        weapons: List[Dict[str, Any]] = []
+        for wkey, count in w.items():
+            if count <= 0:
+                continue
+            # Parse weapon key: N=name|R=range|A=attacks|AP=ap|T=tags
+            wparts = {}
+            for part in wkey.split("|"):
+                if "=" in part:
+                    pk, pv = part.split("=", 1)
+                    wparts[pk] = pv
+
+            name = wparts.get("N", "Unknown")
+            rng_str = wparts.get("R", "")
+            attacks_str = wparts.get("A", "0")
+            ap_str = wparts.get("AP", "")
+            tags_str = wparts.get("T", "")
+
+            rng = f'{rng_str}"' if rng_str else "-"
+            attacks = int(attacks_str) if attacks_str.isdigit() else 0
+            ap = int(ap_str) if ap_str and ap_str.lstrip("-").isdigit() else None
+            tags = [t for t in tags_str.split(";") if t] if tags_str else []
+
+            weapons.append({
+                "name": name,
+                "count": count,
+                "range": rng,
+                "attacks": attacks,
+                "ap": ap,
+                "special": tags,
+            })
+
+        # Sort weapons for consistent output (melee first, then by range)
+        weapons.sort(key=lambda x: (x["range"] != "-", x["range"], x["name"]))
+
+        # Build signature for UID generation
+        sig = build_stage1_signature(points, rules_sig, w)
+        uid = generate_uid(str(_G_UNIT.get("name", "")), combo_idx, sig)
+
+        out.append({
+            "uid": uid,
+            "combo_index": combo_idx,
+            "points": points,
+            "rules": list(rules_sig),
+            "weapons": weapons,
+            "signature": sig,
+        })
+
+    return out
+
+def generate_raw_loadouts_parallel(unit: Dict[str, Any],
+                                   exact_map: Dict[str, str],
+                                   base_map: Dict[str, str],
+                                   limit: int = 0) -> Dict[str, Any]:
+    """
+    Generate all raw loadouts for a unit with UIDs (no grouping).
+    """
+    base_pts = int(unit.get("base_points", 0) or 0)
+    base_rules = [str(x).strip() for x in (unit.get("special_rules") or []) if str(x).strip()]
+
+    base_weapon_multiset, name_to_key = build_base_weapon_multiset(unit)
+
+    groups = unit.get("options", []) or []
+    group_vars: List[List[Variant]] = [group_variants(unit, g, name_to_key) for g in groups]
+    radices = [len(vs) for vs in group_vars]
+    total = total_combinations(radices) if radices else 1
+    if limit and total > limit:
+        total = limit
+
+    if total <= 1 or WORKERS_PER_UNIT <= 1:
+        _init_worker(unit, group_vars, base_pts, base_rules, base_weapon_multiset, exact_map, base_map)
+        all_loadouts = _worker_raw_loadouts_range(0, total)
+    else:
+        n_tasks = min(TASKS_PER_UNIT, total)
+        chunk = math.ceil(total / n_tasks)
+
+        all_loadouts: List[Dict[str, Any]] = []
+        with ProcessPoolExecutor(
+            max_workers=WORKERS_PER_UNIT,
+            initializer=_init_worker,
+            initargs=(unit, group_vars, base_pts, base_rules, base_weapon_multiset, exact_map, base_map)
+        ) as ex:
+            futures = []
+            for t in range(n_tasks):
+                s = t * chunk
+                e = min(total, (t + 1) * chunk)
+                if s >= e:
+                    continue
+                futures.append(ex.submit(_worker_raw_loadouts_range, s, e))
+
+            for fut in as_completed(futures):
+                all_loadouts.extend(fut.result())
+
+    # Sort by combo_index for deterministic output
+    all_loadouts.sort(key=lambda x: x["combo_index"])
+
+    # Build RawLoadout objects and output
+    unit_name = str(unit.get("name", "")).strip()
+    quality = int(unit.get("quality", 0) or 0)
+    defense = int(unit.get("defense", 0) or 0)
+    size = int(unit.get("size", 1) or 1)
+    tough = unit.get("tough")
+
+    raw_loadouts: List[RawLoadout] = []
+    for lo in all_loadouts:
+        raw_loadouts.append(RawLoadout(
+            uid=lo["uid"],
+            combo_index=lo["combo_index"],
+            unit_name=unit_name,
+            points=lo["points"],
+            quality=quality,
+            defense=defense,
+            size=size,
+            tough=tough,
+            rules=tuple(lo["rules"]),
+            weapons=lo["weapons"],
+        ))
+
+    return {
+        "unit": unit_name,
+        "total_loadouts": len(raw_loadouts),
+        "total_combinations_processed": total,
+        "loadouts": [
+            {
+                "uid": lo.uid,
+                "combo_index": lo.combo_index,
+                "points": lo.points,
+                "rules": list(lo.rules),
+                "weapons": lo.weapons,
+            }
+            for lo in raw_loadouts
+        ],
+        "raw_loadout_objects": raw_loadouts,  # For TXT generation
+    }
+
+def write_raw_loadouts_txt(payload: Dict[str, Any], out_txt: Path) -> None:
+    """Write raw loadouts to TXT file."""
+    raw_loadouts: List[RawLoadout] = payload.get("raw_loadout_objects", [])
+    txt_lines: List[str] = []
+
+    for lo in raw_loadouts:
+        txt_lines.append(_raw_loadout_header(lo))
+        txt_lines.append(_raw_loadout_weapons_line(lo))
+        if ADD_BLANK_LINE_BETWEEN_UNITS:
+            txt_lines.append("")
+
+    out_txt.write_text("\n".join(txt_lines).rstrip() + "\n", encoding="utf-8")
+
+def write_raw_loadouts_json(payload: Dict[str, Any], out_json: Path) -> None:
+    """Write raw loadouts to JSON file (without RawLoadout objects)."""
+    output = {
+        "unit": payload["unit"],
+        "total_loadouts": payload["total_loadouts"],
+        "total_combinations_processed": payload["total_combinations_processed"],
+        "settings": {
+            "RAW_LOADOUT_MODE": True,
+            "UID_FORMAT": "8-char hex hash",
+            "RULE_POLICY": RULE_POLICY,
+        },
+        "loadouts": payload["loadouts"],
+    }
+    out_json.write_text(json.dumps(output, indent=2), encoding="utf-8")
+
+# =========================================================
 # Unit pipeline: inline stage-1 with within-unit parallel generation
 # =========================================================
 def stage1_reduce_inline_parallel(unit: Dict[str, Any],
@@ -1590,22 +1871,35 @@ def process_single_pdf(pdf_path: Path,
         unit_dir = faction_dir / safe_filename(unit_name)
         ensure_dir(unit_dir)
 
-        stage1_json_path = unit_dir / f"{safe_filename(unit_name)}.loadouts.reduced.json"
-        final_txt_path  = unit_dir / f"{safe_filename(unit_name)}.final.txt"
-        final_json_path = unit_dir / f"{safe_filename(unit_name)}.final.supergroups.json"
-        final_idx_path  = unit_dir / f"{safe_filename(unit_name)}.final.lineage_index.json"
-
         print(f"\n  --- {unit_name} ---")
 
-        # Stage-1 inline
-        stage1_payload = stage1_reduce_inline_parallel(u, exact_map, base_map, limit=MAX_LOADOUTS_PER_UNIT)
-        stage1_json_path.write_text(json.dumps(stage1_payload, indent=2), encoding="utf-8")
-        print(f"  [OK] Stage-1: {stage1_payload.get('total_groups'):,} groups "
-              f"(from {stage1_payload.get('total_combinations_processed'):,} combos)")
+        if RAW_LOADOUT_MODE:
+            # Raw loadout mode: each combo gets a UID, no grouping
+            raw_json_path = unit_dir / f"{safe_filename(unit_name)}.raw_loadouts.json"
+            raw_txt_path  = unit_dir / f"{safe_filename(unit_name)}.final.txt"
 
-        # Stage-2 final
-        stage2_reduce(stage1_payload["groups"], final_txt_path, final_json_path, final_idx_path)
-        print(f"  [OK] Stage-2: -> {final_txt_path.name}")
+            raw_payload = generate_raw_loadouts_parallel(u, exact_map, base_map, limit=MAX_LOADOUTS_PER_UNIT)
+            write_raw_loadouts_json(raw_payload, raw_json_path)
+            write_raw_loadouts_txt(raw_payload, raw_txt_path)
+            print(f"  [OK] Raw loadouts: {raw_payload.get('total_loadouts'):,} loadouts "
+                  f"(from {raw_payload.get('total_combinations_processed'):,} combos)")
+            print(f"  [OK] Output: -> {raw_txt_path.name}")
+        else:
+            # Grouped mode: Stage-1 + Stage-2 reduction
+            stage1_json_path = unit_dir / f"{safe_filename(unit_name)}.loadouts.reduced.json"
+            final_txt_path  = unit_dir / f"{safe_filename(unit_name)}.final.txt"
+            final_json_path = unit_dir / f"{safe_filename(unit_name)}.final.supergroups.json"
+            final_idx_path  = unit_dir / f"{safe_filename(unit_name)}.final.lineage_index.json"
+
+            # Stage-1 inline
+            stage1_payload = stage1_reduce_inline_parallel(u, exact_map, base_map, limit=MAX_LOADOUTS_PER_UNIT)
+            stage1_json_path.write_text(json.dumps(stage1_payload, indent=2), encoding="utf-8")
+            print(f"  [OK] Stage-1: {stage1_payload.get('total_groups'):,} groups "
+                  f"(from {stage1_payload.get('total_combinations_processed'):,} combos)")
+
+            # Stage-2 final
+            stage2_reduce(stage1_payload["groups"], final_txt_path, final_json_path, final_idx_path)
+            print(f"  [OK] Stage-2: -> {final_txt_path.name}")
 
     # Merge all *.final.txt files into one
     merged_path = merge_final_txts(faction_dir, faction_name)
@@ -1628,7 +1922,9 @@ def run() -> None:
     pdf_files = find_pdf_files(input_path)
     print(f"[INFO] Found {len(pdf_files)} PDF file(s) to process")
     print(f"[INFO] WORKERS_PER_UNIT={WORKERS_PER_UNIT}, TASKS_PER_UNIT={TASKS_PER_UNIT}")
-    print(f"[INFO] ATTACK_AGNOSTIC_GROUPING={ATTACK_AGNOSTIC_GROUPING}, RULE_AGNOSTIC_GROUPING={RULE_AGNOSTIC_GROUPING}")
+    print(f"[INFO] RAW_LOADOUT_MODE={RAW_LOADOUT_MODE}")
+    if not RAW_LOADOUT_MODE:
+        print(f"[INFO] ATTACK_AGNOSTIC_GROUPING={ATTACK_AGNOSTIC_GROUPING}, RULE_AGNOSTIC_GROUPING={RULE_AGNOSTIC_GROUPING}")
 
     # Load rule policy ONCE (shared across all PDFs)
     exact_map, base_map = load_rule_policy_xlsx(xlsx_path)
