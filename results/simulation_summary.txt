@@ -1,0 +1,10 @@
+=== Battle Simulation Results Summary ===
+
+Total Results: 333099001
+Units A: 18251
+Units B: 18251
+
+Outcomes:
+  Unit A wins: 163096721 (48.9634%)
+  Unit B wins: 169411904 (50.8593%)
+  Draws: 590376 (0.177237%)

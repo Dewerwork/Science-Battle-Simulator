@@ -1,0 +1,54 @@
+=== Top 50 Units by Win Rate ===
+
+Rank Unit Name                               Points  Win Rate  Matches     
+---------------------------------------------------------------------------
+1    Blessed Titan                           1280    99%       36502       
+2    Titan Elemental                         835     99%       36502       
+3    Titan Elemental                         960     99%       36502       
+4    Blessed Titan                           1385    99%       36502       
+5    Blessed Titan                           1305    99%       36502       
+6    Blessed Titan                           1225    99%       36502       
+7    Blessed Titan                           1280    99%       36502       
+8    Titan Elemental                         820     99%       36502       
+9    Blessed Titan                           1325    99%       36502       
+10   Blessed Titan                           1275    99%       36502       
+11   Blessed Titan                           1330    99%       36502       
+12   Titan Elemental                         790     99%       36502       
+13   Blessed Titan                           1305    99%       36502       
+14   Titan Elemental                         805     99%       36502       
+15   Blessed Titan                           1410    99%       36502       
+16   Blessed Titan                           1245    99%       36502       
+17   Titan Elemental                         930     99%       36502       
+18   Blessed Titan                           1385    99%       36502       
+19   Blessed Titan                           1350    99%       36502       
+20   Blessed Titan                           1300    99%       36502       
+21   Blessed Titan                           905     99%       36502       
+22   Blessed Titan                           1265    99%       36502       
+23   Blessed Titan                           1270    99%       36502       
+24   Blessed Titan                           1280    99%       36502       
+25   Blessed Titan                           1435    99%       36502       
+26   Blessed Titan                           1380    99%       36502       
+27   Blessed Titan                           1325    99%       36502       
+28   Blessed Titan                           1375    99%       36502       
+29   Blessed Titan                           1245    99%       36502       
+30   Blessed Titan                           1270    99%       36502       
+31   Blessed Titan                           900     99%       36502       
+32   Blessed Titan                           1240    99%       36502       
+33   Blessed Titan                           900     99%       36502       
+34   Blessed Titan                           905     99%       36502       
+35   Blessed Titan                           930     99%       36502       
+36   Blessed Titan                           1275    99%       36502       
+37   Blessed Titan                           895     99%       36502       
+38   Blessed Titan                           1350    99%       36502       
+39   Blessed Titan                           1320    99%       36502       
+40   Blessed Titan                           895     99%       36502       
+41   Blessed Titan                           905     99%       36502       
+42   Blessed Titan                           1290    99%       36502       
+43   Blessed Titan                           1135    99%       36502       
+44   Blessed Titan                           1265    99%       36502       
+45   Blessed Titan                           930     99%       36502       
+46   Blessed Titan                           955     99%       36502       
+47   Blessed Titan                           1405    99%       36502       
+48   Blessed Titan                           1315    99%       36502       
+49   Blessed Titan                           890     99%       36502       
+50   Blessed Titan                           1410    99%       36502       
