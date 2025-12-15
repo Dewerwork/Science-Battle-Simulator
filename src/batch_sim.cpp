@@ -100,6 +100,7 @@ int main(int argc, char* argv[]) {
     f64 estimated_bytes = total_matchups * 8.0;  // 8 bytes per result
 
     std::cout << "\n--- Simulation Configuration ---\n";
+    std::cout << "Simulation Mode: Full Game (movement, AI, objectives, 4 rounds max)\n";
     std::cout << "Units: " << parse_result.units.size() << "\n";
     std::cout << "Total matchups: " << total_matchups;
     if (total_matchups >= 1e9) {
@@ -218,6 +219,18 @@ int main(int argc, char* argv[]) {
         std::cout << sim_time << " seconds\n";
     }
     std::cout << "Results saved to: " << config.output_file << "\n";
+
+    // Print full game simulation stats
+    const auto& game_stats = sim.game_stats();
+    std::cout << "\n--- Full Game Simulation Stats ---\n";
+    std::cout << "  Total games played: " << game_stats.total_games_played.load() << "\n";
+    std::cout << "  Avg wounds per game: " << std::fixed << std::setprecision(2)
+              << game_stats.avg_wounds_per_game() << "\n";
+    std::cout << "  Avg models killed per game: " << std::fixed << std::setprecision(2)
+              << game_stats.avg_models_killed_per_game() << "\n";
+    std::cout << "  Total objective rounds: " << game_stats.total_objective_rounds.load() << "\n";
+    std::cout << "  Games with objective control: " << std::fixed << std::setprecision(1)
+              << game_stats.objective_game_percent() << "%\n";
 
     // Quick analysis
     std::cout << "\n--- Quick Analysis ---\n";
