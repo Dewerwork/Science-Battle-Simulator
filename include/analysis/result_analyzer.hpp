@@ -734,9 +734,12 @@ public:
     // ===========================================================================
 
     // Export unit stats to CSV (with extended stats if available)
-    bool export_unit_stats_csv(const std::string& filename, const std::vector<Unit>& units) const {
+    // Returns pair: success flag and number of rows written
+    std::pair<bool, size_t> export_unit_stats_csv_with_count(const std::string& filename, const std::vector<Unit>& units) const {
         std::ofstream out(filename);
-        if (!out) return false;
+        if (!out) return {false, 0};
+
+        size_t rows_written = 0;
 
         if (header_.is_extended()) {
             auto stats = calculate_extended_unit_stats();
@@ -773,6 +776,7 @@ public:
                         << s.kill_efficiency() << ","
                         << s.avg_rounds_holding() << ","
                         << s.objective_control_rate() << "\n";
+                    rows_written++;
                 }
             }
         } else {
@@ -799,11 +803,18 @@ public:
                         << s.draws << ","
                         << s.win_rate() << ","
                         << s.game_win_rate() << "\n";
+                    rows_written++;
                 }
             }
         }
 
-        return true;
+        return {true, rows_written};
+    }
+
+    // Legacy wrapper for backwards compatibility
+    bool export_unit_stats_csv(const std::string& filename, const std::vector<Unit>& units) const {
+        auto [success, count] = export_unit_stats_csv_with_count(filename, units);
+        return success;
     }
 
     // Export matchups to CSV (with extended stats if available)
