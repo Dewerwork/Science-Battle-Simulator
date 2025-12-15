@@ -28,6 +28,18 @@ struct BatchConfig {
 };
 
 // ==============================================================================
+// Checkpoint Data
+// ==============================================================================
+
+struct CheckpointData {
+    u64 completed = 0;
+    u64 total = 0;
+    u32 units_a_count = 0;
+    u32 units_b_count = 0;
+    bool valid = false;
+};
+
+// ==============================================================================
 // Compact Result for Storage (8 bytes)
 // ==============================================================================
 
@@ -65,12 +77,13 @@ struct ProgressInfo {
     f64 matchups_per_second;
     f64 elapsed_seconds;
     f64 estimated_remaining_seconds;
+    bool resumed;  // True if this is a resumed simulation
 };
 
 using ProgressCallback = std::function<void(const ProgressInfo&)>;
 
 // ==============================================================================
-// Batch Simulator - Parallel simulation of matchups
+// Batch Simulator - Parallel simulation of matchups with resume support
 // ==============================================================================
 
 class BatchSimulator {
@@ -78,26 +91,81 @@ public:
     explicit BatchSimulator(const BatchConfig& config = BatchConfig())
         : config_(config), pool_() {}
 
-    // Simulate all matchups between two sets of units
+    // Check if we can resume from checkpoint
+    CheckpointData check_checkpoint(size_t units_a_count, size_t units_b_count) {
+        CheckpointData data;
+
+        std::ifstream in(config_.checkpoint_file, std::ios::binary);
+        if (!in) return data;
+
+        in.read(reinterpret_cast<char*>(&data.completed), sizeof(data.completed));
+        in.read(reinterpret_cast<char*>(&data.total), sizeof(data.total));
+        in.read(reinterpret_cast<char*>(&data.units_a_count), sizeof(data.units_a_count));
+        in.read(reinterpret_cast<char*>(&data.units_b_count), sizeof(data.units_b_count));
+
+        if (!in) return CheckpointData{};
+
+        // Verify checkpoint matches current configuration
+        u64 expected_total = static_cast<u64>(units_a_count) * units_b_count;
+        if (data.total == expected_total &&
+            data.units_a_count == units_a_count &&
+            data.units_b_count == units_b_count &&
+            data.completed < data.total) {
+            data.valid = true;
+        }
+
+        return data;
+    }
+
+    // Simulate all matchups with optional resume
     void simulate_all(
         const std::vector<Unit>& units_a,
         const std::vector<Unit>& units_b,
-        ProgressCallback progress = nullptr
+        ProgressCallback progress = nullptr,
+        bool try_resume = false
     ) {
-        // Calculate total matchups
         u64 total_matchups = static_cast<u64>(units_a.size()) * units_b.size();
+        u64 resume_from = 0;
+        bool resumed = false;
 
-        // Open output file
-        std::ofstream out(config_.output_file, std::ios::binary);
+        // Check for resume
+        if (try_resume) {
+            CheckpointData checkpoint = check_checkpoint(units_a.size(), units_b.size());
+            if (checkpoint.valid) {
+                // Verify output file exists and has correct size
+                std::ifstream check_out(config_.output_file, std::ios::binary | std::ios::ate);
+                if (check_out) {
+                    size_t file_size = check_out.tellg();
+                    size_t expected_size = 16 + checkpoint.completed * sizeof(CompactMatchResult);
+                    if (file_size >= expected_size) {
+                        resume_from = checkpoint.completed;
+                        resumed = true;
+                    }
+                }
+            }
+        }
+
+        // Open output file (append if resuming, truncate if starting fresh)
+        std::ofstream out;
+        if (resumed) {
+            out.open(config_.output_file, std::ios::binary | std::ios::in | std::ios::out);
+            if (out) {
+                // Seek to position after existing results
+                out.seekp(16 + resume_from * sizeof(CompactMatchResult));
+            }
+        } else {
+            out.open(config_.output_file, std::ios::binary | std::ios::trunc);
+            if (out) {
+                write_header(out, units_a.size(), units_b.size());
+            }
+        }
+
         if (!out) {
             throw std::runtime_error("Cannot open output file: " + config_.output_file);
         }
 
-        // Write header
-        write_header(out, units_a.size(), units_b.size());
-
         // Track progress
-        std::atomic<u64> completed{0};
+        std::atomic<u64> completed{resume_from};
         auto start_time = std::chrono::high_resolution_clock::now();
 
         // Create batches
@@ -108,10 +176,15 @@ public:
         std::vector<CompactMatchResult> results_buffer;
         results_buffer.reserve(config_.batch_size);
 
+        // Calculate starting position if resuming
+        u32 start_i = static_cast<u32>(resume_from / units_b.size());
+        u32 start_j = static_cast<u32>(resume_from % units_b.size());
+
         // Process all matchups
-        u64 matchup_index = 0;
-        for (u32 i = 0; i < units_a.size(); ++i) {
-            for (u32 j = 0; j < units_b.size(); ++j) {
+        u64 current_index = resume_from;
+        for (u32 i = start_i; i < units_a.size(); ++i) {
+            u32 j_start = (i == start_i) ? start_j : 0;
+            for (u32 j = j_start; j < units_b.size(); ++j) {
                 matchups.emplace_back(i, j);
 
                 // Process batch when full
@@ -123,6 +196,7 @@ public:
                         std::lock_guard<std::mutex> lock(output_mutex);
                         out.write(reinterpret_cast<const char*>(results_buffer.data()),
                                  results_buffer.size() * sizeof(CompactMatchResult));
+                        out.flush();  // Ensure data is written to disk
                         completed += results_buffer.size();
                         results_buffer.clear();
                     }
@@ -134,15 +208,18 @@ public:
                         auto now = std::chrono::high_resolution_clock::now();
                         f64 elapsed = std::chrono::duration<f64>(now - start_time).count();
                         u64 done = completed.load();
-                        f64 rate = done / elapsed;
+                        u64 done_this_session = done - resume_from;
+                        f64 rate = done_this_session / elapsed;
                         f64 remaining = (total_matchups - done) / rate;
 
-                        progress({done, total_matchups, rate, elapsed, remaining});
+                        progress({done, total_matchups, rate, elapsed, remaining, resumed});
                     }
 
                     // Checkpoint
-                    if (completed.load() % config_.checkpoint_interval == 0) {
-                        write_checkpoint(completed.load(), total_matchups);
+                    u64 current_completed = completed.load();
+                    if (current_completed % config_.checkpoint_interval == 0) {
+                        write_checkpoint(current_completed, total_matchups,
+                                        units_a.size(), units_b.size());
                     }
                 }
             }
@@ -153,20 +230,25 @@ public:
             process_batch(units_a, units_b, matchups, results_buffer, output_mutex);
             out.write(reinterpret_cast<const char*>(results_buffer.data()),
                      results_buffer.size() * sizeof(CompactMatchResult));
+            out.flush();
             completed += results_buffer.size();
         }
+
+        // Final checkpoint (mark as complete)
+        write_checkpoint(completed.load(), total_matchups, units_a.size(), units_b.size());
 
         // Final progress report
         if (progress) {
             auto now = std::chrono::high_resolution_clock::now();
             f64 elapsed = std::chrono::duration<f64>(now - start_time).count();
             u64 done = completed.load();
-            f64 rate = done / elapsed;
-            progress({done, total_matchups, rate, elapsed, 0.0});
+            u64 done_this_session = done - resume_from;
+            f64 rate = done_this_session / elapsed;
+            progress({done, total_matchups, rate, elapsed, 0.0, resumed});
         }
     }
 
-    // Resume from checkpoint
+    // Legacy method for backwards compatibility
     u64 resume_from_checkpoint() {
         std::ifstream in(config_.checkpoint_file, std::ios::binary);
         if (!in) return 0;
@@ -184,7 +266,6 @@ private:
     ThreadPool pool_;
 
     void write_header(std::ofstream& out, size_t units_a_count, size_t units_b_count) {
-        // Magic number and version
         u32 magic = 0x42415453;  // "SABS" = Science Battle Sim
         u32 version = 1;
         u32 a_count = static_cast<u32>(units_a_count);
@@ -196,11 +277,15 @@ private:
         out.write(reinterpret_cast<const char*>(&b_count), sizeof(b_count));
     }
 
-    void write_checkpoint(u64 completed, u64 total) {
+    void write_checkpoint(u64 completed, u64 total, size_t units_a, size_t units_b) {
         std::ofstream out(config_.checkpoint_file, std::ios::binary);
         if (out) {
+            u32 a_count = static_cast<u32>(units_a);
+            u32 b_count = static_cast<u32>(units_b);
             out.write(reinterpret_cast<const char*>(&completed), sizeof(completed));
             out.write(reinterpret_cast<const char*>(&total), sizeof(total));
+            out.write(reinterpret_cast<const char*>(&a_count), sizeof(a_count));
+            out.write(reinterpret_cast<const char*>(&b_count), sizeof(b_count));
         }
     }
 
@@ -211,7 +296,6 @@ private:
         std::vector<CompactMatchResult>& results,
         std::mutex& results_mutex
     ) {
-        // Split work across threads
         size_t num_threads = pool_.thread_count();
         size_t chunk_size = (matchups.size() + num_threads - 1) / num_threads;
 
@@ -224,7 +308,6 @@ private:
             if (start >= end) continue;
 
             futures.push_back(pool_.submit([&, start, end]() {
-                // Thread-local dice roller
                 DiceRoller dice;
                 GameRunner runner(dice);
 
@@ -260,7 +343,6 @@ inline void benchmark_simulation(const std::vector<Unit>& units, size_t num_matc
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Submit matchup tasks
     std::vector<std::future<void>> futures;
     size_t matchups_per_thread = num_matchups / pool.thread_count();
 
@@ -278,7 +360,6 @@ inline void benchmark_simulation(const std::vector<Unit>& units, size_t num_matc
         }));
     }
 
-    // Wait for completion
     for (auto& f : futures) {
         f.get();
     }

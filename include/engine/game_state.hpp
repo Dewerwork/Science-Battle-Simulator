@@ -2,6 +2,7 @@
 
 #include "core/types.hpp"
 #include "core/unit.hpp"
+#include "simulation/sim_state.hpp"
 #include <array>
 
 namespace battle {
@@ -74,19 +75,34 @@ struct GameStats {
             else first_blood_b = true;
         }
     }
+
+    void reset() {
+        wounds_dealt_a = 0;
+        wounds_dealt_b = 0;
+        models_killed_a = 0;
+        models_killed_b = 0;
+        rounds_holding_a = 0;
+        rounds_holding_b = 0;
+        first_blood_a = false;
+        first_blood_b = false;
+        first_blood_set = false;
+    }
 };
 
 // ==============================================================================
-// Game State
+// Game State - Optimized to avoid copying units
 // ==============================================================================
 
 struct GameState {
-    // Unit copies for this game (mutable during simulation)
-    Unit unit_a;
-    Unit unit_b;
+    // Const pointers to original units (no copying!)
+    const Unit* unit_a_ptr = nullptr;
+    const Unit* unit_b_ptr = nullptr;
+
+    // Lightweight mutable state (~70 bytes each instead of ~3KB)
+    UnitSimState state_a;
+    UnitSimState state_b;
 
     // Positions: distance from center (negative = A's side, positive = B's side)
-    // Units start at -12 and +12 respectively
     i8 pos_a = -STARTING_DISTANCE;
     i8 pos_b = STARTING_DISTANCE;
 
@@ -99,55 +115,59 @@ struct GameState {
     // Statistics
     GameStats stats;
 
-    // Initialization
+    // Get UnitView for convenient access
+    UnitView view_a() { return UnitView(unit_a_ptr, &state_a); }
+    UnitView view_b() { return UnitView(unit_b_ptr, &state_b); }
+    UnitView view(bool is_unit_a) { return is_unit_a ? view_a() : view_b(); }
+
+    // Initialization - just sets pointers and resets state (no copying!)
     void init(const Unit& a, const Unit& b) {
-        unit_a = a.copy_fresh();
-        unit_b = b.copy_fresh();
+        unit_a_ptr = &a;
+        unit_b_ptr = &b;
+        state_a.init_from(a);
+        state_b.init_from(b);
         pos_a = -STARTING_DISTANCE;
         pos_b = STARTING_DISTANCE;
         current_round = 1;
         unit_a_activated = false;
         unit_b_activated = false;
         in_melee = false;
-        stats = GameStats{};
+        stats.reset();
     }
 
     // Position helpers
     i8 distance_between() const {
-        return pos_b - pos_a;  // Always positive when A is left, B is right
+        return pos_b - pos_a;
     }
 
     bool unit_a_controls_objective() const {
-        if (unit_a.is_out_of_action()) return false;
+        if (state_a.is_out_of_action()) return false;
         if (std::abs(pos_a) > OBJECTIVE_CONTROL_RANGE) return false;
-        // Check if enemy is contesting (within range and not shaken)
-        if (!unit_b.is_out_of_action() &&
+        if (!state_b.is_out_of_action() &&
             std::abs(pos_b) <= OBJECTIVE_CONTROL_RANGE &&
-            !unit_b.is_shaken()) {
-            return false;  // Contested
+            !state_b.is_shaken()) {
+            return false;
         }
         return true;
     }
 
     bool unit_b_controls_objective() const {
-        if (unit_b.is_out_of_action()) return false;
+        if (state_b.is_out_of_action()) return false;
         if (std::abs(pos_b) > OBJECTIVE_CONTROL_RANGE) return false;
-        // Check if enemy is contesting
-        if (!unit_a.is_out_of_action() &&
+        if (!state_a.is_out_of_action() &&
             std::abs(pos_a) <= OBJECTIVE_CONTROL_RANGE &&
-            !unit_a.is_shaken()) {
-            return false;  // Contested
+            !state_a.is_shaken()) {
+            return false;
         }
         return true;
     }
 
     bool is_contested() const {
-        if (unit_a.is_out_of_action() || unit_b.is_out_of_action()) return false;
+        if (state_a.is_out_of_action() || state_b.is_out_of_action()) return false;
         bool a_in_range = std::abs(pos_a) <= OBJECTIVE_CONTROL_RANGE;
         bool b_in_range = std::abs(pos_b) <= OBJECTIVE_CONTROL_RANGE;
         if (!a_in_range || !b_in_range) return false;
-        // Both in range - contested unless one is shaken
-        return !unit_a.is_shaken() && !unit_b.is_shaken();
+        return !state_a.is_shaken() && !state_b.is_shaken();
     }
 
     // Movement helpers
@@ -157,25 +177,20 @@ struct GameState {
         return STANDARD_MOVE;
     }
 
-    // Check if unit can charge the enemy
     bool can_charge(bool is_unit_a) const {
-        if (in_melee) return false;  // Already in melee
-        i8 dist = distance_between();
-        return dist <= CHARGE_DISTANCE;
+        if (in_melee) return false;
+        return distance_between() <= CHARGE_DISTANCE;
     }
 
-    // Check if unit can shoot (has ranged weapons in range)
-    bool can_shoot(bool is_unit_a, const Unit& shooter) const {
-        if (in_melee) return false;  // Can't shoot in melee
-        i8 dist = distance_between();
-        return shooter.max_range >= static_cast<u8>(dist);
+    bool can_shoot(bool is_unit_a) const {
+        if (in_melee) return false;
+        const Unit* shooter = is_unit_a ? unit_a_ptr : unit_b_ptr;
+        return shooter->max_range >= static_cast<u8>(distance_between());
     }
 
     // Game state checks
     bool is_game_over() const {
-        // Game ends early if both units are out of action
-        if (unit_a.is_out_of_action() && unit_b.is_out_of_action()) return true;
-        // Or if we've completed all rounds
+        if (state_a.is_out_of_action() && state_b.is_out_of_action()) return true;
         return current_round > MAX_ROUNDS;
     }
 
@@ -187,8 +202,8 @@ struct GameState {
         current_round++;
         unit_a_activated = false;
         unit_b_activated = false;
-        unit_a.reset_round_state();
-        unit_b.reset_round_state();
+        state_a.reset_round_state();
+        state_b.reset_round_state();
     }
 
     void update_objective_control() {
@@ -216,17 +231,15 @@ struct GameResult {
     bool a_routed = false;
     bool b_routed = false;
 
-    // Determine winner based on objective control at end of round 4
     static GameResult determine(const GameState& state) {
         GameResult result;
         result.stats = state.stats;
         result.rounds_played = state.current_round > MAX_ROUNDS ? MAX_ROUNDS : state.current_round;
-        result.a_destroyed = state.unit_a.is_destroyed();
-        result.b_destroyed = state.unit_b.is_destroyed();
-        result.a_routed = state.unit_a.is_routed();
-        result.b_routed = state.unit_b.is_routed();
+        result.a_destroyed = state.state_a.is_destroyed();
+        result.b_destroyed = state.state_b.is_destroyed();
+        result.a_routed = state.state_a.is_routed();
+        result.b_routed = state.state_b.is_routed();
 
-        // Check objective control
         bool a_controls = state.unit_a_controls_objective();
         bool b_controls = state.unit_b_controls_objective();
 
@@ -235,7 +248,6 @@ struct GameResult {
         } else if (b_controls && !a_controls) {
             result.winner = GameWinner::UnitB;
         } else {
-            // Draw or contested - use tiebreakers
             result.winner = GameWinner::Draw;
         }
 
@@ -254,7 +266,6 @@ struct MatchResult {
     u8 games_won_b = 0;
     GameWinner overall_winner = GameWinner::Draw;
 
-    // Aggregated stats across all games
     u32 total_wounds_dealt_a = 0;
     u32 total_wounds_dealt_b = 0;
     u16 total_models_killed_a = 0;
@@ -280,27 +291,19 @@ struct MatchResult {
         } else if (games_won_b > games_won_a) {
             overall_winner = GameWinner::UnitB;
         } else {
-            // Tied on wins - use tiebreakers
-            // 1. Total wounds dealt
             if (total_wounds_dealt_a > total_wounds_dealt_b) {
                 overall_winner = GameWinner::UnitA;
             } else if (total_wounds_dealt_b > total_wounds_dealt_a) {
                 overall_winner = GameWinner::UnitB;
-            }
-            // 2. Models killed
-            else if (total_models_killed_a > total_models_killed_b) {
+            } else if (total_models_killed_a > total_models_killed_b) {
                 overall_winner = GameWinner::UnitA;
             } else if (total_models_killed_b > total_models_killed_a) {
                 overall_winner = GameWinner::UnitB;
-            }
-            // 3. Rounds holding objective
-            else if (total_rounds_holding_a > total_rounds_holding_b) {
+            } else if (total_rounds_holding_a > total_rounds_holding_b) {
                 overall_winner = GameWinner::UnitA;
             } else if (total_rounds_holding_b > total_rounds_holding_a) {
                 overall_winner = GameWinner::UnitB;
-            }
-            // 4. True draw
-            else {
+            } else {
                 overall_winner = GameWinner::Draw;
             }
         }

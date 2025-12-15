@@ -14,10 +14,12 @@ void print_usage(const char* prog) {
     std::cout << "  -c <file>     Checkpoint file (default: checkpoint.bin)\n";
     std::cout << "  -b <size>     Batch size (default: 10000)\n";
     std::cout << "  -i <interval> Checkpoint interval (default: 1000000)\n";
+    std::cout << "  -r            Resume from checkpoint if available\n";
     std::cout << "  -q            Quiet mode (no progress output)\n";
     std::cout << "  -h            Show this help\n\n";
     std::cout << "Example:\n";
     std::cout << "  " << prog << " units.txt -o faction_results.bin -b 50000\n";
+    std::cout << "  " << prog << " units.txt -r   # Resume interrupted simulation\n";
 }
 
 int main(int argc, char* argv[]) {
@@ -34,6 +36,7 @@ int main(int argc, char* argv[]) {
     config.batch_size = 10000;
     config.checkpoint_interval = 1000000;
     bool quiet = false;
+    bool try_resume = false;
 
     for (int i = 2; i < argc; ++i) {
         std::string arg = argv[i];
@@ -45,6 +48,8 @@ int main(int argc, char* argv[]) {
             config.batch_size = std::stoul(argv[++i]);
         } else if (arg == "-i" && i + 1 < argc) {
             config.checkpoint_interval = std::stoul(argv[++i]);
+        } else if (arg == "-r") {
+            try_resume = true;
         } else if (arg == "-q") {
             quiet = true;
             config.enable_progress = false;
@@ -104,15 +109,34 @@ int main(int argc, char* argv[]) {
     std::cout << "Threads: " << sim.thread_count() << "\n";
 
     // Check for checkpoint to resume
-    u64 resume_from = sim.resume_from_checkpoint();
-    if (resume_from > 0) {
-        std::cout << "\nFound checkpoint at " << resume_from << " matchups\n";
-        std::cout << "NOTE: Resume not yet implemented - starting fresh\n";
+    if (try_resume) {
+        CheckpointData checkpoint = sim.check_checkpoint(
+            parse_result.units.size(), parse_result.units.size());
+        if (checkpoint.valid) {
+            f64 percent = 100.0 * checkpoint.completed / checkpoint.total;
+            std::cout << "\n*** RESUMING from checkpoint ***\n";
+            std::cout << "  Previously completed: " << checkpoint.completed << "/" << checkpoint.total
+                      << " (" << std::fixed << std::setprecision(1) << percent << "%)\n";
+            std::cout << "  Remaining: " << (checkpoint.total - checkpoint.completed) << " matchups\n";
+        } else {
+            std::cout << "\nNo valid checkpoint found - starting fresh\n";
+        }
     }
+
+    // Track if we resumed for final stats
+    u64 started_from = 0;
+    bool did_resume = false;
 
     // Progress callback
     auto last_update = std::chrono::steady_clock::now();
     auto progress_cb = [&](const ProgressInfo& info) {
+        // Track resume state on first callback
+        if (info.resumed && !did_resume) {
+            did_resume = true;
+            // Calculate where we started from
+            // (first progress report shows current completed count)
+        }
+
         auto now = std::chrono::steady_clock::now();
         auto elapsed = std::chrono::duration<f64>(now - last_update).count();
 
@@ -121,7 +145,9 @@ int main(int argc, char* argv[]) {
         last_update = now;
 
         f64 percent = 100.0 * info.completed / info.total;
-        std::cout << "\r  Progress: " << info.completed << "/" << info.total
+        std::cout << "\r  ";
+        if (info.resumed) std::cout << "[RESUMED] ";
+        std::cout << "Progress: " << info.completed << "/" << info.total
                   << " (" << std::fixed << std::setprecision(1) << percent << "%) "
                   << std::setprecision(0) << info.matchups_per_second << " matchups/sec";
 
@@ -149,9 +175,9 @@ int main(int argc, char* argv[]) {
 
     try {
         if (quiet) {
-            sim.simulate_all(parse_result.units, parse_result.units, nullptr);
+            sim.simulate_all(parse_result.units, parse_result.units, nullptr, try_resume);
         } else {
-            sim.simulate_all(parse_result.units, parse_result.units, progress_cb);
+            sim.simulate_all(parse_result.units, parse_result.units, progress_cb, try_resume);
         }
     } catch (const std::exception& e) {
         std::cerr << "\nError during simulation: " << e.what() << "\n";
@@ -163,7 +189,7 @@ int main(int argc, char* argv[]) {
 
     // Print summary
     std::cout << "\n\n--- Simulation Complete ---\n";
-    std::cout << "Total time: ";
+    std::cout << "Session time: ";
     if (sim_time >= 86400) {
         std::cout << (sim_time / 86400) << " days\n";
     } else if (sim_time >= 3600) {
@@ -173,8 +199,6 @@ int main(int argc, char* argv[]) {
     } else {
         std::cout << sim_time << " seconds\n";
     }
-    std::cout << "Average rate: " << std::fixed << std::setprecision(0)
-              << (total_matchups / sim_time) << " matchups/second\n";
     std::cout << "Results saved to: " << config.output_file << "\n";
 
     // Quick analysis
