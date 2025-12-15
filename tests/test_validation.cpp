@@ -71,6 +71,42 @@ std::string normalize_rule_name(const std::string& rule_str) {
     return name;
 }
 
+// Try to find a known rule within a string
+// Returns the rule name if found, empty string otherwise
+// This handles cases like "Combat Shield Shielded" -> finds "shielded"
+std::string find_rule_in_string(const std::string& str, const std::set<std::string>& known_rules) {
+    std::string lower = str;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+    // First try exact match (after removing parenthetical values)
+    std::string normalized = normalize_rule_name(str);
+    if (known_rules.count(normalized) > 0) {
+        return normalized;
+    }
+
+    // Look for known rules within the string (longest match first for specificity)
+    // Sort rules by length descending to find longest matches first
+    std::vector<std::string> sorted_rules(known_rules.begin(), known_rules.end());
+    std::sort(sorted_rules.begin(), sorted_rules.end(),
+              [](const std::string& a, const std::string& b) { return a.length() > b.length(); });
+
+    for (const auto& rule : sorted_rules) {
+        // Check if rule appears as a word boundary (not in middle of another word)
+        size_t pos = lower.find(rule);
+        if (pos != std::string::npos) {
+            // Check word boundaries
+            bool start_ok = (pos == 0 || !std::isalnum(lower[pos - 1]));
+            bool end_ok = (pos + rule.length() >= lower.length() ||
+                          !std::isalnum(lower[pos + rule.length()]));
+            if (start_ok && end_ok) {
+                return rule;
+            }
+        }
+    }
+
+    return "";  // No known rule found
+}
+
 // Parse unit file and extract all rule names used
 RuleValidationResult validate_rules_in_content(const std::string& content) {
     RuleValidationResult result;
@@ -108,18 +144,24 @@ RuleValidationResult validate_rules_in_content(const std::string& content) {
                 if (!rule.empty()) rules.push_back(rule);
             }
 
-            // Check each rule
+            // Check each rule entry
             for (const auto& rule_str : rules) {
-                std::string normalized = normalize_rule_name(rule_str);
-                if (normalized.empty()) continue;
+                if (rule_str.empty()) continue;
 
                 result.total_rule_occurrences++;
 
-                if (known_rules.count(normalized) > 0) {
-                    result.recognized_rules.insert(normalized);
+                // Try to find a known rule within this entry
+                std::string found_rule = find_rule_in_string(rule_str, known_rules);
+
+                if (!found_rule.empty()) {
+                    result.recognized_rules.insert(found_rule);
                 } else {
-                    result.unrecognized_rules.insert(normalized);
-                    result.unrecognized_occurrences++;
+                    // No known rule found - record the normalized form
+                    std::string normalized = normalize_rule_name(rule_str);
+                    if (!normalized.empty()) {
+                        result.unrecognized_rules.insert(normalized);
+                        result.unrecognized_occurrences++;
+                    }
                 }
             }
         }
