@@ -55,30 +55,73 @@ int main(int argc, char* argv[]) {
         }
 
         size_t n = (argc >= 5) ? std::stoul(argv[4]) : 20;
-        auto top = analyzer.get_top_units(n, 3);
 
-        std::cout << "=== Top " << n << " Units by Win Rate ===\n\n";
-        std::cout << std::left << std::setw(5) << "Rank"
-                  << std::setw(40) << "Unit Name"
-                  << std::setw(8) << "Points"
-                  << std::setw(10) << "Win Rate"
-                  << std::setw(12) << "Matches"
-                  << "\n";
-        std::cout << std::string(75, '-') << "\n";
+        if (analyzer.has_extended_data()) {
+            // Extended format - show more stats
+            auto stats = analyzer.calculate_extended_unit_stats();
+            std::vector<std::pair<u32, ExtendedUnitStats>> ranked(stats.begin(), stats.end());
+            std::sort(ranked.begin(), ranked.end(),
+                [](const auto& a, const auto& b) {
+                    return a.second.win_rate() > b.second.win_rate();
+                });
 
-        for (size_t i = 0; i < top.size(); ++i) {
-            const auto& [id, stats] = top[i];
-            if (id < parse_result.units.size()) {
-                const auto& unit = parse_result.units[id];
-                std::string name_str(unit.name.view());
-                if (name_str.size() > 38) name_str = name_str.substr(0, 38);
-                std::cout << std::left << std::setw(5) << (i + 1)
-                          << std::setw(40) << name_str
-                          << std::setw(8) << unit.points_cost
-                          << std::fixed << std::setprecision(1)
-                          << std::setw(10) << (std::to_string((int)stats.win_rate()) + "%")
-                          << std::setw(12) << stats.matches_played
-                          << "\n";
+            std::cout << "=== Top " << n << " Units by Win Rate (Extended Stats) ===\n\n";
+            std::cout << std::left << std::setw(5) << "Rank"
+                      << std::setw(35) << "Unit Name"
+                      << std::setw(7) << "Pts"
+                      << std::setw(9) << "WinRate"
+                      << std::setw(8) << "DmgEff"
+                      << std::setw(8) << "KillEff"
+                      << std::setw(8) << "ObjCtrl"
+                      << "\n";
+            std::cout << std::string(80, '-') << "\n";
+
+            for (size_t i = 0; i < std::min(n, ranked.size()); ++i) {
+                const auto& [id, s] = ranked[i];
+                if (id < parse_result.units.size() && s.matches_played >= 3) {
+                    const auto& unit = parse_result.units[id];
+                    std::string name_str(unit.name.view());
+                    if (name_str.size() > 33) name_str = name_str.substr(0, 33);
+                    std::cout << std::left << std::setw(5) << (i + 1)
+                              << std::setw(35) << name_str
+                              << std::setw(7) << unit.points_cost
+                              << std::fixed << std::setprecision(1)
+                              << std::setw(9) << (std::to_string((int)s.win_rate()) + "%")
+                              << std::setprecision(2)
+                              << std::setw(8) << s.damage_efficiency()
+                              << std::setw(8) << s.kill_efficiency()
+                              << std::setprecision(1)
+                              << std::setw(8) << (std::to_string((int)s.objective_control_rate()) + "%")
+                              << "\n";
+                }
+            }
+        } else {
+            // Compact format - basic stats only
+            auto top = analyzer.get_top_units(n, 3);
+
+            std::cout << "=== Top " << n << " Units by Win Rate ===\n\n";
+            std::cout << std::left << std::setw(5) << "Rank"
+                      << std::setw(40) << "Unit Name"
+                      << std::setw(8) << "Points"
+                      << std::setw(10) << "Win Rate"
+                      << std::setw(12) << "Matches"
+                      << "\n";
+            std::cout << std::string(75, '-') << "\n";
+
+            for (size_t i = 0; i < top.size(); ++i) {
+                const auto& [id, stats] = top[i];
+                if (id < parse_result.units.size()) {
+                    const auto& unit = parse_result.units[id];
+                    std::string name_str(unit.name.view());
+                    if (name_str.size() > 38) name_str = name_str.substr(0, 38);
+                    std::cout << std::left << std::setw(5) << (i + 1)
+                              << std::setw(40) << name_str
+                              << std::setw(8) << unit.points_cost
+                              << std::fixed << std::setprecision(1)
+                              << std::setw(10) << (std::to_string((int)stats.win_rate()) + "%")
+                              << std::setw(12) << stats.matches_played
+                              << "\n";
+                }
             }
         }
         return 0;
@@ -113,14 +156,39 @@ int main(int argc, char* argv[]) {
 
         u32 id_a = std::stoul(argv[3]);
         u32 id_b = std::stoul(argv[4]);
-        auto stats = analyzer.get_matchup(id_a, id_b);
 
         std::cout << "=== Matchup: Unit " << id_a << " vs Unit " << id_b << " ===\n\n";
-        std::cout << "Total matches: " << stats.total() << "\n";
-        std::cout << "Unit A wins: " << stats.a_wins << " (" << stats.a_win_rate() << "%)\n";
-        std::cout << "Unit B wins: " << stats.b_wins << " (" << stats.b_win_rate() << "%)\n";
-        std::cout << "Draws: " << stats.draws << "\n";
-        std::cout << "Games won - A: " << (int)stats.games_a << ", B: " << (int)stats.games_b << "\n";
+
+        if (analyzer.has_extended_data()) {
+            // Extended format - show full combat stats
+            auto stats = analyzer.get_extended_matchup(id_a, id_b);
+
+            std::cout << "Match Results:\n";
+            std::cout << "  Total matches: " << stats.total() << "\n";
+            std::cout << "  Unit A wins: " << stats.a_wins << " (" << std::fixed << std::setprecision(1) << stats.a_win_rate() << "%)\n";
+            std::cout << "  Unit B wins: " << stats.b_wins << " (" << stats.b_win_rate() << "%)\n";
+            std::cout << "  Draws: " << stats.draws << "\n";
+            std::cout << "  Games won - A: " << (int)stats.games_a << ", B: " << (int)stats.games_b << "\n";
+
+            std::cout << "\nCombat Statistics:\n";
+            std::cout << "  Unit A avg wounds dealt: " << std::setprecision(2) << stats.avg_wounds_a() << "\n";
+            std::cout << "  Unit B avg wounds dealt: " << stats.avg_wounds_b() << "\n";
+            std::cout << "  Unit A avg models killed: " << stats.avg_models_killed_a() << "\n";
+            std::cout << "  Unit B avg models killed: " << stats.avg_models_killed_b() << "\n";
+
+            std::cout << "\nObjective Control:\n";
+            std::cout << "  Unit A avg rounds holding: " << stats.avg_rounds_holding_a() << "\n";
+            std::cout << "  Unit B avg rounds holding: " << stats.avg_rounds_holding_b() << "\n";
+        } else {
+            // Compact format - basic stats only
+            auto stats = analyzer.get_matchup(id_a, id_b);
+
+            std::cout << "Total matches: " << stats.total() << "\n";
+            std::cout << "Unit A wins: " << stats.a_wins << " (" << stats.a_win_rate() << "%)\n";
+            std::cout << "Unit B wins: " << stats.b_wins << " (" << stats.b_win_rate() << "%)\n";
+            std::cout << "Draws: " << stats.draws << "\n";
+            std::cout << "Games won - A: " << (int)stats.games_a << ", B: " << (int)stats.games_b << "\n";
+        }
         return 0;
     }
 
