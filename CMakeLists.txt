@@ -78,6 +78,11 @@ add_executable(test_parser src/test_parser.cpp)
 target_include_directories(test_parser PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_compile_options(test_parser PRIVATE ${COMMON_FLAGS})
 
+# Game engine test - header-only
+add_executable(test_game src/test_game.cpp)
+target_include_directories(test_game PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_options(test_game PRIVATE ${COMMON_FLAGS})
+
 # Commented out until source files are implemented:
 # add_executable(test_dice tests/test_dice.cpp)
 # target_link_libraries(test_dice PRIVATE battle_engine)
