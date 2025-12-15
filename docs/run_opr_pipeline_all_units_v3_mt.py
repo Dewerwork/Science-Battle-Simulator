@@ -50,6 +50,11 @@ RULE_AGNOSTIC_GROUPING = True
 # TXT formatting
 ADD_BLANK_LINE_BETWEEN_UNITS = True
 
+# Merge settings: After processing all units, merge *.final.txt into one file
+MERGE_FINAL_TXTS = True
+STRIP_SG_LABELS = True  # Remove " - SG#### (...)" from header lines
+ADD_BLANK_LINE_BETWEEN_FILES = True
+
 # =========================================================
 # Utilities
 # =========================================================
@@ -1481,6 +1486,73 @@ def find_pdf_files(input_path: Path) -> List[Path]:
     else:
         raise FileNotFoundError(f"Input path not found: {input_path}")
 
+# =========================================================
+# Merge all *.final.txt files into one army TXT
+# =========================================================
+# Matches: " - SG0001 (child_groups=... members=...)"
+_SG_LABEL_RE = re.compile(r"\s+-\s+SG\d{4,}\s+\([^)]*\)")
+
+def _looks_like_header(line: str) -> bool:
+    """Check if a line looks like a unit header."""
+    s = line.strip()
+    # Headers have "Q" "D" and "pts |"
+    return (" Q" in s) and (" D" in s) and ("pts |" in s)
+
+def _maybe_strip_sg(line: str) -> str:
+    """Optionally strip SG labels from header lines."""
+    if STRIP_SG_LABELS and _looks_like_header(line):
+        return _SG_LABEL_RE.sub("", line).rstrip()
+    return line.rstrip()
+
+def merge_final_txts(faction_dir: Path, faction_name: str) -> Optional[Path]:
+    """
+    Merge all *.final.txt files in faction_dir into one merged file.
+    Returns the path to the merged file, or None if no files found.
+    """
+    if not MERGE_FINAL_TXTS:
+        return None
+
+    # Find all *.final.txt files (recursively)
+    final_files = sorted(
+        [p for p in faction_dir.rglob("*.final.txt") if p.is_file()],
+        key=lambda p: (p.parent.name.lower(), p.name.lower())
+    )
+
+    if not final_files:
+        return None
+
+    out_file = faction_dir / f"{safe_filename(faction_name)}.final.merged.txt"
+
+    # Exclude the output file itself if it exists
+    final_files = [f for f in final_files if f.resolve() != out_file.resolve()]
+
+    if not final_files:
+        return None
+
+    out_lines: List[str] = []
+    for f in final_files:
+        lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
+
+        # Strip BOM if present
+        if lines and lines[0].startswith("\ufeff"):
+            lines[0] = lines[0].lstrip("\ufeff")
+
+        # Apply optional SG stripping to header lines
+        lines = [_maybe_strip_sg(ln) for ln in lines]
+
+        # Append with blank line separation
+        if out_lines and ADD_BLANK_LINE_BETWEEN_FILES:
+            if out_lines[-1].strip() != "":
+                out_lines.append("")
+            # Skip leading blanks in the next file
+            while lines and lines[0].strip() == "":
+                lines.pop(0)
+
+        out_lines.extend(lines)
+
+    out_file.write_text("\n".join(out_lines).rstrip() + "\n", encoding="utf-8")
+    return out_file
+
 def process_single_pdf(pdf_path: Path,
                        out_dir: Path,
                        exact_map: Dict[str, str],
@@ -1534,6 +1606,11 @@ def process_single_pdf(pdf_path: Path,
         # Stage-2 final
         stage2_reduce(stage1_payload["groups"], final_txt_path, final_json_path, final_idx_path)
         print(f"  [OK] Stage-2: -> {final_txt_path.name}")
+
+    # Merge all *.final.txt files into one
+    merged_path = merge_final_txts(faction_dir, faction_name)
+    if merged_path:
+        print(f"\n  [OK] Merged all units -> {merged_path.name}")
 
 def run() -> None:
     input_path = Path(PDF_INPUT_PATH).expanduser()
