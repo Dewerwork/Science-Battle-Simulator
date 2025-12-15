@@ -3,7 +3,9 @@
 #include "core/types.hpp"
 #include "core/unit.hpp"
 #include "core/weapon.hpp"
+#include "core/faction_rules.hpp"
 #include "engine/dice.hpp"
+#include "engine/faction_combat.hpp"
 #include "simulation/sim_state.hpp"
 #include <array>
 
@@ -264,14 +266,24 @@ inline AttackResult CombatResolver::resolve_weapon_attack(
     AttackResult result;
     result.attacks_made = weapon.attacks;
 
+    // Get faction combat modifiers
+    auto& faction_applicator = get_faction_applicator();
+    FactionCombatModifiers attack_mods = faction_applicator.calculate_attack_modifiers(
+        attacker_unit, defender, ctx.phase, ctx.is_charging
+    );
+    FactionCombatModifiers defense_mods = faction_applicator.calculate_defense_modifiers(
+        defender, attacker_unit, ctx.phase
+    );
+
     // Handle fatigued (only hits on 6s)
     if (ctx.attacker_fatigued && ctx.phase == CombatPhase::Melee) {
         auto [hits, sixes] = dice_.roll_quality_test(weapon.attacks, 6, 0);
         result.hits = sixes;  // Only 6s hit when fatigued
         result.sixes_rolled = sixes;
     } else {
-        // Calculate quality modifier
+        // Calculate quality modifier including faction modifiers
         i8 quality_mod = ctx.attacker_shaken ? -1 : 0;
+        quality_mod += attack_mods.hit_modifier;
         u8 effective_quality = model.quality;
 
         // Check for Reliable (Quality 2+)
@@ -285,9 +297,30 @@ inline AttackResult CombatResolver::resolve_weapon_attack(
             quality_mod += 1;
         }
 
-        auto [hits, sixes] = dice_.roll_quality_test(weapon.attacks, effective_quality, quality_mod);
+        // Check for GoodShot (+1 to hit when shooting)
+        if (attacker_unit.has_rule(RuleId::GoodShot) && ctx.phase == CombatPhase::Shooting) {
+            quality_mod += 1;
+        }
+
+        // Check for BadShot (-1 to hit when shooting)
+        if (attacker_unit.has_rule(RuleId::BadShot) && ctx.phase == CombatPhase::Shooting) {
+            quality_mod -= 1;
+        }
+
+        // Apply extra attacks from faction rules
+        u8 total_attacks = weapon.attacks + attack_mods.extra_attacks;
+
+        auto [hits, sixes] = dice_.roll_quality_test(total_attacks, effective_quality, quality_mod);
         result.hits = hits;
         result.sixes_rolled = sixes;
+
+        // Apply Predator Fighter (6s in melee generate extra attacks)
+        if (ctx.phase == CombatPhase::Melee &&
+            (attacker_unit.has_rule(RuleId::PredatorFighter) ||
+             attack_mods.has_granted_rule(RuleId::PredatorFighter))) {
+            u8 extra_hits = apply_predator_fighter(dice_, sixes, attacker_unit, weapon.attacks, model.quality);
+            result.hits += extra_hits;
+        }
     }
 
     // Apply hit modifiers
@@ -295,8 +328,12 @@ inline AttackResult CombatResolver::resolve_weapon_attack(
         result.hits, result.sixes_rolled, weapon, attacker_unit, defender, ctx.is_charging
     );
 
-    // Calculate AP
+    // Add extra hits from faction rules
+    result.hits_after_modifiers += attack_mods.extra_hits;
+
+    // Calculate AP including faction modifiers
     u8 effective_ap = calculate_ap(weapon, attacker_unit, ctx.is_charging);
+    effective_ap += static_cast<u8>(std::max(0, static_cast<int>(attack_mods.ap_modifier)));
 
     // Get defender stats
     if (defender.alive_count == 0) {
@@ -309,6 +346,27 @@ inline AttackResult CombatResolver::resolve_weapon_attack(
     if (ctx.in_cover) defense_mod += 1;
     if (ctx.defender_shaken) defense_mod -= 1;
 
+    // Apply Shielded (+1 defense vs non-spell hits)
+    defense_mod += apply_shielded(defender);
+
+    // Apply faction defense modifiers
+    defense_mod += defense_mods.defense_modifier;
+
+    // Apply MeleeEvasion/MeleeShrouding (-1 to be hit in melee)
+    if (ctx.phase == CombatPhase::Melee) {
+        if (defender.has_rule(RuleId::MeleeEvasion) ||
+            defender.has_rule(RuleId::MeleeShrouding)) {
+            // This affects attacker's hit roll, but we simulate it as defense bonus
+            defense_mod += 1;
+        }
+    }
+
+    // Apply RangedShrouding (-1 to be hit when shooting)
+    if (ctx.phase == CombatPhase::Shooting &&
+        defender.has_rule(RuleId::RangedShrouding)) {
+        defense_mod += 1;
+    }
+
     // Check for Poison
     bool has_poison = weapon.has_rule(RuleId::Poison);
 
@@ -320,8 +378,23 @@ inline AttackResult CombatResolver::resolve_weapon_attack(
     // Apply wound modifiers
     result.wounds_dealt = apply_wound_modifiers(wounds, weapon);
 
-    // Check for Bane
-    result.has_bane = weapon.has_rule(RuleId::Bane);
+    // Apply Rupture extra wounds (extra wound on unmodified 6 to hit)
+    if (attacker_unit.has_rule(RuleId::Rupture) || weapon.has_rule(RuleId::Rupture)) {
+        result.wounds_dealt += apply_rupture_extra_wounds(result.sixes_rolled, attacker_unit);
+    }
+
+    // Apply extra wounds from faction rules
+    result.wounds_dealt += attack_mods.extra_wounds;
+
+    // Apply Resistance (6+ to ignore wounds)
+    result.wounds_dealt = apply_resistance(dice_, result.wounds_dealt, defender);
+
+    // Check for Bane (bypasses regeneration)
+    result.has_bane = weapon.has_rule(RuleId::Bane) ||
+                      attacker_unit.has_rule(RuleId::Unstoppable) ||
+                      attack_mods.ignores_regeneration ||
+                      attacker_unit.has_rule(RuleId::Rupture) ||
+                      weapon.has_rule(RuleId::Rupture);
 
     return result;
 }

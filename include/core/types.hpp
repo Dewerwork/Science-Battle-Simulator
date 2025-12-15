@@ -145,6 +145,28 @@ enum class RuleId : u8 {
     Takedown,       // Takedown - Pick target model, resolve as unit of 1
     Limited,        // Limited - Weapon may only be used once per game
 
+    // Faction-specific rules (added for army special rules)
+    Shielded,       // Shielded - +1 defense vs non-spell hits
+    Resistance,     // Resistance - 6+ to ignore wounds (2+ vs spells)
+    NoRetreat,      // No Retreat - Can't be shaken/routed, take wounds instead
+    MoraleBoost,    // Morale Boost - +1 to morale test rolls
+    Rupture,        // Rupture - Ignore regen, extra wound on unmodified 6 to hit
+    Agile,          // Agile - +1" advance, +2" rush/charge
+    HitAndRun,      // Hit & Run - Can retreat after fighting
+    PointBlankSurge,// Point-Blank Surge - 6s to hit deal extra hit at short range
+    Shred,          // Shred - Extra wound on unmodified 1 to block
+    Smash,          // Smash - Ignore regen, +Blast(3) vs Defense 5+/6+
+    Battleborn,     // Battleborn - 4+ to stop being Shaken at round start
+    PredatorFighter,// Predator Fighter - 6s in melee generate extra attacks
+    RapidCharge,    // Rapid Charge - +4" charge move
+    SelfDestruct,   // Self-Destruct - Deal X hits to attacker when killed in melee
+    VersatileAttack,// Versatile Attack - Choose AP+1 or +1 to hit each activation
+    GoodShot,       // Good Shot - +1 to hit when shooting
+    BadShot,        // Bad Shot - -1 to hit when shooting
+    MeleeEvasion,   // Melee Evasion - -1 to be hit in melee
+    MeleeShrouding, // Melee Shrouding - -1 to be hit in melee (like Stealth)
+    RangedShrouding,// Ranged Shrouding - -1 to be hit when shooting at this unit
+
     COUNT // Number of rules
 };
 
