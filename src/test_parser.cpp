@@ -1,4 +1,5 @@
 #include "parser/unit_parser.hpp"
+#include "core/faction_rules.hpp"
 #include <iostream>
 #include <iomanip>
 
@@ -65,6 +66,9 @@ void print_unit(const Unit& unit) {
 }
 
 int main(int argc, char* argv[]) {
+    // Initialize faction rules
+    initialize_faction_rules();
+
     std::cout << "=== Battle Simulator Unit Parser Test ===\n\n";
 
     // Test with inline sample data

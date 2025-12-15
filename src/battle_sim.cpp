@@ -1,6 +1,7 @@
 #include "parser/unit_parser.hpp"
 #include "simulation/batch_simulator.hpp"
 #include "analysis/result_analyzer.hpp"
+#include "core/faction_rules.hpp"
 #include <iostream>
 #include <iomanip>
 #include <chrono>
@@ -55,6 +56,9 @@ int main(int argc, char* argv[]) {
             config.enable_progress = false;
         }
     }
+
+    // Initialize faction rules
+    initialize_faction_rules();
 
     // Load units
     std::cout << "=== Battle Simulator ===\n\n";

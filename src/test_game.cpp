@@ -1,5 +1,6 @@
 #include "parser/unit_parser.hpp"
 #include "engine/game_runner.hpp"
+#include "core/faction_rules.hpp"
 #include <iostream>
 #include <iomanip>
 
@@ -29,6 +30,9 @@ void print_match_result(const MatchResult& result, const Unit& a, const Unit& b)
 }
 
 int main() {
+    // Initialize faction rules
+    initialize_faction_rules();
+
     std::cout << "=== Battle Simulator Game Engine Test ===\n\n";
 
     // Create sample units for testing
