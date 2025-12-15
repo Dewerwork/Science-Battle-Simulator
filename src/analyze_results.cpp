@@ -196,7 +196,7 @@ int main(int argc, char* argv[]) {
     if (command == "csv-stats" && argc >= 5) {
         ResultAnalyzer analyzer;
         std::cout << "Loading results from: " << argv[2] << "\n";
-        if (!analyzer.load_results(argv[2])) {
+        if (!analyzer.load_results(argv[2], true)) {
             std::cerr << "Failed to load results from: " << argv[2] << "\n";
             return 1;
         }

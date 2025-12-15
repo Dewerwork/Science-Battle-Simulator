@@ -204,13 +204,28 @@ public:
     ResultAnalyzer() = default;
 
     // Load results from binary file (auto-detects format)
-    bool load_results(const std::string& filename) {
+    bool load_results(const std::string& filename, bool verbose = false) {
         std::ifstream in(filename, std::ios::binary);
-        if (!in) return false;
+        if (!in) {
+            if (verbose) std::cerr << "  Error: Cannot open file\n";
+            return false;
+        }
 
         // Read header
         in.read(reinterpret_cast<char*>(&header_), sizeof(header_));
-        if (!header_.is_valid()) return false;
+        if (!in) {
+            if (verbose) std::cerr << "  Error: Cannot read header (file too small?)\n";
+            return false;
+        }
+        if (!header_.is_valid()) {
+            if (verbose) {
+                std::cerr << "  Error: Invalid header\n";
+                std::cerr << "    Magic: 0x" << std::hex << header_.magic << std::dec
+                          << " (expected 0x42415453 'SABS')\n";
+                std::cerr << "    Version: " << header_.version << " (expected 1 or 2)\n";
+            }
+            return false;
+        }
 
         // Clear previous results
         results_.clear();
