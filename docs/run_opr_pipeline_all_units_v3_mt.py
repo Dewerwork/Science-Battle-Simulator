@@ -17,7 +17,6 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # =========================================================
 # PDF input: Can be a single PDF file OR a folder containing multiple PDFs
 PDF_INPUT_PATH = r"C:\Users\David\Documents\Army Factions"
-RULES_XLSX_PATH = r"C:\Users\David\Desktop\Special Rules Exclusion List.xlsx"
 OUTPUT_DIR = r"C:\Users\David\Documents\Army Factions\pipeline_output"
 
 # 0 = no limit (can explode!)
@@ -30,8 +29,6 @@ TASKS_PER_UNIT = 256 # good load balancing for uneven work
 # Write huge ungrouped loadouts? (usually NO)
 WRITE_UNGROUPED_LOADOUTS_TXT = False
 
-# Stage-1 rule policy driven by XLSX
-RULE_POLICY = "exclude"   # "exclude" | "bucket" | "keep"
 INCLUDE_POINTS_IN_STAGE1_SIGNATURE = True  # stage-2 ignores points anyway, but can help lineage/debug
 
 # Stage-2 weapon condensation settings
@@ -243,74 +240,6 @@ def parse_units(lines: List[str]) -> List[Dict[str, Any]]:
 
     return units
 
-# =========================================================
-# XLSX rule policy loader
-# =========================================================
-def _norm_rule_key(s: str) -> str:
-    return " ".join(str(s).strip().split()).lower()
-
-def rule_base(rule: str) -> str:
-    rule = " ".join(str(rule).strip().split())
-    if "(" in rule:
-        return rule.split("(", 1)[0].strip()
-    return rule
-
-def type_to_bucket(t: str) -> str:
-    t = " ".join(str(t).strip().split())
-    t = t.upper().replace(" ", "_")
-    return f"<{t}>"
-
-def load_rule_policy_xlsx(xlsx_path: Path) -> Tuple[Dict[str, str], Dict[str, str]]:
-    try:
-        import openpyxl  # type: ignore
-    except Exception as e:
-        raise RuntimeError("Missing dependency openpyxl. Install with: pip install openpyxl") from e
-
-    wb = openpyxl.load_workbook(xlsx_path, data_only=True)
-    ws = wb[wb.sheetnames[0]]
-
-    rows = list(ws.iter_rows(values_only=True))
-    if not rows:
-        return {}, {}
-
-    header = [str(c).strip() if c is not None else "" for c in rows[0]]
-    rule_col = None
-    type_col = None
-    for i, h in enumerate(header):
-        hl = h.lower()
-        if hl in ("rule_name", "rule", "name"):
-            rule_col = i
-        if hl in ("type", "classification", "class"):
-            type_col = i
-    if rule_col is None:
-        rule_col = 0
-    if type_col is None:
-        type_col = 1 if len(header) > 1 else 0
-
-    exact_map: Dict[str, str] = {}
-    base_map: Dict[str, str] = {}
-
-    for r in rows[1:]:
-        if not r or rule_col >= len(r):
-            continue
-        rule_val = r[rule_col]
-        if rule_val is None:
-            continue
-        rule_str = str(rule_val).strip()
-        if not rule_str:
-            continue
-        t_val = r[type_col] if type_col < len(r) else ""
-        t_str = str(t_val).strip() if t_val is not None else ""
-        if not t_str:
-            t_str = "EXCLUDE"
-
-        ek = _norm_rule_key(rule_str)
-        exact_map[ek] = t_str
-        bk = _norm_rule_key(rule_base(rule_str))
-        base_map.setdefault(bk, t_str)
-
-    return exact_map, base_map
-
 # Patterns for filtering invalid/artifact rules
 _COST_MODIFIER_RE = re.compile(r"^\+\d+pts$", re.IGNORECASE)
 _TRAILING_PAREN_RE = re.compile(r"^(.+)\)$")  # Rules ending with unmatched )
@@ -359,32 +288,13 @@ def _clean_rule(rule: str) -> Optional[str]:
     r = r.strip()
     return r if r else None
 
-def normalize_rules_for_signature(rules_in: List[str], exact_map: Dict[str, str], base_map: Dict[str, str]) -> Tuple[str, ...]:
-    # First clean all rules
-    rules = []
+def normalize_rules_for_signature(rules_in: List[str]) -> Tuple[str, ...]:
+    """Clean and normalize rules for signature generation (no exclusion)."""
+    out: List[str] = []
     for r in rules_in:
         cleaned = _clean_rule(r)
         if cleaned:
-            rules.append(cleaned)
-
-    out: List[str] = []
-    for r in rules:
-        rk_exact = _norm_rule_key(r)
-        rk_base = _norm_rule_key(rule_base(r))
-        t = exact_map.get(rk_exact) or base_map.get(rk_base)
-
-        if t is None:
-            out.append(r)
-            continue
-
-        if RULE_POLICY == "keep":
-            out.append(r)
-        elif RULE_POLICY == "exclude":
-            continue
-        elif RULE_POLICY == "bucket":
-            out.append(type_to_bucket(t))
-        else:
-            raise ValueError(f"Unknown RULE_POLICY={RULE_POLICY}")
+            out.append(cleaned)
 
     out = sorted(set(out), key=lambda x: x.lower())
     return tuple(out)
@@ -852,25 +762,19 @@ _G_RADICES: List[int] = []
 _G_BASE_PTS: int = 0
 _G_BASE_RULES: List[str] = []
 _G_BASE_W: Dict[str, int] = {}
-_G_EXACT_MAP: Dict[str, str] = {}
-_G_BASE_MAP: Dict[str, str] = {}
 
 def _init_worker(unit: Dict[str, Any],
                  group_vars: List[List[Variant]],
                  base_pts: int,
                  base_rules: List[str],
-                 base_weapon_multiset: Dict[str, int],
-                 exact_map: Dict[str, str],
-                 base_map: Dict[str, str]) -> None:
-    global _G_UNIT, _G_GROUP_VARS, _G_RADICES, _G_BASE_PTS, _G_BASE_RULES, _G_BASE_W, _G_EXACT_MAP, _G_BASE_MAP
+                 base_weapon_multiset: Dict[str, int]) -> None:
+    global _G_UNIT, _G_GROUP_VARS, _G_RADICES, _G_BASE_PTS, _G_BASE_RULES, _G_BASE_W
     _G_UNIT = unit
     _G_GROUP_VARS = group_vars
     _G_RADICES = [len(vs) for vs in group_vars]
     _G_BASE_PTS = base_pts
     _G_BASE_RULES = base_rules
     _G_BASE_W = base_weapon_multiset
-    _G_EXACT_MAP = exact_map
-    _G_BASE_MAP = base_map
 
 def _header_for(points: int, rules_sig: Tuple[str, ...]) -> str:
     name = str(_G_UNIT.get("name", "")).strip()
@@ -907,9 +811,9 @@ def _worker_stage1_range(start_idx: int, end_idx: int) -> Dict[str, Any]:
 
         points = int(_G_BASE_PTS + pts_delta)
 
-        # Rules -> normalize via XLSX policy
+        # Rules -> normalize (clean artifacts)
         rules_raw = _G_BASE_RULES + add_rules
-        rules_sig = normalize_rules_for_signature(rules_raw, _G_EXACT_MAP, _G_BASE_MAP)
+        rules_sig = normalize_rules_for_signature(rules_raw)
 
         # Weapons multiset -> base + deltas
         w: Dict[str, int] = dict(_G_BASE_W)
@@ -1446,9 +1350,9 @@ def _worker_raw_loadouts_range(start_idx: int, end_idx: int) -> List[Dict[str, A
 
         points = int(_G_BASE_PTS + pts_delta)
 
-        # Rules -> normalize via XLSX policy
+        # Rules -> normalize (clean artifacts)
         rules_raw = _G_BASE_RULES + add_rules
-        rules_sig = normalize_rules_for_signature(rules_raw, _G_EXACT_MAP, _G_BASE_MAP)
+        rules_sig = normalize_rules_for_signature(rules_raw)
 
         # Weapons multiset -> base + deltas
         w: Dict[str, int] = dict(_G_BASE_W)
@@ -1508,8 +1412,6 @@ def _worker_raw_loadouts_range(start_idx: int, end_idx: int) -> List[Dict[str, A
     return out
 
 def generate_raw_loadouts_parallel(unit: Dict[str, Any],
-                                   exact_map: Dict[str, str],
-                                   base_map: Dict[str, str],
                                    limit: int = 0) -> Dict[str, Any]:
     """
     Generate all raw loadouts for a unit with UIDs (no grouping).
@@ -1527,7 +1429,7 @@ def generate_raw_loadouts_parallel(unit: Dict[str, Any],
         total = limit
 
     if total <= 1 or WORKERS_PER_UNIT <= 1:
-        _init_worker(unit, group_vars, base_pts, base_rules, base_weapon_multiset, exact_map, base_map)
+        _init_worker(unit, group_vars, base_pts, base_rules, base_weapon_multiset)
         all_loadouts = _worker_raw_loadouts_range(0, total)
     else:
         n_tasks = min(TASKS_PER_UNIT, total)
@@ -1537,7 +1439,7 @@ def generate_raw_loadouts_parallel(unit: Dict[str, Any],
         with ProcessPoolExecutor(
             max_workers=WORKERS_PER_UNIT,
             initializer=_init_worker,
-            initargs=(unit, group_vars, base_pts, base_rules, base_weapon_multiset, exact_map, base_map)
+            initargs=(unit, group_vars, base_pts, base_rules, base_weapon_multiset)
         ) as ex:
             futures = []
             for t in range(n_tasks):
@@ -1614,7 +1516,6 @@ def write_raw_loadouts_json(payload: Dict[str, Any], out_json: Path) -> None:
         "settings": {
             "RAW_LOADOUT_MODE": True,
             "UID_FORMAT": "8-char hex hash",
-            "RULE_POLICY": RULE_POLICY,
         },
         "loadouts": payload["loadouts"],
     }
@@ -1624,8 +1525,6 @@ def write_raw_loadouts_json(payload: Dict[str, Any], out_json: Path) -> None:
 # Unit pipeline: inline stage-1 with within-unit parallel generation
 # =========================================================
 def stage1_reduce_inline_parallel(unit: Dict[str, Any],
-                                 exact_map: Dict[str, str],
-                                 base_map: Dict[str, str],
                                  limit: int = 0) -> Dict[str, Any]:
     base_pts = int(unit.get("base_points", 0) or 0)
     base_rules = [str(x).strip() for x in (unit.get("special_rules") or []) if str(x).strip()]
@@ -1640,7 +1539,7 @@ def stage1_reduce_inline_parallel(unit: Dict[str, Any],
         total = limit
 
     if total <= 1 or WORKERS_PER_UNIT <= 1:
-        _init_worker(unit, group_vars, base_pts, base_rules, base_weapon_multiset, exact_map, base_map)
+        _init_worker(unit, group_vars, base_pts, base_rules, base_weapon_multiset)
         partial = _worker_stage1_range(0, total)
         merged = partial
     else:
@@ -1651,7 +1550,7 @@ def stage1_reduce_inline_parallel(unit: Dict[str, Any],
         with ProcessPoolExecutor(
             max_workers=WORKERS_PER_UNIT,
             initializer=_init_worker,
-            initargs=(unit, group_vars, base_pts, base_rules, base_weapon_multiset, exact_map, base_map)
+            initargs=(unit, group_vars, base_pts, base_rules, base_weapon_multiset)
         ) as ex:
             futures = []
             for t in range(n_tasks):
@@ -1691,7 +1590,6 @@ def stage1_reduce_inline_parallel(unit: Dict[str, Any],
             "unit": unit.get("name"),
             "points": int(info.get("points", 0) or 0),
             "count": int(info["count"]),
-            "rule_policy": RULE_POLICY,
             "representative": rep,
         })
 
@@ -1700,7 +1598,6 @@ def stage1_reduce_inline_parallel(unit: Dict[str, Any],
         "total_combinations_processed": total,
         "total_groups": len(out_groups),
         "settings": {
-            "RULE_POLICY": RULE_POLICY,
             "INCLUDE_POINTS_IN_STAGE1_SIGNATURE": INCLUDE_POINTS_IN_STAGE1_SIGNATURE,
             "WORKERS_PER_UNIT": WORKERS_PER_UNIT,
             "TASKS_PER_UNIT": TASKS_PER_UNIT,
@@ -1835,9 +1732,7 @@ def merge_final_txts(faction_dir: Path, faction_name: str) -> Optional[Path]:
     return out_file
 
 def process_single_pdf(pdf_path: Path,
-                       out_dir: Path,
-                       exact_map: Dict[str, str],
-                       base_map: Dict[str, str]) -> None:
+                       out_dir: Path) -> None:
     """Process a single PDF file and generate all outputs."""
     faction_name, faction_version = parse_faction_from_filename(pdf_path.name)
     faction_dir = out_dir / safe_filename(f"{faction_name}_{faction_version}")
@@ -1878,7 +1773,7 @@ def process_single_pdf(pdf_path: Path,
             raw_json_path = unit_dir / f"{safe_filename(unit_name)}.raw_loadouts.json"
             raw_txt_path  = unit_dir / f"{safe_filename(unit_name)}.final.txt"
 
-            raw_payload = generate_raw_loadouts_parallel(u, exact_map, base_map, limit=MAX_LOADOUTS_PER_UNIT)
+            raw_payload = generate_raw_loadouts_parallel(u, limit=MAX_LOADOUTS_PER_UNIT)
             write_raw_loadouts_json(raw_payload, raw_json_path)
             write_raw_loadouts_txt(raw_payload, raw_txt_path)
             print(f"  [OK] Raw loadouts: {raw_payload.get('total_loadouts'):,} loadouts "
@@ -1892,7 +1787,7 @@ def process_single_pdf(pdf_path: Path,
             final_idx_path  = unit_dir / f"{safe_filename(unit_name)}.final.lineage_index.json"
 
             # Stage-1 inline
-            stage1_payload = stage1_reduce_inline_parallel(u, exact_map, base_map, limit=MAX_LOADOUTS_PER_UNIT)
+            stage1_payload = stage1_reduce_inline_parallel(u, limit=MAX_LOADOUTS_PER_UNIT)
             stage1_json_path.write_text(json.dumps(stage1_payload, indent=2), encoding="utf-8")
             print(f"  [OK] Stage-1: {stage1_payload.get('total_groups'):,} groups "
                   f"(from {stage1_payload.get('total_combinations_processed'):,} combos)")
@@ -1908,13 +1803,10 @@ def process_single_pdf(pdf_path: Path,
 
 def run() -> None:
     input_path = Path(PDF_INPUT_PATH).expanduser()
-    xlsx_path = Path(RULES_XLSX_PATH).expanduser()
     out_dir = Path(OUTPUT_DIR).expanduser()
 
     if not input_path.exists():
         raise FileNotFoundError(f"PDF input path not found: {input_path}")
-    if not xlsx_path.exists():
-        raise FileNotFoundError(f"Rules XLSX not found: {xlsx_path}")
 
     ensure_dir(out_dir)
 
@@ -1926,13 +1818,10 @@ def run() -> None:
     if not RAW_LOADOUT_MODE:
         print(f"[INFO] ATTACK_AGNOSTIC_GROUPING={ATTACK_AGNOSTIC_GROUPING}, RULE_AGNOSTIC_GROUPING={RULE_AGNOSTIC_GROUPING}")
 
-    # Load rule policy ONCE (shared across all PDFs)
-    exact_map, base_map = load_rule_policy_xlsx(xlsx_path)
-
     # Process each PDF
     for pdf_path in pdf_files:
         try:
-            process_single_pdf(pdf_path, out_dir, exact_map, base_map)
+            process_single_pdf(pdf_path, out_dir)
         except Exception as e:
             print(f"[ERROR] Failed to process {pdf_path.name}: {e}")
             import traceback
