@@ -110,6 +110,7 @@ struct UnitView {
     bool is_routed() const { return state->is_routed(); }
     bool is_out_of_action() const { return state->is_out_of_action(); }
     bool is_fatigued() const { return state->is_fatigued; }
+    void set_fatigued(bool val) { state->is_fatigued = val; }
 
     void become_shaken() { state->become_shaken(); }
     void rally() { state->rally(); }

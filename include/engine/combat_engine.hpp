@@ -60,46 +60,63 @@ public:
             u32 hits = hit_result.hits;
             u32 sixes = hit_result.sixes;
 
-            // Rending: 6s to hit get AP(4) - track separately
-            u32 rending_hits = w.has_rule(RuleId::Rending) ? sixes : 0;
+            // Rending: 6s to hit get AP(+4) - track separately
+            bool has_rending = w.has_rule(RuleId::Rending);
+            u32 rending_hits = has_rending ? sixes : 0;
             u32 normal_hits = hits - rending_hits;
 
-            // Relentless: extra hits on 6s if didn't move
-            if (!moved && attacker.has_rule(RuleId::Relentless) && distance > 9) {
+            // Relentless: extra hits on 6s when shooting >9" (no movement restriction per rules)
+            if (attacker.has_rule(RuleId::Relentless) && distance > 9) {
                 hits += sixes;
             }
 
-            // Blast: multiply hits
+            // Surge: extra hits on 6s to hit
+            if (w.has_rule(RuleId::Surge)) {
+                hits += sixes;
+            }
+
+            // Blast: multiply hits by X, where X is capped at target model count
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
-                // Cap at target model count
-                u32 max_hits = defender.alive_count() * blast_value;
-                hits = std::min(hits * blast_value, max_hits);
-                normal_hits = hits - rending_hits;  // Rending hits don't multiply
+                u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
+                hits *= multiplier;
+                // Rending hits also multiply with Blast
+                rending_hits *= multiplier;
+                normal_hits = hits - rending_hits;
             }
 
             // Roll defense for normal hits
             u8 ap = w.ap;
             bool poison = w.has_rule(RuleId::Poison);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), ap, 0, poison);
+            bool has_bane = w.has_rule(RuleId::Bane);
+            // Bane: reroll defense 6s (like Poison)
+            bool reroll_def_sixes = poison || has_bane;
+            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), ap, 0, reroll_def_sixes);
 
-            // Roll defense for rending hits (AP4)
+            // Roll defense for rending hits (AP+4) - Rending adds AP(4) to base
             u32 wounds_from_rending = 0;
             if (rending_hits > 0) {
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), 4, 0, poison);
+                u8 rending_ap = ap + 4;  // Rending adds +4 AP to base
+                wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), rending_ap, 0, reroll_def_sixes);
             }
 
             u32 total_wounds = wounds_from_normal + wounds_from_rending;
 
-            // Deadly: multiply wounds
+            // Deadly: handled separately in apply_wounds_deadly
             u8 deadly_value = w.get_rule_value(RuleId::Deadly);
-            if (deadly_value > 1) {
-                total_wounds *= deadly_value;
-            }
+
+            // Determine if regeneration is bypassed (Bane, Rending, or Unstoppable)
+            bool bypass_regen = has_bane || has_rending || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds to defender
             if (total_wounds > 0) {
-                auto wound_result = apply_wounds(defender, total_wounds, w.has_rule(RuleId::Bane));
+                WoundResult wound_result;
+                if (deadly_value > 1) {
+                    // Deadly wounds don't carry over - apply per-wound with multiplier
+                    wound_result = apply_wounds_deadly(defender, total_wounds, deadly_value, bypass_regen);
+                } else {
+                    wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
             }
@@ -113,8 +130,36 @@ public:
     }
 
     // Resolve melee attack
-    CombatResult resolve_melee(UnitView attacker, UnitView defender, bool is_charging) {
+    // counter_models: number of models with Counter in defender (reduces Impact)
+    CombatResult resolve_melee(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models = 0) {
         CombatResult result;
+
+        // Impact: separate roll hitting on 2+ when charging (before normal attacks)
+        if (is_charging && !attacker.is_fatigued()) {
+            u8 impact = attacker.get_rule_value(RuleId::Impact);
+            // Counter reduces Impact by 1 per model with Counter
+            if (impact > counter_models) {
+                impact -= counter_models;
+            } else {
+                impact = 0;
+            }
+            if (impact > 0) {
+                u32 impact_hits = dice_.roll_impact(impact);
+                if (impact_hits > 0) {
+                    // Impact hits use base defense (no AP)
+                    u8 effective_defense = defender.defense();
+                    if (defender.has_rule(RuleId::ShieldWall)) {
+                        effective_defense = std::max(u8(2), static_cast<u8>(effective_defense - 1));
+                    }
+                    u32 impact_wounds = dice_.roll_defense_test(impact_hits, effective_defense, 0, 0, false);
+                    if (impact_wounds > 0) {
+                        auto wound_result = apply_wounds(defender, impact_wounds, false);
+                        result.wounds_dealt += wound_result.wounds_dealt;
+                        result.models_killed += wound_result.models_killed;
+                    }
+                }
+            }
+        }
 
         // Collect all melee weapons
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
@@ -123,12 +168,6 @@ public:
 
             u32 attacks = w.attacks;
             if (attacks == 0) continue;
-
-            // Impact: extra attacks on charge
-            if (is_charging) {
-                u8 impact = attacker.get_rule_value(RuleId::Impact);
-                attacks += impact;
-            }
 
             // Roll to hit
             u8 quality = attacker.quality();
@@ -139,21 +178,35 @@ public:
                 quality = 2;
             }
 
-            // Shaken/Fatigued: Only hit on 6s
-            if (attacker.is_shaken() || attacker.is_fatigued()) {
+            // Thrust: +1 to hit when charging
+            if (is_charging && w.has_rule(RuleId::Thrust)) {
+                hit_modifier += 1;
+            }
+
+            // Shaken/Fatigued: Only hit on 6s (unmodified)
+            bool only_sixes = attacker.is_shaken() || attacker.is_fatigued();
+            if (only_sixes) {
                 quality = 6;
+                hit_modifier = 0;  // No modifiers when fatigued
             }
 
             auto hit_result = dice_.roll_quality_test(attacks, quality, hit_modifier);
             u32 hits = hit_result.hits;
             u32 sixes = hit_result.sixes;
 
-            // Rending: 6s to hit get AP(4)
-            u32 rending_hits = w.has_rule(RuleId::Rending) ? sixes : 0;
+            // Rending: 6s to hit get AP(+4)
+            bool has_rending = w.has_rule(RuleId::Rending);
+            u32 rending_hits = has_rending ? sixes : 0;
             u32 normal_hits = hits - rending_hits;
 
-            // Furious: extra hits on 6s when charging
+            // Furious: extra hits on 6s when charging (bonus hits don't get Rending)
             if (is_charging && attacker.has_rule(RuleId::Furious)) {
+                hits += sixes;
+                normal_hits = hits - rending_hits;
+            }
+
+            // Surge: extra hits on 6s to hit
+            if (w.has_rule(RuleId::Surge)) {
                 hits += sixes;
                 normal_hits = hits - rending_hits;
             }
@@ -166,45 +219,59 @@ public:
                 ap += 2;
             }
 
+            // Thrust: AP(+1) when charging
+            if (is_charging && w.has_rule(RuleId::Thrust)) {
+                ap += 1;
+            }
+
             // Piercing Assault: AP(1) on melee when charging
             if (is_charging && attacker.has_rule(RuleId::PiercingAssault)) {
                 ap = std::max(ap, u8(1));
             }
 
-            // Blast for melee
+            // Blast: multiply hits by X, where X is capped at target model count
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
-                u32 max_hits = defender.alive_count() * blast_value;
-                hits = std::min(hits * blast_value, max_hits);
+                u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
+                hits *= multiplier;
+                rending_hits *= multiplier;
                 normal_hits = hits - rending_hits;
             }
 
             // Roll defense
             bool poison = w.has_rule(RuleId::Poison);
+            bool has_bane = w.has_rule(RuleId::Bane);
+            bool reroll_def_sixes = poison || has_bane;
 
-            // Shield Wall: +1 Defense in melee
+            // Shield Wall: +1 to Defense rolls in melee (easier to save)
             u8 effective_defense = defender.defense();
             if (defender.has_rule(RuleId::ShieldWall)) {
                 effective_defense = std::max(u8(2), static_cast<u8>(effective_defense - 1));
             }
 
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, ap, 0, poison);
+            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, ap, 0, reroll_def_sixes);
             u32 wounds_from_rending = 0;
             if (rending_hits > 0) {
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, 4, 0, poison);
+                u8 rending_ap = ap + 4;  // Rending adds +4 AP to base
+                wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
             }
 
             u32 total_wounds = wounds_from_normal + wounds_from_rending;
 
-            // Deadly: multiply wounds
+            // Deadly: handled separately in apply_wounds_deadly
             u8 deadly_value = w.get_rule_value(RuleId::Deadly);
-            if (deadly_value > 1) {
-                total_wounds *= deadly_value;
-            }
+
+            // Determine if regeneration is bypassed (Bane, Rending, or Unstoppable)
+            bool bypass_regen = has_bane || has_rending || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds
             if (total_wounds > 0) {
-                auto wound_result = apply_wounds(defender, total_wounds, w.has_rule(RuleId::Bane));
+                WoundResult wound_result;
+                if (deadly_value > 1) {
+                    wound_result = apply_wounds_deadly(defender, total_wounds, deadly_value, bypass_regen);
+                } else {
+                    wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
             }
@@ -260,18 +327,63 @@ public:
         return result;
     }
 
+    // Apply wounds with Deadly - wounds don't carry over to other models
+    // Each wound is multiplied by deadly_value and assigned to one model
+    WoundResult apply_wounds_deadly(UnitView unit, u32 wounds, u8 deadly_value, bool bypass_regeneration = false) {
+        WoundResult result;
+
+        // Get wound allocation order
+        std::array<u8, MAX_MODELS_PER_UNIT> order;
+        u8 order_count = 0;
+        unit.get_wound_allocation_order(order, order_count);
+
+        // Regeneration check (before multiplying for Deadly)
+        if (!bypass_regeneration && unit.has_rule(RuleId::Regeneration)) {
+            wounds = dice_.roll_regeneration(wounds, 5);
+        }
+
+        // Each wound is multiplied by deadly_value but doesn't carry over
+        u8 order_idx = 0;
+        for (u32 w = 0; w < wounds && order_idx < order_count; ++w) {
+            // Get next alive model
+            while (order_idx < order_count && !unit.model_is_alive(order[order_idx])) {
+                order_idx++;
+            }
+            if (order_idx >= order_count) break;
+
+            u8 model_idx = order[order_idx];
+            u8 model_wounds_remaining = unit.model_remaining_wounds(model_idx);
+
+            // Apply deadly_value wounds to this model (capped at what would kill it)
+            u8 wounds_to_apply = std::min(deadly_value, model_wounds_remaining);
+            result.wounds_dealt += wounds_to_apply;
+
+            for (u8 d = 0; d < wounds_to_apply; ++d) {
+                if (unit.apply_wound_to_model(model_idx)) {
+                    result.models_killed++;
+                    order_idx++;  // Move to next model for next wound
+                    break;
+                }
+            }
+            // Note: excess wounds from deadly are lost (don't carry over)
+        }
+
+        return result;
+    }
+
     // Morale check
-    bool check_morale(UnitView unit, bool lost_melee = false, u32 melee_wounds_taken = 0, u32 melee_wounds_dealt = 0) {
+    // is_from_melee: true if this check is from losing melee combat
+    bool check_morale(UnitView unit, bool is_from_melee = false, u32 melee_wounds_taken = 0, u32 melee_wounds_dealt = 0) {
         // Check if morale test is needed
         bool needs_test = false;
 
-        // At half strength
+        // At half strength (wounds or models)
         if (unit.is_at_half_strength() && !unit.is_shaken() && !unit.is_routed()) {
             needs_test = true;
         }
 
         // Lost melee (dealt fewer wounds)
-        if (lost_melee && melee_wounds_taken > melee_wounds_dealt) {
+        if (is_from_melee && melee_wounds_taken > melee_wounds_dealt) {
             needs_test = true;
         }
 
@@ -289,11 +401,17 @@ public:
 
         if (passed) return true;
 
-        // Failed morale
-        if (unit.is_at_half_strength()) {
-            unit.rout();  // Rout if at half strength
+        // Failed morale - different outcomes for melee vs shooting
+        if (is_from_melee) {
+            // Melee morale: Rout if at half strength, Shaken otherwise
+            if (unit.is_at_half_strength()) {
+                unit.rout();
+            } else {
+                unit.become_shaken();
+            }
         } else {
-            unit.become_shaken();  // Become shaken otherwise
+            // General morale (from shooting): Always Shaken, never immediate Rout
+            unit.become_shaken();
         }
 
         return false;
