@@ -28,14 +28,21 @@ void print_usage(const char* prog) {
     std::cout << "  -c <file>     Checkpoint file (default: checkpoint.bin)\n";
     std::cout << "  -b <size>     Batch size (default: 10000)\n";
     std::cout << "  -i <interval> Checkpoint interval (default: 1000000)\n";
-    std::cout << "  -e            Extended format - store full game statistics (24 bytes/result)\n";
+    std::cout << "  -e            Extended format - full game statistics (24 bytes/result)\n";
+    std::cout << "  -E            Compact extended - compressed game stats (16 bytes/result)\n";
+    std::cout << "                Recommended for large simulations with extended data\n";
     std::cout << "                Default compact format uses 8 bytes/result\n";
     std::cout << "  -r            Resume from checkpoint if available\n";
     std::cout << "  -q            Quiet mode (no progress output)\n";
     std::cout << "  -h            Show this help\n\n";
+    std::cout << "Output Formats:\n";
+    std::cout << "  (default)     8 bytes/result  - win/loss only\n";
+    std::cout << "  -E            16 bytes/result - game stats (wounds, kills, objectives)\n";
+    std::cout << "  -e            24 bytes/result - full precision game stats\n\n";
     std::cout << "Example:\n";
     std::cout << "  " << prog << " units.txt -o faction_results.bin -b 50000\n";
-    std::cout << "  " << prog << " units.txt -e -o extended_results.bin  # Extended format\n";
+    std::cout << "  " << prog << " units.txt -E -o extended_results.bin  # Compact extended\n";
+    std::cout << "  " << prog << " units.txt -e -o full_results.bin      # Full extended\n";
     std::cout << "  " << prog << " units.txt -r   # Resume interrupted simulation\n";
     std::cout << "\nFor interactive simulation, use battle_sim instead.\n";
 }
@@ -67,7 +74,9 @@ int main(int argc, char* argv[]) {
         } else if (arg == "-i" && i + 1 < argc) {
             config.checkpoint_interval = std::stoul(argv[++i]);
         } else if (arg == "-e") {
-            config.extended_format = true;
+            config.format = ResultFormat::Extended;
+        } else if (arg == "-E") {
+            config.format = ResultFormat::CompactExtended;
         } else if (arg == "-r") {
             try_resume = true;
         } else if (arg == "-q") {
@@ -102,12 +111,26 @@ int main(int argc, char* argv[]) {
 
     // Calculate simulation size
     u64 total_matchups = static_cast<u64>(parse_result.units.size()) * parse_result.units.size();
-    f64 bytes_per_result = config.extended_format ? 24.0 : 8.0;
+    f64 bytes_per_result = static_cast<f64>(config.result_size());
     f64 estimated_bytes = total_matchups * bytes_per_result;
+
+    // Format name for display
+    const char* format_name = "Compact (8 bytes)";
+    switch (config.format) {
+        case ResultFormat::Compact:
+            format_name = "Compact (8 bytes - win/loss only)";
+            break;
+        case ResultFormat::Extended:
+            format_name = "Extended (24 bytes - full game stats)";
+            break;
+        case ResultFormat::CompactExtended:
+            format_name = "Compact Extended (16 bytes - compressed game stats)";
+            break;
+    }
 
     std::cout << "\n--- Simulation Configuration ---\n";
     std::cout << "Simulation Mode: Full Game (movement, AI, objectives, 4 rounds max)\n";
-    std::cout << "Result Format: " << (config.extended_format ? "Extended (24 bytes - full game stats)" : "Compact (8 bytes)") << "\n";
+    std::cout << "Result Format: " << format_name << "\n";
     std::cout << "Units: " << parse_result.units.size() << "\n";
     std::cout << "Total matchups: " << total_matchups;
     if (total_matchups >= 1e9) {

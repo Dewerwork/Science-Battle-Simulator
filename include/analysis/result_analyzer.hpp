@@ -19,17 +19,24 @@ namespace battle {
 
 struct ResultFileHeader {
     u32 magic;      // 0x42415453 = "SABS"
-    u32 version;    // 1 = compact (8 bytes), 2 = extended (24 bytes)
+    u32 version;    // 1 = compact (8 bytes), 2 = extended (24 bytes), 3 = compact_extended (16 bytes)
     u32 units_a_count;
     u32 units_b_count;
 
-    bool is_valid() const { return magic == 0x42415453 && (version == 1 || version == 2); }
+    bool is_valid() const { return magic == 0x42415453 && (version >= 1 && version <= 3); }
     bool is_extended() const { return version == 2; }
+    bool is_compact_extended() const { return version == 3; }
+    bool has_extended_data() const { return version == 2 || version == 3; }
     u64 expected_results() const {
         return static_cast<u64>(units_a_count) * units_b_count;
     }
     size_t result_size() const {
-        return is_extended() ? sizeof(ExtendedMatchResult) : sizeof(CompactMatchResult);
+        switch (version) {
+            case 1: return sizeof(CompactMatchResult);
+            case 2: return sizeof(ExtendedMatchResult);
+            case 3: return sizeof(CompactExtendedMatchResult);
+            default: return sizeof(CompactMatchResult);
+        }
     }
 };
 
@@ -222,7 +229,7 @@ public:
                 std::cerr << "  Error: Invalid header\n";
                 std::cerr << "    Magic: 0x" << std::hex << header_.magic << std::dec
                           << " (expected 0x42415453 'SABS')\n";
-                std::cerr << "    Version: " << header_.version << " (expected 1 or 2)\n";
+                std::cerr << "    Version: " << header_.version << " (expected 1, 2, or 3)\n";
             }
             return false;
         }
@@ -230,6 +237,7 @@ public:
         // Clear previous results
         results_.clear();
         extended_results_.clear();
+        compact_extended_results_.clear();
 
         // Read results based on version
         if (header_.is_extended()) {
@@ -237,6 +245,12 @@ public:
             ExtendedMatchResult result;
             while (in.read(reinterpret_cast<char*>(&result), sizeof(result))) {
                 extended_results_.push_back(result);
+            }
+        } else if (header_.is_compact_extended()) {
+            compact_extended_results_.reserve(header_.expected_results());
+            CompactExtendedMatchResult result;
+            while (in.read(reinterpret_cast<char*>(&result), sizeof(result))) {
+                compact_extended_results_.push_back(result);
             }
         } else {
             results_.reserve(header_.expected_results());
@@ -257,9 +271,11 @@ public:
 
     // Get header info
     const ResultFileHeader& header() const { return header_; }
-    bool has_extended_data() const { return header_.is_extended(); }
+    bool has_extended_data() const { return header_.has_extended_data(); }
     size_t result_count() const {
-        return header_.is_extended() ? extended_results_.size() : results_.size();
+        if (header_.is_extended()) return extended_results_.size();
+        if (header_.is_compact_extended()) return compact_extended_results_.size();
+        return results_.size();
     }
 
     // ===========================================================================
@@ -271,6 +287,14 @@ public:
         std::vector<CompactMatchResult> filtered;
         if (header_.is_extended()) {
             for (const auto& r : extended_results_) {
+                if (as_unit_a && r.unit_a_id == unit_id) {
+                    filtered.push_back(r.to_compact());
+                } else if (!as_unit_a && r.unit_b_id == unit_id) {
+                    filtered.push_back(r.to_compact());
+                }
+            }
+        } else if (header_.is_compact_extended()) {
+            for (const auto& r : compact_extended_results_) {
                 if (as_unit_a && r.unit_a_id == unit_id) {
                     filtered.push_back(r.to_compact());
                 } else if (!as_unit_a && r.unit_b_id == unit_id) {
@@ -289,15 +313,24 @@ public:
         return filtered;
     }
 
-    // Get all extended results for a specific unit
+    // Get all extended results for a specific unit (converts compact_extended to extended)
     std::vector<ExtendedMatchResult> get_extended_results_for_unit(u32 unit_id, bool as_unit_a = true) const {
         std::vector<ExtendedMatchResult> filtered;
-        if (!header_.is_extended()) return filtered;
-        for (const auto& r : extended_results_) {
-            if (as_unit_a && r.unit_a_id == unit_id) {
-                filtered.push_back(r);
-            } else if (!as_unit_a && r.unit_b_id == unit_id) {
-                filtered.push_back(r);
+        if (header_.is_extended()) {
+            for (const auto& r : extended_results_) {
+                if (as_unit_a && r.unit_a_id == unit_id) {
+                    filtered.push_back(r);
+                } else if (!as_unit_a && r.unit_b_id == unit_id) {
+                    filtered.push_back(r);
+                }
+            }
+        } else if (header_.is_compact_extended()) {
+            for (const auto& r : compact_extended_results_) {
+                if (as_unit_a && r.unit_a_id == unit_id) {
+                    filtered.push_back(r.to_extended());
+                } else if (!as_unit_a && r.unit_b_id == unit_id) {
+                    filtered.push_back(r.to_extended());
+                }
             }
         }
         return filtered;
@@ -319,6 +352,16 @@ public:
                     stats.games_b += r.games_b;
                 }
             }
+        } else if (header_.is_compact_extended()) {
+            for (const auto& r : compact_extended_results_) {
+                if (r.unit_a_id == unit_a_id && r.unit_b_id == unit_b_id) {
+                    if (r.winner() == 0) stats.a_wins++;
+                    else if (r.winner() == 1) stats.b_wins++;
+                    else stats.draws++;
+                    stats.games_a += r.games_a();
+                    stats.games_b += r.games_b();
+                }
+            }
         } else {
             for (const auto& r : results_) {
                 if (r.unit_a_id == unit_a_id && r.unit_b_id == unit_b_id) {
@@ -333,27 +376,43 @@ public:
         return stats;
     }
 
-    // Get extended matchup stats (only available for extended format)
+    // Get extended matchup stats (works with extended and compact_extended formats)
     ExtendedMatchupStats get_extended_matchup(u32 unit_a_id, u32 unit_b_id) const {
         ExtendedMatchupStats stats;
         stats.unit_a_id = unit_a_id;
         stats.unit_b_id = unit_b_id;
 
-        if (!header_.is_extended()) return stats;
-
-        for (const auto& r : extended_results_) {
-            if (r.unit_a_id == unit_a_id && r.unit_b_id == unit_b_id) {
-                if (r.winner == 0) stats.a_wins++;
-                else if (r.winner == 1) stats.b_wins++;
-                else stats.draws++;
-                stats.games_a += r.games_a;
-                stats.games_b += r.games_b;
-                stats.wounds_dealt_a += r.wounds_dealt_a;
-                stats.wounds_dealt_b += r.wounds_dealt_b;
-                stats.models_killed_a += r.models_killed_a;
-                stats.models_killed_b += r.models_killed_b;
-                stats.rounds_holding_a += r.rounds_holding_a;
-                stats.rounds_holding_b += r.rounds_holding_b;
+        if (header_.is_extended()) {
+            for (const auto& r : extended_results_) {
+                if (r.unit_a_id == unit_a_id && r.unit_b_id == unit_b_id) {
+                    if (r.winner == 0) stats.a_wins++;
+                    else if (r.winner == 1) stats.b_wins++;
+                    else stats.draws++;
+                    stats.games_a += r.games_a;
+                    stats.games_b += r.games_b;
+                    stats.wounds_dealt_a += r.wounds_dealt_a;
+                    stats.wounds_dealt_b += r.wounds_dealt_b;
+                    stats.models_killed_a += r.models_killed_a;
+                    stats.models_killed_b += r.models_killed_b;
+                    stats.rounds_holding_a += r.rounds_holding_a;
+                    stats.rounds_holding_b += r.rounds_holding_b;
+                }
+            }
+        } else if (header_.is_compact_extended()) {
+            for (const auto& r : compact_extended_results_) {
+                if (r.unit_a_id == unit_a_id && r.unit_b_id == unit_b_id) {
+                    if (r.winner() == 0) stats.a_wins++;
+                    else if (r.winner() == 1) stats.b_wins++;
+                    else stats.draws++;
+                    stats.games_a += r.games_a();
+                    stats.games_b += r.games_b();
+                    stats.wounds_dealt_a += r.wounds_dealt_a();
+                    stats.wounds_dealt_b += r.wounds_dealt_b();
+                    stats.models_killed_a += r.models_killed_a;
+                    stats.models_killed_b += r.models_killed_b;
+                    stats.rounds_holding_a += r.rounds_holding_a();
+                    stats.rounds_holding_b += r.rounds_holding_b();
+                }
             }
         }
         return stats;
@@ -363,7 +422,7 @@ public:
     // Statistics
     // ===========================================================================
 
-    // Calculate statistics for all units (works with both formats)
+    // Calculate statistics for all units (works with all formats)
     std::unordered_map<u32, UnitStats> calculate_unit_stats() const {
         std::unordered_map<u32, UnitStats> stats;
 
@@ -389,6 +448,28 @@ public:
                 sb.games_won += r.games_b;
                 sb.games_lost += r.games_a;
             }
+        } else if (header_.is_compact_extended()) {
+            for (const auto& r : compact_extended_results_) {
+                // Unit A stats
+                auto& sa = stats[r.unit_a_id];
+                sa.unit_id = r.unit_a_id;
+                sa.matches_played++;
+                if (r.winner() == 0) sa.wins++;
+                else if (r.winner() == 1) sa.losses++;
+                else sa.draws++;
+                sa.games_won += r.games_a();
+                sa.games_lost += r.games_b();
+
+                // Unit B stats
+                auto& sb = stats[r.unit_b_id];
+                sb.unit_id = r.unit_b_id;
+                sb.matches_played++;
+                if (r.winner() == 1) sb.wins++;
+                else if (r.winner() == 0) sb.losses++;
+                else sb.draws++;
+                sb.games_won += r.games_b();
+                sb.games_lost += r.games_a();
+            }
         } else {
             for (const auto& r : results_) {
                 // Unit A stats
@@ -416,46 +497,84 @@ public:
         return stats;
     }
 
-    // Calculate extended statistics for all units (only for extended format)
+    // Calculate extended statistics for all units (works with extended and compact_extended formats)
     std::unordered_map<u32, ExtendedUnitStats> calculate_extended_unit_stats() const {
         std::unordered_map<u32, ExtendedUnitStats> stats;
 
-        if (!header_.is_extended()) return stats;
+        if (!header_.has_extended_data()) return stats;
 
-        for (const auto& r : extended_results_) {
-            // Unit A stats
-            auto& sa = stats[r.unit_a_id];
-            sa.unit_id = r.unit_a_id;
-            sa.matches_played++;
-            if (r.winner == 0) sa.wins++;
-            else if (r.winner == 1) sa.losses++;
-            else sa.draws++;
-            sa.games_won += r.games_a;
-            sa.games_lost += r.games_b;
-            sa.total_wounds_dealt += r.wounds_dealt_a;
-            sa.total_wounds_received += r.wounds_dealt_b;
-            sa.total_models_killed += r.models_killed_a;
-            sa.total_models_lost += r.models_killed_b;
-            sa.total_rounds_holding += r.rounds_holding_a;
-            sa.total_rounds_opponent_holding += r.rounds_holding_b;
-            sa.total_rounds_played += r.total_rounds;
+        if (header_.is_extended()) {
+            for (const auto& r : extended_results_) {
+                // Unit A stats
+                auto& sa = stats[r.unit_a_id];
+                sa.unit_id = r.unit_a_id;
+                sa.matches_played++;
+                if (r.winner == 0) sa.wins++;
+                else if (r.winner == 1) sa.losses++;
+                else sa.draws++;
+                sa.games_won += r.games_a;
+                sa.games_lost += r.games_b;
+                sa.total_wounds_dealt += r.wounds_dealt_a;
+                sa.total_wounds_received += r.wounds_dealt_b;
+                sa.total_models_killed += r.models_killed_a;
+                sa.total_models_lost += r.models_killed_b;
+                sa.total_rounds_holding += r.rounds_holding_a;
+                sa.total_rounds_opponent_holding += r.rounds_holding_b;
+                sa.total_rounds_played += r.total_rounds;
 
-            // Unit B stats
-            auto& sb = stats[r.unit_b_id];
-            sb.unit_id = r.unit_b_id;
-            sb.matches_played++;
-            if (r.winner == 1) sb.wins++;
-            else if (r.winner == 0) sb.losses++;
-            else sb.draws++;
-            sb.games_won += r.games_b;
-            sb.games_lost += r.games_a;
-            sb.total_wounds_dealt += r.wounds_dealt_b;
-            sb.total_wounds_received += r.wounds_dealt_a;
-            sb.total_models_killed += r.models_killed_b;
-            sb.total_models_lost += r.models_killed_a;
-            sb.total_rounds_holding += r.rounds_holding_b;
-            sb.total_rounds_opponent_holding += r.rounds_holding_a;
-            sb.total_rounds_played += r.total_rounds;
+                // Unit B stats
+                auto& sb = stats[r.unit_b_id];
+                sb.unit_id = r.unit_b_id;
+                sb.matches_played++;
+                if (r.winner == 1) sb.wins++;
+                else if (r.winner == 0) sb.losses++;
+                else sb.draws++;
+                sb.games_won += r.games_b;
+                sb.games_lost += r.games_a;
+                sb.total_wounds_dealt += r.wounds_dealt_b;
+                sb.total_wounds_received += r.wounds_dealt_a;
+                sb.total_models_killed += r.models_killed_b;
+                sb.total_models_lost += r.models_killed_a;
+                sb.total_rounds_holding += r.rounds_holding_b;
+                sb.total_rounds_opponent_holding += r.rounds_holding_a;
+                sb.total_rounds_played += r.total_rounds;
+            }
+        } else if (header_.is_compact_extended()) {
+            for (const auto& r : compact_extended_results_) {
+                // Unit A stats
+                auto& sa = stats[r.unit_a_id];
+                sa.unit_id = r.unit_a_id;
+                sa.matches_played++;
+                if (r.winner() == 0) sa.wins++;
+                else if (r.winner() == 1) sa.losses++;
+                else sa.draws++;
+                sa.games_won += r.games_a();
+                sa.games_lost += r.games_b();
+                sa.total_wounds_dealt += r.wounds_dealt_a();
+                sa.total_wounds_received += r.wounds_dealt_b();
+                sa.total_models_killed += r.models_killed_a;
+                sa.total_models_lost += r.models_killed_b;
+                sa.total_rounds_holding += r.rounds_holding_a();
+                sa.total_rounds_opponent_holding += r.rounds_holding_b();
+                sa.total_rounds_played += r.total_rounds;
+
+                // Unit B stats
+                auto& sb = stats[r.unit_b_id];
+                sb.unit_id = r.unit_b_id;
+                sb.matches_played++;
+                if (r.winner() == 1) sb.wins++;
+                else if (r.winner() == 0) sb.losses++;
+                else sb.draws++;
+                sb.games_won += r.games_b();
+                sb.games_lost += r.games_a();
+                sb.total_wounds_dealt += r.wounds_dealt_b();
+                sb.total_wounds_received += r.wounds_dealt_a();
+                sb.total_models_killed += r.models_killed_b;
+                sb.total_models_lost += r.models_killed_a;
+                sb.total_rounds_holding += r.rounds_holding_b();
+                sb.total_rounds_opponent_holding += r.rounds_holding_a();
+                sb.total_rounds_played += r.total_rounds;
+            }
         }
 
         return stats;
@@ -525,8 +644,12 @@ public:
     std::string generate_summary_report() const {
         std::ostringstream ss;
 
+        const char* format_name = "Compact";
+        if (header_.is_extended()) format_name = "Extended (full game stats)";
+        else if (header_.is_compact_extended()) format_name = "Compact Extended (compressed game stats)";
+
         ss << "=== Battle Simulation Results Summary ===\n\n";
-        ss << "Format: " << (header_.is_extended() ? "Extended (full game stats)" : "Compact") << "\n";
+        ss << "Format: " << format_name << "\n";
         ss << "Total Results: " << result_count() << "\n";
         ss << "Units A: " << header_.units_a_count << "\n";
         ss << "Units B: " << header_.units_b_count << "\n\n";
@@ -543,6 +666,15 @@ public:
                 total_wounds += r.wounds_dealt_a + r.wounds_dealt_b;
                 total_models_killed += r.models_killed_a + r.models_killed_b;
                 total_obj_rounds += r.rounds_holding_a + r.rounds_holding_b;
+            }
+        } else if (header_.is_compact_extended()) {
+            for (const auto& r : compact_extended_results_) {
+                if (r.winner() == 0) a_wins++;
+                else if (r.winner() == 1) b_wins++;
+                else draws++;
+                total_wounds += r.wounds_dealt_a() + r.wounds_dealt_b();
+                total_models_killed += r.models_killed_a + r.models_killed_b;
+                total_obj_rounds += r.rounds_holding_a() + r.rounds_holding_b();
             }
         } else {
             for (const auto& r : results_) {
@@ -562,7 +694,7 @@ public:
            << (total > 0 ? 100.0 * draws / total : 0.0) << "%)\n";
 
         // Extended stats summary
-        if (header_.is_extended() && total > 0) {
+        if (header_.has_extended_data() && total > 0) {
             ss << "\nFull Game Statistics:\n";
             ss << "  Avg wounds per match: " << std::fixed << std::setprecision(2)
                << (static_cast<f64>(total_wounds) / total) << "\n";
@@ -591,7 +723,7 @@ public:
         ss << "Defense: " << (int)unit.defense << "+\n";
         ss << "Models: " << (int)unit.model_count << "\n\n";
 
-        if (header_.is_extended()) {
+        if (header_.has_extended_data()) {
             auto stats = calculate_extended_unit_stats();
             auto it = stats.find(unit_id);
             if (it != stats.end()) {
@@ -630,13 +762,13 @@ public:
         return ss.str();
     }
 
-    // Generate game stats report (extended format only)
+    // Generate game stats report (works with extended and compact_extended formats)
     std::string generate_game_stats_report(const std::vector<Unit>& units, size_t top_n = 10) const {
         std::ostringstream ss;
 
-        if (!header_.is_extended()) {
+        if (!header_.has_extended_data()) {
             ss << "Error: Game stats require extended format results.\n";
-            ss << "Use -e flag when running batch_sim to generate extended results.\n";
+            ss << "Use -e or -E flag when running batch_sim to generate extended results.\n";
             return ss.str();
         }
 
@@ -697,12 +829,12 @@ public:
         return ss.str();
     }
 
-    // Generate extended matchup report
+    // Generate extended matchup report (works with extended and compact_extended formats)
     std::string generate_extended_matchup_report(u32 unit_a_id, u32 unit_b_id,
                                                   const std::vector<Unit>& units) const {
         std::ostringstream ss;
 
-        if (!header_.is_extended()) {
+        if (!header_.has_extended_data()) {
             ss << "Error: Extended matchup data requires extended format results.\n";
             return ss.str();
         }
@@ -756,7 +888,7 @@ public:
 
         size_t rows_written = 0;
 
-        if (header_.is_extended()) {
+        if (header_.has_extended_data()) {
             auto stats = calculate_extended_unit_stats();
 
             // Extended header
@@ -858,6 +990,27 @@ public:
                     << (int)r.rounds_holding_b << ","
                     << (int)r.total_rounds << "\n";
             }
+        } else if (header_.is_compact_extended()) {
+            // Compact extended header (same columns as extended)
+            out << "unit_a_id,unit_b_id,winner,games_a,games_b,"
+                << "wounds_dealt_a,wounds_dealt_b,models_killed_a,models_killed_b,"
+                << "rounds_holding_a,rounds_holding_b,total_rounds\n";
+
+            // Data rows
+            for (const auto& r : compact_extended_results_) {
+                out << r.unit_a_id << ","
+                    << r.unit_b_id << ","
+                    << (int)r.winner() << ","
+                    << (int)r.games_a() << ","
+                    << (int)r.games_b() << ","
+                    << r.wounds_dealt_a() << ","
+                    << r.wounds_dealt_b() << ","
+                    << (int)r.models_killed_a << ","
+                    << (int)r.models_killed_b << ","
+                    << (int)r.rounds_holding_a() << ","
+                    << (int)r.rounds_holding_b() << ","
+                    << (int)r.total_rounds << "\n";
+            }
         } else {
             // Basic header
             out << "unit_a_id,unit_b_id,winner,games_a,games_b\n";
@@ -879,11 +1032,15 @@ public:
     std::string export_unit_stats_json(const std::vector<Unit>& units) const {
         std::ostringstream ss;
 
+        const char* format_str = "compact";
+        if (header_.is_extended()) format_str = "extended";
+        else if (header_.is_compact_extended()) format_str = "compact_extended";
+
         ss << "{\n";
-        ss << "  \"format\": \"" << (header_.is_extended() ? "extended" : "compact") << "\",\n";
+        ss << "  \"format\": \"" << format_str << "\",\n";
         ss << "  \"units\": [\n";
 
-        if (header_.is_extended()) {
+        if (header_.has_extended_data()) {
             auto stats = calculate_extended_unit_stats();
             bool first = true;
             for (const auto& [id, s] : stats) {
@@ -947,6 +1104,7 @@ private:
     ResultFileHeader header_{};
     std::vector<CompactMatchResult> results_;
     std::vector<ExtendedMatchResult> extended_results_;
+    std::vector<CompactExtendedMatchResult> compact_extended_results_;
     std::vector<Unit> units_a_;
     std::vector<Unit> units_b_;
 };
