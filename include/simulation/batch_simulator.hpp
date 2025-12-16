@@ -1287,38 +1287,40 @@ private:
                     std::cerr << "[T0] Processing " << (end - start) << " matchups [" << start << ".." << end << ")..." << std::endl;
                 }
 
+                // Track progress for crash diagnosis
+                size_t last_completed = start;
+                static std::atomic<size_t> global_crash_report{0};
+
                 for (size_t i = start; i < end; ++i) {
-                    if (is_debug_thread && i == start) {
-                        auto [a_idx, b_idx] = matchups[i];
-                        std::cerr << "[T0] First matchup: unit " << a_idx << " vs " << b_idx << std::endl;
-                        std::cerr << "[T0] Running first match..." << std::flush;
+                    // Progress logging every 10000 matchups for thread 0
+                    if (is_debug_thread && (i - start) % 10000 == 0 && i > start) {
+                        std::cerr << "[T0] Progress: " << (i - start) << "/" << (end - start)
+                                  << " matchups completed" << std::endl;
                     }
 
                     auto [a_idx, b_idx] = matchups[i];
-                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
 
-                    if (is_debug_thread && i == start) {
-                        std::cerr << " OK" << std::endl;
-                        std::cerr << "[T0] Updating aggregated stats..." << std::flush;
-                    }
+                    try {
+                        MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+                        last_completed = i;
 
-                    // Get opponent info for categorization
-                    const Unit& unit_a = units_a[a_idx];
-                    const Unit& unit_b = units_b[b_idx];
+                        // Get opponent info for categorization
+                        const Unit& unit_a = units_a[a_idx];
+                        const Unit& unit_b = units_b[b_idx];
 
-                    // Update global game stats
-                    local_games += 3;
-                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
-                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
-                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
-                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
-                        local_objective_games += 3;
-                    }
+                        // Update global game stats
+                        local_games += 3;
+                        local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                        local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                        local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                            local_objective_games += 3;
+                        }
 
-                    // Update unit A's aggregated stats
-                    {
-                        std::lock_guard<std::mutex> lock(unit_mutexes[a_idx % AGGREGATED_MUTEX_SHARDS]);
-                        AggregatedUnitResult& ar = aggregated[a_idx];
+                        // Update unit A's aggregated stats
+                        {
+                            std::lock_guard<std::mutex> lock(unit_mutexes[a_idx % AGGREGATED_MUTEX_SHARDS]);
+                            AggregatedUnitResult& ar = aggregated[a_idx];
 
                         ar.total_matchups++;
 
@@ -1421,11 +1423,25 @@ private:
                             ar.faction_stats[min_slot].matchups = 1;
                             ar.faction_stats[min_slot].wins = (mr.overall_winner == GameWinner::UnitA) ? 1 : 0;
                         }
-                    }
-
-                    if (is_debug_thread && i == start) {
-                        std::cerr << " OK" << std::endl;
-                        std::cerr << "[T0] First matchup complete, continuing..." << std::endl;
+                        }  // end lock_guard scope
+                    } catch (const std::exception& e) {
+                        // Only report first crash to avoid spam
+                        if (global_crash_report.fetch_add(1) == 0) {
+                            std::cerr << "\n[CRASH] Thread " << t << " exception at matchup " << i
+                                      << " (local idx " << (i - start) << ")"
+                                      << "\n  Unit A index: " << a_idx
+                                      << "\n  Unit B index: " << b_idx
+                                      << "\n  Error: " << e.what() << std::endl;
+                        }
+                        throw;
+                    } catch (...) {
+                        if (global_crash_report.fetch_add(1) == 0) {
+                            std::cerr << "\n[CRASH] Thread " << t << " unknown exception at matchup " << i
+                                      << " (local idx " << (i - start) << ")"
+                                      << "\n  Unit A index: " << a_idx
+                                      << "\n  Unit B index: " << b_idx << std::endl;
+                        }
+                        throw;
                     }
                 }
 
