@@ -341,13 +341,44 @@ inline std::optional<Weapon> UnitParser::parse_weapon(std::string_view weapon_st
 
 inline bool UnitParser::parse_header(std::string_view line, Unit& unit) {
     // Format: "UnitName [count] QX+ DX+ | Xpts | Rules..."
+    // Reduced format: "UnitName [BKT:XXXXXXXX] [count] QX+ DX+ | Xpts | Rules..."
     // Example: "Assault Walker [1] Q4+ D2+ | 350pts | Devout, Fear(2), Fearless"
+    // Reduced: "Assault Walker [BKT:A1B2C3D4] [1] Q4+ D2+ | 350pts | Devout, Fear(2)"
 
     std::string line_str(line);
 
-    // Use regex to parse header
-    std::regex header_re(R"(^(.+?)\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)pts\s*\|\s*(.*)$)");
+    // Try reduced format first (with bucket hash)
+    std::regex reduced_re(R"(^(.+?)\s*\[BKT:([A-Fa-f0-9]{8})\]\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
     std::smatch match;
+
+    if (std::regex_match(line_str, match, reduced_re)) {
+        // Reduced format with bucket hash
+        unit.name = Name(trim(match[1].str()));
+        unit.set_bucket_hash(match[2].str());
+        unit.model_count = static_cast<u8>(std::stoi(match[3].str()));
+        unit.quality = static_cast<u8>(std::stoi(match[4].str()));
+        unit.defense = static_cast<u8>(std::stoi(match[5].str()));
+        unit.points_cost = static_cast<u16>(std::stoi(match[6].str()));
+
+        // Create models
+        for (u8 i = 0; i < unit.model_count && i < MAX_MODELS_PER_UNIT; ++i) {
+            Model model;
+            model.quality = unit.quality;
+            model.defense = unit.defense;
+            model.tough = 1;
+            unit.models[i] = model;
+        }
+        unit.alive_count = unit.model_count;
+
+        // Parse rules
+        std::string rules_str = match[7].str();
+        parse_rules(rules_str, unit);
+
+        return true;
+    }
+
+    // Fall back to original format (no bucket hash)
+    std::regex header_re(R"(^(.+?)\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
 
     if (!std::regex_match(line_str, match, header_re)) {
         return false;
@@ -480,12 +511,16 @@ inline UnitParser::ParseResult UnitParser::parse_file(const std::string& filepat
     // Try to extract faction name from filename if not provided
     std::string faction;
     if (faction_name.empty()) {
-        // Extract from filename: "Blessed_Sisters_pipeline.final.merged.txt" -> "Blessed Sisters"
+        // Extract from filename:
+        // "Blessed_Sisters_pipeline.final.merged.txt" -> "Blessed Sisters"
+        // "Blessed_Sisters.reduced.txt" -> "Blessed Sisters"
         size_t last_slash = filepath.find_last_of("/\\");
         std::string filename = (last_slash == std::string::npos) ? filepath : filepath.substr(last_slash + 1);
 
-        // Remove extension and pipeline suffix
-        size_t pos = filename.find("_pipeline");
+        // Remove extension and pipeline/reduced suffix
+        size_t pos = filename.find(".reduced.txt");
+        if (pos == std::string::npos) pos = filename.find("_pipeline");
+        if (pos == std::string::npos) pos = filename.find(".final.merged");
         if (pos == std::string::npos) pos = filename.find(".txt");
         if (pos == std::string::npos) pos = filename.find(".");
         if (pos != std::string::npos) {

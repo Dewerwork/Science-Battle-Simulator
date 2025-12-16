@@ -20,6 +20,9 @@ struct Unit {
     std::array<Weapon, MAX_WEAPONS_PER_MODEL * 2> weapons{};  // Weapon storage
     RuleMask rule_mask = 0; // Bitset for O(1) has_rule() lookup
 
+    // Bucket hash for reduced faction files (8 hex chars + null terminator)
+    std::array<char, 9> bucket_hash{};  // Empty if not from reduced file
+
     u32 unit_id      = 0;    // Unique identifier for this loadout
     u16 points_cost  = 0;    // Points value
     u8  model_count  = 0;    // Total models in unit
@@ -70,6 +73,18 @@ struct Unit {
             if (rules[i].id == id) return rules[i].value;
         }
         return 0;
+    }
+
+    // Bucket hash helpers
+    bool has_bucket_hash() const { return bucket_hash[0] != '\0'; }
+    std::string_view get_bucket_hash() const {
+        if (!has_bucket_hash()) return {};
+        return {bucket_hash.data(), 8};
+    }
+    void set_bucket_hash(std::string_view hash) {
+        size_t len = std::min(hash.size(), size_t{8});
+        std::copy_n(hash.begin(), len, bucket_hash.begin());
+        bucket_hash[len] = '\0';
     }
 
     // Properties
