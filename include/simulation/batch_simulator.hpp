@@ -12,6 +12,7 @@
 #include <fstream>
 #include <mutex>
 #include <functional>
+#include <cstring>
 
 namespace battle {
 
@@ -23,7 +24,8 @@ namespace battle {
 enum class ResultFormat : u8 {
     Compact = 1,          // 8 bytes - basic win/loss only
     Extended = 2,         // 24 bytes - full game stats
-    CompactExtended = 3   // 16 bytes - compressed game stats (33% smaller than Extended)
+    CompactExtended = 3,  // 16 bytes - compressed game stats (33% smaller than Extended)
+    Aggregated = 4        // ~256 bytes per unit - comprehensive per-unit statistics
 };
 
 struct BatchConfig {
@@ -40,14 +42,18 @@ struct BatchConfig {
     bool has_extended_data() const { return format != ResultFormat::Compact; }
 
     // Returns size based on format (hardcoded to avoid forward declaration issues)
+    // Note: Aggregated format size is per-unit, not per-matchup
     size_t result_size() const {
         switch (format) {
             case ResultFormat::Compact: return 8;   // sizeof(CompactMatchResult)
             case ResultFormat::Extended: return 24; // sizeof(ExtendedMatchResult)
             case ResultFormat::CompactExtended: return 16; // sizeof(CompactExtendedMatchResult)
+            case ResultFormat::Aggregated: return 256; // sizeof(AggregatedUnitResult)
         }
         return 8;
     }
+
+    bool is_aggregated() const { return format == ResultFormat::Aggregated; }
 };
 
 // ==============================================================================
@@ -317,6 +323,183 @@ struct CompactExtendedMatchResult {
 static_assert(sizeof(CompactExtendedMatchResult) == 16, "CompactExtendedMatchResult must be 16 bytes");
 
 // ==============================================================================
+// Aggregated Unit Result (256 bytes) - Comprehensive per-unit statistics
+// Stores aggregated stats from all matchups for a single unit
+// This format trades per-matchup detail for massive file size reduction:
+// 18,000 units * 256 bytes = 4.6 MB vs 333M matchups * 16 bytes = 5.3 GB
+// ==============================================================================
+
+struct AggregatedUnitResult {
+    // === Unit Identification (8 bytes) ===
+    u32 unit_id;                    // Unit index in the units array
+    u16 points_cost;                // Unit's point cost (for reference)
+    u16 total_opponents;            // Number of unique opponents faced
+
+    // === Overall Win/Loss Statistics (24 bytes) ===
+    u32 total_matchups;             // Total matchups this unit participated in
+    u32 wins;                       // Matchups won (best-of-3 wins)
+    u32 losses;                     // Matchups lost
+    u32 draws;                      // Matchups drawn
+
+    // Individual game wins (3 games per matchup)
+    u32 games_won;                  // Individual games won across all matchups
+    u32 games_lost;                 // Individual games lost across all matchups
+
+    // === Combat Statistics - Totals (32 bytes) ===
+    u64 total_wounds_dealt;         // Total wounds inflicted across all matchups
+    u64 total_wounds_received;      // Total wounds taken across all matchups
+    u32 total_models_killed;        // Total enemy models killed
+    u32 total_models_lost;          // Total own models lost
+
+    // === Combat Statistics - Averaged (16 bytes) ===
+    // Pre-computed averages stored as fixed-point (multiply by 100 for display)
+    u16 avg_wounds_dealt_x100;      // Average wounds dealt per matchup * 100
+    u16 avg_wounds_received_x100;   // Average wounds received per matchup * 100
+    u16 avg_models_killed_x100;     // Average models killed per matchup * 100
+    u16 avg_models_lost_x100;       // Average models lost per matchup * 100
+    u16 avg_rounds_x100;            // Average rounds per game * 100
+    u16 reserved_avg;               // Reserved for future use
+
+    // === Objective Control Statistics (16 bytes) ===
+    u32 total_objective_rounds;     // Total rounds holding objectives
+    u32 opponent_objective_rounds;  // Total rounds opponent held objectives
+    u16 matchups_with_objective;    // Matchups where objectives were contested
+    u16 matchups_won_by_objective;  // Matchups decided by objective control
+    u16 matchups_lost_by_objective; // Matchups lost due to objective control
+    u16 reserved_obj;               // Reserved
+
+    // === Victory Margin Analysis (24 bytes) ===
+    // Breaks down wins/losses by margin (game score difference)
+    u16 decisive_wins;              // Wins 3-0 (complete dominance)
+    u16 solid_wins;                 // Wins 2-0 (clear advantage)
+    u16 close_wins;                 // Wins 2-1 (close fight)
+    u16 close_losses;               // Losses 1-2 (close fight)
+    u16 solid_losses;               // Losses 0-2 (clear disadvantage)
+    u16 decisive_losses;            // Losses 0-3 (complete defeat)
+
+    // Win streaks (longest consecutive wins/losses against different opponents)
+    u16 best_win_streak;            // Longest consecutive wins
+    u16 worst_loss_streak;          // Longest consecutive losses
+    u16 reserved_margin[2];         // Reserved
+
+    // === Performance by Opponent Cost Bracket (48 bytes) ===
+    // Win rate against opponents in different point cost ranges
+    // Brackets: 0-99, 100-199, 200-299, 300-399, 400-499, 500+
+    struct CostBracketStats {
+        u16 matchups;               // Matchups in this bracket
+        u16 wins;                   // Wins in this bracket
+        u16 avg_wound_diff_x10;     // Avg wound differential * 10 (signed, stored as u16 offset by 32768)
+        u16 reserved;
+    };
+    CostBracketStats cost_brackets[6];  // 8 bytes * 6 = 48 bytes
+
+    // === Efficiency Metrics (24 bytes) ===
+    u16 damage_efficiency_x100;     // (wounds dealt / points) * 100
+    u16 survival_efficiency_x100;   // (wounds avoided / points) * 100
+    u16 kill_efficiency_x100;       // (models killed / points) * 100
+    u16 objective_efficiency_x100;  // (objective rounds / points) * 100
+
+    // Points-adjusted win rate (performance relative to cost)
+    u16 underdog_wins;              // Wins vs higher cost opponents
+    u16 underdog_matchups;          // Matchups vs higher cost opponents
+    u16 overdog_wins;               // Wins vs lower cost opponents
+    u16 overdog_matchups;           // Matchups vs lower cost opponents
+
+    // Expected vs actual performance
+    u16 expected_win_rate_x100;     // Expected win rate based on points * 100
+    u16 actual_vs_expected_x100;    // Actual / Expected * 100 (>100 = overperformer)
+
+    // === Faction Performance (32 bytes) ===
+    // Store win stats against up to 8 factions (identified by hash)
+    struct FactionStats {
+        u16 faction_hash;           // CRC16 of faction name (0 = empty slot)
+        u16 matchups;               // Matchups against this faction
+        u16 wins;                   // Wins against this faction
+        u16 reserved;
+    };
+    FactionStats faction_stats[4];  // 8 bytes * 4 = 32 bytes
+
+    // === Reserved for Future Use (48 bytes) ===
+    u8 reserved_future[48];
+
+    // === Constructors and Methods ===
+    AggregatedUnitResult() { std::memset(this, 0, sizeof(*this)); }
+
+    // Calculate derived metrics from raw data
+    void finalize() {
+        if (total_matchups == 0) return;
+
+        // Calculate averages (stored as x100 fixed point)
+        avg_wounds_dealt_x100 = static_cast<u16>(std::min(
+            (total_wounds_dealt * 100) / total_matchups, static_cast<u64>(65535)));
+        avg_wounds_received_x100 = static_cast<u16>(std::min(
+            (total_wounds_received * 100) / total_matchups, static_cast<u64>(65535)));
+        avg_models_killed_x100 = static_cast<u16>(std::min(
+            (static_cast<u64>(total_models_killed) * 100) / total_matchups, static_cast<u64>(65535)));
+        avg_models_lost_x100 = static_cast<u16>(std::min(
+            (static_cast<u64>(total_models_lost) * 100) / total_matchups, static_cast<u64>(65535)));
+
+        // Calculate efficiency metrics
+        if (points_cost > 0) {
+            damage_efficiency_x100 = static_cast<u16>(std::min(
+                (total_wounds_dealt * 100) / (total_matchups * points_cost), static_cast<u64>(65535)));
+            kill_efficiency_x100 = static_cast<u16>(std::min(
+                (static_cast<u64>(total_models_killed) * 100) / (total_matchups * points_cost), static_cast<u64>(65535)));
+            objective_efficiency_x100 = static_cast<u16>(std::min(
+                (static_cast<u64>(total_objective_rounds) * 100) / (total_matchups * points_cost), static_cast<u64>(65535)));
+
+            // Survival efficiency: inverse of wounds received per point
+            u64 wounds_per_point = (total_wounds_received * 100) / (total_matchups * points_cost);
+            survival_efficiency_x100 = static_cast<u16>(wounds_per_point > 0 ?
+                std::min(10000 / wounds_per_point, static_cast<u64>(65535)) : 65535);
+        }
+
+        // Calculate expected vs actual win rate
+        // Simple model: higher cost = higher expected win rate
+        // Expected = 50% adjusted by relative cost (roughly)
+        u16 actual_win_pct = static_cast<u16>((static_cast<u64>(wins) * 10000) / total_matchups);
+        actual_vs_expected_x100 = actual_win_pct; // Simplified - actual win rate * 100
+    }
+
+    // Accessors for display
+    f64 win_rate() const {
+        return total_matchups > 0 ? 100.0 * wins / total_matchups : 0.0;
+    }
+
+    f64 avg_wounds_dealt() const { return avg_wounds_dealt_x100 / 100.0; }
+    f64 avg_wounds_received() const { return avg_wounds_received_x100 / 100.0; }
+    f64 avg_models_killed() const { return avg_models_killed_x100 / 100.0; }
+    f64 avg_models_lost() const { return avg_models_lost_x100 / 100.0; }
+
+    f64 damage_efficiency() const { return damage_efficiency_x100 / 100.0; }
+    f64 survival_efficiency() const { return survival_efficiency_x100 / 100.0; }
+    f64 kill_efficiency() const { return kill_efficiency_x100 / 100.0; }
+    f64 objective_efficiency() const { return objective_efficiency_x100 / 100.0; }
+
+    f64 underdog_win_rate() const {
+        return underdog_matchups > 0 ? 100.0 * underdog_wins / underdog_matchups : 0.0;
+    }
+
+    f64 overdog_win_rate() const {
+        return overdog_matchups > 0 ? 100.0 * overdog_wins / overdog_matchups : 0.0;
+    }
+
+    // Get cost bracket win rate
+    f64 bracket_win_rate(size_t bracket) const {
+        if (bracket >= 6 || cost_brackets[bracket].matchups == 0) return 0.0;
+        return 100.0 * cost_brackets[bracket].wins / cost_brackets[bracket].matchups;
+    }
+
+    // Decode signed wound differential from unsigned storage
+    i16 bracket_wound_diff(size_t bracket) const {
+        if (bracket >= 6) return 0;
+        return static_cast<i16>(cost_brackets[bracket].avg_wound_diff_x10) - 32768;
+    }
+};
+
+static_assert(sizeof(AggregatedUnitResult) == 256, "AggregatedUnitResult must be 256 bytes");
+
+// ==============================================================================
 // Progress Callback
 // ==============================================================================
 
@@ -423,6 +606,12 @@ public:
         ProgressCallback progress = nullptr,
         bool try_resume = false
     ) {
+        // Handle aggregated format separately (no resume support for aggregated)
+        if (config_.format == ResultFormat::Aggregated) {
+            simulate_all_aggregated(units_a, units_b, progress);
+            return;
+        }
+
         u64 total_matchups = static_cast<u64>(units_a.size()) * units_b.size();
         u64 resume_from = 0;
         bool resumed = false;
@@ -624,6 +813,108 @@ public:
 
     // Get thread count
     size_t thread_count() const { return pool_.thread_count(); }
+
+    // Simulate all matchups with aggregated output (per-unit statistics)
+    void simulate_all_aggregated(
+        const std::vector<Unit>& units_a,
+        const std::vector<Unit>& units_b,
+        ProgressCallback progress = nullptr
+    ) {
+        const size_t num_units = units_a.size();
+        const u64 total_matchups = static_cast<u64>(num_units) * units_b.size();
+
+        // Reset game stats
+        game_stats_.reset();
+
+        // Initialize aggregated results for all units
+        std::vector<AggregatedUnitResult> aggregated_results(num_units);
+        std::vector<std::mutex> unit_mutexes(num_units);
+
+        // Initialize each result with unit info
+        for (size_t i = 0; i < num_units; ++i) {
+            aggregated_results[i].unit_id = static_cast<u32>(i);
+            aggregated_results[i].points_cost = units_a[i].points_cost;
+            aggregated_results[i].total_opponents = static_cast<u16>(units_b.size());
+        }
+
+        // Track progress
+        std::atomic<u64> completed{0};
+        auto start_time = std::chrono::high_resolution_clock::now();
+
+        // Create batches
+        std::vector<std::pair<u32, u32>> matchups;
+        matchups.reserve(config_.batch_size);
+
+        // Process all matchups
+        for (u32 i = 0; i < num_units; ++i) {
+            for (u32 j = 0; j < units_b.size(); ++j) {
+                matchups.emplace_back(i, j);
+
+                // Process batch when full
+                if (matchups.size() >= config_.batch_size) {
+                    process_batch_aggregated(units_a, units_b, matchups,
+                                            aggregated_results, unit_mutexes);
+                    completed += matchups.size();
+                    matchups.clear();
+
+                    // Report progress
+                    if (progress && config_.enable_progress) {
+                        auto now = std::chrono::high_resolution_clock::now();
+                        f64 elapsed = std::chrono::duration<f64>(now - start_time).count();
+                        u64 done = completed.load();
+                        f64 rate = done / elapsed;
+                        f64 remaining = (total_matchups - done) / rate;
+
+                        progress({done, total_matchups, rate, elapsed, remaining, false, &game_stats_});
+                    }
+                }
+            }
+        }
+
+        // Process remaining matchups
+        if (!matchups.empty()) {
+            process_batch_aggregated(units_a, units_b, matchups,
+                                    aggregated_results, unit_mutexes);
+            completed += matchups.size();
+        }
+
+        // Finalize all results (compute averages and derived metrics)
+        for (auto& result : aggregated_results) {
+            result.finalize();
+        }
+
+        // Write output file
+        std::ofstream out(config_.output_file, std::ios::binary | std::ios::trunc);
+        if (!out) {
+            throw std::runtime_error("Cannot open output file: " + config_.output_file);
+        }
+
+        // Write header (version 4 = aggregated)
+        u32 magic = 0x42415453;  // "SABS"
+        u32 version = 4;         // Aggregated format
+        u32 unit_count = static_cast<u32>(num_units);
+        u32 opponent_count = static_cast<u32>(units_b.size());
+
+        out.write(reinterpret_cast<const char*>(&magic), sizeof(magic));
+        out.write(reinterpret_cast<const char*>(&version), sizeof(version));
+        out.write(reinterpret_cast<const char*>(&unit_count), sizeof(unit_count));
+        out.write(reinterpret_cast<const char*>(&opponent_count), sizeof(opponent_count));
+
+        // Write all aggregated results
+        out.write(reinterpret_cast<const char*>(aggregated_results.data()),
+                  aggregated_results.size() * sizeof(AggregatedUnitResult));
+
+        out.flush();
+
+        // Final progress report
+        if (progress) {
+            auto now = std::chrono::high_resolution_clock::now();
+            f64 elapsed = std::chrono::duration<f64>(now - start_time).count();
+            u64 done = completed.load();
+            f64 rate = done / elapsed;
+            progress({done, total_matchups, rate, elapsed, 0.0, false, &game_stats_});
+        }
+    }
 
 private:
     BatchConfig config_;
@@ -886,6 +1177,200 @@ private:
         }
 
         // Wait for all threads to complete (simple spin-wait with yield)
+        while (threads_done.load(std::memory_order_acquire) < num_threads) {
+            std::this_thread::yield();
+        }
+    }
+
+    // Helper function to compute CRC16 hash for faction names
+    static u16 crc16_hash(std::string_view str) {
+        u16 crc = 0xFFFF;
+        for (char c : str) {
+            crc ^= static_cast<u16>(c) << 8;
+            for (int i = 0; i < 8; ++i) {
+                if (crc & 0x8000) {
+                    crc = (crc << 1) ^ 0x1021;
+                } else {
+                    crc <<= 1;
+                }
+            }
+        }
+        return crc == 0 ? 1 : crc;  // Ensure non-zero for valid entries
+    }
+
+    void process_batch_aggregated(
+        const std::vector<Unit>& units_a,
+        const std::vector<Unit>& units_b,
+        const std::vector<std::pair<u32, u32>>& matchups,
+        std::vector<AggregatedUnitResult>& aggregated,
+        std::vector<std::mutex>& unit_mutexes
+    ) {
+        const size_t batch_size = matchups.size();
+        const size_t num_threads = pool_.thread_count();
+        const size_t chunk_size = (batch_size + num_threads - 1) / num_threads;
+
+        std::atomic<size_t> threads_done{0};
+
+        for (size_t t = 0; t < num_threads; ++t) {
+            size_t start = t * chunk_size;
+            size_t end = std::min(start + chunk_size, batch_size);
+
+            if (start >= end) {
+                ++threads_done;
+                continue;
+            }
+
+            pool_.submit_detached([&, start, end]() {
+                thread_local DiceRoller dice(
+                    std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
+                    static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+                );
+                thread_local GameRunner runner(dice);
+
+                // Thread-local accumulators for global stats
+                u64 local_games = 0;
+                u64 local_wounds = 0;
+                u64 local_models_killed = 0;
+                u64 local_obj_rounds = 0;
+                u64 local_objective_games = 0;
+
+                for (size_t i = start; i < end; ++i) {
+                    auto [a_idx, b_idx] = matchups[i];
+                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+
+                    // Get opponent info for categorization
+                    const Unit& unit_a = units_a[a_idx];
+                    const Unit& unit_b = units_b[b_idx];
+
+                    // Update global game stats
+                    local_games += 3;
+                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                        local_objective_games += 3;
+                    }
+
+                    // Update unit A's aggregated stats
+                    {
+                        std::lock_guard<std::mutex> lock(unit_mutexes[a_idx]);
+                        AggregatedUnitResult& ar = aggregated[a_idx];
+
+                        ar.total_matchups++;
+
+                        // Win/loss tracking
+                        if (mr.overall_winner == GameWinner::UnitA) {
+                            ar.wins++;
+                            // Victory margin
+                            if (mr.games_won_b == 0) {
+                                if (mr.games_won_a >= 3) ar.decisive_wins++;
+                                else ar.solid_wins++;
+                            } else {
+                                ar.close_wins++;
+                            }
+                        } else if (mr.overall_winner == GameWinner::UnitB) {
+                            ar.losses++;
+                            // Loss margin
+                            if (mr.games_won_a == 0) {
+                                if (mr.games_won_b >= 3) ar.decisive_losses++;
+                                else ar.solid_losses++;
+                            } else {
+                                ar.close_losses++;
+                            }
+                        } else {
+                            ar.draws++;
+                        }
+
+                        // Game counts
+                        ar.games_won += mr.games_won_a;
+                        ar.games_lost += mr.games_won_b;
+
+                        // Combat stats
+                        ar.total_wounds_dealt += mr.total_wounds_dealt_a;
+                        ar.total_wounds_received += mr.total_wounds_dealt_b;
+                        ar.total_models_killed += mr.total_models_killed_a;
+                        ar.total_models_lost += mr.total_models_killed_b;
+
+                        // Objective stats
+                        ar.total_objective_rounds += mr.total_rounds_holding_a;
+                        ar.opponent_objective_rounds += mr.total_rounds_holding_b;
+                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                            ar.matchups_with_objective++;
+                        }
+
+                        // Cost bracket tracking (opponent's cost)
+                        size_t bracket = std::min(static_cast<size_t>(unit_b.points_cost / 100), size_t(5));
+                        ar.cost_brackets[bracket].matchups++;
+                        if (mr.overall_winner == GameWinner::UnitA) {
+                            ar.cost_brackets[bracket].wins++;
+                        }
+                        // Store wound differential (offset by 32768 for signed storage)
+                        i32 wound_diff = static_cast<i32>(mr.total_wounds_dealt_a) -
+                                        static_cast<i32>(mr.total_wounds_dealt_b);
+                        // Running average stored as x10 offset
+                        i32 current_avg = static_cast<i32>(ar.cost_brackets[bracket].avg_wound_diff_x10) - 32768;
+                        i32 new_avg = current_avg + (wound_diff * 10 - current_avg) /
+                                     static_cast<i32>(ar.cost_brackets[bracket].matchups);
+                        ar.cost_brackets[bracket].avg_wound_diff_x10 = static_cast<u16>(new_avg + 32768);
+
+                        // Underdog/overdog tracking
+                        if (unit_b.points_cost > unit_a.points_cost) {
+                            ar.underdog_matchups++;
+                            if (mr.overall_winner == GameWinner::UnitA) {
+                                ar.underdog_wins++;
+                            }
+                        } else if (unit_b.points_cost < unit_a.points_cost) {
+                            ar.overdog_matchups++;
+                            if (mr.overall_winner == GameWinner::UnitA) {
+                                ar.overdog_wins++;
+                            }
+                        }
+
+                        // Faction stats (find or add slot)
+                        u16 faction_hash = crc16_hash(unit_b.faction.view());
+                        bool found = false;
+                        for (size_t f = 0; f < 4; ++f) {
+                            if (ar.faction_stats[f].faction_hash == faction_hash) {
+                                ar.faction_stats[f].matchups++;
+                                if (mr.overall_winner == GameWinner::UnitA) {
+                                    ar.faction_stats[f].wins++;
+                                }
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            // Find empty slot or replace least-used
+                            size_t min_slot = 0;
+                            u16 min_matchups = ar.faction_stats[0].matchups;
+                            for (size_t f = 0; f < 4; ++f) {
+                                if (ar.faction_stats[f].faction_hash == 0) {
+                                    min_slot = f;
+                                    break;
+                                }
+                                if (ar.faction_stats[f].matchups < min_matchups) {
+                                    min_matchups = ar.faction_stats[f].matchups;
+                                    min_slot = f;
+                                }
+                            }
+                            ar.faction_stats[min_slot].faction_hash = faction_hash;
+                            ar.faction_stats[min_slot].matchups = 1;
+                            ar.faction_stats[min_slot].wins = (mr.overall_winner == GameWinner::UnitA) ? 1 : 0;
+                        }
+                    }
+                }
+
+                // Update global stats
+                game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
+                game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
+                game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
+                game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
+                game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
+
+                ++threads_done;
+            });
+        }
+
         while (threads_done.load(std::memory_order_acquire) < num_threads) {
             std::this_thread::yield();
         }

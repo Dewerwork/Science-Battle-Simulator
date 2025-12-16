@@ -19,15 +19,17 @@ namespace battle {
 
 struct ResultFileHeader {
     u32 magic;      // 0x42415453 = "SABS"
-    u32 version;    // 1 = compact (8 bytes), 2 = extended (24 bytes), 3 = compact_extended (16 bytes)
+    u32 version;    // 1 = compact (8 bytes), 2 = extended (24 bytes), 3 = compact_extended (16 bytes), 4 = aggregated (256 bytes/unit)
     u32 units_a_count;
     u32 units_b_count;
 
-    bool is_valid() const { return magic == 0x42415453 && (version >= 1 && version <= 3); }
+    bool is_valid() const { return magic == 0x42415453 && (version >= 1 && version <= 4); }
     bool is_extended() const { return version == 2; }
     bool is_compact_extended() const { return version == 3; }
+    bool is_aggregated() const { return version == 4; }
     bool has_extended_data() const { return version == 2 || version == 3; }
     u64 expected_results() const {
+        if (version == 4) return units_a_count;  // Aggregated: one result per unit
         return static_cast<u64>(units_a_count) * units_b_count;
     }
     size_t result_size() const {
@@ -35,6 +37,7 @@ struct ResultFileHeader {
             case 1: return sizeof(CompactMatchResult);
             case 2: return sizeof(ExtendedMatchResult);
             case 3: return sizeof(CompactExtendedMatchResult);
+            case 4: return sizeof(AggregatedUnitResult);
             default: return sizeof(CompactMatchResult);
         }
     }
@@ -229,7 +232,7 @@ public:
                 std::cerr << "  Error: Invalid header\n";
                 std::cerr << "    Magic: 0x" << std::hex << header_.magic << std::dec
                           << " (expected 0x42415453 'SABS')\n";
-                std::cerr << "    Version: " << header_.version << " (expected 1, 2, or 3)\n";
+                std::cerr << "    Version: " << header_.version << " (expected 1, 2, 3, or 4)\n";
             }
             return false;
         }
@@ -238,9 +241,16 @@ public:
         results_.clear();
         extended_results_.clear();
         compact_extended_results_.clear();
+        aggregated_results_.clear();
 
         // Read results based on version
-        if (header_.is_extended()) {
+        if (header_.is_aggregated()) {
+            aggregated_results_.reserve(header_.expected_results());
+            AggregatedUnitResult result;
+            while (in.read(reinterpret_cast<char*>(&result), sizeof(result))) {
+                aggregated_results_.push_back(result);
+            }
+        } else if (header_.is_extended()) {
             extended_results_.reserve(header_.expected_results());
             ExtendedMatchResult result;
             while (in.read(reinterpret_cast<char*>(&result), sizeof(result))) {
@@ -272,10 +282,24 @@ public:
     // Get header info
     const ResultFileHeader& header() const { return header_; }
     bool has_extended_data() const { return header_.has_extended_data(); }
+    bool is_aggregated() const { return header_.is_aggregated(); }
     size_t result_count() const {
+        if (header_.is_aggregated()) return aggregated_results_.size();
         if (header_.is_extended()) return extended_results_.size();
         if (header_.is_compact_extended()) return compact_extended_results_.size();
         return results_.size();
+    }
+
+    // Access aggregated results directly
+    const std::vector<AggregatedUnitResult>& aggregated_results() const { return aggregated_results_; }
+
+    // Get aggregated stats for a specific unit
+    const AggregatedUnitResult* get_aggregated_stats(u32 unit_id) const {
+        if (!header_.is_aggregated()) return nullptr;
+        for (const auto& r : aggregated_results_) {
+            if (r.unit_id == unit_id) return &r;
+        }
+        return nullptr;
     }
 
     // ===========================================================================
@@ -1105,6 +1129,7 @@ private:
     std::vector<CompactMatchResult> results_;
     std::vector<ExtendedMatchResult> extended_results_;
     std::vector<CompactExtendedMatchResult> compact_extended_results_;
+    std::vector<AggregatedUnitResult> aggregated_results_;
     std::vector<Unit> units_a_;
     std::vector<Unit> units_b_;
 };
