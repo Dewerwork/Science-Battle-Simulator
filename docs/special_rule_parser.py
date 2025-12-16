@@ -385,6 +385,24 @@ def parse_rule(rule_name: str, rule_text: str,
             range_inches=range_inches
         )
 
+    # === PATTERN: "deploy as if it had X" - delayed ability grant ===
+    # Check this BEFORE once-per-game to properly categorize rules like "Ambush Re-Deployment"
+    m = re.search(r'deploy (?:it )?as if it had ([a-z][a-z\s]+?)(?:\s+at\s|\s*\.|\s*,|$)', text_lower)
+    if m:
+        ability = m.group(1).strip()
+        ability_normalized = normalize_ability_name(ability)
+        return ParsedRule(
+            rule_name=rule_name,
+            target_type=TargetType.SELF,
+            effect_type=EffectType.GRANT_ABILITY,
+            timing=timing,
+            should_ignore=False,
+            ignore_reason='',
+            effect_bucket=f'SELF_GRANT_{ability_normalized}',
+            raw_text=text,
+            granted_ability=ability
+        )
+
     # === PATTERN: Once per game - IGNORE ===
     if timing == ActionTiming.ONCE_PER_GAME:
         return ParsedRule(
@@ -413,6 +431,82 @@ def parse_rule(rule_name: str, rule_text: str,
             effect_bucket=bucket,
             raw_text=text,
             granted_ability=ability
+        )
+
+    # === PATTERN: "Counts as having X" - grants ability to self ===
+    m = re.search(r'counts as having ([a-z][a-z\s]+)', text_lower)
+    if m:
+        ability = m.group(1).strip()
+        ability_normalized = normalize_ability_name(ability)
+
+        # Check for additional bonuses: "and gets AP (+2)"
+        bonus_match = re.search(r'and gets ([^.]+)', text_lower)
+        if bonus_match:
+            bonus_part = bonus_match.group(1).strip()
+            bonus_normalized = normalize_ability_name(bonus_part)
+            bucket = f'SELF_GRANT_{ability_normalized}_+_{bonus_normalized}'
+        else:
+            bucket = f'SELF_GRANT_{ability_normalized}'
+
+        return ParsedRule(
+            rule_name=rule_name,
+            target_type=TargetType.SELF,
+            effect_type=EffectType.GRANT_ABILITY,
+            timing=ActionTiming.PASSIVE,
+            should_ignore=False,
+            ignore_reason='',
+            effect_bucket=bucket,
+            raw_text=text,
+            granted_ability=ability
+        )
+
+    # === PATTERN: Modifies how an ability works for friendly units ===
+    # "Friendly units using X may..." or "Friendly units with X get..."
+    m = re.search(r'friendly units? (using|with) ([a-z][a-z\s]+?) (may|get|must)', text_lower)
+    if m:
+        ability = m.group(2).strip()
+        ability_normalized = normalize_ability_name(ability)
+        return ParsedRule(
+            rule_name=rule_name,
+            target_type=TargetType.ALL_FRIENDLY,
+            effect_type=EffectType.OTHER,
+            timing=ActionTiming.PASSIVE,
+            should_ignore=False,
+            ignore_reason='',
+            effect_bucket=f'MODIFY_{ability_normalized}_FRIENDLY',
+            raw_text=text,
+            granted_ability=ability
+        )
+
+    # === PATTERN: Modifies how an ability works for enemy units ===
+    # "Enemy units using X must..."
+    m = re.search(r'enemy units? (using|with) ([a-z][a-z\s]+?) (may|get|must)', text_lower)
+    if m:
+        ability = m.group(2).strip()
+        ability_normalized = normalize_ability_name(ability)
+        return ParsedRule(
+            rule_name=rule_name,
+            target_type=TargetType.ALL_ENEMY,
+            effect_type=EffectType.OTHER,
+            timing=ActionTiming.PASSIVE,
+            should_ignore=False,
+            ignore_reason='',
+            effect_bucket=f'MODIFY_{ability_normalized}_ENEMY',
+            raw_text=text,
+            granted_ability=ability
+        )
+
+    # === PATTERN: Respawn/Reinforcement - "when shaken or destroyed, place a new copy" ===
+    if ('shaken' in text_lower or 'destroyed' in text_lower) and 'place a new copy' in text_lower:
+        return ParsedRule(
+            rule_name=rule_name,
+            target_type=TargetType.SELF,
+            effect_type=EffectType.SPAWN,
+            timing=ActionTiming.ON_TRIGGER,
+            should_ignore=False,
+            ignore_reason='',
+            effect_bucket='RESPAWN_ON_DEATH',
+            raw_text=text
         )
 
     # === PATTERN: Self hit bonus - "This model gets +1 to hit" ===
