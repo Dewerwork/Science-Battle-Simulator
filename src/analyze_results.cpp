@@ -18,7 +18,9 @@ void print_usage(const char* prog) {
     std::cout << "\nFull Game Statistics Commands (requires extended format results):\n";
     std::cout << "  game-stats <results.bin> <units.txt> [N] - Show game stats report (top N=10)\n";
     std::cout << "  ext-matchup <results.bin> <units.txt> <id_a> <id_b> - Extended matchup report\n";
-    std::cout << "\nNote: Extended format results are generated using 'batch_sim -e'\n";
+    std::cout << "\nNote: Extended format results are generated using 'batch_sim -e' or 'batch_sim -E'\n";
+    std::cout << "  -e: Extended format (24 bytes/result, full precision)\n";
+    std::cout << "  -E: Compact extended (16 bytes/result, recommended for large simulations)\n";
 }
 
 int main(int argc, char* argv[]) {

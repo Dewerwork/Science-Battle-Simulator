@@ -19,13 +19,35 @@ namespace battle {
 // Batch Configuration
 // ==============================================================================
 
+// Format options for result storage
+enum class ResultFormat : u8 {
+    Compact = 1,          // 8 bytes - basic win/loss only
+    Extended = 2,         // 24 bytes - full game stats
+    CompactExtended = 3   // 16 bytes - compressed game stats (33% smaller than Extended)
+};
+
 struct BatchConfig {
     u32 batch_size = 10000;          // Matchups per batch
     u32 checkpoint_interval = 1000000; // Save progress every N matchups
     bool enable_progress = true;
-    bool extended_format = false;    // Use ExtendedMatchResult (24 bytes) vs CompactMatchResult (8 bytes)
+    ResultFormat format = ResultFormat::Compact;  // Output format
     std::string output_file = "results.bin";
     std::string checkpoint_file = "checkpoint.bin";
+
+    // Convenience helpers for backwards compatibility
+    bool is_extended() const { return format == ResultFormat::Extended; }
+    bool is_compact_extended() const { return format == ResultFormat::CompactExtended; }
+    bool has_extended_data() const { return format != ResultFormat::Compact; }
+
+    // Returns size based on format (hardcoded to avoid forward declaration issues)
+    size_t result_size() const {
+        switch (format) {
+            case ResultFormat::Compact: return 8;   // sizeof(CompactMatchResult)
+            case ResultFormat::Extended: return 24; // sizeof(ExtendedMatchResult)
+            case ResultFormat::CompactExtended: return 16; // sizeof(CompactExtendedMatchResult)
+        }
+        return 8;
+    }
 };
 
 // ==============================================================================
@@ -168,6 +190,133 @@ struct ExtendedMatchResult {
 static_assert(sizeof(ExtendedMatchResult) == 24, "ExtendedMatchResult must be 24 bytes");
 
 // ==============================================================================
+// Compact Extended Result (16 bytes) - 33% smaller than ExtendedMatchResult
+// Trades some precision for significant space savings on large datasets
+// ==============================================================================
+
+#pragma pack(push, 1)
+struct CompactExtendedMatchResult {
+    u32 unit_a_id;           // Unit A ID (full 32-bit)
+    u32 unit_b_id;           // Unit B ID (full 32-bit)
+
+    // Packed outcome byte:
+    // bits 0-1: winner (0=A, 1=B, 2=Draw)
+    // bits 2-3: games_a (0-3)
+    // bits 4-5: games_b (0-3)
+    // bits 6-7: reserved
+    u8 outcome;
+
+    u8 total_rounds;         // Total rounds played (0-12 for best-of-3)
+
+    // Wounds scaled by /4 (max representable: 1020, typical max ~500)
+    u8 wounds_a_scaled;
+    u8 wounds_b_scaled;
+
+    u8 models_killed_a;      // Models killed by A (0-255)
+    u8 models_killed_b;      // Models killed by B (0-255)
+
+    // Packed objective holding:
+    // bits 0-3: rounds_holding_a (0-15, max actual is 12)
+    // bits 4-7: rounds_holding_b (0-15)
+    u8 holding;
+
+    u8 reserved;             // Padding for alignment
+
+    CompactExtendedMatchResult() : unit_a_id(0), unit_b_id(0), outcome(2),
+                                   total_rounds(0), wounds_a_scaled(0), wounds_b_scaled(0),
+                                   models_killed_a(0), models_killed_b(0), holding(0), reserved(0) {}
+
+    // Create from full MatchResult
+    static CompactExtendedMatchResult from_match(const MatchResult& r) {
+        CompactExtendedMatchResult c;
+        c.unit_a_id = r.unit_a_id;
+        c.unit_b_id = r.unit_b_id;
+
+        // Pack outcome: winner(2) | games_a(2) | games_b(2) | reserved(2)
+        c.outcome = (static_cast<u8>(r.overall_winner) & 0x03) |
+                    ((r.games_won_a & 0x03) << 2) |
+                    ((r.games_won_b & 0x03) << 4);
+
+        c.total_rounds = 0;  // Will be set by caller if available
+
+        // Scale wounds by /4, saturate at 255
+        c.wounds_a_scaled = static_cast<u8>(std::min(r.total_wounds_dealt_a / 4, 255u));
+        c.wounds_b_scaled = static_cast<u8>(std::min(r.total_wounds_dealt_b / 4, 255u));
+
+        c.models_killed_a = static_cast<u8>(std::min(static_cast<u16>(r.total_models_killed_a), static_cast<u16>(255)));
+        c.models_killed_b = static_cast<u8>(std::min(static_cast<u16>(r.total_models_killed_b), static_cast<u16>(255)));
+
+        // Pack holding: a(4) | b(4)
+        c.holding = (r.total_rounds_holding_a & 0x0F) |
+                    ((r.total_rounds_holding_b & 0x0F) << 4);
+
+        return c;
+    }
+
+    // Create from ExtendedMatchResult (for conversion)
+    static CompactExtendedMatchResult from_extended(const ExtendedMatchResult& e) {
+        CompactExtendedMatchResult c;
+        c.unit_a_id = e.unit_a_id;
+        c.unit_b_id = e.unit_b_id;
+        c.outcome = (e.winner & 0x03) |
+                    ((e.games_a & 0x03) << 2) |
+                    ((e.games_b & 0x03) << 4);
+        c.total_rounds = e.total_rounds;
+        c.wounds_a_scaled = static_cast<u8>(std::min(static_cast<u32>(e.wounds_dealt_a) / 4, 255u));
+        c.wounds_b_scaled = static_cast<u8>(std::min(static_cast<u32>(e.wounds_dealt_b) / 4, 255u));
+        c.models_killed_a = e.models_killed_a;
+        c.models_killed_b = e.models_killed_b;
+        c.holding = (e.rounds_holding_a & 0x0F) | ((e.rounds_holding_b & 0x0F) << 4);
+        return c;
+    }
+
+    // Accessors for packed fields
+    u8 winner() const { return outcome & 0x03; }
+    u8 games_a() const { return (outcome >> 2) & 0x03; }
+    u8 games_b() const { return (outcome >> 4) & 0x03; }
+    u8 rounds_holding_a() const { return holding & 0x0F; }
+    u8 rounds_holding_b() const { return (holding >> 4) & 0x0F; }
+
+    // Get approximate wounds (multiply by 4)
+    u16 wounds_dealt_a() const { return static_cast<u16>(wounds_a_scaled) * 4; }
+    u16 wounds_dealt_b() const { return static_cast<u16>(wounds_b_scaled) * 4; }
+
+    // Convert to compact format for backwards compatibility
+    CompactMatchResult to_compact() const {
+        CompactMatchResult c;
+        c.unit_a_id = unit_a_id;
+        c.unit_b_id = unit_b_id & 0xFFFFF;
+        c.winner = winner();
+        c.games_a = games_a();
+        c.games_b = games_b();
+        return c;
+    }
+
+    // Convert to full extended format (with some precision loss)
+    ExtendedMatchResult to_extended() const {
+        ExtendedMatchResult e;
+        e.unit_a_id = unit_a_id;
+        e.unit_b_id = unit_b_id;
+        e.winner = winner();
+        e.games_a = games_a();
+        e.games_b = games_b();
+        e.total_rounds = total_rounds;
+        e.wounds_dealt_a = wounds_dealt_a();
+        e.wounds_dealt_b = wounds_dealt_b();
+        e.models_killed_a = models_killed_a;
+        e.models_killed_b = models_killed_b;
+        e.rounds_holding_a = rounds_holding_a();
+        e.rounds_holding_b = rounds_holding_b();
+        e.endings = 0;
+        e.endings_high = 0;
+        return e;
+    }
+};
+#pragma pack(pop)
+
+static_assert(sizeof(CompactExtendedMatchResult) == 16, "CompactExtendedMatchResult must be 16 bytes");
+
+// ==============================================================================
 // Progress Callback
 // ==============================================================================
 
@@ -279,8 +428,7 @@ public:
         bool resumed = false;
 
         // Determine result size based on format
-        const size_t result_size = config_.extended_format ?
-            sizeof(ExtendedMatchResult) : sizeof(CompactMatchResult);
+        const size_t result_size = config_.result_size();
 
         // Reset game stats for this simulation
         game_stats_.reset();
@@ -338,13 +486,20 @@ public:
 
         std::mutex output_mutex;  // Kept for API compatibility with process_batch signature
 
-        // Buffers for both formats (only one will be used)
+        // Buffers for different formats (only one will be used)
         std::vector<CompactMatchResult> results_buffer;
         std::vector<ExtendedMatchResult> extended_results_buffer;
-        if (config_.extended_format) {
-            extended_results_buffer.reserve(config_.batch_size + 16);
-        } else {
-            results_buffer.reserve(config_.batch_size + 16);
+        std::vector<CompactExtendedMatchResult> compact_extended_results_buffer;
+        switch (config_.format) {
+            case ResultFormat::Compact:
+                results_buffer.reserve(config_.batch_size + 16);
+                break;
+            case ResultFormat::Extended:
+                extended_results_buffer.reserve(config_.batch_size + 16);
+                break;
+            case ResultFormat::CompactExtended:
+                compact_extended_results_buffer.reserve(config_.batch_size + 16);
+                break;
         }
 
         // Calculate starting position if resuming
@@ -360,26 +515,37 @@ public:
 
                 // Process batch when full
                 if (matchups.size() >= config_.batch_size) {
-                    if (config_.extended_format) {
-                        process_batch_extended(units_a, units_b, matchups, extended_results_buffer, output_mutex);
-                        // Write results
-                        {
-                            std::lock_guard<std::mutex> lock(output_mutex);
-                            out.write(reinterpret_cast<const char*>(extended_results_buffer.data()),
-                                     extended_results_buffer.size() * sizeof(ExtendedMatchResult));
-                            completed += extended_results_buffer.size();
-                            extended_results_buffer.clear();
-                        }
-                    } else {
-                        process_batch(units_a, units_b, matchups, results_buffer, output_mutex);
-                        // Write results
-                        {
-                            std::lock_guard<std::mutex> lock(output_mutex);
-                            out.write(reinterpret_cast<const char*>(results_buffer.data()),
-                                     results_buffer.size() * sizeof(CompactMatchResult));
-                            completed += results_buffer.size();
-                            results_buffer.clear();
-                        }
+                    switch (config_.format) {
+                        case ResultFormat::Compact:
+                            process_batch(units_a, units_b, matchups, results_buffer, output_mutex);
+                            {
+                                std::lock_guard<std::mutex> lock(output_mutex);
+                                out.write(reinterpret_cast<const char*>(results_buffer.data()),
+                                         results_buffer.size() * sizeof(CompactMatchResult));
+                                completed += results_buffer.size();
+                                results_buffer.clear();
+                            }
+                            break;
+                        case ResultFormat::Extended:
+                            process_batch_extended(units_a, units_b, matchups, extended_results_buffer, output_mutex);
+                            {
+                                std::lock_guard<std::mutex> lock(output_mutex);
+                                out.write(reinterpret_cast<const char*>(extended_results_buffer.data()),
+                                         extended_results_buffer.size() * sizeof(ExtendedMatchResult));
+                                completed += extended_results_buffer.size();
+                                extended_results_buffer.clear();
+                            }
+                            break;
+                        case ResultFormat::CompactExtended:
+                            process_batch_compact_extended(units_a, units_b, matchups, compact_extended_results_buffer, output_mutex);
+                            {
+                                std::lock_guard<std::mutex> lock(output_mutex);
+                                out.write(reinterpret_cast<const char*>(compact_extended_results_buffer.data()),
+                                         compact_extended_results_buffer.size() * sizeof(CompactExtendedMatchResult));
+                                completed += compact_extended_results_buffer.size();
+                                compact_extended_results_buffer.clear();
+                            }
+                            break;
                     }
 
                     matchups.clear();
@@ -409,16 +575,25 @@ public:
 
         // Process remaining matchups
         if (!matchups.empty()) {
-            if (config_.extended_format) {
-                process_batch_extended(units_a, units_b, matchups, extended_results_buffer, output_mutex);
-                out.write(reinterpret_cast<const char*>(extended_results_buffer.data()),
-                         extended_results_buffer.size() * sizeof(ExtendedMatchResult));
-                completed += extended_results_buffer.size();
-            } else {
-                process_batch(units_a, units_b, matchups, results_buffer, output_mutex);
-                out.write(reinterpret_cast<const char*>(results_buffer.data()),
-                         results_buffer.size() * sizeof(CompactMatchResult));
-                completed += results_buffer.size();
+            switch (config_.format) {
+                case ResultFormat::Compact:
+                    process_batch(units_a, units_b, matchups, results_buffer, output_mutex);
+                    out.write(reinterpret_cast<const char*>(results_buffer.data()),
+                             results_buffer.size() * sizeof(CompactMatchResult));
+                    completed += results_buffer.size();
+                    break;
+                case ResultFormat::Extended:
+                    process_batch_extended(units_a, units_b, matchups, extended_results_buffer, output_mutex);
+                    out.write(reinterpret_cast<const char*>(extended_results_buffer.data()),
+                             extended_results_buffer.size() * sizeof(ExtendedMatchResult));
+                    completed += extended_results_buffer.size();
+                    break;
+                case ResultFormat::CompactExtended:
+                    process_batch_compact_extended(units_a, units_b, matchups, compact_extended_results_buffer, output_mutex);
+                    out.write(reinterpret_cast<const char*>(compact_extended_results_buffer.data()),
+                             compact_extended_results_buffer.size() * sizeof(CompactExtendedMatchResult));
+                    completed += compact_extended_results_buffer.size();
+                    break;
             }
             out.flush();
         }
@@ -457,7 +632,7 @@ private:
 
     void write_header(std::ofstream& out, size_t units_a_count, size_t units_b_count) {
         u32 magic = 0x42415453;  // "SABS" = Science Battle Sim
-        u32 version = config_.extended_format ? 2 : 1;  // Version 2 for extended format
+        u32 version = static_cast<u32>(config_.format);  // 1=compact, 2=extended, 3=compact_extended
         u32 a_count = static_cast<u32>(units_a_count);
         u32 b_count = static_cast<u32>(units_b_count);
 
@@ -605,6 +780,85 @@ private:
                     auto [a_idx, b_idx] = matchups[i];
                     MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
                     results[i] = ExtendedMatchResult::from_match(mr);
+
+                    // Accumulate full game stats
+                    // run_match runs 3 games (best of 3), so we get stats from all 3
+                    local_games += 3;  // Best-of-3 match
+                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+
+                    // Track game endings - we can infer from match results
+                    // If objective rounds are significant, it was likely an objective game
+                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                        local_objective_games += 3;  // Approximate - objective was contested
+                    }
+                }
+
+                // Update global stats atomically (batched to reduce contention)
+                game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
+                game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
+                game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
+                game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
+                game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
+
+                ++threads_done;
+            });
+        }
+
+        // Wait for all threads to complete (simple spin-wait with yield)
+        while (threads_done.load(std::memory_order_acquire) < num_threads) {
+            std::this_thread::yield();
+        }
+    }
+
+    void process_batch_compact_extended(
+        const std::vector<Unit>& units_a,
+        const std::vector<Unit>& units_b,
+        const std::vector<std::pair<u32, u32>>& matchups,
+        std::vector<CompactExtendedMatchResult>& results,
+        std::mutex& /* unused - kept for API compatibility */
+    ) {
+        const size_t batch_size = matchups.size();
+        const size_t num_threads = pool_.thread_count();
+        const size_t chunk_size = (batch_size + num_threads - 1) / num_threads;
+
+        // Pre-allocate results array - threads write directly to their slots
+        results.resize(batch_size);
+
+        // Atomic counter for completion tracking (no futures needed)
+        std::atomic<size_t> threads_done{0};
+
+        for (size_t t = 0; t < num_threads; ++t) {
+            size_t start = t * chunk_size;
+            size_t end = std::min(start + chunk_size, batch_size);
+
+            if (start >= end) {
+                ++threads_done;  // Empty chunk, count as done
+                continue;
+            }
+
+            // Fire-and-forget task (no packaged_task allocation)
+            pool_.submit_detached([&, start, end, t]() {
+                // Use thread_local to reuse GameRunner across batches
+                thread_local DiceRoller dice(
+                    std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
+                    static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+                );
+                thread_local GameRunner runner(dice);
+
+                // Thread-local accumulators to reduce atomic contention
+                u64 local_games = 0;
+                u64 local_wounds = 0;
+                u64 local_models_killed = 0;
+                u64 local_obj_rounds = 0;
+                u64 local_objective_games = 0;
+
+                // Write directly to pre-allocated result slots (no vector allocation)
+                for (size_t i = start; i < end; ++i) {
+                    auto [a_idx, b_idx] = matchups[i];
+                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+                    results[i] = CompactExtendedMatchResult::from_match(mr);
 
                     // Accumulate full game stats
                     // run_match runs 3 games (best of 3), so we get stats from all 3
