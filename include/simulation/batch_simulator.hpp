@@ -1263,11 +1263,18 @@ private:
             pool_.submit_detached([&, start, end, t]() {
                 threads_started.fetch_add(1, std::memory_order_release);
 
+                // Debug: only thread 0 prints detailed progress
+                bool is_debug_thread = (t == 0);
+
+                if (is_debug_thread) std::cerr << "[T0] Initializing thread-local objects..." << std::flush;
+
                 thread_local DiceRoller dice(
                     std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                     static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                 );
                 thread_local GameRunner runner(dice);
+
+                if (is_debug_thread) std::cerr << " OK" << std::endl;
 
                 // Thread-local accumulators for global stats
                 u64 local_games = 0;
@@ -1276,9 +1283,24 @@ private:
                 u64 local_obj_rounds = 0;
                 u64 local_objective_games = 0;
 
+                if (is_debug_thread) {
+                    std::cerr << "[T0] Processing " << (end - start) << " matchups [" << start << ".." << end << ")..." << std::endl;
+                }
+
                 for (size_t i = start; i < end; ++i) {
+                    if (is_debug_thread && i == start) {
+                        auto [a_idx, b_idx] = matchups[i];
+                        std::cerr << "[T0] First matchup: unit " << a_idx << " vs " << b_idx << std::endl;
+                        std::cerr << "[T0] Running first match..." << std::flush;
+                    }
+
                     auto [a_idx, b_idx] = matchups[i];
                     MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+
+                    if (is_debug_thread && i == start) {
+                        std::cerr << " OK" << std::endl;
+                        std::cerr << "[T0] Updating aggregated stats..." << std::flush;
+                    }
 
                     // Get opponent info for categorization
                     const Unit& unit_a = units_a[a_idx];
@@ -1400,7 +1422,14 @@ private:
                             ar.faction_stats[min_slot].wins = (mr.overall_winner == GameWinner::UnitA) ? 1 : 0;
                         }
                     }
+
+                    if (is_debug_thread && i == start) {
+                        std::cerr << " OK" << std::endl;
+                        std::cerr << "[T0] First matchup complete, continuing..." << std::endl;
+                    }
                 }
+
+                if (is_debug_thread) std::cerr << "[T0] All matchups done, updating global stats..." << std::flush;
 
                 // Update global stats
                 game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
@@ -1408,6 +1437,8 @@ private:
                 game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
                 game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
                 game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
+
+                if (is_debug_thread) std::cerr << " OK, thread 0 done!" << std::endl;
 
                 threads_done.fetch_add(1, std::memory_order_release);
             });
