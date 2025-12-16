@@ -1285,6 +1285,10 @@ private:
 
                 if (is_debug_thread) {
                     std::cerr << "[T0] Processing " << (end - start) << " matchups [" << start << ".." << end << ")..." << std::endl;
+                    std::cerr.flush();
+                } else {
+                    // Non-debug threads: brief startup message
+                    std::cerr << "[T" << t << "] Started" << std::endl;
                 }
 
                 // Track progress for crash diagnosis
@@ -1300,9 +1304,19 @@ private:
 
                     auto [a_idx, b_idx] = matchups[i];
 
+                    // Detailed logging for first 100 matchups to diagnose crashes
+                    if (is_debug_thread && (i - start) < 100) {
+                        std::cerr << "[T0-DIAG] Matchup " << (i - start) << ": units["
+                                  << a_idx << "] vs units[" << b_idx << "]" << std::flush;
+                    }
+
                     try {
                         MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
                         last_completed = i;
+
+                        if (is_debug_thread && (i - start) < 100) {
+                            std::cerr << " OK" << std::endl;
+                        }
 
                         // Get opponent info for categorization
                         const Unit& unit_a = units_a[a_idx];
