@@ -37,6 +37,105 @@ def range_bucket(rng: Optional[int]) -> str:
     return "36+\""
 
 
+# =========================================================
+# Rule Normalization - Group similar rules together
+# =========================================================
+
+# Rules that effectively allow ignoring/bypassing terrain
+TERRAIN_IGNORE_RULES = {
+    "flying", "strider", "hover",
+}
+
+# Rules that provide deployment/positioning advantages
+DEPLOYMENT_RULES = {
+    "scout", "ambush", "infiltrate",
+}
+
+# Rules that modify movement speed (we'll normalize the direction)
+SPEED_BOOST_RULES = {
+    "fast",
+}
+
+SPEED_PENALTY_RULES = {
+    "slow",
+}
+
+# Rules that provide defensive bonuses
+DEFENSE_BOOST_RULES = {
+    "stealth", "shrouded",
+}
+
+# Rules to completely ignore (don't affect combat simulation much)
+IGNORABLE_RULES = {
+    "transport",  # Transport capacity doesn't affect direct combat
+    "aircraft",   # Mostly affects movement, not combat stats
+    "artillery",  # Affects targeting, not raw combat
+    "no retreat", # Morale-related
+    "fearless",   # Morale-related - wait, this might matter for simulation
+    "hero",       # Just a unit type marker
+    "unique",     # Just a marker
+}
+
+
+def normalize_rule_for_bucket(rule: str) -> Optional[str]:
+    """
+    Normalize a rule for bucketing purposes.
+    Returns None if the rule should be ignored.
+    Returns a canonical form if the rule should be grouped with similar rules.
+    Returns the original rule (lowercased) if no normalization applies.
+    """
+    # Extract base rule name (without parenthetical values)
+    # e.g., "Tough(6)" -> "tough", "Fear(2)" -> "fear"
+    rule_lower = rule.lower().strip()
+    base_rule = re.sub(r'\([^)]*\)', '', rule_lower).strip()
+
+    # Check if this rule should be ignored entirely
+    if base_rule in IGNORABLE_RULES:
+        return None
+
+    # Normalize terrain-ignoring rules
+    if base_rule in TERRAIN_IGNORE_RULES:
+        return "_TERRAIN_IGNORE_"
+
+    # Normalize deployment advantage rules
+    if base_rule in DEPLOYMENT_RULES:
+        return "_DEPLOY_ADVANTAGE_"
+
+    # Normalize speed rules
+    if base_rule in SPEED_BOOST_RULES:
+        return "_SPEED_BOOST_"
+
+    if base_rule in SPEED_PENALTY_RULES:
+        return "_SPEED_PENALTY_"
+
+    # Normalize defensive rules
+    if base_rule in DEFENSE_BOOST_RULES:
+        return "_DEFENSE_BOOST_"
+
+    # Keep rules with values (like Tough(6), Fear(2)) but normalize format
+    # Extract the value if present for important combat rules
+    if base_rule in ("tough", "fear", "regeneration", "caster"):
+        # Keep these with their values as they significantly affect combat
+        return rule_lower
+
+    # Default: return lowercase version
+    return rule_lower
+
+
+def normalize_rules_list(rules: Tuple[str, ...]) -> Tuple[str, ...]:
+    """
+    Normalize a list of rules for bucketing.
+    Groups similar rules and removes ignorable ones.
+    """
+    normalized = set()
+    for rule in rules:
+        norm = normalize_rule_for_bucket(rule)
+        if norm is not None:
+            normalized.add(norm)
+
+    return tuple(sorted(normalized))
+
+
 @dataclass
 class Weapon:
     """Parsed weapon data."""
@@ -92,8 +191,8 @@ class UnitLoadout:
         # Unit stats
         stats = f"Q{self.quality}+|D{self.defense}+|S={self.size}"
 
-        # Normalize and sort rules
-        rules_normalized = tuple(sorted([r.strip() for r in self.rules], key=str.lower))
+        # Normalize and sort rules (groups similar rules like Flying/Strider)
+        rules_normalized = normalize_rules_list(self.rules)
         rules_str = ",".join(rules_normalized)
 
         # Build weapon multiset (count of each effective weapon type)
