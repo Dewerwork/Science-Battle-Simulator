@@ -103,6 +103,117 @@ def extract_granted_ability(text: str) -> Optional[str]:
     return None
 
 
+def normalize_ability_name(ability: str) -> str:
+    """
+    Normalize an ability name to a bucket-friendly format.
+
+    Examples:
+        "Bane in melee" -> "BANE_MELEE"
+        "Shred when shooting" -> "SHRED_SHOOTING"
+        "+1 to hit rolls in melee" -> "HIT_+1_MELEE"
+        "Fearless" -> "FEARLESS"
+    """
+    ability_lower = ability.lower().strip()
+
+    # Extract condition (in melee, when shooting, when charging, etc.)
+    condition = ''
+    if ' in melee' in ability_lower:
+        condition = '_MELEE'
+        ability_lower = ability_lower.replace(' in melee', '')
+    elif ' when shooting' in ability_lower:
+        condition = '_SHOOTING'
+        ability_lower = ability_lower.replace(' when shooting', '')
+    elif ' when charging' in ability_lower:
+        condition = '_CHARGING'
+        ability_lower = ability_lower.replace(' when charging', '')
+    elif ' when attacking' in ability_lower:
+        condition = '_ATTACKING'
+        ability_lower = ability_lower.replace(' when attacking', '')
+
+    # Handle stat modifiers like "+1 to hit rolls"
+    stat_match = re.match(r'([+-]\d+) to (hit|defense|morale|casting)( test)? rolls?', ability_lower)
+    if stat_match:
+        modifier = stat_match.group(1)
+        stat = stat_match.group(2).upper()
+        return f'{stat}_{modifier}{condition}'
+
+    # Handle "+6" range when shooting"
+    range_match = re.match(r'([+-]\d+)["\'] range', ability_lower)
+    if range_match:
+        modifier = range_match.group(1)
+        return f'RANGE_{modifier}{condition}'
+
+    # Handle "AP (+1)" patterns
+    ap_match = re.match(r'ap \(\+?(\d+)\)', ability_lower)
+    if ap_match:
+        ap_val = ap_match.group(1)
+        return f'AP_+{ap_val}{condition}'
+
+    # Handle boost abilities (e.g., "Clan Warrior Boost" -> "CLAN_WARRIOR_BOOST")
+    # Keep the full name for boost abilities since they're faction-specific
+    if ' boost' in ability_lower:
+        name = ability_lower.replace(' ', '_').upper()
+        return f'{name}{condition}'
+
+    # Standard ability: convert to uppercase, replace spaces with underscores
+    ability_normalized = ability_lower.strip()
+    # Handle '&' -> 'AND' before removing special chars
+    ability_normalized = ability_normalized.replace('&', 'and')
+    ability_normalized = re.sub(r'\s+', '_', ability_normalized)
+    ability_normalized = re.sub(r'[^a-z0-9_+-]', '', ability_normalized)
+
+    return f'{ability_normalized.upper()}{condition}'
+
+
+def extract_grant_bucket(text: str, grant_type: str) -> str:
+    """
+    Extract a bucket name for rules that grant abilities.
+
+    Args:
+        text: The rule text (lowercase)
+        grant_type: 'AURA', 'BUFF_SPELL', or 'MARK'
+
+    Returns:
+        Bucket name like 'AURA_GRANT_BANE_MELEE' or 'BUFF_SPELL_GRANT_FEARLESS'
+    """
+    text_lower = text.lower()
+
+    # Pattern 1: "This model and its unit get X" (aura)
+    m = re.search(r'this model and its unit gets? ([^.]+?)\.?$', text_lower)
+    if m:
+        ability = m.group(1).strip()
+        normalized = normalize_ability_name(ability)
+        return f'{grant_type}_GRANT_{normalized}'
+
+    # Pattern 2: "which gets X once" or "which get X once" (buff spell)
+    m = re.search(r'which gets? ([^.]+?)(?: once|\.)', text_lower)
+    if m:
+        ability = m.group(1).strip()
+        # Check if this is a mark (grants bonus AGAINST enemy)
+        if ' against' in ability:
+            ability = ability.replace(' against', '')
+            normalized = normalize_ability_name(ability)
+            return f'MARK_GRANT_{normalized}'
+        normalized = normalize_ability_name(ability)
+        return f'{grant_type}_GRANT_{normalized}'
+
+    # Pattern 3: "friendly units gets X against" (mark)
+    m = re.search(r'friendly units? gets? ([^.]+?) against', text_lower)
+    if m:
+        ability = m.group(1).strip()
+        normalized = normalize_ability_name(ability)
+        return f'MARK_GRANT_{normalized}'
+
+    # Pattern 4: "which moves +X" when using Y" (movement buff spell)
+    m = re.search(r'which moves? \+(\d+)["\']?\s*when using (\w+)', text_lower)
+    if m:
+        bonus = m.group(1)
+        action = m.group(2).upper()
+        return f'{grant_type}_GRANT_MOVE_+{bonus}_{action}'
+
+    return f'{grant_type}_GRANT_UNKNOWN'
+
+
 def extract_enemy_effect_bucket(text: str) -> str:
     """
     Extract a normalized effect bucket for enemy-targeting rules.
@@ -127,10 +238,16 @@ def extract_enemy_effect_bucket(text: str) -> str:
 
     # Categorize by effect type
     if 'friendly units gets' in effect or 'friendly unit gets' in effect:
-        # Mark spell - extract what friendly units get
+        # Mark spell - extract what friendly units get (full ability with condition)
+        ability_match = re.search(r'friendly units? gets? ([^.]+?) against', effect)
+        if ability_match:
+            ability = ability_match.group(1).strip()
+            normalized = normalize_ability_name(ability)
+            return f'MARK_GRANT_{normalized}'
+        # Fallback to old behavior
         ability_match = re.search(r'friendly units? gets? (\w+)', effect)
         ability = ability_match.group(1).upper() if ability_match else 'BONUS'
-        return f'MARK_ENEMY_R{range_val}_{ability}'
+        return f'MARK_GRANT_{ability}'
 
     if 'takes' in effect and 'hit' in effect:
         # Damage spell - extract hit count and modifiers
@@ -223,6 +340,7 @@ def parse_rule(rule_name: str, rule_text: str,
     # "Pick one friendly unit within X", which gets..."
     # "Pick up to two friendly units within X", which get..."
     if re.search(r'pick (one|up to \w+) friendly unit', text_lower):
+        bucket = extract_grant_bucket(text, 'BUFF_SPELL')
         return ParsedRule(
             rule_name=rule_name,
             target_type=TargetType.FRIENDLY_UNIT,
@@ -230,7 +348,7 @@ def parse_rule(rule_name: str, rule_text: str,
             timing=timing,
             should_ignore=True,
             ignore_reason='Buff spell targeting friendly units',
-            effect_bucket='BUFF_SPELL_FRIENDLY',
+            effect_bucket=bucket,
             raw_text=text,
             range_inches=range_inches,
             granted_ability=granted_ability
@@ -282,13 +400,13 @@ def parse_rule(rule_name: str, rule_text: str,
 
     # === PATTERN: Aura - "This model and its unit get X" ===
     if 'this model and its unit get' in text_lower:
-        m = re.search(r'this model and its unit get (.+?)\.', text_lower)
-        ability = m.group(1).strip().title() if m else None
-        bucket = f"AURA_{ability.upper().replace(' ', '_')[:20]}" if ability else "AURA_UNKNOWN"
+        m = re.search(r'this model and its unit gets? (.+?)\.?$', text_lower)
+        ability = m.group(1).strip() if m else None
+        bucket = extract_grant_bucket(text, 'AURA')
         return ParsedRule(
             rule_name=rule_name,
             target_type=TargetType.SELF_UNIT,
-            effect_type=EffectType.AURA,
+            effect_type=EffectType.GRANT_ABILITY,
             timing=ActionTiming.PASSIVE,
             should_ignore=False,
             ignore_reason='',
@@ -634,7 +752,6 @@ def print_summary(parsed_rules: dict) -> None:
     """Print a summary of parsed rules."""
     from collections import Counter
 
-    buckets = Counter(p.effect_bucket for p in parsed_rules.values())
     ignored = sum(1 for p in parsed_rules.values() if p.should_ignore)
 
     print(f"Total rules: {len(parsed_rules)}")
@@ -642,17 +759,34 @@ def print_summary(parsed_rules: dict) -> None:
     print(f"Rules to KEEP: {len(parsed_rules) - ignored}")
     print()
 
-    print("=== SELECT FRIENDLY UNIT RULES ===")
-    select_friendly = [(n, p) for n, p in parsed_rules.items()
-                       if p.effect_bucket == 'BUFF_SPELL_FRIENDLY']
-    print(f"Total: {len(select_friendly)}")
-    for name, p in sorted(select_friendly)[:10]:
-        print(f"  - {name}: {p.granted_ability or '?'}")
+    # Show grant buckets by type
+    print("=== AURA GRANT BUCKETS ===")
+    aura_grants = Counter(p.effect_bucket for p in parsed_rules.values()
+                          if p.effect_bucket.startswith('AURA_GRANT_'))
+    for bucket, count in aura_grants.most_common(10):
+        print(f"  {bucket}: {count}")
 
     print()
-    print("=== TOP EFFECT BUCKETS (kept) ===")
-    kept_buckets = Counter(p.effect_bucket for p in parsed_rules.values() if not p.should_ignore)
-    for bucket, count in kept_buckets.most_common(20):
+    print("=== BUFF SPELL GRANT BUCKETS (ignored) ===")
+    buff_grants = Counter(p.effect_bucket for p in parsed_rules.values()
+                          if p.effect_bucket.startswith('BUFF_SPELL_GRANT_'))
+    for bucket, count in buff_grants.most_common(10):
+        print(f"  {bucket}: {count}")
+
+    print()
+    print("=== MARK GRANT BUCKETS ===")
+    mark_grants = Counter(p.effect_bucket for p in parsed_rules.values()
+                          if p.effect_bucket.startswith('MARK_GRANT_'))
+    for bucket, count in mark_grants.most_common(10):
+        print(f"  {bucket}: {count}")
+
+    print()
+    print("=== TOP OTHER EFFECT BUCKETS (kept) ===")
+    kept_buckets = Counter(p.effect_bucket for p in parsed_rules.values()
+                           if not p.should_ignore
+                           and not p.effect_bucket.startswith('AURA_GRANT_')
+                           and not p.effect_bucket.startswith('MARK_GRANT_'))
+    for bucket, count in kept_buckets.most_common(15):
         print(f"  {bucket}: {count}")
 
 
