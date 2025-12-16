@@ -1296,26 +1296,21 @@ private:
                 static std::atomic<size_t> global_crash_report{0};
 
                 for (size_t i = start; i < end; ++i) {
-                    // Progress logging every 10000 matchups for thread 0
-                    if (is_debug_thread && (i - start) % 10000 == 0 && i > start) {
-                        std::cerr << "[T0] Progress: " << (i - start) << "/" << (end - start)
-                                  << " matchups completed" << std::endl;
-                    }
-
                     auto [a_idx, b_idx] = matchups[i];
 
-                    // Detailed logging for first 5 matchups from ALL threads to diagnose crashes
-                    bool log_this = (i - start) < 5;
-                    if (log_this) {
-                        std::cerr << "[T" << t << "] Matchup " << (i - start) << ": units["
-                                  << a_idx << "] vs units[" << b_idx << "]" << std::flush;
+                    // Log every 1000 matchups from ALL threads to find crash location
+                    size_t local_idx = i - start;
+                    bool log_milestone = (local_idx % 1000 == 0);
+                    if (log_milestone) {
+                        std::cerr << "[T" << t << "] @" << local_idx << ": units["
+                                  << a_idx << "] vs [" << b_idx << "]" << std::flush;
                     }
 
                     try {
                         MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
                         last_completed = i;
 
-                        if (log_this) {
+                        if (log_milestone) {
                             std::cerr << " OK" << std::endl;
                         }
 
