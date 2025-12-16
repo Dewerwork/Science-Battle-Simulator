@@ -542,11 +542,19 @@ def is_select_friendly_unit_rule(rule_text: str) -> Tuple[bool, str]:
     return (False, '')
 
 
-if __name__ == '__main__':
-    # Test the parser
+def load_rules_from_xlsx(xlsx_path: str) -> dict:
+    """
+    Load rules from an Excel file.
+
+    Args:
+        xlsx_path: Path to the Excel file (e.g., 'Faction Specific Army Rules.xlsx')
+
+    Returns:
+        Dict mapping rule_name -> (rule_text, once_per_game, once_per_activation)
+    """
     import openpyxl
 
-    wb = openpyxl.load_workbook('Faction Specific Army Rules.xlsx', data_only=True)
+    wb = openpyxl.load_workbook(xlsx_path, data_only=True)
     ws = wb['Sheet1']
     rows = list(ws.iter_rows(values_only=True))
 
@@ -554,29 +562,88 @@ if __name__ == '__main__':
     for r in rows[1:]:
         name = r[2]
         text = r[3]
-        once_per_game = bool(r[5])
-        once_per_activation = bool(r[6])
+        once_per_game = bool(r[5]) if len(r) > 5 else False
+        once_per_activation = bool(r[6]) if len(r) > 6 else False
         if name and text and name not in rules:
             rules[name] = (text, once_per_game, once_per_activation)
 
-    # Parse all rules
+    return rules
+
+
+def parse_all_rules(rules: dict) -> dict:
+    """
+    Parse all rules from the loaded dictionary.
+
+    Args:
+        rules: Dict from load_rules_from_xlsx()
+
+    Returns:
+        Dict mapping rule_name -> ParsedRule
+    """
     parsed = {}
     for name, (text, opg, opa) in rules.items():
         parsed[name] = parse_rule(name, text, opg, opa)
+    return parsed
 
-    # Summary
+
+def export_to_csv(parsed_rules: dict, output_path: str) -> None:
+    """
+    Export parsed rules to a CSV file.
+
+    Args:
+        parsed_rules: Dict from parse_all_rules()
+        output_path: Path for the output CSV file
+    """
+    import csv
+
+    with open(output_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            'rule_name',
+            'effect_bucket',
+            'should_ignore',
+            'ignore_reason',
+            'target_type',
+            'effect_type',
+            'timing',
+            'bonus_value',
+            'range_inches',
+            'granted_ability',
+            'raw_text'
+        ])
+
+        for name, p in sorted(parsed_rules.items()):
+            writer.writerow([
+                p.rule_name,
+                p.effect_bucket,
+                p.should_ignore,
+                p.ignore_reason,
+                p.target_type.name,
+                p.effect_type.name,
+                p.timing.name,
+                p.bonus_value if p.bonus_value is not None else '',
+                p.range_inches if p.range_inches is not None else '',
+                p.granted_ability or '',
+                p.raw_text
+            ])
+
+    print(f"Exported {len(parsed_rules)} rules to {output_path}")
+
+
+def print_summary(parsed_rules: dict) -> None:
+    """Print a summary of parsed rules."""
     from collections import Counter
 
-    buckets = Counter(p.effect_bucket for p in parsed.values())
-    ignored = sum(1 for p in parsed.values() if p.should_ignore)
+    buckets = Counter(p.effect_bucket for p in parsed_rules.values())
+    ignored = sum(1 for p in parsed_rules.values() if p.should_ignore)
 
-    print(f"Total rules: {len(parsed)}")
+    print(f"Total rules: {len(parsed_rules)}")
     print(f"Rules to IGNORE: {ignored}")
-    print(f"Rules to KEEP: {len(parsed) - ignored}")
+    print(f"Rules to KEEP: {len(parsed_rules) - ignored}")
     print()
 
     print("=== SELECT FRIENDLY UNIT RULES ===")
-    select_friendly = [(n, p) for n, p in parsed.items()
+    select_friendly = [(n, p) for n, p in parsed_rules.items()
                        if p.effect_bucket == 'BUFF_SPELL_FRIENDLY']
     print(f"Total: {len(select_friendly)}")
     for name, p in sorted(select_friendly)[:10]:
@@ -584,6 +651,45 @@ if __name__ == '__main__':
 
     print()
     print("=== TOP EFFECT BUCKETS (kept) ===")
-    kept_buckets = Counter(p.effect_bucket for p in parsed.values() if not p.should_ignore)
+    kept_buckets = Counter(p.effect_bucket for p in parsed_rules.values() if not p.should_ignore)
     for bucket, count in kept_buckets.most_common(20):
         print(f"  {bucket}: {count}")
+
+
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description='Parse special rules from Excel and optionally export to CSV',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  # Parse and show summary only
+  python special_rule_parser.py rules.xlsx
+
+  # Parse and export to CSV
+  python special_rule_parser.py rules.xlsx --export output.csv
+
+  # Export only (no summary)
+  python special_rule_parser.py rules.xlsx --export output.csv --quiet
+'''
+    )
+    parser.add_argument('xlsx_file', help='Path to the Excel file with special rules')
+    parser.add_argument('--export', '-e', metavar='CSV_FILE',
+                        help='Export parsed rules to CSV file')
+    parser.add_argument('--quiet', '-q', action='store_true',
+                        help='Suppress summary output (useful with --export)')
+
+    args = parser.parse_args()
+
+    # Load and parse
+    rules = load_rules_from_xlsx(args.xlsx_file)
+    parsed = parse_all_rules(rules)
+
+    # Export if requested
+    if args.export:
+        export_to_csv(parsed, args.export)
+
+    # Print summary unless quiet
+    if not args.quiet:
+        print_summary(parsed)
