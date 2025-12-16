@@ -827,29 +827,55 @@ public:
         const size_t num_units = units_a.size();
         const u64 total_matchups = static_cast<u64>(num_units) * units_b.size();
 
+        std::cerr << "[DEBUG] Aggregated mode: " << num_units << " units, "
+                  << total_matchups << " total matchups" << std::endl;
+
         // Reset game stats
         game_stats_.reset();
 
+        std::cerr << "[DEBUG] Allocating aggregated_results ("
+                  << (num_units * sizeof(AggregatedUnitResult) / (1024*1024)) << " MB)..." << std::flush;
+
         // Initialize aggregated results for all units
-        std::vector<AggregatedUnitResult> aggregated_results(num_units);
+        std::vector<AggregatedUnitResult> aggregated_results;
+        try {
+            aggregated_results.resize(num_units);
+        } catch (const std::bad_alloc& e) {
+            std::cerr << " FAILED: " << e.what() << std::endl;
+            throw;
+        }
+        std::cerr << " OK" << std::endl;
+
         // Use sharded mutexes instead of per-unit mutexes to avoid O(n) memory overhead
         // With 5M+ units, per-unit mutexes would require ~200MB just for mutex objects
         std::vector<std::mutex> unit_mutexes(AGGREGATED_MUTEX_SHARDS);
 
+        std::cerr << "[DEBUG] Initializing unit info..." << std::flush;
         // Initialize each result with unit info
         for (size_t i = 0; i < num_units; ++i) {
             aggregated_results[i].unit_id = static_cast<u32>(i);
             aggregated_results[i].points_cost = units_a[i].points_cost;
             aggregated_results[i].total_opponents = static_cast<u16>(units_b.size());
         }
+        std::cerr << " OK" << std::endl;
 
         // Track progress
         std::atomic<u64> completed{0};
         auto start_time = std::chrono::high_resolution_clock::now();
 
+        std::cerr << "[DEBUG] Reserving matchups buffer ("
+                  << (config_.batch_size * sizeof(std::pair<u32, u32>) / (1024*1024)) << " MB)..." << std::flush;
         // Create batches
         std::vector<std::pair<u32, u32>> matchups;
-        matchups.reserve(config_.batch_size);
+        try {
+            matchups.reserve(config_.batch_size);
+        } catch (const std::bad_alloc& e) {
+            std::cerr << " FAILED: " << e.what() << std::endl;
+            throw;
+        }
+        std::cerr << " OK" << std::endl;
+
+        std::cerr << "[DEBUG] Starting batch processing..." << std::endl;
 
         // Process all matchups
         for (u32 i = 0; i < num_units; ++i) {
@@ -858,8 +884,11 @@ public:
 
                 // Process batch when full
                 if (matchups.size() >= config_.batch_size) {
+                    std::cerr << "[DEBUG] Processing batch of " << matchups.size()
+                              << " matchups (completed: " << completed.load() << ")..." << std::flush;
                     process_batch_aggregated(units_a, units_b, matchups,
                                             aggregated_results, unit_mutexes);
+                    std::cerr << " OK" << std::endl;
                     completed += matchups.size();
                     matchups.clear();
 
@@ -1215,7 +1244,12 @@ private:
         const size_t num_threads = pool_.thread_count();
         const size_t chunk_size = (batch_size + num_threads - 1) / num_threads;
 
+        std::cerr << "[DEBUG-BATCH] batch_size=" << batch_size
+                  << ", threads=" << num_threads
+                  << ", chunk=" << chunk_size << std::endl;
+
         std::atomic<size_t> threads_done{0};
+        std::atomic<size_t> threads_started{0};
 
         for (size_t t = 0; t < num_threads; ++t) {
             size_t start = t * chunk_size;
@@ -1226,7 +1260,9 @@ private:
                 continue;
             }
 
-            pool_.submit_detached([&, start, end]() {
+            pool_.submit_detached([&, start, end, t]() {
+                threads_started.fetch_add(1, std::memory_order_release);
+
                 thread_local DiceRoller dice(
                     std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                     static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
@@ -1373,13 +1409,18 @@ private:
                 game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
                 game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
 
-                ++threads_done;
+                threads_done.fetch_add(1, std::memory_order_release);
             });
         }
+
+        std::cerr << "[DEBUG-BATCH] Waiting for threads (started: "
+                  << threads_started.load() << ")..." << std::flush;
 
         while (threads_done.load(std::memory_order_acquire) < num_threads) {
             std::this_thread::yield();
         }
+
+        std::cerr << " all done" << std::endl;
     }
 };
 
