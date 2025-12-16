@@ -1298,21 +1298,18 @@ private:
                 for (size_t i = start; i < end; ++i) {
                     auto [a_idx, b_idx] = matchups[i];
 
-                    // Log every 1000 matchups from ALL threads to find crash location
+                    // Log every 100 matchups from ALL threads to find crash location
                     size_t local_idx = i - start;
-                    bool log_milestone = (local_idx % 1000 == 0);
+                    bool log_milestone = (local_idx % 100 == 0);
                     if (log_milestone) {
-                        std::cerr << "[T" << t << "] @" << local_idx << ": units["
-                                  << a_idx << "] vs [" << b_idx << "]" << std::flush;
+                        std::cerr << "[T" << t << "]@" << local_idx << " " << std::flush;
                     }
 
                     try {
                         MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
                         last_completed = i;
 
-                        if (log_milestone) {
-                            std::cerr << " OK" << std::endl;
-                        }
+                        // No need to log OK - just seeing the next milestone means it worked
 
                         // Get opponent info for categorization
                         const Unit& unit_a = units_a[a_idx];
