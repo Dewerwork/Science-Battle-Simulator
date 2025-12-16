@@ -1304,9 +1304,10 @@ private:
 
                     auto [a_idx, b_idx] = matchups[i];
 
-                    // Detailed logging for first 100 matchups to diagnose crashes
-                    if (is_debug_thread && (i - start) < 100) {
-                        std::cerr << "[T0-DIAG] Matchup " << (i - start) << ": units["
+                    // Detailed logging for first 5 matchups from ALL threads to diagnose crashes
+                    bool log_this = (i - start) < 5;
+                    if (log_this) {
+                        std::cerr << "[T" << t << "] Matchup " << (i - start) << ": units["
                                   << a_idx << "] vs units[" << b_idx << "]" << std::flush;
                     }
 
@@ -1314,7 +1315,7 @@ private:
                         MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
                         last_completed = i;
 
-                        if (is_debug_thread && (i - start) < 100) {
+                        if (log_this) {
                             std::cerr << " OK" << std::endl;
                         }
 
