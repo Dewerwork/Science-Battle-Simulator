@@ -28,6 +28,10 @@ enum class ResultFormat : u8 {
     Aggregated = 4        // ~256 bytes per unit - comprehensive per-unit statistics
 };
 
+// Number of mutex shards for aggregated results (avoids O(n) mutex allocation)
+// Using 8192 shards (~320KB) provides good parallelism while avoiding memory issues
+static constexpr size_t AGGREGATED_MUTEX_SHARDS = 8192;
+
 struct BatchConfig {
     u32 batch_size = 10000;          // Matchups per batch
     u32 checkpoint_interval = 1000000; // Save progress every N matchups
@@ -828,7 +832,9 @@ public:
 
         // Initialize aggregated results for all units
         std::vector<AggregatedUnitResult> aggregated_results(num_units);
-        std::vector<std::mutex> unit_mutexes(num_units);
+        // Use sharded mutexes instead of per-unit mutexes to avoid O(n) memory overhead
+        // With 5M+ units, per-unit mutexes would require ~200MB just for mutex objects
+        std::vector<std::mutex> unit_mutexes(AGGREGATED_MUTEX_SHARDS);
 
         // Initialize each result with unit info
         for (size_t i = 0; i < num_units; ++i) {
@@ -1253,7 +1259,7 @@ private:
 
                     // Update unit A's aggregated stats
                     {
-                        std::lock_guard<std::mutex> lock(unit_mutexes[a_idx]);
+                        std::lock_guard<std::mutex> lock(unit_mutexes[a_idx % AGGREGATED_MUTEX_SHARDS]);
                         AggregatedUnitResult& ar = aggregated[a_idx];
 
                         ar.total_matchups++;
