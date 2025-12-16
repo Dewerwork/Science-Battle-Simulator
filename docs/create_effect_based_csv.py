@@ -76,6 +76,10 @@ def classify_effect(name, text_lower, text, once_per_game):
     if re.search(r'pick .* enemy .* which takes? \d+ hit', text_lower):
         return ('ENEMY_DAMAGE_SPELL', True, 'Damage spell targeting enemies')
 
+    # "Pick X enemy units within Y" that apply debuffs - these are debuff spells
+    if re.search(r'pick .* enemy .* which get', text_lower):
+        return ('ENEMY_DEBUFF_SPELL', True, 'Debuff spell targeting enemies')
+
     # === MOVEMENT EFFECTS ===
 
     # +X" to advance/rush/charge
@@ -147,15 +151,41 @@ def classify_effect(name, text_lower, text, once_per_game):
             return ('IGNORES_COVER_+_AP+2', False, None)
         return ('IGNORES_COVER', False, None)
 
-    if '+1 to hit' in text_lower:
-        if 'shooting' in text_lower:
-            return ('HIT_+1_SHOOTING', False, None)
-        if 'melee' in text_lower:
-            return ('HIT_+1_MELEE', False, None)
-        return ('HIT_+1_ANY', False, None)
+    # === HIT MODIFIER EFFECTS (must distinguish self vs enemy) ===
 
-    if '-1 to hit' in text_lower:
-        return ('HIT_-1', False, None)
+    # Self-bonus: "this model gets +1 to hit"
+    if re.search(r'this model gets \+1 to hit', text_lower):
+        if 'shooting' in text_lower:
+            return ('SELF_HIT_+1_SHOOTING', False, None)
+        if 'melee' in text_lower:
+            return ('SELF_HIT_+1_MELEE', False, None)
+        return ('SELF_HIT_+1_ANY', False, None)
+
+    # Self-penalty: "this model gets -1 to hit"
+    if re.search(r'this model gets -1 to hit', text_lower):
+        if 'shooting' in text_lower:
+            return ('SELF_HIT_-1_SHOOTING', False, None)
+        return ('SELF_HIT_-1_ANY', False, None)
+
+    # Defensive: enemies get -1 to hit when attacking this unit
+    if re.search(r'enem(y|ies).* get.* -1 to hit', text_lower):
+        if 'shot or charged' in text_lower:
+            return ('DEFENSE_ENEMY_HIT_-1_RANGED', False, None)
+        if 'in melee' in text_lower:
+            return ('DEFENSE_ENEMY_HIT_-1_MELEE', False, None)
+        return ('DEFENSE_ENEMY_HIT_-1_ALL', False, None)
+
+    # Debuff spell: "pick enemy unit which gets -1 to hit"
+    if re.search(r'pick .* enemy .* -1 to hit', text_lower):
+        return ('DEBUFF_SPELL_ENEMY_HIT_-1', True, 'Debuff spell on enemies')
+
+    # Generic +1 to hit (attacking bonus)
+    if '+1 to hit' in text_lower and 'gets' in text_lower:
+        if 'shooting' in text_lower:
+            return ('SELF_HIT_+1_SHOOTING', False, None)
+        if 'melee' in text_lower:
+            return ('SELF_HIT_+1_MELEE', False, None)
+        return ('SELF_HIT_+1_ANY', False, None)
 
     if '+1 to morale' in text_lower:
         return ('MORALE_+1', False, None)
