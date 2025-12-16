@@ -103,6 +103,91 @@ def extract_granted_ability(text: str) -> Optional[str]:
     return None
 
 
+def extract_enemy_effect_bucket(text: str) -> str:
+    """
+    Extract a normalized effect bucket for enemy-targeting rules.
+    Groups rules by range + effect, ignoring target count (one vs two vs three).
+    """
+    text_lower = text.lower()
+
+    # Extract range
+    range_match = re.search(r'within (\d+)["\']', text_lower)
+    range_val = range_match.group(1) if range_match else '0'
+
+    # Extract effect (everything after "which")
+    effect_match = re.search(r'which (.+)$', text_lower)
+    if not effect_match:
+        return f'ENEMY_R{range_val}_UNKNOWN'
+
+    effect = effect_match.group(1).strip()
+
+    # Normalize: remove "once (next time...)" suffix
+    effect = re.sub(r'\s*once\s*\(next time.*$', '', effect)
+    effect = effect.strip().rstrip('.')
+
+    # Categorize by effect type
+    if 'friendly units gets' in effect or 'friendly unit gets' in effect:
+        # Mark spell - extract what friendly units get
+        ability_match = re.search(r'friendly units? gets? (\w+)', effect)
+        ability = ability_match.group(1).upper() if ability_match else 'BONUS'
+        return f'MARK_ENEMY_R{range_val}_{ability}'
+
+    if 'takes' in effect and 'hit' in effect:
+        # Damage spell - extract hit count and modifiers
+        hit_match = re.search(r'takes? (\d+) hits?', effect)
+        hits = hit_match.group(1) if hit_match else '?'
+
+        # Extract AP if present
+        ap_match = re.search(r'ap\s*\((\d+)\)', effect)
+        ap = f'_AP{ap_match.group(1)}' if ap_match else ''
+
+        # Extract special effects
+        specials = []
+        if 'blast' in effect:
+            blast_match = re.search(r'blast\s*\((\d+)\)', effect)
+            specials.append(f'BLAST{blast_match.group(1)}' if blast_match else 'BLAST')
+        if 'deadly' in effect:
+            deadly_match = re.search(r'deadly\s*\((\d+)\)', effect)
+            specials.append(f'DEADLY{deadly_match.group(1)}' if deadly_match else 'DEADLY')
+        if 'shred' in effect:
+            specials.append('SHRED')
+        if 'smash' in effect:
+            specials.append('SMASH')
+        if 'demolish' in effect:
+            specials.append('DEMOLISH')
+        if 'surge' in effect:
+            specials.append('SURGE')
+
+        special_str = '_' + '_'.join(specials) if specials else ''
+        return f'DMG_ENEMY_R{range_val}_{hits}HIT{ap}{special_str}'
+
+    if 'take' in effect and 'hits each' in effect:
+        # Multi-target damage - "take X hits each"
+        hit_match = re.search(r'take (\d+) hits each', effect)
+        hits = hit_match.group(1) if hit_match else '?'
+        ap_match = re.search(r'ap\s*\((\d+)\)', effect)
+        ap = f'_AP{ap_match.group(1)}' if ap_match else ''
+        return f'DMG_ENEMY_R{range_val}_{hits}HIT_EACH{ap}'
+
+    if 'get -' in effect or 'gets -' in effect:
+        # Debuff spell - extract what stat is reduced
+        if 'hit roll' in effect:
+            return f'DEBUFF_ENEMY_R{range_val}_HIT-1'
+        if 'defense roll' in effect:
+            return f'DEBUFF_ENEMY_R{range_val}_DEF-1'
+        if 'casting roll' in effect:
+            return f'DEBUFF_ENEMY_R{range_val}_CAST-1'
+        return f'DEBUFF_ENEMY_R{range_val}_STAT'
+
+    if 'difficult terrain' in effect or 'counts as being in difficult' in effect:
+        return f'DEBUFF_ENEMY_R{range_val}_DIFFICULT_TERRAIN'
+
+    # Fallback: hash the effect
+    import hashlib
+    effect_hash = hashlib.sha1(effect.encode()).hexdigest()[:4].upper()
+    return f'ENEMY_R{range_val}_{effect_hash}'
+
+
 def parse_timing(text: str, once_per_game: bool = False, once_per_activation: bool = False) -> ActionTiming:
     """Determine when the rule can be used."""
     text_lower = text.lower()
@@ -151,53 +236,35 @@ def parse_rule(rule_name: str, rule_text: str,
             granted_ability=granted_ability
         )
 
-    # === PATTERN: Pick enemy unit which takes hits - DAMAGE SPELLS ===
-    # "Pick one enemy unit within X", which takes Y hits..."
-    if re.search(r'pick .* enemy .* which takes? \d+ hit', text_lower):
+    # === PATTERN: Pick enemy unit - GROUP BY RANGE + EFFECT ===
+    # These are NOT ignored - they are grouped by their actual effect
+    if re.search(r'pick .* enemy', text_lower):
+        effect_bucket = extract_enemy_effect_bucket(text)
+
+        # Determine effect type
+        if 'friendly units gets' in text_lower or 'friendly unit gets' in text_lower:
+            effect_type = EffectType.MARK_ENEMY
+        elif 'takes' in text_lower and 'hit' in text_lower:
+            effect_type = EffectType.DEAL_DAMAGE
+        elif 'take' in text_lower and 'hits each' in text_lower:
+            effect_type = EffectType.DEAL_DAMAGE
+        elif 'get -' in text_lower or 'gets -' in text_lower:
+            effect_type = EffectType.DEBUFF_STAT
+        elif 'difficult terrain' in text_lower:
+            effect_type = EffectType.DEBUFF_STAT
+        else:
+            effect_type = EffectType.OTHER
+
         return ParsedRule(
             rule_name=rule_name,
             target_type=TargetType.ENEMY_UNIT,
-            effect_type=EffectType.DEAL_DAMAGE,
+            effect_type=effect_type,
             timing=timing,
-            should_ignore=True,
-            ignore_reason='Damage spell targeting enemies',
-            effect_bucket='DAMAGE_SPELL_ENEMY',
+            should_ignore=False,  # NOT ignored - kept for simulation
+            ignore_reason='',
+            effect_bucket=effect_bucket,
             raw_text=text,
             range_inches=range_inches
-        )
-
-    # === PATTERN: Pick enemy unit which gets debuff - DEBUFF SPELLS ===
-    # "Pick one enemy unit within X", which gets -1 to..."
-    if re.search(r'pick .* enemy .* which gets? .*((-\d|counts as|difficult terrain))', text_lower):
-        return ParsedRule(
-            rule_name=rule_name,
-            target_type=TargetType.ENEMY_UNIT,
-            effect_type=EffectType.DEBUFF_STAT,
-            timing=timing,
-            should_ignore=True,
-            ignore_reason='Debuff spell targeting enemies',
-            effect_bucket='DEBUFF_SPELL_ENEMY',
-            raw_text=text,
-            range_inches=range_inches
-        )
-
-    # === PATTERN: Mark enemy for friendly bonus - MARK SPELLS ===
-    # "Pick enemy unit, which friendly units gets X against"
-    if re.search(r'pick .* enemy .* which friendly unit', text_lower):
-        # Extract what friendly units get
-        m = re.search(r'friendly units? gets? (\w+)', text_lower)
-        ability = m.group(1).title() if m else None
-        return ParsedRule(
-            rule_name=rule_name,
-            target_type=TargetType.ENEMY_UNIT,
-            effect_type=EffectType.MARK_ENEMY,
-            timing=timing,
-            should_ignore=True,  # Still a spell effect
-            ignore_reason='Mark spell - friendly units get bonus against marked enemy',
-            effect_bucket='MARK_SPELL_ENEMY',
-            raw_text=text,
-            range_inches=range_inches,
-            granted_ability=ability
         )
 
     # === PATTERN: Once per game - IGNORE ===
