@@ -827,55 +827,30 @@ public:
         const size_t num_units = units_a.size();
         const u64 total_matchups = static_cast<u64>(num_units) * units_b.size();
 
-        std::cerr << "[DEBUG] Aggregated mode: " << num_units << " units, "
-                  << total_matchups << " total matchups" << std::endl;
-
         // Reset game stats
         game_stats_.reset();
 
-        std::cerr << "[DEBUG] Allocating aggregated_results ("
-                  << (num_units * sizeof(AggregatedUnitResult) / (1024*1024)) << " MB)..." << std::flush;
-
         // Initialize aggregated results for all units
-        std::vector<AggregatedUnitResult> aggregated_results;
-        try {
-            aggregated_results.resize(num_units);
-        } catch (const std::bad_alloc& e) {
-            std::cerr << " FAILED: " << e.what() << std::endl;
-            throw;
-        }
-        std::cerr << " OK" << std::endl;
+        std::vector<AggregatedUnitResult> aggregated_results(num_units);
 
         // Use sharded mutexes instead of per-unit mutexes to avoid O(n) memory overhead
         // With 5M+ units, per-unit mutexes would require ~200MB just for mutex objects
         std::vector<std::mutex> unit_mutexes(AGGREGATED_MUTEX_SHARDS);
 
-        std::cerr << "[DEBUG] Initializing unit info..." << std::flush;
         // Initialize each result with unit info
         for (size_t i = 0; i < num_units; ++i) {
             aggregated_results[i].unit_id = static_cast<u32>(i);
             aggregated_results[i].points_cost = units_a[i].points_cost;
             aggregated_results[i].total_opponents = static_cast<u16>(units_b.size());
         }
-        std::cerr << " OK" << std::endl;
 
         // Track progress
         std::atomic<u64> completed{0};
         auto start_time = std::chrono::high_resolution_clock::now();
 
-        std::cerr << "[DEBUG] Reserving matchups buffer ("
-                  << (config_.batch_size * sizeof(std::pair<u32, u32>) / (1024*1024)) << " MB)..." << std::flush;
         // Create batches
         std::vector<std::pair<u32, u32>> matchups;
-        try {
-            matchups.reserve(config_.batch_size);
-        } catch (const std::bad_alloc& e) {
-            std::cerr << " FAILED: " << e.what() << std::endl;
-            throw;
-        }
-        std::cerr << " OK" << std::endl;
-
-        std::cerr << "[DEBUG] Starting batch processing..." << std::endl;
+        matchups.reserve(config_.batch_size);
 
         // Process all matchups
         for (u32 i = 0; i < num_units; ++i) {
@@ -884,11 +859,8 @@ public:
 
                 // Process batch when full
                 if (matchups.size() >= config_.batch_size) {
-                    std::cerr << "[DEBUG] Processing batch of " << matchups.size()
-                              << " matchups (completed: " << completed.load() << ")..." << std::flush;
                     process_batch_aggregated(units_a, units_b, matchups,
                                             aggregated_results, unit_mutexes);
-                    std::cerr << " OK" << std::endl;
                     completed += matchups.size();
                     matchups.clear();
 
@@ -1244,12 +1216,7 @@ private:
         const size_t num_threads = pool_.thread_count();
         const size_t chunk_size = (batch_size + num_threads - 1) / num_threads;
 
-        std::cerr << "[DEBUG-BATCH] batch_size=" << batch_size
-                  << ", threads=" << num_threads
-                  << ", chunk=" << chunk_size << std::endl;
-
         std::atomic<size_t> threads_done{0};
-        std::atomic<size_t> threads_started{0};
 
         for (size_t t = 0; t < num_threads; ++t) {
             size_t start = t * chunk_size;
@@ -1260,21 +1227,12 @@ private:
                 continue;
             }
 
-            pool_.submit_detached([&, start, end, t]() {
-                threads_started.fetch_add(1, std::memory_order_release);
-
-                // Debug: only thread 0 prints detailed progress
-                bool is_debug_thread = (t == 0);
-
-                if (is_debug_thread) std::cerr << "[T0] Initializing thread-local objects..." << std::flush;
-
+            pool_.submit_detached([&, start, end]() {
                 thread_local DiceRoller dice(
                     std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                     static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                 );
                 thread_local GameRunner runner(dice);
-
-                if (is_debug_thread) std::cerr << " OK" << std::endl;
 
                 // Thread-local accumulators for global stats
                 u64 local_games = 0;
@@ -1283,44 +1241,27 @@ private:
                 u64 local_obj_rounds = 0;
                 u64 local_objective_games = 0;
 
-                if (is_debug_thread) {
-                    std::cerr << "[T0] Processing " << (end - start) << " matchups [" << start << ".." << end << ")..." << std::endl;
-                }
-
-                // Track progress for crash diagnosis
-                size_t last_completed = start;
-                static std::atomic<size_t> global_crash_report{0};
-
                 for (size_t i = start; i < end; ++i) {
-                    // Progress logging every 10000 matchups for thread 0
-                    if (is_debug_thread && (i - start) % 10000 == 0 && i > start) {
-                        std::cerr << "[T0] Progress: " << (i - start) << "/" << (end - start)
-                                  << " matchups completed" << std::endl;
+                    auto [a_idx, b_idx] = matchups[i];
+                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+
+                    // Get opponent info for categorization
+                    const Unit& unit_a = units_a[a_idx];
+                    const Unit& unit_b = units_b[b_idx];
+
+                    // Update global game stats
+                    local_games += 3;
+                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                        local_objective_games += 3;
                     }
 
-                    auto [a_idx, b_idx] = matchups[i];
-
-                    try {
-                        MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
-                        last_completed = i;
-
-                        // Get opponent info for categorization
-                        const Unit& unit_a = units_a[a_idx];
-                        const Unit& unit_b = units_b[b_idx];
-
-                        // Update global game stats
-                        local_games += 3;
-                        local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
-                        local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
-                        local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
-                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
-                            local_objective_games += 3;
-                        }
-
-                        // Update unit A's aggregated stats
-                        {
-                            std::lock_guard<std::mutex> lock(unit_mutexes[a_idx % AGGREGATED_MUTEX_SHARDS]);
-                            AggregatedUnitResult& ar = aggregated[a_idx];
+                    // Update unit A's aggregated stats
+                    {
+                        std::lock_guard<std::mutex> lock(unit_mutexes[a_idx % AGGREGATED_MUTEX_SHARDS]);
+                        AggregatedUnitResult& ar = aggregated[a_idx];
 
                         ar.total_matchups++;
 
@@ -1423,29 +1364,8 @@ private:
                             ar.faction_stats[min_slot].matchups = 1;
                             ar.faction_stats[min_slot].wins = (mr.overall_winner == GameWinner::UnitA) ? 1 : 0;
                         }
-                        }  // end lock_guard scope
-                    } catch (const std::exception& e) {
-                        // Only report first crash to avoid spam
-                        if (global_crash_report.fetch_add(1) == 0) {
-                            std::cerr << "\n[CRASH] Thread " << t << " exception at matchup " << i
-                                      << " (local idx " << (i - start) << ")"
-                                      << "\n  Unit A index: " << a_idx
-                                      << "\n  Unit B index: " << b_idx
-                                      << "\n  Error: " << e.what() << std::endl;
-                        }
-                        throw;
-                    } catch (...) {
-                        if (global_crash_report.fetch_add(1) == 0) {
-                            std::cerr << "\n[CRASH] Thread " << t << " unknown exception at matchup " << i
-                                      << " (local idx " << (i - start) << ")"
-                                      << "\n  Unit A index: " << a_idx
-                                      << "\n  Unit B index: " << b_idx << std::endl;
-                        }
-                        throw;
                     }
                 }
-
-                if (is_debug_thread) std::cerr << "[T0] All matchups done, updating global stats..." << std::flush;
 
                 // Update global stats
                 game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
@@ -1454,20 +1374,14 @@ private:
                 game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
                 game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
 
-                if (is_debug_thread) std::cerr << " OK, thread 0 done!" << std::endl;
-
-                threads_done.fetch_add(1, std::memory_order_release);
+                ++threads_done;
             });
         }
 
-        std::cerr << "[DEBUG-BATCH] Waiting for threads (started: "
-                  << threads_started.load() << ")..." << std::flush;
-
+        // Wait for all threads to complete
         while (threads_done.load(std::memory_order_acquire) < num_threads) {
             std::this_thread::yield();
         }
-
-        std::cerr << " all done" << std::endl;
     }
 };
 
