@@ -1,0 +1,470 @@
+rule_name,supergroup_bucket,original_type,rule_category,once_per_game,once_per_activation,faction_count,example_text
+Advanced Sight (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply)."
+Agile,SPECIAL,Special Rules,Special Rules,,,1,"Moves +1"" when using Advance, and +2â€ when using Rush/Charge."
+Ambush Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,6,This model and its unit get Ambush .
+Ambush Beacon,MOVEMENT_MODIFIER,Movement,Special Rules,,,3,"Friendly units using Ambush may ignore distance restrictions from enemies if they are deployed within 6"" of this model."
+Ambush Re-Deployment,MOVEMENT_MODIFIER,Movement,Special Rules,Yes,,1,"Once per game, when a unit where all models have this rule ends its activation, you may immediately remove it from the table (dropping any objectives it might hold within 1""), and deploy it as if it h..."
+Ammo Boost (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Mischievous Boost once (next time the effect would apply)."
+Animate Spirit (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Hit & Run Fighter once (next time the effect would apply)."
+Armor Rune  (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Sturdy Boost once (next time the effect would apply)."
+Art of Pain (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 2 hit with AP (2) and Deadly (3)."
+Asphyxiating Fog (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Counter-Attack once (next time the effect would apply)."
+Aura of Peace (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one friendly unit within 12"", which gets Fearless once (next time the effect would apply)."
+Aura of Pestilence (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which counts as being in Difficult Terrain once (next time the effect would apply)."
+Bad Omen (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 18"", which friendly units gets Furious against once (next time the effect would apply)."
+Bad Shot,WEAPON_MODIFIER,Weapon,Special Rules,,,1,This model gets -1 to hit rolls when shooting.
+Bane in Melee Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,12,This model and its unit get Bane in melee.
+Bane in Melee Buff,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Bane in melee once (next time the effect would apply)."
+Bane Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Bane when attacking against once (next time the effect would apply)."
+Bane when Shooting Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,13,This model and its unit get Bane when shooting.
+Banishing Sigil (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two enemy units within 18"", which get -1 to defense rolls once (next time the effect would apply)."
+Bash,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Cover, and against units where most models have Defense 5+ to Defense 6+, this weapon gets Blast (+3)."
+Battle Rune  (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets +6"" range when shooting once (next time the effect would apply)."
+Battleborn,DEFENSE_MODIFIER,Defense,Army-Wide Special Rules,,,2,"If a unit where all models have this rule is Shaken at the beginning of the round, roll one die. On a 4+, it stops being Shaken."
+Beautiful Pain (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 12"", which takes 2 hit with Shatter ."
+Bio-Displacer (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Teleport once (next time the effect would apply)."
+Bio-Horror (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Blades of Discord (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 1 hit with AP (2) and Deadly (3)."
+Blessed Ammo (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,6,"Pick up to two friendly units within 12"", which get Shred when shooting once (next time the effect would apply)."
+Blessed Virus (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two friendly units within 12"", which get Rapid Rush once (next time the effect would apply)."
+Blessing of Souls (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Highborn Boost once (next time the effect would apply)."
+Blissful Dance (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two friendly units within 12"", which get Melee Evasion once (next time the effect would apply)."
+Blood Dome (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply)."
+Blood Sight (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply)."
+Blood Trauma (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 1 hit with Smash ."
+Blood Wound (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with Demolish ."
+Bloodborn,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,2,"For each unmodified roll of 6 to hit when attacking, this model may roll +1 attack with that weapon. This rule doesnâ€™t apply to newly generated attacks."
+Boom! (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 2 hit with Blast (3)."
+Bounding,MOVEMENT_MODIFIER,Movement,Special Rules,,,8,"When this unit is activated, you may place all models with this rule in it anywhere fully within D3+1"" of their position."
+Bounding Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,This model and its unit get Bounding .
+Brain Burst (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 3 hit with AP (2) and Deadly (3)."
+Brain Infestation (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 18"", which get -1 to hit rolls when attacking once (next time the effect would apply)."
+Break,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Regeneration, and on unmodified results of 6 to hit, those hits get AP (+2)."
+Breaking Rune  (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 24"", which takes 1 hit with AP (4)."
+Breath Attack,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,2,"Once per activation, before attacking, roll one die. On a 2+ one enemy unit within 6"" in line of sight takes 1 hit with Blast (3) and AP (1)."
+Breath of Change (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two friendly units within 12"", which get Bane when Shooting once (next time the effect would apply)."
+Brutal Fighter,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"When in melee, unmodified results of 6 to hit deal 1 extra hit (only the original hit counts as a 6 for special rules)."
+Brutal Massacre (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 6"", which takes 6 hit with Break . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Burn the Heretic (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which gets -3 to casting rolls once (next time the effect would apply)."
+Burst of Rage (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two friendly units within 12"", which get Furious once (next time the effect would apply)."
+Butcher,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Regeneration, and on unmodified results of 6 to hit, this weapon deals 1 extra hits (only the original hit counts as a 6 for special rules)."
+Calculated Foresight (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,"Pick up to two enemy units within 18"", which friendly units gets Relentless against once (next time the effect would apply)."
+Caster Group,UNCATEGORIZED,Uncategorized,Special Rules,,,3,"Pick one model with this rule in this unit to have Caster (X), where X is the total number of models with this rule in this unit. If the model is killed, pick another to be the new caster, and transfe..."
+Casting Buff,UNIT_COMPOSITION,Unit,Special Rules,,Yes,2,"Once per activation, before attacking, pick one friendly model within 12"" with Caster, which gets +1 to casting rolls once (next time the effect would apply)."
+Casting Debuff,UNIT_COMPOSITION,Unit,Special Rules,,Yes,3,"Once per activation, before attacking, pick one enemy unit within 18"" with Caster, which gets -1 to casting rolls once (next time the effect would apply)."
+Celestial Roar (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Primal Boost once (next time the effect would apply)."
+Cerebral Trauma (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 1 hit with Smash ."
+Change Boon (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Changebound Boost once (next time the effect would apply)."
+Changebound,DEFENSE_MODIFIER,Defense,Army-Wide Special Rules,,,3,"When units where all models have this rule are shot or charged from over 9"" away, enemy units get -1 to hit rolls."
+Changebound Boost,DEFENSE_MODIFIER,Defense,Special Rules,,,1,"If all models in this unit have Changebound , enemies attacking them always get -1 to hit rolls from Changebound (instead of only when being shot/charged from over 9"" away)."
+Changebound Boost Aura,UNIT_COMPOSITION,Unit,Special Rules,,,2,This model and its unit get Changebound Boost .
+Clan Warrior,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"For each unmodified roll of 6 to hit when attacking, this model may roll +1 attack with that weapon. This rule doesnâ€™t apply to newly generated attacks."
+Clan Warrior Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Clan Warrior Boost .
+Cleaving Rune  (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 3 hit with Blast (3)."
+Combat Ecstasy (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which friendly units gets Quick Shot against once (next time the effect would apply)."
+Coordinate,UNIT_COMPOSITION,Unit,Special Rules,,,1,"At the end of this unit's activation, another friendly unit within 12"" that hasn't activated yet may be activated immediately. May not be used if this unit was activated via Coordinate."
+Coordinated Aggression (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three enemy units within 18"", which friendly units gets AP (1) when shooting against once (next time the effect would apply)."
+Corrode Weapons (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three enemy units within 18"", which loses AP (1) when shooting once (next time the effect would apply)."
+Counter-Attack,WEAPON_MODIFIER,Weapon,Special Rules,,,2,Strikes first when charged.
+Counter-Attack Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,6,This model and its unit get Counter-Attack .
+Courage Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,16,This model and its unit get +1 to morale test rolls.
+Courage Buff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,2,"Once per activation, before attacking, pick one friendly unit within 12"", which gets +1 to morale test rolls once (next time the effect would apply)."
+Crack,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"On unmodified results of 6 to hit, those hits get AP (+2)."
+Crackling Bolt (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 3 hit with Blast (3)."
+Creator of Illusions (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which gets Unwieldy in melee once (next time the effect would apply)."
+Crossing Attack,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,3,"Once per activation, when this model moves through enemy units, pick one of them and roll X dice. For each 6+ it takes 1 hit."
+Crossing Barrage,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, when this model moves through enemy units, pick one of them and roll X dice. For each 4+ it takes 3 hits with AP (1)."
+Crossing Strike,WEAPON_MODIFIER,Weapon,Special Rules,Yes,,2,"Once per game, once during its activation when this model moves through enemy units, pick one of them, and roll X dice. For each 4+ it takes 3 hits with AP (1)."
+Crush,WEAPON_MODIFIER,Weapon,Special Rules,,,2,"When it's this model's turn to attack in melee, roll X dice. For each 6+ the target takes one hit with AP (2)."
+Crushing Force (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 6 hit with AP (2)."
+Cursed Stride (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which counts as being in Dangerous Terrain once (next time the effect would apply)."
+Cyborg Assault (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Hit & Run Shooter once (next time the effect would apply)."
+Dangerous Terrain Debuff,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,6,"Once per activation, before attacking, pick one enemy unit within 18"", which must immediately take a Dangerous Terrain test."
+Dark Assault (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Shred in melee once (next time the effect would apply)."
+Dark Dome (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply)."
+Dark Sight (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply)."
+Dark Trauma (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 1 hit with Smash ."
+Dark Wound (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with Demolish ."
+Darkborn,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,2,"This model gets +3"" range when shooting and moves +3"" when using Charge actions."
+Deadly Surge (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 6 hit with Bane ."
+Death Bolt (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 1 hit with AP (2) and Impale ."
+Deathstrike,DEFENSE_MODIFIER,Defense,Special Rules,,,1,"If this model is killed in melee, the attacking unit takes X hits."
+Deceleration Rune  (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three enemy units within 18"", which moves -2"" when using Advance actions and -4"" when using Rush/Charge actions once (next time the effect would apply)."
+Decimate,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Cover, and against units where most models have Defense 2+ to Defense 3+, this weapon gets AP (+2)."
+Deep Hypnosis (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 18"", which must take a morale test. If failed you may move it by up to 6"" in a straight line in any direction."
+Deep Meditation (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get +1 to hit rolls when shooting once (next time the effect would apply)."
+Defense Debuff,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which gets -1 to defense rolls once (next time the effect would apply)."
+Defensive Growth Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Defensive Growth .
+Delayed Action,UNIT_COMPOSITION,Unit,Special Rules,,,2,"Once per round, if your opponent has more units left to activate than you, then this model's unit may pass its turn instead of activating (may still be activated later)."
+Demolish,WEAPON_MODIFIER,Weapon,Special Rules,,,6,"Ignores Cover, and against units where most models have Tough (3) to Tough (9), this weapon gets AP (+2)."
+Destructive,WEAPON_MODIFIER,Weapon,Special Rules,,,2,"On unmodified results of 6 to hit, those hits get AP (+4)."
+Destructive Frenzy,UNIT_COMPOSITION,Unit,Special Rules,,,1,Place one marker on this unit when it fully destroys an enemy unit. For each marker all models with this rule in this unit get +1 to hit rolls and AP (+1) until the end of the game (up to a max. of +2...
+Devastating Frenzy,UNIT_COMPOSITION,Unit,Special Rules,,,1,Place one marker on this unit when it fully destroys an enemy unit. For each marker all models with this rule in this unit get AP (+1) and +1 to defense rolls until the end of the game (up to a max. o...
+Devastating Strike (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 6 hit with Decimate ."
+Devout,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When attacking, unmodified results of 6 to hit deal 1 extra hit (only the original hit counts as a 6 for special rules)."
+Devout Boost,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"If this model has Devout , it deals extra hits on successful unmodified hit results of 5-6 from Devout (instead of only on 6)."
+Devout Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Devout Boost .
+Difficult Terrain Debuff,MOVEMENT_MODIFIER,Movement,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which counts as being in Difficult Terrain once (next time the effect would apply)."
+Disintegrate,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Regeneration, and against units where most models have Defense 2+ to Defense 3+, this weapon gets AP (+2)."
+Doom Strike (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 6"", which takes 2 hit with AP (2) and Deadly (3)."
+Dragon Breath (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 9 hit."
+Dread Strike (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 24"", which takes 2 hit with Tear ."
+Elder Protection (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Resistance once (next time the effect would apply)."
+Electric Tempest (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Fracture . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Elemental Seeker (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 1 hit with Blast (3)."
+Enhance Serum (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Regeneration once (next time the effect would apply)."
+Entrenched Buff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Entrenched once (next time the effect would apply)."
+Eternal Flame (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 6 hit with Purge ."
+Eternal Guidance (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three enemy units within 18"", which friendly units get +6"" range when shooting against once (next time the effect would apply)."
+Evasive,DEFENSE_MODIFIER,Defense,Special Rules,,,4,Enemies get -1 to hit rolls when attacking units where all models have this rule.
+Evasive Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Evasive .
+Expel Threat (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,"Pick one enemy model within 18"", which takes 6 hit with AP (1)."
+Extended Buff Range,UNIT_COMPOSITION,Unit,Special Rules,,,1,"If this unit is within 24"" of another friendly unit with this rule that has a Hero in it, then that Hero may use special rules that allow it to pick friendly units within 12"" (except for spells) on th..."
+Fade in the Dark (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Stealth once (next time the effect would apply)."
+Fanatic,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"After this model is deployed, it may be placed anywhere fully within 9â€ of its position."
+Fast Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"This model and its unit moves +2"" when using Advance actions and +4"" when using Rush/Charge actions."
+Fatal Sorrow (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 6 hit."
+Fateful Guidance (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Furious once (next time the effect would apply)."
+Fatigue Debuff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which must take a morale test. If failed, it becomes fatigued."
+Fearless Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Fearless .
+Feral Strike (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 3 hit with AP (2) and Deadly (3)."
+Ferocious,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When attacking, unmodified results of 6 to hit deal 1 extra hit (only the original hit counts as a 6 for special rules)."
+Ferocious Boost,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"If this model has Ferocious , it deals extra hits on successful unmodified hit results of 5-6 from Ferocious (instead of only on 6)."
+Ferocious Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Ferocious Boost .
+Fiery Protection (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two friendly units within 12"", which get Melee Evasion once (next time the effect would apply)."
+Flame Bots (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 9"", which take 4 hits each."
+Flame of Destruction (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which takes 1 hit with Blast (3)."
+Focused Defender (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Unpredictable Fighter once (next time the effect would apply)."
+Focused Shock (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Shred ."
+Fortified,DEFENSE_MODIFIER,Defense,Special Rules,,,11,"When units where all models have this rule take hits, those hits count as having AP (-1), to a min. of AP (0)."
+Fortified Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,This model and its unit get Fortified .
+Fortified Growth,UNCATEGORIZED,Uncategorized,Special Rules,,,1,"Place one marker on this unit at the beginning of each round, starting on the round after which it deployed (counting start of game deployment as deploying on the first round). If all models in it hav..."
+Fracture,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Cover, and on unmodified results of 6 to hit, those hits get AP (+2)."
+Fragment,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Cover, and against units where most models have Defense 2+ to Defense 4+, this weapon gets AP (+1)."
+Furious Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,9,This model and its unit get Furious .
+Furious Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Furious against once (next time the effect would apply)."
+Gauss Bots (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 9 hit with Destructive . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Godly Thunder (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy model within 24"", which takes 2 hit with AP (4)."
+Good Shot,WEAPON_MODIFIER,Weapon,Special Rules,,,4,This model gets +1 to hit rolls when shooting.
+Grounded Precision Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Grounded Precision .
+Grounded Reinforcement Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Grounded Reinforcement .
+Grounded Stealth,DEFENSE_MODIFIER,Defense,Special Rules,,,1,"If a unit where all models have this rule has most of them within 1"" of terrain, enemies get -1 to hit rolls when attacking them."
+Guarded Buff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Guarded once (next time the effect would apply)."
+Guardian,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When units where all models have this rule are shot or charged from over 9"" away and take hits, those hits count as having AP (-1), to a min. of AP (0)."
+Guardian Boost,DEFENSE_MODIFIER,Defense,Special Rules,,,1,"If all models in this unit have Guardian , enemy hits always count as having AP (-1) from Guardian (instead of only when being shot/charged from over 9"" away)."
+Guardian Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Guardian Boost .
+Guardian Protection (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Guardian Boost once (next time the effect would apply)."
+Guerrilla,MOVEMENT_MODIFIER,Movement,Army-Wide Special Rules,,,1,"Once per round, units where all models have this rule may move by up to 3"" after shooting or being in melee."
+Guerrilla Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Guerrilla Boost .
+Harassing,MOVEMENT_MODIFIER,Movement,Army-Wide Special Rules,,,1,"Once per round, units where all models have this rule may move by up to 3"" after shooting or being in melee."
+Harassing Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Harassing Boost .
+Havoc Boon (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Havocbound Boost once (next time the effect would apply)."
+Havoc Fog (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Slam ."
+Havoc Terror (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 9"", which take 4 hits each."
+Havoc Trauma (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (2)."
+Havocbound,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When this model shoots at enemies over 9"" away, or when it charges, its weapons get AP (+1)."
+Havocbound Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Havocbound Boost .
+Hazardous,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Gets AP (4), but this model's unit takes one wound on unmodified rolls of 1 to hit."
+Head Bang (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three enemy units within 18"", which friendly units gets Rending in melee against once (next time the effect would apply)."
+Headtaker Strike (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two enemy units within 12"", which take 3 hits with AP (2) each."
+Heavenly Lance (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy model within 18"", which takes 4 hit with AP (1)."
+Heavy Impact,SPECIAL,Special Rules,Special Rules,,,2,This modelâ€™s Impact hits get AP (1).
+Hidden Spirits (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Unpredictable Shooter once (next time the effect would apply)."
+Highborn,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"Moves +2"" when using Advance, and +2â€ when using Rush/Charge."
+Highborn Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Highborn Boost .
+Hit & Run,MOVEMENT_MODIFIER,Movement,Special Rules,,,1,"Once per round, units where all models have this rule may move by up to 3"" after shooting or being in melee."
+Hit & Run Fighter,MOVEMENT_MODIFIER,Movement,Special Rules,,,1,"Once per round, units where all models have this rule may move by up to 3"" after being in melee."
+Hit & Run Fighter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Hit & Run Fighter .
+Hit & Run Shooter,MOVEMENT_MODIFIER,Movement,Special Rules,,,1,"Once per round, units where all models have this rule may move by up to 3"" after shooting."
+Hit & Run Shooter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,This model and its unit get Hit & Run Shooter .
+Hive Bond,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,Units where all models have this rule get +1 to morale test rolls.
+Hive Bond Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Hive Bond Boost .
+Hive Shriek (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 18"", which takes 6 hit with AP (1)."
+Hold the Line,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,Units where all models have this rule get +1 to morale test rolls.
+Hold the Line Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Hold the Line Boost .
+Holistic Suffering (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 9 hit."
+Holy Rage (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Piercing Hunter once (next time the effect would apply)."
+Honor Code,DEFENSE_MODIFIER,Defense,Army-Wide Special Rules,,,1,"If a unit where all models have this rule is Shaken at the beginning of the round, roll one die. On a 4+, it stops being Shaken."
+Ignores Cover Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Ignores Cover when shooting.
+Ignores Cover when Shooting Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Ignores Cover when shooting.
+Impale,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Against units where most models have Tough (3) to Tough (9), this weapon gets Deadly (+3)."
+Increased Shooting Range,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"This model gets +6"" range when shooting."
+Increased Shooting Range Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,5,"This model and its unit get +6"" range when shooting."
+Increased Shooting Range Buff,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets +6"" range when shooting once (next time the effect would apply)."
+Increased Shooting Range Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units get +6"" range when shooting against once (next time the effect would apply)."
+Indirect Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Indirect against once (next time the effect would apply)."
+Indirect when Shooting Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Indirect when shooting.
+Infected,WEAPON_MODIFIER,Weapon,Army-Wide Special Rules,,,1,Enemies that roll to block hits from this model's weapons take 1 extra wound for each unmodified result of 1 that they roll.
+Infected Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Infected Boost .
+Infiltrate,MOVEMENT_MODIFIER,Movement,Special Rules,,,5,"Counts as having Ambush, but may be deployed up to 1"" away from enemy units."
+Infiltrate Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Infiltrate .
+Infuse Bloodthirst (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Hive Bond Boost once (next time the effect would apply)."
+Inquisitorial Agent,UNCATEGORIZED,Uncategorized,Army-Wide Special Rules,Yes,,1,"Once per game, if all models in this unit have this rule, it may be activated even if it had already activated this round (stops being fatigued when activated for the second time). Only up to half of ..."
+Insidious Protection (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Grounded Reinforcement once (next time the effect would apply)."
+Inspiring Bots (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Rapid Advance once (next time the effect would apply)."
+Instinctive,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"When this model is activated, if it is able to shoot/charge an enemy unit, then it must immediately attack the closest valid target and gets +1 to hit rolls for that attack."
+Jaguar Blaze (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred ."
+Killing Blow (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 18"", which takes 2 hit with AP (1)."
+Knight Dome (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply)."
+Knight Sight (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply)."
+Knight Trauma (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 1 hit with Smash ."
+Knight Wound (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with Demolish ."
+Knightborn,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,2,"When a unit where all models have this rule takes wounds, roll one die for each. On a 6+ it is ignored. If the wounds were from a spell, then they are ignored on a 4+ instead."
+Lacerate,WEAPON_MODIFIER,Weapon,Special Rules,,,1,When attacking the target must re-roll unmodified Defense results of 6.
+Light Fragments (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 4 hit with AP (1) and Fragment ."
+Lightning Fog (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,6,"Pick up to two enemy units within 9"", which take 4 hits each."
+Litanies of War (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Devout Boost once (next time the effect would apply)."
+Lust Boon (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Lustbound Boost once (next time the effect would apply)."
+Lustbound,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,3,"Moves +1"" when using Advance, and +3â€ when using Rush/Charge."
+Lustbound Boost,MOVEMENT_MODIFIER,Movement,Special Rules,,,1,"If this model has Lustbound , it moves +2"" on Advance and +6"" on Rush/Charge from Lustbound (instead of only +1"" and +3"")."
+Lustbound Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Lustbound Boost .
+Machine-Fog,DEFENSE_MODIFIER,Defense,Army-Wide Special Rules,,,1,"When units where all models have this rule are shot or charged from over 9"" away, enemy units get -1 to hit rolls."
+Machine-Fog Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Machine-Fog Boost .
+Martial Prowess,UNCATEGORIZED,Uncategorized,Special Rules,Yes,,1,"Once per game, if all models in this unit have this rule, it may be activated even if it had already activated this round (stops being fatigued when activated for the second time). Only up to half of ..."
+Melee Evasion,DEFENSE_MODIFIER,Defense,Special Rules,,,2,Enemies get -1 to hit rolls in melee when attacking units where all models have this rule.
+Melee Evasion Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,This model and its unit get Melee Evasion .
+Melee Shrouding,DEFENSE_MODIFIER,Defense,Special Rules,,,1,"Enemies get -3"" movement when trying to charge units where all models have this rule."
+Melee Shrouding Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,15,This model and its unit get Melee Shrouding .
+Melee Slayer,WEAPON_MODIFIER,Weapon,Special Rules,,,9,This model's melee weapons get AP (+2) against units where most models have Tough (3) or higher.
+Melee Slayer Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Melee Slayer .
+Mend,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,21,"Once per activation, pick one friendly model within 3"" with Tough, and remove D3 wounds from it."
+Mending Bots (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Self-Repair Boost once (next time the effect would apply)."
+Mind Breaker (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Mind Control,MOVEMENT_MODIFIER,Movement,Special Rules,,Yes,2,"Once per activation, before attacking, pick one enemy unit within 18"", which must take a morale test. If failed you may move it by up to 6"" in a straight line in any direction."
+Mind Corruption (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Mind Gash (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred ."
+Mind Shaper (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 18"", which get -1 to morale test rolls once (next time the effect would apply)."
+Mind Vortex (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 12"", which take 2 hits with AP (2) each."
+Mind Wound (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with Demolish ."
+Mischievous,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When attacking, targets must re-roll unmodified Defense results of 6 when blocking hits from this model's weapons."
+Mischievous Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Mischievous Boost .
+Mob Frenzy (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 18"", which friendly units gets AP (1) when shooting against once (next time the effect would apply)."
+Mobile Artillery,DEFENSE_MODIFIER,Defense,Special Rules,,,2,"When this model uses a Hold action and shoots at enemies over 9"" away, it gets +1 to hit rolls. As long this model hasn't moved during the round, when enemy units shoot at it from over 9"" away, they g..."
+Morale Debuff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,2,"Once per activation, before attacking, pick one enemy unit within 18"", which gets -1 to morale test rolls once (next time the effect would apply)."
+Mutating Inferno (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two enemy units within 9"", which take 4 hits each."
+No Retreat,UNCATEGORIZED,Uncategorized,Special Rules,,,2,"When a unit where most models have this rule fails a morale test that causes it to be Shaken or Routed, the test counts as passed instead. Then, roll as many dice as the number of wounds it would take..."
+No Retreat Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get No Retreat .
+No Retreat Buff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets No Retreat once (next time the effect would apply)."
+Overpowering Lash (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred ."
+Overwhelming Strike (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Rupture . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Path of War (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Ferocious Boost once (next time the effect would apply)."
+Piercing Assault,WEAPON_MODIFIER,Weapon,Special Rules,,,4,This model gets AP (+1) when charging.
+Piercing Assault Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,5,This model and its unit get Piercing Assault .
+Piercing Bots (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (2)."
+Piercing Fighter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get AP (+1) in melee.
+Piercing Growth,UNCATEGORIZED,Uncategorized,Special Rules,,,1,"Place one marker on this unit at the beginning of each round, starting on the round after which it deployed (counting  start of game deployment as deploying on the first round). For each marker models..."
+Piercing Hunter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Piercing Hunter .
+Piercing Pulse (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 24"", which takes 3 hit with AP (4)."
+Piercing Shooter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get AP (+1) when shooting.
+Piercing Shooting Debuff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which loses AP (+1) when shooting once (next time the effect would apply)."
+Piercing Shooting Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,2,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets AP (+1) when shooting against once (next time the effect would apply)."
+Piercing Spotter,UNCATEGORIZED,Uncategorized,Special Rules,,Yes,1,"Once per activation, pick one enemy unit within 36"" and in line of sight of this model and roll one die, on a 4+ place a marker on it. When attacking, friendly units may remove markers from their targ..."
+Piercing Tag,UNCATEGORIZED,Uncategorized,Special Rules,Yes,,2,"Once per game, during this model's activation, pick one enemy unit within 36"" and in line of sight of it, and place X markers on it. When attacking, friendly units may remove markers from their target..."
+Piercing Target,WEAPON_MODIFIER,Weapon,Special Rules,Yes,,1,"Once per game, during this model's activation, pick one enemy unit within 36"" and in line of sight of it, and place X markers on it. Friendly units get + AP (X) when attacking it."
+Piranha Curse (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 9"", which take 4 hits each."
+Plague Boon (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Plaguebound Boost once (next time the effect would apply)."
+Plague Malediction (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy model within 24"", which takes 2 hit with AP (4)."
+Plaguebound,DEFENSE_MODIFIER,Defense,Army-Wide Special Rules,,,3,"When a unit where all models have this rule takes wounds, roll one die for each. On a 6+ it is ignored."
+Plaguebound Boost,DEFENSE_MODIFIER,Defense,Special Rules,,,1,"If all models in this unit have Plaguebound , they ignore wounds on rolls of 5-6 from Plaguebound (instead of only on 6+)."
+Plaguebound Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Plaguebound Boost .
+Point-Blank Piercing Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Point-Blank Piercing .
+Point-Blank Surge,WEAPON_MODIFIER,Weapon,Special Rules,,,2,"When this model shoots at enemies within 12"", unmodified results of 6 to hit deal 1 extra hit (only the original hit counts as a 6 for special rules)."
+Pow! (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 3 hit with AP (2) and Skewer ."
+Power Beam (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 18"", which takes 2 hit with AP (1)."
+Power Bolt (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 12"", which takes 6 hit with AP (2)."
+Power Field (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Shielded once (next time the effect would apply)."
+Power Maw (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 12"", which take 1 hits with AP (2) each."
+Power Surge (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 12"", which takes 6 hit with Hazardous . Roll as many dice as hits to see if ""on rolls of 1"" effects trigger."
+Precise,WEAPON_MODIFIER,Weapon,Special Rules,,,10,Gets +1 to hit when attacking.
+Precision Attacks Buff,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets +1 to hit rolls when attacking once (next time the effect would apply)."
+Precision Charge Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get +1 to hit rolls when charging.
+Precision Debuff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which gets -1 to hit rolls when attacking once (next time the effect would apply)."
+Precision Fighter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,4,This model and its unit get +1 to hit rolls in melee.
+Precision Fighter Buff,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets +1 to hit rolls in melee once (next time the effect would apply)."
+Precision Fighting Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units get +1 to hit rolls in melee against once (next time the effect would apply)."
+Precision Growth,UNCATEGORIZED,Uncategorized,Special Rules,,,1,"Place one marker on this unit at the beginning of each round, starting on the round after which it deployed (counting  start of game deployment as deploying on the first round). For each marker models..."
+Precision Shooter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get +1 to hit rolls when shooting.
+Precision Shooter Buff,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,2,"Once per activation, before attacking, pick one friendly unit within 12"", which gets +1 to hit rolls when shooting once (next time the effect would apply)."
+Precision Shooting Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units get +1 to hit rolls when shooting against once (next time the effect would apply)."
+Precision Spotter,UNCATEGORIZED,Uncategorized,Special Rules,,Yes,1,"Once per activation, pick one enemy unit within 36"" and in line of sight of this model and roll one die, on a 4+ place a marker on it. Friendly units may remove markers from their target before rollin..."
+Precision Tag,UNCATEGORIZED,Uncategorized,Special Rules,Yes,,1,"Once per game, during this model's activation, pick one enemy unit within 36"" and in line of sight of it, and place X markers on it. When attacking, friendly units may remove markers from their target..."
+Precision Target,WEAPON_MODIFIER,Weapon,Special Rules,Yes,,2,"Once per game, during this model's activation, pick one enemy unit within 36"" and in line of sight of it, and place X markers on it. Friendly units get +X to hit rolls when attacking it."
+Predator Fighter,SPECIAL,Special Rules,Special Rules,,,1,"For each unmodified roll of 6 to hit in melee, this model may roll +1 attack with that weapon. This rule doesnâ€™t apply to newly generated attacks."
+Primal,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"For each unmodified roll of 6 to hit when attacking, this model may roll +1 attack with that weapon. This rule doesnâ€™t apply to newly generated attacks."
+Primal Boost Buff,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Primal Boost once (next time the effect would apply)."
+Protected,DEFENSE_MODIFIER,Defense,Special Rules,,,3,"When a unit where all models have this rule takes wounds, roll one die for each. On a 6+ it is ignored."
+Protection Feat,DEFENSE_MODIFIER,Defense,Special Rules,Yes,,1,"Once per game, when this unit takes wounds and all its models have this rule, you may use this rule and roll one die per wound, and on a 4+ it is ignored."
+Protective Dome (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply)."
+Psy-Adrenaline (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Harassing Boost once (next time the effect would apply)."
+Psy-Destruction (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 24"", which takes 2 hit with AP (4)."
+Psy-Hunter (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Scrapper Boost once (next time the effect would apply)."
+Psy-Injected Courage (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,"Pick one friendly unit within 12"", which gets Hold the Line Boost once (next time the effect would apply)."
+Psychic Blast (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 4 hit with AP (2)."
+Psychic Onslaught (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 4 hit with Reap ."
+Psychic Stabilization (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Targeting Visor Boost once (next time the effect would apply)."
+Psychic Terror (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,6,"Pick one enemy unit within 6"", which takes 9 hit with Bane ."
+Psychic Vomit (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 6 hit with Bane ."
+Puncture,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Regeneration, and against units where most models have Tough (3) to Tough (9), this weapon gets AP (+4)."
+Purge,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Regeneration, and against units where most models have Defense 2+ to Defense 4+, this weapon gets AP (+1)."
+Purge the Impure (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two enemy units within 12"", which take 3 hits with AP (2) each."
+Quake,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Regeneration, and on unmodified results of 1 to block hits, this weapon deals 1 extra wound."
+Quake when Shooting,WEAPON_MODIFIER,Weapon,Special Rules,,,1,This model gets Quake when shooting.
+Quick Readjustment,WEAPON_MODIFIER,Weapon,Special Rules,,,2,This model ignores penalties from shooting after moving when using Indirect weapons.
+Quick Shot Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Quick Shot .
+Quick Shot Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Quick Shot against once (next time the effect would apply)."
+Quill Blast (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 4 hit with Scratch ."
+Raiding Drugs (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 18"", which friendly units get +1 to hit rolls in melee against once (next time the effect would apply)."
+Ranged Shrouding Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,This model and its unit get Ranged Shrouding .
+Ranged Slayer Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Ranged Slayer .
+Rapid Advance Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Rapid Advance .
+Rapid Advance Buff,MOVEMENT_MODIFIER,Movement,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Rapid Advance once (next time the effect would apply)."
+Rapid Ambush,MOVEMENT_MODIFIER,Movement,Special Rules,,,2,"Counts as having Ambush, but may be deployed at the start of any round, including the first."
+Rapid Blink,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When this unit is activated, you may place all models with this rule in it anywhere fully within 3"" of their position."
+Rapid Blink Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Rapid Blink Boost .
+Rapid Charge,MOVEMENT_MODIFIER,Movement,Special Rules,,,2,"This model moves +4"" when using Charge actions."
+Rapid Charge Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,4,"This model and its unit moves +4"" when using Charge actions."
+Rapid Mutation (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get Regeneration once (next time the effect would apply)."
+Rapid Putrefaction (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Butcher . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Rapid Rush Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,12,This model and its unit get Rapid Rush .
+Ravage,WEAPON_MODIFIER,Weapon,Special Rules,,,12,"When it's this model's turn to attack in melee, roll X dice. For each 6+ the target takes one wound."
+Re-Deployment,MOVEMENT_MODIFIER,Movement,Special Rules,,,14,"After all other units are deployed (excluding units that were set aside), you may remove up to two friendly units from the table and deploy them again. Players alternate in placing Re-Deployment units..."
+Re-Position Artillery,MOVEMENT_MODIFIER,Movement,Special Rules,,Yes,14,"Once per activation, pick one friendly model within 6"" with Artillery, which may immediately move by up to 9""."
+Reanimation Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Reanimation .
+Reap,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Against units where most models have Defense 2+ to Defense 3+, this weapon gets AP (+2)."
+Regeneration Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,23,This model and its unit get Regeneration .
+Regeneration Buff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,2,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Regeneration once (next time the effect would apply)."
+Regenerative Strength,WEAPON_MODIFIER,Weapon,Special Rules,,,2,"Place one marker on this model when it ignores a wound. When in melee, pick one of its weapons to get +X attacks, where X is the number of markers on it."
+Reinforced,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,6,"When units where all models have this rule are shot or charged from over 9"" away and take hits, those hits count as having AP (-1), to a min. of AP (0)."
+Reinforcement,UNCATEGORIZED,Uncategorized,Special Rules,,,1,"When a unit where all models have this rule is shaken or fully destroyed, you may remove it from the table as destroyed and place a new copy of it fully within 12"" of any table edge at the beginning o..."
+Relentless Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,7,This model and its unit get Relentless .
+Relentless Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Relentless against once (next time the effect would apply)."
+Rending in Melee Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Rending in melee.
+Rending in Melee Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Rending in melee against once (next time the effect would apply)."
+Rending when Shooting Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Rending when shooting.
+Repel Ambushers,DEFENSE_MODIFIER,Defense,Special Rules,,,8,"Enemy units using Ambush must be set up over 12"" away from this model's unit."
+Resistance,DEFENSE_MODIFIER,Defense,Special Rules,,,6,"When a unit where all models have this rule takes wounds, roll one die for each. On a 6+ it is ignored. If the wounds were from a spell, then they are ignored on a 2+ instead."
+Resistance Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,8,This model and its unit get Resistance .
+Retaliate,DEFENSE_MODIFIER,Defense,Special Rules,,,8,"When this model takes a wound in melee, the attacker takes X hits."
+Righteous Fury (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to two friendly units within 12"", which get Piercing Assault once (next time the effect would apply)."
+Righteous Wrath (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 24"", which takes 1 hit with AP (4)."
+Rot Wave (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which takes 6 hit."
+Ruinous Frenzy,UNIT_COMPOSITION,Unit,Special Rules,,,1,Place one marker on this unit when it fully destroys an enemy unit. For each marker all models with this rule in this unit get +1 to hit rolls and +1 to defense rolls until the end of the game (up to ...
+Rupture,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Regeneration, and on unmodified results of 6 to hit that aren't blocked, this weapon deals 1 extra wound."
+Scout Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,8,This model and its unit get Scout .
+Scrapper,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When attacking, targets must re-roll unmodified Defense results of 6 when blocking hits from this model's weapons."
+Scrapper Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Scrapper Boost .
+Scratch,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Against units where most models have Tough (3) to Tough (9), this weapon gets AP (+2)."
+Scurry,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"Moves +2"" when using Advance, and +2â€ when using Rush/Charge."
+Scurry Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Scurry Boost .
+Searing Admonition (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 3 hit with Blast (3)."
+Searing Burst (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,"Pick one enemy unit within 12"", which takes 6 hit."
+Searing Shrapnel (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 4 hit with AP (1) and Wreck ."
+Self-Destruct,WEAPON_MODIFIER,Weapon,Special Rules,,,2,"If this model is killed in melee, the attacking unit takes X hits. If this model survives melee, after both sides have finished attacking, it is immediately killed, and the enemy unit takes X hits."
+Self-Repair,DEFENSE_MODIFIER,Defense,Army-Wide Special Rules,,,1,"When a unit where all models have this rule takes wounds, roll one die for each. On a 6+ it is ignored."
+Self-Repair Boost Buff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Self-Repair Boost once (next time the effect would apply)."
+Serpent Comet (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with Disintegrate ."
+Shadow Dance (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Rapid Blink Boost once (next time the effect would apply)."
+Shatter,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Regeneration, and against units where most models have Tough (3) to Tough (9), this weapon gets AP (+2)."
+Shattering Curse (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Crack . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Shield Breaker (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred ."
+Shielded,DEFENSE_MODIFIER,Defense,Special Rules,,,24,Units where all models have this rule get +1 to defense rolls against hits that are not from spells.
+Shielded Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,This model and its unit get Shielded .
+Shifting Form (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which gets -3 to casting rolls once (next time the effect would apply)."
+Shock Speed (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,"Pick up to three friendly units within 12"", which moves +2"" when using Advance actions and +4"" when using Rush/Charge actions once (next time the effect would apply)."
+Shred,WEAPON_MODIFIER,Weapon,Special Rules,,,10,"On unmodified results of 1 to block hits, this weapon deals 1 extra wound."
+Shred in Melee Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,This model and its unit get Shred in melee.
+Shred Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Shred when attacking against once (next time the effect would apply)."
+Shred when Shooting Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,4,This model and its unit get Shred when shooting.
+Shroud Field (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three friendly units within 12"", which get +1 to defense rolls once (next time the effect would apply)."
+Shrouding Incense (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Machine-Fog Boost once (next time the effect would apply)."
+Skewer,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Cover, and against units where most models have Tough (3) to Tough (9), this weapon gets Deadly (+3)."
+Sky Blaze (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Slash . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Slam,WEAPON_MODIFIER,Weapon,Special Rules,,,5,"Ignores Cover, and on unmodified results of 1 to block hits, this weapon deals 1 extra wound."
+Slash,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Cover, and on unmodified results of 6 to hit, this weapon deals 1 extra hits (only the original hit counts as a 6 for special rules)."
+Slayer Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Slayer against once (next time the effect would apply)."
+Smash,WEAPON_MODIFIER,Weapon,Special Rules,,,6,"Ignores Regeneration, and against units where most models have Defense 5+ to Defense 6+, this weapon gets Blast (+3)."
+Smiting Rune  (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 4 hit with AP (1) and Quake ."
+Snake Bite (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Lacerate ."
+Soul Spear (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy model within 24"", which takes 1 hit with Puncture ."
+Spawn,UNIT_COMPOSITION,Unit,Special Rules,Yes,,4,"Once per game, when this model is activated, you may place a new unit of X fully within 6"" of it."
+Speed Buff,MOVEMENT_MODIFIER,Movement,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which moves +2"" when using Advance actions and +4"" when using Rush/Charge actions once (next time the effect would apply)."
+Speed Debuff,MOVEMENT_MODIFIER,Movement,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which moves -2"" when using Advance actions and -4"" when using Rush/Charge actions once (next time the effect would apply)."
+Speed Feat Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Speed Feat .
+Spell Accumulator,SPECIAL,Special Rules,Special Rules,,,2,"Gets X accumulator tokens at the start of each round, but canâ€™t hold more than 6 tokens at once. Casters from other friendly units within 12"" may spend this model's accumulator tokens as if they wer..."
+Spell Conduit,UNIT_COMPOSITION,Unit,Special Rules,,,6,"Casters within 12"" that are from other friendly units may cast spells as if they were in this model's position, and get +1 to casting rolls when doing so."
+Spirit Power (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Flying once (next time the effect would apply)."
+Spirit Resolve (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two friendly units within 12"", which get Clan Warrior Boost once (next time the effect would apply)."
+Split,UNIT_COMPOSITION,Unit,Special Rules,,,1,"When this unit is fully destroyed, you may place a new unit of X fully within 6"" of it before removing the last model."
+Spread Plague (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 2 hit with Bash ."
+Steadfast,DEFENSE_MODIFIER,Defense,Special Rules,,,2,"If a unit where all models have this rule is Shaken at the beginning of the round, roll one die. On a 4+, it stops being Shaken."
+Steadfast Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Steadfast .
+Steadfast Buff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,5,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Steadfast once (next time the effect would apply)."
+Stealth Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,7,This model and its unit get Stealth .
+Stealth Buff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,2,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Stealth once (next time the effect would apply)."
+Storm of Change,WEAPON_MODIFIER,Weapon,Special Rules,Yes,,1,"Once per game, when this model is activated, before attacking, roll 3 dice. For each 2+ one enemy unit within 12"" takes 3 hits with Shred ."
+Storm of Lust,WEAPON_MODIFIER,Weapon,Special Rules,Yes,,1,"Once per game, when this model is activated, before attacking, roll 3 dice. For each 2+ one enemy unit within 12"" takes 3 hits with Surge (roll one die per hit to see if it triggers)."
+Storm of Plague,WEAPON_MODIFIER,Weapon,Special Rules,Yes,,1,"Once per game, when this model is activated, before attacking, roll 3 dice. For each 2+ one enemy unit within 12"" takes 3 hits with Bane ."
+Storm of Power (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger."
+Storm of War,WEAPON_MODIFIER,Weapon,Special Rules,Yes,,1,"Once per game, when this model is activated, before attacking, roll 3 dice. For each 2+ one enemy unit within 12"" takes 3 hits with AP (1)."
+Strafing,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,7,"Once per activation, when this model moves through enemy units, pick one of them and attack it with this weapon as if it was shooting. This weapon may only be used in this way."
+Strider Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Strider .
+Sturdy,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When units where all models have this rule are shot or charged from over 9"" away, they get +1 to defense rolls."
+Sturdy Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Sturdy Boost .
+Surge,WEAPON_MODIFIER,Weapon,Special Rules,,,9,"On unmodified results of 6 to hit, this weapon deals 1 extra hits (only the original hit counts as a 6 for special rules)."
+Surprise Attack,SPECIAL,Special Rules,Special Rules,,,2,"Counts as having Infiltrate . Once deployed via this rule, roll X dice, for each 4+ one enemy unit within 3â€ takes 2 hits with AP (1)."
+Surprise Piercing Shot,MOVEMENT_MODIFIER,Movement,Special Rules,,,3,"Counts as having Ambush, and gets AP (+2) when shooting on the round in which it deploys via this rule."
+Swift,MOVEMENT_MODIFIER,Movement,Special Rules,,,2,This model may ignore the Slow rule.
+Swift Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Swift .
+Swift Buff,MOVEMENT_MODIFIER,Movement,Special Rules,,Yes,1,"Once per activation, before attacking, pick one friendly unit within 12"", which gets Swift once (next time the effect would apply)."
+System Takeover (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 6 hit."
+Takedown Strike,WEAPON_MODIFIER,Weapon,Special Rules,Yes,,5,"Once per game, when it's this model's turn to attack in melee, you may pick one model in the unit as its target, and make one attack at Quality 2+ with AP (2) and Deadly (3), which is resolved as if i..."
+Targeting Visor,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,1,"When this model shoots at enemies over 9"" away, it gets +1 to hit rolls."
+Targeting Visor Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Targeting Visor Boost .
+Tear,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Against units where most models have Tough (3) to Tough (9), this weapon gets AP (+4)."
+Tech-Sickness (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to two enemy units within 18"", which get -1 to defense rolls once (next time the effect would apply)."
+Teleport,MOVEMENT_MODIFIER,Movement,Special Rules,,Yes,6,"Once per activation, before attacking, place this model anywhere fully within 6"" of its position."
+Teleport Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,4,This model and its unit get Teleport .
+Terrifying Fury (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which must take a morale test. If failed, it becomes fatigued."
+Terror Seeker (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three enemy units within 18"", which friendly units gets Unpredictable Fighter against once (next time the effect would apply)."
+The Founder's Curse (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which friendly units gets Shred when attacking against once (next time the effect would apply)."
+Thrash,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Against units where most models have Defense 5+ to Defense 6+, this weapon gets Blast (+3)."
+Thrust in Melee Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Thrust in melee.
+Thunderous Mist (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 2 hit."
+Total Seizure (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy model within 18"", which takes 4 hit with AP (1)."
+Toxin Mist (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which friendly units gets Bane when attacking against once (next time the effect would apply)."
+Triangulation Bots (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which friendly units gets Indirect when shooting against once (next time the effect would apply)."
+Unpredictable,WEAPON_MODIFIER,Weapon,Special Rules,,,5,"When attacking, roll one die and apply one effect to all models with this rule: on a 1-3 they get AP (+1), and on a 4-6 they get +1 to hit rolls instead."
+Unpredictable Fighter,WEAPON_MODIFIER,Weapon,Special Rules,,,10,"When in melee, roll one die and apply one effect to all models with this rule: on a 1-3 they get AP (+1), and on a 4-6 they get +1 to hit rolls instead."
+Unpredictable Fighter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,5,This model and its unit get Unpredictable Fighter .
+Unpredictable Fighter Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Unpredictable Fighter against once (next time the effect would apply)."
+Unpredictable Shooter,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"When shooting, roll one die and apply one effect to all models with this rule: on a 1-3 they get AP (+1), and on a 4-6 they get +1 to hit rolls instead."
+Unpredictable Shooter Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,3,This model and its unit get Unpredictable Shooter .
+Unstoppable in Melee Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Unstoppable in melee.
+Unstoppable Shooting Mark,WEAPON_MODIFIER,Weapon,Special Rules,,Yes,12,"Once per activation, before attacking, pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply)."
+Unstoppable when Shooting Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,This model and its unit get Unstoppable when shooting.
+Unwieldy Debuff,DEFENSE_MODIFIER,Defense,Special Rules,,Yes,1,"Once per activation, before attacking, pick one enemy unit within 18"", which gets Unwieldy in melee once (next time the effect would apply)."
+Veil of Madness (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick up to three enemy units within 18"", which friendly units gets Slayer against once (next time the effect would apply)."
+Vengeance,UNCATEGORIZED,Uncategorized,Special Rules,,,1,"When this unit is fully destroyed, place as many Vengeance markers on the unit that destroyed it as models with this rule in this unit at the beginning of the game. Friendly units get +X to hit rolls ..."
+Versatile Attack,WEAPON_MODIFIER,Weapon,Special Rules,,,18,"When this unit is activated, pick one effect: until the end of the activation all models with this rule in it either get AP (+1) when attacking, or get +1 to hit rolls when attacking."
+Versatile Defense Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,5,This model and its unit get Versatile Defense .
+Versatile Reach Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,12,This model and its unit get Versatile Reach .
+Violent Onslaught (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Infected Boost once (next time the effect would apply)."
+Volatile Infection (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 6"", which takes 3 hit with AP (2) and Deadly (3)."
+War Boon (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Warbound Boost once (next time the effect would apply)."
+Warbound,WEAPON_MODIFIER,Weapon,Army-Wide Special Rules,,,3,Enemies that roll to block hits from this model's weapons take 1 extra wound for each unmodified result of 1 that they roll.
+Warbound Boost,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"If this model has Warbound , enemies taking wounds from it take extra wounds on failed defense rolls of 1-2 from Warbound (instead of only on 1)."
+Warbound Boost Aura,AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,This model and its unit get Warbound Boost .
+Watch Dome (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply)."
+Watch Sight (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply)."
+Watch Trauma (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 1 hit with Smash ."
+Watch Wound (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with Demolish ."
+Watchborn,WEAPON_MODIFIER,Weapon,Army-Wide Special Rules,,,2,"When this unit is activated, pick one effect: until the end of the activation all models with this rule in it either get AP (+1) when attacking, or get +1 to hit rolls when attacking."
+Wave of Discord (2),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 2 hit with Thrash ."
+Weapon Booster (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one friendly unit within 12"", which gets Scurry Boost once (next time the effect would apply)."
+Wolf Dome (3),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply)."
+Wolf Sight (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,2,"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply)."
+Wolf Trauma (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 18"", which takes 1 hit with Smash ."
+Wolf Wound (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with Demolish ."
+Wolfborn,ARMY_WIDE,Army-Wide Special Rules,Army-Wide Special Rules,,,2,"When this unit is activated, you may place all models with this rule in it anywhere fully within 3"" of their position."
+Wreck,WEAPON_MODIFIER,Weapon,Special Rules,,,1,"Ignores Cover, and when attacking the target must re-roll unmodified Defense results of 6."
+Zap! (1),AURA_EFFECT,Aura Special Rules,Aura Special Rules,,,1,"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge ."
