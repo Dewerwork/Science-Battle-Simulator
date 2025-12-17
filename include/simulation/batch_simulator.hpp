@@ -1461,14 +1461,16 @@ private:
                 u64 local_obj_rounds = 0;
                 u64 local_objective_games = 0;
 
-                // OPTIMIZATION: Sequential accumulation - no hash maps!
+                // OPTIMIZATION: Sequential accumulation with vector-based faction hash cache
                 // Since matchups are generated in order (all of unit 0's opponents,
                 // then unit 1's, etc.), we track the current unit and flush when it changes.
-                // This eliminates ALL hash map overhead.
+                // Faction hashes are cached in a vector indexed by b_idx for O(1) lookup.
                 LocalAggregatedAccumulator current_accum;
                 u32 current_unit_idx = UINT32_MAX;  // Invalid initial value
-                u16 last_faction_hash = 0;
-                u32 last_b_idx = UINT32_MAX;
+
+                // Vector cache for faction hashes - 0 means "not yet computed"
+                // (crc16_hash never returns 0, it returns 1 instead)
+                std::vector<u16> faction_hash_cache(units_b.size(), 0);
 
                 // Lambda to flush current accumulator to global results
                 auto flush_accumulator = [&]() {
@@ -1504,14 +1506,11 @@ private:
                         local_objective_games += 3;
                     }
 
-                    // Get faction hash - cache only the last one (sequential access pattern)
-                    u16 faction_hash;
-                    if (b_idx == last_b_idx) {
-                        faction_hash = last_faction_hash;
-                    } else {
+                    // Get faction hash from cache (O(1) vector lookup)
+                    u16 faction_hash = faction_hash_cache[b_idx];
+                    if (faction_hash == 0) {
                         faction_hash = crc16_hash(unit_b.faction.view());
-                        last_faction_hash = faction_hash;
-                        last_b_idx = b_idx;
+                        faction_hash_cache[b_idx] = faction_hash;
                     }
 
                     // Direct accumulation - no hash lookup!
