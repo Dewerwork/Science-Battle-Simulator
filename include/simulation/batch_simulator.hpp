@@ -1461,17 +1461,34 @@ private:
                 u64 local_obj_rounds = 0;
                 u64 local_objective_games = 0;
 
-                // OPTIMIZATION: Thread-local accumulation map
-                // Instead of locking per matchup, accumulate locally and merge at end
-                // This reduces lock contention from O(matchups) to O(unique_units)
-                std::unordered_map<u32, LocalAggregatedAccumulator> local_accumulators;
-                local_accumulators.reserve(std::min(end - start, size_t(1024)));
+                // OPTIMIZATION: Sequential accumulation - no hash maps!
+                // Since matchups are generated in order (all of unit 0's opponents,
+                // then unit 1's, etc.), we track the current unit and flush when it changes.
+                // This eliminates ALL hash map overhead.
+                LocalAggregatedAccumulator current_accum;
+                u32 current_unit_idx = UINT32_MAX;  // Invalid initial value
+                u16 last_faction_hash = 0;
+                u32 last_b_idx = UINT32_MAX;
 
-                // Pre-compute faction hashes for units in this chunk to avoid repeated computation
-                std::unordered_map<u32, u16> faction_hash_cache;
+                // Lambda to flush current accumulator to global results
+                auto flush_accumulator = [&]() {
+                    if (current_unit_idx != UINT32_MAX && current_accum.total_matchups > 0) {
+                        std::lock_guard<std::mutex> lock(unit_mutexes[current_unit_idx % AGGREGATED_MUTEX_SHARDS]);
+                        current_accum.merge_into(aggregated[current_unit_idx]);
+                    }
+                };
 
                 for (size_t i = start; i < end; ++i) {
                     auto [a_idx, b_idx] = matchups[i];
+
+                    // Check if we've switched to a new unit_a
+                    if (a_idx != current_unit_idx) {
+                        // Flush previous accumulator
+                        flush_accumulator();
+                        // Reset for new unit
+                        current_accum = LocalAggregatedAccumulator{};
+                        current_unit_idx = a_idx;
+                    }
 
                     MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
 
@@ -1487,26 +1504,22 @@ private:
                         local_objective_games += 3;
                     }
 
-                    // Get or compute faction hash (cached)
+                    // Get faction hash - cache only the last one (sequential access pattern)
                     u16 faction_hash;
-                    auto hash_it = faction_hash_cache.find(b_idx);
-                    if (hash_it != faction_hash_cache.end()) {
-                        faction_hash = hash_it->second;
+                    if (b_idx == last_b_idx) {
+                        faction_hash = last_faction_hash;
                     } else {
                         faction_hash = crc16_hash(unit_b.faction.view());
-                        faction_hash_cache[b_idx] = faction_hash;
+                        last_faction_hash = faction_hash;
+                        last_b_idx = b_idx;
                     }
 
-                    // Accumulate into thread-local map (NO LOCKING!)
-                    local_accumulators[a_idx].add_matchup(mr, unit_a, unit_b, faction_hash);
+                    // Direct accumulation - no hash lookup!
+                    current_accum.add_matchup(mr, unit_a, unit_b, faction_hash);
                 }
 
-                // MERGE PHASE: Now merge all local accumulators into global results
-                // This is where we take locks, but only once per unique unit
-                for (const auto& [unit_idx, accum] : local_accumulators) {
-                    std::lock_guard<std::mutex> lock(unit_mutexes[unit_idx % AGGREGATED_MUTEX_SHARDS]);
-                    accum.merge_into(aggregated[unit_idx]);
-                }
+                // Flush final accumulator
+                flush_accumulator();
 
                 // Update global stats atomically
                 game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
