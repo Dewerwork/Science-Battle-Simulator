@@ -1470,13 +1470,12 @@ private:
 
                 // Thread-local vector cache for faction hashes - 0 means "not yet computed"
                 // (crc16_hash never returns 0, it returns 1 instead)
-                // Using thread_local to avoid millions of allocations/deallocations
+                // Cache persists across batches since units_b doesn't change during simulation
                 thread_local std::vector<u16> faction_hash_cache;
                 if (faction_hash_cache.size() < units_b.size()) {
                     faction_hash_cache.resize(units_b.size(), 0);
-                } else {
-                    std::fill(faction_hash_cache.begin(), faction_hash_cache.begin() + units_b.size(), static_cast<u16>(0));
                 }
+                // No clearing needed - cached hashes remain valid for entire simulation
 
                 // Lambda to flush current accumulator to global results
                 auto flush_accumulator = [&]() {
