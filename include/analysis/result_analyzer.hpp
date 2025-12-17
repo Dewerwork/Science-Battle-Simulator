@@ -967,7 +967,55 @@ public:
 
         size_t rows_written = 0;
 
-        if (header_.has_extended_data()) {
+        if (header_.is_aggregated()) {
+            // Aggregated format - export directly from aggregated results
+            out << "unit_id,name,faction,points,quality,defense,models,"
+                << "matches,wins,losses,draws,win_rate,game_win_rate,"
+                << "avg_wounds_dealt,avg_wounds_received,damage_efficiency,"
+                << "avg_models_killed,avg_models_lost,kill_efficiency,"
+                << "total_objective_rounds,underdog_wins,underdog_matchups,underdog_win_rate,"
+                << "overdog_wins,overdog_matchups,overdog_win_rate\n";
+
+            for (const auto& r : aggregated_results_) {
+                if (r.unit_id < units.size() && r.total_matchups > 0) {
+                    const Unit& u = units[r.unit_id];
+                    f64 damage_eff = r.total_wounds_received > 0 ?
+                        static_cast<f64>(r.total_wounds_dealt) / r.total_wounds_received : 0.0;
+                    f64 kill_eff = r.total_models_lost > 0 ?
+                        static_cast<f64>(r.total_models_killed) / r.total_models_lost : 0.0;
+                    f64 game_win_rate = (r.games_won + r.games_lost) > 0 ?
+                        100.0 * r.games_won / (r.games_won + r.games_lost) : 0.0;
+
+                    out << r.unit_id << ","
+                        << "\"" << u.name.view() << "\","
+                        << "\"" << u.faction.view() << "\","
+                        << u.points_cost << ","
+                        << (int)u.quality << ","
+                        << (int)u.defense << ","
+                        << (int)u.model_count << ","
+                        << r.total_matchups << ","
+                        << r.wins << ","
+                        << r.losses << ","
+                        << r.draws << ","
+                        << r.win_rate() << ","
+                        << game_win_rate << ","
+                        << r.avg_wounds_dealt() << ","
+                        << r.avg_wounds_received() << ","
+                        << damage_eff << ","
+                        << r.avg_models_killed() << ","
+                        << r.avg_models_lost() << ","
+                        << kill_eff << ","
+                        << r.total_objective_rounds << ","
+                        << r.underdog_wins << ","
+                        << r.underdog_matchups << ","
+                        << r.underdog_win_rate() << ","
+                        << r.overdog_wins << ","
+                        << r.overdog_matchups << ","
+                        << r.overdog_win_rate() << "\n";
+                    rows_written++;
+                }
+            }
+        } else if (header_.has_extended_data()) {
             auto stats = calculate_extended_unit_stats();
 
             // Extended header
