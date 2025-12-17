@@ -1244,12 +1244,7 @@ private:
         const size_t num_threads = pool_.thread_count();
         const size_t chunk_size = (batch_size + num_threads - 1) / num_threads;
 
-        std::cerr << "[DEBUG-BATCH] batch_size=" << batch_size
-                  << ", threads=" << num_threads
-                  << ", chunk=" << chunk_size << std::endl;
-
         std::atomic<size_t> threads_done{0};
-        std::atomic<size_t> threads_started{0};
 
         for (size_t t = 0; t < num_threads; ++t) {
             size_t start = t * chunk_size;
@@ -1261,20 +1256,11 @@ private:
             }
 
             pool_.submit_detached([&, start, end, t]() {
-                threads_started.fetch_add(1, std::memory_order_release);
-
-                // Debug: only thread 0 prints detailed progress
-                bool is_debug_thread = (t == 0);
-
-                if (is_debug_thread) std::cerr << "[T0] Initializing thread-local objects..." << std::flush;
-
                 thread_local DiceRoller dice(
                     std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                     static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                 );
                 thread_local GameRunner runner(dice);
-
-                if (is_debug_thread) std::cerr << " OK" << std::endl;
 
                 // Thread-local accumulators for global stats
                 u64 local_games = 0;
@@ -1283,26 +1269,10 @@ private:
                 u64 local_obj_rounds = 0;
                 u64 local_objective_games = 0;
 
-                if (is_debug_thread) {
-                    std::cerr << "[T0] Processing " << (end - start) << " matchups [" << start << ".." << end << ")..." << std::endl;
-                }
-
-                // Track progress for crash diagnosis
-                size_t last_completed = start;
-                static std::atomic<size_t> global_crash_report{0};
-
                 for (size_t i = start; i < end; ++i) {
-                    // Progress logging every 10000 matchups for thread 0
-                    if (is_debug_thread && (i - start) % 10000 == 0 && i > start) {
-                        std::cerr << "[T0] Progress: " << (i - start) << "/" << (end - start)
-                                  << " matchups completed" << std::endl;
-                    }
-
                     auto [a_idx, b_idx] = matchups[i];
 
-                    try {
-                        MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
-                        last_completed = i;
+                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
 
                         // Get opponent info for categorization
                         const Unit& unit_a = units_a[a_idx];
@@ -1424,28 +1394,7 @@ private:
                             ar.faction_stats[min_slot].wins = (mr.overall_winner == GameWinner::UnitA) ? 1 : 0;
                         }
                         }  // end lock_guard scope
-                    } catch (const std::exception& e) {
-                        // Only report first crash to avoid spam
-                        if (global_crash_report.fetch_add(1) == 0) {
-                            std::cerr << "\n[CRASH] Thread " << t << " exception at matchup " << i
-                                      << " (local idx " << (i - start) << ")"
-                                      << "\n  Unit A index: " << a_idx
-                                      << "\n  Unit B index: " << b_idx
-                                      << "\n  Error: " << e.what() << std::endl;
-                        }
-                        throw;
-                    } catch (...) {
-                        if (global_crash_report.fetch_add(1) == 0) {
-                            std::cerr << "\n[CRASH] Thread " << t << " unknown exception at matchup " << i
-                                      << " (local idx " << (i - start) << ")"
-                                      << "\n  Unit A index: " << a_idx
-                                      << "\n  Unit B index: " << b_idx << std::endl;
-                        }
-                        throw;
-                    }
                 }
-
-                if (is_debug_thread) std::cerr << "[T0] All matchups done, updating global stats..." << std::flush;
 
                 // Update global stats
                 game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
@@ -1454,20 +1403,13 @@ private:
                 game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
                 game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
 
-                if (is_debug_thread) std::cerr << " OK, thread 0 done!" << std::endl;
-
                 threads_done.fetch_add(1, std::memory_order_release);
             });
         }
 
-        std::cerr << "[DEBUG-BATCH] Waiting for threads (started: "
-                  << threads_started.load() << ")..." << std::flush;
-
         while (threads_done.load(std::memory_order_acquire) < num_threads) {
             std::this_thread::yield();
         }
-
-        std::cerr << " all done" << std::endl;
     }
 };
 
