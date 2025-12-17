@@ -13,6 +13,7 @@
 #include <mutex>
 #include <functional>
 #include <cstring>
+#include <unordered_map>
 
 namespace battle {
 
@@ -29,8 +30,8 @@ enum class ResultFormat : u8 {
 };
 
 // Number of mutex shards for aggregated results (avoids O(n) mutex allocation)
-// Using 8192 shards (~320KB) provides good parallelism while avoiding memory issues
-static constexpr size_t AGGREGATED_MUTEX_SHARDS = 8192;
+// Using 65536 shards (~2.5MB) provides excellent parallelism for high core counts
+static constexpr size_t AGGREGATED_MUTEX_SHARDS = 65536;
 
 struct BatchConfig {
     u32 batch_size = 10000;          // Matchups per batch
@@ -502,6 +503,224 @@ struct AggregatedUnitResult {
 };
 
 static_assert(sizeof(AggregatedUnitResult) == 256, "AggregatedUnitResult must be 256 bytes");
+
+// ==============================================================================
+// Local Accumulator for Thread-Local Aggregation (Performance Optimization)
+// Lightweight structure to accumulate stats locally before merging to global results
+// ==============================================================================
+
+struct LocalAggregatedAccumulator {
+    // Win/loss tracking
+    u32 total_matchups = 0;
+    u32 wins = 0;
+    u32 losses = 0;
+    u32 draws = 0;
+    u32 games_won = 0;
+    u32 games_lost = 0;
+
+    // Victory margins
+    u16 decisive_wins = 0;
+    u16 solid_wins = 0;
+    u16 close_wins = 0;
+    u16 close_losses = 0;
+    u16 solid_losses = 0;
+    u16 decisive_losses = 0;
+
+    // Combat stats
+    u64 total_wounds_dealt = 0;
+    u64 total_wounds_received = 0;
+    u32 total_models_killed = 0;
+    u32 total_models_lost = 0;
+
+    // Objective stats
+    u32 total_objective_rounds = 0;
+    u32 opponent_objective_rounds = 0;
+    u16 matchups_with_objective = 0;
+
+    // Cost bracket tracking (6 brackets)
+    struct BracketAccum {
+        u16 matchups = 0;
+        u16 wins = 0;
+        i32 wound_diff_sum = 0;  // Sum for averaging later
+    };
+    BracketAccum cost_brackets[6];
+
+    // Underdog/overdog
+    u16 underdog_matchups = 0;
+    u16 underdog_wins = 0;
+    u16 overdog_matchups = 0;
+    u16 overdog_wins = 0;
+
+    // Faction stats (simplified - just track 4 most common)
+    struct FactionAccum {
+        u16 faction_hash = 0;
+        u16 matchups = 0;
+        u16 wins = 0;
+    };
+    FactionAccum faction_stats[4];
+
+    // Merge this accumulator into a global AggregatedUnitResult
+    void merge_into(AggregatedUnitResult& ar) const {
+        ar.total_matchups += total_matchups;
+        ar.wins += wins;
+        ar.losses += losses;
+        ar.draws += draws;
+        ar.games_won += games_won;
+        ar.games_lost += games_lost;
+
+        ar.decisive_wins += decisive_wins;
+        ar.solid_wins += solid_wins;
+        ar.close_wins += close_wins;
+        ar.close_losses += close_losses;
+        ar.solid_losses += solid_losses;
+        ar.decisive_losses += decisive_losses;
+
+        ar.total_wounds_dealt += total_wounds_dealt;
+        ar.total_wounds_received += total_wounds_received;
+        ar.total_models_killed += total_models_killed;
+        ar.total_models_lost += total_models_lost;
+
+        ar.total_objective_rounds += total_objective_rounds;
+        ar.opponent_objective_rounds += opponent_objective_rounds;
+        ar.matchups_with_objective += matchups_with_objective;
+
+        for (size_t b = 0; b < 6; ++b) {
+            ar.cost_brackets[b].matchups += cost_brackets[b].matchups;
+            ar.cost_brackets[b].wins += cost_brackets[b].wins;
+            // Update running average for wound diff
+            if (cost_brackets[b].matchups > 0) {
+                i32 current_avg = static_cast<i32>(ar.cost_brackets[b].avg_wound_diff_x10) - 32768;
+                i32 new_sum = current_avg * (ar.cost_brackets[b].matchups - cost_brackets[b].matchups) +
+                              cost_brackets[b].wound_diff_sum * 10;
+                i32 new_avg = new_sum / static_cast<i32>(ar.cost_brackets[b].matchups);
+                ar.cost_brackets[b].avg_wound_diff_x10 = static_cast<u16>(new_avg + 32768);
+            }
+        }
+
+        ar.underdog_matchups += underdog_matchups;
+        ar.underdog_wins += underdog_wins;
+        ar.overdog_matchups += overdog_matchups;
+        ar.overdog_wins += overdog_wins;
+
+        // Merge faction stats (find matching hash or insert)
+        for (size_t f = 0; f < 4; ++f) {
+            if (faction_stats[f].faction_hash == 0) continue;
+
+            bool found = false;
+            for (size_t g = 0; g < 4; ++g) {
+                if (ar.faction_stats[g].faction_hash == faction_stats[f].faction_hash) {
+                    ar.faction_stats[g].matchups += faction_stats[f].matchups;
+                    ar.faction_stats[g].wins += faction_stats[f].wins;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                // Find empty or least-used slot
+                size_t min_slot = 0;
+                u16 min_matchups = ar.faction_stats[0].matchups;
+                for (size_t g = 0; g < 4; ++g) {
+                    if (ar.faction_stats[g].faction_hash == 0) {
+                        min_slot = g;
+                        break;
+                    }
+                    if (ar.faction_stats[g].matchups < min_matchups) {
+                        min_matchups = ar.faction_stats[g].matchups;
+                        min_slot = g;
+                    }
+                }
+                // Only replace if new faction has more matchups
+                if (ar.faction_stats[min_slot].faction_hash == 0 ||
+                    faction_stats[f].matchups > ar.faction_stats[min_slot].matchups) {
+                    ar.faction_stats[min_slot].faction_hash = faction_stats[f].faction_hash;
+                    ar.faction_stats[min_slot].matchups = faction_stats[f].matchups;
+                    ar.faction_stats[min_slot].wins = faction_stats[f].wins;
+                }
+            }
+        }
+    }
+
+    // Add a single matchup result to this accumulator
+    void add_matchup(const MatchResult& mr, const Unit& unit_a, const Unit& unit_b, u16 faction_hash) {
+        total_matchups++;
+
+        // Win/loss tracking
+        if (mr.overall_winner == GameWinner::UnitA) {
+            wins++;
+            if (mr.games_won_b == 0) {
+                if (mr.games_won_a >= 3) decisive_wins++;
+                else solid_wins++;
+            } else {
+                close_wins++;
+            }
+        } else if (mr.overall_winner == GameWinner::UnitB) {
+            losses++;
+            if (mr.games_won_a == 0) {
+                if (mr.games_won_b >= 3) decisive_losses++;
+                else solid_losses++;
+            } else {
+                close_losses++;
+            }
+        } else {
+            draws++;
+        }
+
+        games_won += mr.games_won_a;
+        games_lost += mr.games_won_b;
+
+        // Combat stats
+        total_wounds_dealt += mr.total_wounds_dealt_a;
+        total_wounds_received += mr.total_wounds_dealt_b;
+        total_models_killed += mr.total_models_killed_a;
+        total_models_lost += mr.total_models_killed_b;
+
+        // Objective stats
+        total_objective_rounds += mr.total_rounds_holding_a;
+        opponent_objective_rounds += mr.total_rounds_holding_b;
+        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+            matchups_with_objective++;
+        }
+
+        // Cost bracket tracking
+        size_t bracket = std::min(static_cast<size_t>(unit_b.points_cost / 100), size_t(5));
+        cost_brackets[bracket].matchups++;
+        if (mr.overall_winner == GameWinner::UnitA) {
+            cost_brackets[bracket].wins++;
+        }
+        i32 wound_diff = static_cast<i32>(mr.total_wounds_dealt_a) - static_cast<i32>(mr.total_wounds_dealt_b);
+        cost_brackets[bracket].wound_diff_sum += wound_diff;
+
+        // Underdog/overdog tracking
+        if (unit_b.points_cost > unit_a.points_cost) {
+            underdog_matchups++;
+            if (mr.overall_winner == GameWinner::UnitA) underdog_wins++;
+        } else if (unit_b.points_cost < unit_a.points_cost) {
+            overdog_matchups++;
+            if (mr.overall_winner == GameWinner::UnitA) overdog_wins++;
+        }
+
+        // Faction stats - find or add
+        bool found = false;
+        for (size_t f = 0; f < 4; ++f) {
+            if (faction_stats[f].faction_hash == faction_hash) {
+                faction_stats[f].matchups++;
+                if (mr.overall_winner == GameWinner::UnitA) faction_stats[f].wins++;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            for (size_t f = 0; f < 4; ++f) {
+                if (faction_stats[f].faction_hash == 0) {
+                    faction_stats[f].faction_hash = faction_hash;
+                    faction_stats[f].matchups = 1;
+                    faction_stats[f].wins = (mr.overall_winner == GameWinner::UnitA) ? 1 : 0;
+                    break;
+                }
+            }
+        }
+    }
+};
 
 // ==============================================================================
 // Progress Callback
@@ -1242,134 +1461,54 @@ private:
                 u64 local_obj_rounds = 0;
                 u64 local_objective_games = 0;
 
+                // OPTIMIZATION: Thread-local accumulation map
+                // Instead of locking per matchup, accumulate locally and merge at end
+                // This reduces lock contention from O(matchups) to O(unique_units)
+                std::unordered_map<u32, LocalAggregatedAccumulator> local_accumulators;
+                local_accumulators.reserve(std::min(end - start, size_t(1024)));
+
+                // Pre-compute faction hashes for units in this chunk to avoid repeated computation
+                std::unordered_map<u32, u16> faction_hash_cache;
+
                 for (size_t i = start; i < end; ++i) {
                     auto [a_idx, b_idx] = matchups[i];
 
                     MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
 
-                        // Get opponent info for categorization
-                        const Unit& unit_a = units_a[a_idx];
-                        const Unit& unit_b = units_b[b_idx];
+                    const Unit& unit_a = units_a[a_idx];
+                    const Unit& unit_b = units_b[b_idx];
 
-                        // Update global game stats
-                        local_games += 3;
-                        local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
-                        local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
-                        local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
-                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
-                            local_objective_games += 3;
-                        }
+                    // Update global game stats (thread-local, no locking)
+                    local_games += 3;
+                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                        local_objective_games += 3;
+                    }
 
-                        // Update unit A's aggregated stats
-                        {
-                            std::lock_guard<std::mutex> lock(unit_mutexes[a_idx % AGGREGATED_MUTEX_SHARDS]);
-                            AggregatedUnitResult& ar = aggregated[a_idx];
+                    // Get or compute faction hash (cached)
+                    u16 faction_hash;
+                    auto hash_it = faction_hash_cache.find(b_idx);
+                    if (hash_it != faction_hash_cache.end()) {
+                        faction_hash = hash_it->second;
+                    } else {
+                        faction_hash = crc16_hash(unit_b.faction.view());
+                        faction_hash_cache[b_idx] = faction_hash;
+                    }
 
-                        ar.total_matchups++;
-
-                        // Win/loss tracking
-                        if (mr.overall_winner == GameWinner::UnitA) {
-                            ar.wins++;
-                            // Victory margin
-                            if (mr.games_won_b == 0) {
-                                if (mr.games_won_a >= 3) ar.decisive_wins++;
-                                else ar.solid_wins++;
-                            } else {
-                                ar.close_wins++;
-                            }
-                        } else if (mr.overall_winner == GameWinner::UnitB) {
-                            ar.losses++;
-                            // Loss margin
-                            if (mr.games_won_a == 0) {
-                                if (mr.games_won_b >= 3) ar.decisive_losses++;
-                                else ar.solid_losses++;
-                            } else {
-                                ar.close_losses++;
-                            }
-                        } else {
-                            ar.draws++;
-                        }
-
-                        // Game counts
-                        ar.games_won += mr.games_won_a;
-                        ar.games_lost += mr.games_won_b;
-
-                        // Combat stats
-                        ar.total_wounds_dealt += mr.total_wounds_dealt_a;
-                        ar.total_wounds_received += mr.total_wounds_dealt_b;
-                        ar.total_models_killed += mr.total_models_killed_a;
-                        ar.total_models_lost += mr.total_models_killed_b;
-
-                        // Objective stats
-                        ar.total_objective_rounds += mr.total_rounds_holding_a;
-                        ar.opponent_objective_rounds += mr.total_rounds_holding_b;
-                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
-                            ar.matchups_with_objective++;
-                        }
-
-                        // Cost bracket tracking (opponent's cost)
-                        size_t bracket = std::min(static_cast<size_t>(unit_b.points_cost / 100), size_t(5));
-                        ar.cost_brackets[bracket].matchups++;
-                        if (mr.overall_winner == GameWinner::UnitA) {
-                            ar.cost_brackets[bracket].wins++;
-                        }
-                        // Store wound differential (offset by 32768 for signed storage)
-                        i32 wound_diff = static_cast<i32>(mr.total_wounds_dealt_a) -
-                                        static_cast<i32>(mr.total_wounds_dealt_b);
-                        // Running average stored as x10 offset
-                        i32 current_avg = static_cast<i32>(ar.cost_brackets[bracket].avg_wound_diff_x10) - 32768;
-                        i32 new_avg = current_avg + (wound_diff * 10 - current_avg) /
-                                     static_cast<i32>(ar.cost_brackets[bracket].matchups);
-                        ar.cost_brackets[bracket].avg_wound_diff_x10 = static_cast<u16>(new_avg + 32768);
-
-                        // Underdog/overdog tracking
-                        if (unit_b.points_cost > unit_a.points_cost) {
-                            ar.underdog_matchups++;
-                            if (mr.overall_winner == GameWinner::UnitA) {
-                                ar.underdog_wins++;
-                            }
-                        } else if (unit_b.points_cost < unit_a.points_cost) {
-                            ar.overdog_matchups++;
-                            if (mr.overall_winner == GameWinner::UnitA) {
-                                ar.overdog_wins++;
-                            }
-                        }
-
-                        // Faction stats (find or add slot)
-                        u16 faction_hash = crc16_hash(unit_b.faction.view());
-                        bool found = false;
-                        for (size_t f = 0; f < 4; ++f) {
-                            if (ar.faction_stats[f].faction_hash == faction_hash) {
-                                ar.faction_stats[f].matchups++;
-                                if (mr.overall_winner == GameWinner::UnitA) {
-                                    ar.faction_stats[f].wins++;
-                                }
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            // Find empty slot or replace least-used
-                            size_t min_slot = 0;
-                            u16 min_matchups = ar.faction_stats[0].matchups;
-                            for (size_t f = 0; f < 4; ++f) {
-                                if (ar.faction_stats[f].faction_hash == 0) {
-                                    min_slot = f;
-                                    break;
-                                }
-                                if (ar.faction_stats[f].matchups < min_matchups) {
-                                    min_matchups = ar.faction_stats[f].matchups;
-                                    min_slot = f;
-                                }
-                            }
-                            ar.faction_stats[min_slot].faction_hash = faction_hash;
-                            ar.faction_stats[min_slot].matchups = 1;
-                            ar.faction_stats[min_slot].wins = (mr.overall_winner == GameWinner::UnitA) ? 1 : 0;
-                        }
-                        }  // end lock_guard scope
+                    // Accumulate into thread-local map (NO LOCKING!)
+                    local_accumulators[a_idx].add_matchup(mr, unit_a, unit_b, faction_hash);
                 }
 
-                // Update global stats
+                // MERGE PHASE: Now merge all local accumulators into global results
+                // This is where we take locks, but only once per unique unit
+                for (const auto& [unit_idx, accum] : local_accumulators) {
+                    std::lock_guard<std::mutex> lock(unit_mutexes[unit_idx % AGGREGATED_MUTEX_SHARDS]);
+                    accum.merge_into(aggregated[unit_idx]);
+                }
+
+                // Update global stats atomically
                 game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
                 game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
                 game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
