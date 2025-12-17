@@ -246,7 +246,10 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         std::cout << "  Results loaded: " << analyzer.result_count() << " entries\n";
-        std::cout << "  Format: " << (analyzer.has_extended_data() ? "Extended" : "Compact") << "\n";
+        const char* fmt = "Compact";
+        if (analyzer.is_aggregated()) fmt = "Aggregated";
+        else if (analyzer.has_extended_data()) fmt = "Extended";
+        std::cout << "  Format: " << fmt << "\n";
 
         std::cout << "Loading units from: " << argv[3] << "\n";
         auto parse_result = UnitParser::parse_file(argv[3]);
