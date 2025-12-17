@@ -827,55 +827,31 @@ public:
         const size_t num_units = units_a.size();
         const u64 total_matchups = static_cast<u64>(num_units) * units_b.size();
 
-        std::cerr << "[DEBUG] Aggregated mode: " << num_units << " units, "
-                  << total_matchups << " total matchups" << std::endl;
-
         // Reset game stats
         game_stats_.reset();
 
-        std::cerr << "[DEBUG] Allocating aggregated_results ("
-                  << (num_units * sizeof(AggregatedUnitResult) / (1024*1024)) << " MB)..." << std::flush;
-
         // Initialize aggregated results for all units
         std::vector<AggregatedUnitResult> aggregated_results;
-        try {
-            aggregated_results.resize(num_units);
-        } catch (const std::bad_alloc& e) {
-            std::cerr << " FAILED: " << e.what() << std::endl;
-            throw;
-        }
-        std::cerr << " OK" << std::endl;
+        aggregated_results.resize(num_units);
 
         // Use sharded mutexes instead of per-unit mutexes to avoid O(n) memory overhead
         // With 5M+ units, per-unit mutexes would require ~200MB just for mutex objects
         std::vector<std::mutex> unit_mutexes(AGGREGATED_MUTEX_SHARDS);
 
-        std::cerr << "[DEBUG] Initializing unit info..." << std::flush;
         // Initialize each result with unit info
         for (size_t i = 0; i < num_units; ++i) {
             aggregated_results[i].unit_id = static_cast<u32>(i);
             aggregated_results[i].points_cost = units_a[i].points_cost;
             aggregated_results[i].total_opponents = static_cast<u16>(units_b.size());
         }
-        std::cerr << " OK" << std::endl;
 
         // Track progress
         std::atomic<u64> completed{0};
         auto start_time = std::chrono::high_resolution_clock::now();
 
-        std::cerr << "[DEBUG] Reserving matchups buffer ("
-                  << (config_.batch_size * sizeof(std::pair<u32, u32>) / (1024*1024)) << " MB)..." << std::flush;
         // Create batches
         std::vector<std::pair<u32, u32>> matchups;
-        try {
-            matchups.reserve(config_.batch_size);
-        } catch (const std::bad_alloc& e) {
-            std::cerr << " FAILED: " << e.what() << std::endl;
-            throw;
-        }
-        std::cerr << " OK" << std::endl;
-
-        std::cerr << "[DEBUG] Starting batch processing..." << std::endl;
+        matchups.reserve(config_.batch_size);
 
         // Process all matchups
         for (u32 i = 0; i < num_units; ++i) {
@@ -884,11 +860,8 @@ public:
 
                 // Process batch when full
                 if (matchups.size() >= config_.batch_size) {
-                    std::cerr << "[DEBUG] Processing batch of " << matchups.size()
-                              << " matchups (completed: " << completed.load() << ")..." << std::flush;
                     process_batch_aggregated(units_a, units_b, matchups,
                                             aggregated_results, unit_mutexes);
-                    std::cerr << " OK" << std::endl;
                     completed += matchups.size();
                     matchups.clear();
 
