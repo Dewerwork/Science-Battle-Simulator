@@ -19,17 +19,18 @@ namespace battle {
 
 struct ResultFileHeader {
     u32 magic;      // 0x42415453 = "SABS"
-    u32 version;    // 1 = compact (8 bytes), 2 = extended (24 bytes), 3 = compact_extended (16 bytes), 4 = aggregated (256 bytes/unit)
+    u32 version;    // 1 = compact (8 bytes), 2 = extended (24 bytes), 3 = compact_extended (16 bytes),
+                    // 4 = aggregated (256 bytes/unit), 5 = aggregated v2 (128 bytes/unit)
     u32 units_a_count;
     u32 units_b_count;
 
-    bool is_valid() const { return magic == 0x42415453 && (version >= 1 && version <= 4); }
+    bool is_valid() const { return magic == 0x42415453 && (version >= 1 && version <= 5); }
     bool is_extended() const { return version == 2; }
     bool is_compact_extended() const { return version == 3; }
-    bool is_aggregated() const { return version == 4; }
+    bool is_aggregated() const { return version == 4 || version == 5; }
     bool has_extended_data() const { return version == 2 || version == 3; }
     u64 expected_results() const {
-        if (version == 4) return units_a_count;  // Aggregated: one result per unit
+        if (version == 4 || version == 5) return units_a_count;  // Aggregated: one result per unit
         return static_cast<u64>(units_a_count) * units_b_count;
     }
     size_t result_size() const {
@@ -37,7 +38,8 @@ struct ResultFileHeader {
             case 1: return sizeof(CompactMatchResult);
             case 2: return sizeof(ExtendedMatchResult);
             case 3: return sizeof(CompactExtendedMatchResult);
-            case 4: return sizeof(AggregatedUnitResult);
+            case 4: return 256; // Old aggregated format (256 bytes)
+            case 5: return sizeof(AggregatedUnitResult); // New aggregated format (128 bytes)
             default: return sizeof(CompactMatchResult);
         }
     }
@@ -232,7 +234,7 @@ public:
                 std::cerr << "  Error: Invalid header\n";
                 std::cerr << "    Magic: 0x" << std::hex << header_.magic << std::dec
                           << " (expected 0x42415453 'SABS')\n";
-                std::cerr << "    Version: " << header_.version << " (expected 1, 2, 3, or 4)\n";
+                std::cerr << "    Version: " << header_.version << " (expected 1-5)\n";
             }
             return false;
         }
@@ -671,61 +673,114 @@ public:
         const char* format_name = "Compact";
         if (header_.is_extended()) format_name = "Extended (full game stats)";
         else if (header_.is_compact_extended()) format_name = "Compact Extended (compressed game stats)";
+        else if (header_.is_aggregated()) format_name = "Aggregated (per-unit stats)";
 
         ss << "=== Battle Simulation Results Summary ===\n\n";
         ss << "Format: " << format_name << "\n";
-        ss << "Total Results: " << result_count() << "\n";
-        ss << "Units A: " << header_.units_a_count << "\n";
-        ss << "Units B: " << header_.units_b_count << "\n\n";
 
-        // Count outcomes
-        u64 a_wins = 0, b_wins = 0, draws = 0;
-        u64 total_wounds = 0, total_models_killed = 0, total_obj_rounds = 0;
+        if (header_.is_aggregated()) {
+            ss << "Total Units: " << result_count() << "\n";
+            ss << "Opponents per Unit: " << header_.units_b_count << "\n";
+            u64 total_matchups = static_cast<u64>(header_.units_a_count) * header_.units_b_count;
+            ss << "Total Matchups: " << total_matchups;
+            if (total_matchups >= 1e9) ss << " (" << (total_matchups / 1e9) << " billion)";
+            else if (total_matchups >= 1e6) ss << " (" << (total_matchups / 1e6) << " million)";
+            ss << "\n\n";
 
-        if (header_.is_extended()) {
-            for (const auto& r : extended_results_) {
-                if (r.winner == 0) a_wins++;
-                else if (r.winner == 1) b_wins++;
-                else draws++;
-                total_wounds += r.wounds_dealt_a + r.wounds_dealt_b;
-                total_models_killed += r.models_killed_a + r.models_killed_b;
-                total_obj_rounds += r.rounds_holding_a + r.rounds_holding_b;
+            // Aggregate stats across all units
+            u64 total_wins = 0, total_losses = 0, total_draws = 0;
+            u64 total_matchups_counted = 0;
+            u64 total_wounds_dealt = 0, total_wounds_received = 0;
+            u64 total_models_killed = 0, total_models_lost = 0;
+            u64 total_obj_rounds = 0;
+
+            for (const auto& r : aggregated_results_) {
+                total_wins += r.wins;
+                total_losses += r.losses;
+                total_draws += r.draws;
+                total_matchups_counted += r.total_matchups;
+                total_wounds_dealt += r.total_wounds_dealt;
+                total_wounds_received += r.total_wounds_received;
+                total_models_killed += r.total_models_killed;
+                total_models_lost += r.total_models_lost;
+                total_obj_rounds += r.total_objective_rounds;
             }
-        } else if (header_.is_compact_extended()) {
-            for (const auto& r : compact_extended_results_) {
-                if (r.winner() == 0) a_wins++;
-                else if (r.winner() == 1) b_wins++;
-                else draws++;
-                total_wounds += r.wounds_dealt_a() + r.wounds_dealt_b();
-                total_models_killed += r.models_killed_a + r.models_killed_b;
-                total_obj_rounds += r.rounds_holding_a() + r.rounds_holding_b();
-            }
+
+            ss << "Aggregated Outcomes (across all units):\n";
+            ss << "  Total matchups recorded: " << total_matchups_counted << "\n";
+            ss << "  Wins: " << total_wins << " ("
+               << std::fixed << std::setprecision(1)
+               << (total_matchups_counted > 0 ? 100.0 * total_wins / total_matchups_counted : 0.0) << "%)\n";
+            ss << "  Losses: " << total_losses << " ("
+               << (total_matchups_counted > 0 ? 100.0 * total_losses / total_matchups_counted : 0.0) << "%)\n";
+            ss << "  Draws: " << total_draws << " ("
+               << (total_matchups_counted > 0 ? 100.0 * total_draws / total_matchups_counted : 0.0) << "%)\n";
+
+            ss << "\nCombat Statistics:\n";
+            ss << std::setprecision(2);
+            ss << "  Total wounds dealt: " << total_wounds_dealt << "\n";
+            ss << "  Total wounds received: " << total_wounds_received << "\n";
+            ss << "  Total models killed: " << total_models_killed << "\n";
+            ss << "  Total models lost: " << total_models_lost << "\n";
+            ss << "  Avg wounds dealt per matchup: "
+               << (total_matchups_counted > 0 ? static_cast<f64>(total_wounds_dealt) / total_matchups_counted : 0.0) << "\n";
+            ss << "  Avg models killed per matchup: "
+               << (total_matchups_counted > 0 ? static_cast<f64>(total_models_killed) / total_matchups_counted : 0.0) << "\n";
+            ss << "  Total objective rounds: " << total_obj_rounds << "\n";
         } else {
-            for (const auto& r : results_) {
-                if (r.winner == 0) a_wins++;
-                else if (r.winner == 1) b_wins++;
-                else draws++;
+            ss << "Total Results: " << result_count() << "\n";
+            ss << "Units A: " << header_.units_a_count << "\n";
+            ss << "Units B: " << header_.units_b_count << "\n\n";
+
+            // Count outcomes
+            u64 a_wins = 0, b_wins = 0, draws = 0;
+            u64 total_wounds = 0, total_models_killed = 0, total_obj_rounds = 0;
+
+            if (header_.is_extended()) {
+                for (const auto& r : extended_results_) {
+                    if (r.winner == 0) a_wins++;
+                    else if (r.winner == 1) b_wins++;
+                    else draws++;
+                    total_wounds += r.wounds_dealt_a + r.wounds_dealt_b;
+                    total_models_killed += r.models_killed_a + r.models_killed_b;
+                    total_obj_rounds += r.rounds_holding_a + r.rounds_holding_b;
+                }
+            } else if (header_.is_compact_extended()) {
+                for (const auto& r : compact_extended_results_) {
+                    if (r.winner() == 0) a_wins++;
+                    else if (r.winner() == 1) b_wins++;
+                    else draws++;
+                    total_wounds += r.wounds_dealt_a() + r.wounds_dealt_b();
+                    total_models_killed += r.models_killed_a + r.models_killed_b;
+                    total_obj_rounds += r.rounds_holding_a() + r.rounds_holding_b();
+                }
+            } else {
+                for (const auto& r : results_) {
+                    if (r.winner == 0) a_wins++;
+                    else if (r.winner == 1) b_wins++;
+                    else draws++;
+                }
             }
-        }
 
-        size_t total = result_count();
-        ss << "Outcomes:\n";
-        ss << "  Unit A wins: " << a_wins << " ("
-           << (total > 0 ? 100.0 * a_wins / total : 0.0) << "%)\n";
-        ss << "  Unit B wins: " << b_wins << " ("
-           << (total > 0 ? 100.0 * b_wins / total : 0.0) << "%)\n";
-        ss << "  Draws: " << draws << " ("
-           << (total > 0 ? 100.0 * draws / total : 0.0) << "%)\n";
+            size_t total = result_count();
+            ss << "Outcomes:\n";
+            ss << "  Unit A wins: " << a_wins << " ("
+               << (total > 0 ? 100.0 * a_wins / total : 0.0) << "%)\n";
+            ss << "  Unit B wins: " << b_wins << " ("
+               << (total > 0 ? 100.0 * b_wins / total : 0.0) << "%)\n";
+            ss << "  Draws: " << draws << " ("
+               << (total > 0 ? 100.0 * draws / total : 0.0) << "%)\n";
 
-        // Extended stats summary
-        if (header_.has_extended_data() && total > 0) {
-            ss << "\nFull Game Statistics:\n";
-            ss << "  Avg wounds per match: " << std::fixed << std::setprecision(2)
-               << (static_cast<f64>(total_wounds) / total) << "\n";
-            ss << "  Avg models killed per match: "
-               << (static_cast<f64>(total_models_killed) / total) << "\n";
-            ss << "  Avg objective rounds per match: "
-               << (static_cast<f64>(total_obj_rounds) / total) << "\n";
+            // Extended stats summary
+            if (header_.has_extended_data() && total > 0) {
+                ss << "\nFull Game Statistics:\n";
+                ss << "  Avg wounds per match: " << std::fixed << std::setprecision(2)
+                   << (static_cast<f64>(total_wounds) / total) << "\n";
+                ss << "  Avg models killed per match: "
+                   << (static_cast<f64>(total_models_killed) / total) << "\n";
+                ss << "  Avg objective rounds per match: "
+                   << (static_cast<f64>(total_obj_rounds) / total) << "\n";
+            }
         }
 
         return ss.str();

@@ -30,7 +30,7 @@ void print_usage(const char* prog) {
     std::cout << "  -i <interval> Checkpoint interval (default: 1000000)\n";
     std::cout << "  -e            Extended format - full game statistics (24 bytes/result)\n";
     std::cout << "  -E            Compact extended - compressed game stats (16 bytes/result)\n";
-    std::cout << "  -A            Aggregated format - per-unit summary stats (256 bytes/unit)\n";
+    std::cout << "  -A            Aggregated format - per-unit summary stats (128 bytes/unit)\n";
     std::cout << "                Massive file size reduction: ~5MB vs ~5GB for extended\n";
     std::cout << "                Default compact format uses 8 bytes/result\n";
     std::cout << "  -r            Resume from checkpoint if available\n";
@@ -40,7 +40,7 @@ void print_usage(const char* prog) {
     std::cout << "  (default)     8 bytes/result  - win/loss only\n";
     std::cout << "  -E            16 bytes/result - game stats (wounds, kills, objectives)\n";
     std::cout << "  -e            24 bytes/result - full precision game stats\n";
-    std::cout << "  -A            256 bytes/unit  - comprehensive per-unit aggregated stats\n\n";
+    std::cout << "  -A            128 bytes/unit  - comprehensive per-unit aggregated stats\n\n";
     std::cout << "Example:\n";
     std::cout << "  " << prog << " units.txt -o faction_results.bin -b 50000\n";
     std::cout << "  " << prog << " units.txt -E -o extended_results.bin  # Compact extended\n";
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
 
     // For aggregated format, size is per-unit, not per-matchup
     if (config.format == ResultFormat::Aggregated) {
-        estimated_bytes = parse_result.units.size() * bytes_per_result + 16; // units * 256 + header
+        estimated_bytes = parse_result.units.size() * bytes_per_result + 16; // units * 128 + header
     } else {
         estimated_bytes = total_matchups * bytes_per_result;
     }
@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
             format_name = "Compact Extended (16 bytes - compressed game stats)";
             break;
         case ResultFormat::Aggregated:
-            format_name = "Aggregated (256 bytes/unit - comprehensive per-unit stats)";
+            format_name = "Aggregated (128 bytes/unit - comprehensive per-unit stats)";
             break;
     }
 

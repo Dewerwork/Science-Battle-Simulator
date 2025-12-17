@@ -58,7 +58,50 @@ int main(int argc, char* argv[]) {
 
         size_t n = (argc >= 5) ? std::stoul(argv[4]) : 20;
 
-        if (analyzer.has_extended_data()) {
+        if (analyzer.is_aggregated()) {
+            // Aggregated format - show per-unit stats directly
+            const auto& results = analyzer.aggregated_results();
+            std::vector<std::pair<u32, const AggregatedUnitResult*>> ranked;
+            for (const auto& r : results) {
+                if (r.total_matchups > 0) {
+                    ranked.push_back({r.unit_id, &r});
+                }
+            }
+            std::sort(ranked.begin(), ranked.end(),
+                [](const auto& a, const auto& b) {
+                    return a.second->win_rate() > b.second->win_rate();
+                });
+
+            std::cout << "=== Top " << n << " Units by Win Rate (Aggregated Stats) ===\n\n";
+            std::cout << std::left << std::setw(5) << "Rank"
+                      << std::setw(35) << "Unit Name"
+                      << std::setw(7) << "Pts"
+                      << std::setw(9) << "WinRate"
+                      << std::setw(10) << "Matchups"
+                      << std::setw(8) << "AvgDmg"
+                      << std::setw(8) << "AvgKill"
+                      << "\n";
+            std::cout << std::string(82, '-') << "\n";
+
+            for (size_t i = 0; i < std::min(n, ranked.size()); ++i) {
+                const auto& [id, r] = ranked[i];
+                if (id < parse_result.units.size()) {
+                    const auto& unit = parse_result.units[id];
+                    std::string name_str(unit.name.view());
+                    if (name_str.size() > 33) name_str = name_str.substr(0, 33);
+                    std::cout << std::left << std::setw(5) << (i + 1)
+                              << std::setw(35) << name_str
+                              << std::setw(7) << unit.points_cost
+                              << std::fixed << std::setprecision(1)
+                              << std::setw(9) << (std::to_string((int)r->win_rate()) + "%")
+                              << std::setw(10) << r->total_matchups
+                              << std::setprecision(2)
+                              << std::setw(8) << r->avg_wounds_dealt()
+                              << std::setw(8) << r->avg_models_killed()
+                              << "\n";
+                }
+            }
+        } else if (analyzer.has_extended_data()) {
             // Extended format - show more stats
             auto stats = analyzer.calculate_extended_unit_stats();
             std::vector<std::pair<u32, ExtendedUnitStats>> ranked(stats.begin(), stats.end());
