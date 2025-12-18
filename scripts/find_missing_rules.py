@@ -21,6 +21,9 @@ UNITS_FILE = '/home/user/Science-Battle-Simulator/docs/MERGED_ALL_TXT.txt'
 MATRIX_FILE = '/home/user/Science-Battle-Simulator/docs/special_rules_review_matrix.xlsx'
 OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt'
 
+# Script version for debugging
+SCRIPT_VERSION = "1.3"
+
 
 def normalize_rule_name(rule: str) -> str:
     """
@@ -38,8 +41,13 @@ def normalize_rule_name(rule: str) -> str:
     else:
         base_name = rule
 
-    # Normalize: uppercase, replace spaces/hyphens with underscores
-    normalized = base_name.upper().replace(' ', '_').replace('-', '_').replace("'", '_')
+    # Normalize: uppercase, replace spaces/hyphens/ampersands with underscores
+    normalized = base_name.upper().replace(' ', '_').replace('-', '_').replace("'", '_').replace('&', '_AND_')
+    # Clean up any double underscores from "& " or " &" patterns
+    while '__' in normalized:
+        normalized = normalized.replace('__', '_')
+    # Strip leading/trailing underscores
+    normalized = normalized.strip('_')
     return normalized
 
 
@@ -58,20 +66,20 @@ TRUNCATION_FIXES = {
     'BANE_IN_MELEE': 'BANE_IN_MELEE_AURA',
     'CASTER': 'CASTING',  # Caster(X) -> Casting(X)
     'REGENERATIVE': 'REGENERATION',  # Alternate name
-    # "Hit & Run" parsing issues - & splits the rule name
+    # Conditional rule variants - map to base rules (only if base rule exists in matrix)
+    'SHRED_IN_MELEE': 'SHRED',
+    'SHRED_WHEN_SHOOTING': 'SHRED',
+    'SURGE_WHEN_SHOOTING': 'SURGE',
+    # Partial "Hit & Run" fragments (when & is parsed as separator) - now handled by & normalization
+    # but these may still appear if the rule is split incorrectly
     'RUN_FIGHTER_AURA': 'HIT_AND_RUN_FIGHTER_AURA',
     'RUN_SHOOTER_AURA': 'HIT_AND_RUN_SHOOTER_AURA',
     'RUN_FIGHTER': 'HIT_AND_RUN_FIGHTER',
     'RUN_SHOOTER': 'HIT_AND_RUN_SHOOTER',
-    # Conditional rule variants - map to base rules
-    'UNSTOPPABLE_IN_MELEE': 'UNSTOPPABLE',
-    'SHRED_WHEN_SHOOTING': 'SHRED',
-    'RENDING_IN_MELEE': 'RENDING',
-    'RENDING_WHEN_SHOOTING': 'RENDING',
-    'POISON_IN_MELEE': 'POISON',
-    'POISON_WHEN_SHOOTING': 'POISON',
-    # Other alternate names
-    'ARMOR': 'ARMORED',  # Armor(X) -> Armored(X)
+    # Speed Boost -> Speed Buff (matrix has Speed Buff)
+    'SPEED_BOOST': 'SPEED_BUFF',
+    # Precision -> Precision Attacks Buff (if standalone Precision is found)
+    'SHOOTER_BUFF': 'PRECISION_SHOOTER_BUFF',  # Possible alternate name
 }
 
 # Entries that are NOT rules (data quality issues in source file)
@@ -110,15 +118,21 @@ NOT_RULES = {
     'CHAMPION',
     'VETERAN',
     'LEADER',
+    'UPGRADE',  # Generic upgrade keyword
+    'UNIQUE',  # Model uniqueness marker
     # "Hit & Run" parsing artifacts (& splits the name)
     'HIT',
     'RUN',
-    # Single letters or numbers from parsing errors
+    # Single letters or short fragments from parsing errors
     'B',
     'C',
     'D',
     'E',
     'X',
+    'FF',  # Parsing artifact
+    # Generic words that aren't rules
+    'ATTACK',  # Generic word, not a special rule
+    'VERSATILE',  # Weapon keyword, not a special rule
 }
 
 
@@ -336,9 +350,10 @@ def main():
         return
 
     print("="*80)
-    print("SPECIAL RULES GAP ANALYSIS")
+    print(f"SPECIAL RULES GAP ANALYSIS (v{SCRIPT_VERSION})")
     print("="*80)
-    print(f"\nUnits file: {units_file}")
+    print(f"\nScript config: {len(TRUNCATION_FIXES)} truncation fixes, {len(NOT_RULES)} NOT_RULES filters")
+    print(f"Units file: {units_file}")
     print(f"Matrix file: {matrix_file}")
     print()
 
