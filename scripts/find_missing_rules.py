@@ -14,6 +14,13 @@ import pandas as pd
 from pathlib import Path
 from collections import defaultdict
 
+# =============================================================================
+# CONFIGURATION - Hardcoded file paths
+# =============================================================================
+UNITS_FILE = '/home/user/Science-Battle-Simulator/docs/MERGED_ALL_TXT.txt'
+MATRIX_FILE = '/home/user/Science-Battle-Simulator/docs/special_rules_review_matrix.xlsx'
+OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt'
+
 
 def normalize_rule_name(rule: str) -> str:
     """
@@ -37,6 +44,7 @@ def normalize_rule_name(rule: str) -> str:
 
 
 # Known truncation mappings (source file has truncated rule names)
+# NOTE: Truncation is caused by null bytes (\x00) in source file from fixed-width field export
 TRUNCATION_FIXES = {
     'AIRCRA': 'AIRCRAFT',
     'COURAGE_BU': 'COURAGE_BUFF',
@@ -44,16 +52,73 @@ TRUNCATION_FIXES = {
     'PRECISION_SHOOTER_BU': 'PRECISION_SHOOTER_BUFF',
     'CASTING_BU': 'CASTING_BUFF',
     'MORALE_DEBU': 'MORALE_DEBUFF',
+    'STEALTH_BU': 'STEALTH_BUFF',
+    'DANGEROUS_TERRAIN_DEBU': 'DANGEROUS_TERRAIN_DEBUFF',
+    # Alternate spellings/names
+    'BANE_IN_MELEE': 'BANE_IN_MELEE_AURA',
+    'CASTER': 'CASTING',  # Caster(X) -> Casting(X)
+    'REGENERATIVE': 'REGENERATION',  # Alternate name
+    # "Hit & Run" parsing issues - & splits the rule name
+    'RUN_FIGHTER_AURA': 'HIT_AND_RUN_FIGHTER_AURA',
+    'RUN_SHOOTER_AURA': 'HIT_AND_RUN_SHOOTER_AURA',
+    'RUN_FIGHTER': 'HIT_AND_RUN_FIGHTER',
+    'RUN_SHOOTER': 'HIT_AND_RUN_SHOOTER',
+    # Conditional rule variants - map to base rules
+    'UNSTOPPABLE_IN_MELEE': 'UNSTOPPABLE',
+    'SHRED_WHEN_SHOOTING': 'SHRED',
+    'RENDING_IN_MELEE': 'RENDING',
+    'RENDING_WHEN_SHOOTING': 'RENDING',
+    'POISON_IN_MELEE': 'POISON',
+    'POISON_WHEN_SHOOTING': 'POISON',
+    # Other alternate names
+    'ARMOR': 'ARMORED',  # Armor(X) -> Armored(X)
 }
 
 # Entries that are NOT rules (data quality issues in source file)
 NOT_RULES = {
     'TAKE_ONE_BOSS_CARBINE_ATTACHMENT',
+    'TAKE_ONE_MASTER_HEAVY_RIFLE_ATTACHMENT',
     'GREAT_ELEMENTAL_SWORD',
     'GREAT_SHIELD',
     'HOLY_STATUE',
     'HOLY_STATUE_S_FLAME_STRIKES',
     'A',  # Parsing artifact
+    # Unit names appearing in Spawning abilities
+    'ASSAULT_GRUNTS',
+    'HIVE_SWARMS',
+    'SHOOTER_GRUNTS',
+    'LESSER_CHANGE_HORRORS',
+    'MINE_DRONES',
+    'BOT_SWARMS',
+    'LUST_WARRIORS',
+    'CHANGELINGS',
+    'YOURH_SWARMS',  # Typo for "Youth Swarms"
+    'YOURTH_SWARMS',
+    'YOUTH_SWARMS',
+    'YOURHS',  # Typo artifacts
+    'YOURTHS',
+    # Weapon names parsed as rules
+    'HEAVY_RAZOR_CLAWS',
+    'STRENGTH',  # Parsed from "Regenerative Strength" weapon
+    # Parsing errors (two rules concatenated without comma in source)
+    'COMBAT_SHIELD_SHIELDED',  # Should be "Combat Shield, Shielded"
+    'MOLDED_BY_WAR_PREDATOR_FIGHTER',  # Should be "Molded by War, Predator Fighter"
+    # Unit upgrade keywords (not special rules)
+    'BANNER',
+    'MUSICIAN',
+    'SERGEANT',
+    'CHAMPION',
+    'VETERAN',
+    'LEADER',
+    # "Hit & Run" parsing artifacts (& splits the name)
+    'HIT',
+    'RUN',
+    # Single letters or numbers from parsing errors
+    'B',
+    'C',
+    'D',
+    'E',
+    'X',
 }
 
 
@@ -160,8 +225,13 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
     rule_occurrences = defaultdict(list)
 
     # Read and parse the units file
-    with open(units_file, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
+    # Note: Source file contains null bytes (\x00) from fixed-width field export
+    # We strip them to get clean text
+    with open(units_file, 'rb') as f:
+        content = f.read()
+    # Remove null bytes and decode
+    content = content.replace(b'\x00', b'')
+    lines = content.decode('utf-8', errors='replace').splitlines()
 
     current_unit = None
     line_num = 0
@@ -252,10 +322,10 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
 
 
 def main():
-    # Hardcoded file paths
-    units_file = Path('/home/user/Science-Battle-Simulator/docs/MERGED_ALL_TXT.txt')
-    matrix_file = Path('/home/user/Science-Battle-Simulator/docs/special_rules_review_matrix.xlsx')
-    output_file = Path('/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt')
+    # Use hardcoded paths from constants at top of file
+    units_file = Path(UNITS_FILE)
+    matrix_file = Path(MATRIX_FILE)
+    output_file = Path(OUTPUT_FILE)
 
     # Check files exist
     if not units_file.exists():

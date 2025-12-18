@@ -192,6 +192,8 @@ def extract_lines(pdf_path: str) -> List[str]:
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
             text = page.extract_text(x_tolerance=1.5, y_tolerance=2, use_text_flow=True) or ""
+            # Strip null bytes that can appear in PDFs from fixed-width fields or encoding issues
+            text = text.replace("\x00", "")
             for raw in text.splitlines():
                 line = raw.strip()
                 if not line:
