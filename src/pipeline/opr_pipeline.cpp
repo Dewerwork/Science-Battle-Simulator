@@ -1747,7 +1747,11 @@ FactionPipelineResult OprPipeline::process_json_file(const std::filesystem::path
     result.faction_name = faction_name;
     result.version = version;
 
-    std::filesystem::path faction_dir = config_.output_dir / safe_filename(faction_name + "_" + version);
+    // Only include version in folder name if it's not "unknown"
+    std::string folder_name = (version != "unknown")
+        ? faction_name + "_" + version
+        : faction_name;
+    std::filesystem::path faction_dir = config_.output_dir / safe_filename(folder_name);
     std::filesystem::create_directories(faction_dir);
     result.output_dir = faction_dir;
 
