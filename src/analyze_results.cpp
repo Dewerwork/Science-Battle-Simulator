@@ -18,8 +18,9 @@ void print_usage(const char* prog) {
     std::cout << "\nFull Game Statistics Commands (requires extended format results):\n";
     std::cout << "  game-stats <results.bin> <units.txt> [N] - Show game stats report (top N=10)\n";
     std::cout << "  ext-matchup <results.bin> <units.txt> <id_a> <id_b> - Extended matchup report\n";
-    std::cout << "\nElo Rating Commands (requires aggregated format results):\n";
-    std::cout << "  elo <results.bin> <units.txt> [output.txt] [N|all] - Elo ratings (N=20, or 'all')\n";
+    std::cout << "\nElo Rating Commands:\n";
+    std::cout << "  elo <results.bin> <units.txt> [output.csv] [N|all] - Elo ratings (N=20, or 'all')\n";
+    std::cout << "  elo-iter <results.bin> <units.txt> [output.csv] [N|all] - Iterative Elo (match-by-match)\n";
     std::cout << "\nNote: Extended format results are generated using 'batch_sim -e' or 'batch_sim -E'\n";
     std::cout << "  -e: Extended format (24 bytes/result, full precision)\n";
     std::cout << "  -E: Compact extended (16 bytes/result, recommended for large simulations)\n";
@@ -350,18 +351,23 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    // Elo ratings command
-    if (command == "elo" && argc >= 4) {
+    // Elo ratings command (both direct and iterative modes)
+    bool iterative_elo = (command == "elo-iter");
+    if ((command == "elo" || command == "elo-iter") && argc >= 4) {
         ResultAnalyzer analyzer;
         if (!analyzer.load_results(argv[2])) {
             std::cerr << "Failed to load results from: " << argv[2] << "\n";
             return 1;
         }
 
-        if (!analyzer.is_aggregated()) {
-            std::cerr << "Error: Elo ratings require aggregated format results.\n";
-            std::cerr << "Use 'batch_sim -a' to generate aggregated results.\n";
+        // Check format compatibility
+        if (!iterative_elo && !analyzer.is_aggregated()) {
+            std::cerr << "Error: 'elo' command requires aggregated format results.\n";
+            std::cerr << "Use 'elo-iter' for extended/compact formats, or 'batch_sim -a' for aggregated.\n";
             return 1;
+        }
+        if (iterative_elo && analyzer.is_aggregated()) {
+            std::cerr << "Note: Aggregated format detected, using direct Elo calculation.\n";
         }
 
         auto parse_result = UnitParser::parse_file(argv[3]);
@@ -405,8 +411,9 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        auto top_elo = analyzer.get_top_units_by_elo(show_all ? SIZE_MAX : n);
-        auto elo_map = analyzer.calculate_elo_ratings();
+        auto top_elo = analyzer.get_top_units_by_elo(show_all ? SIZE_MAX : n, iterative_elo);
+        auto elo_map = iterative_elo ? analyzer.calculate_elo_ratings_iterative()
+                                     : analyzer.calculate_elo_ratings();
 
         // Use file output if specified, otherwise stdout
         std::ofstream file_out;
@@ -426,21 +433,39 @@ int main(int argc, char* argv[]) {
         }
 
         if (csv_output) {
+            // Pre-calculate unit stats for non-aggregated formats
+            std::unordered_map<u32, UnitStats> unit_stats_map;
+            if (iterative_elo && !analyzer.is_aggregated()) {
+                unit_stats_map = analyzer.calculate_unit_stats();
+            }
+
             // CSV format
-            *out << "rank,unit_id,name,faction,points,elo,win_rate,matchups\n";
+            *out << "rank,unit_id,name,faction,points,elo,win_rate,matchups,method\n";
             for (size_t i = 0; i < top_elo.size(); ++i) {
                 const auto& [id, elo] = top_elo[i];
                 if (id < parse_result.units.size()) {
                     const auto& unit = parse_result.units[id];
-                    const auto* stats = analyzer.get_aggregated_stats(id);
+                    const auto* agg_stats = analyzer.get_aggregated_stats(id);
+
+                    f64 win_rate = 0.0;
+                    u64 matchups = 0;
+                    if (agg_stats) {
+                        win_rate = agg_stats->win_rate();
+                        matchups = agg_stats->total_matchups;
+                    } else if (unit_stats_map.count(id)) {
+                        win_rate = unit_stats_map[id].win_rate();
+                        matchups = unit_stats_map[id].matches_played;
+                    }
+
                     *out << (i + 1) << ","
                          << id << ","
                          << "\"" << unit.name.view() << "\","
                          << "\"" << unit.faction.view() << "\","
                          << unit.points_cost << ","
                          << std::fixed << std::setprecision(1) << elo << ","
-                         << (stats ? stats->win_rate() : 0.0) << ","
-                         << (stats ? stats->total_matchups : 0) << "\n";
+                         << win_rate << ","
+                         << matchups << ","
+                         << (iterative_elo ? "iterative" : "direct") << "\n";
                 }
             }
             std::cout << "Done. Wrote " << top_elo.size() << " entries.\n";
