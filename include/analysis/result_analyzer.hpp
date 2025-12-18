@@ -663,6 +663,74 @@ public:
     }
 
     // ===========================================================================
+    // Elo Rating Calculation
+    // ===========================================================================
+
+    // Calculate Elo ratings for all units from aggregated results
+    // Uses iterative approach: start at 1500, adjust based on win rate vs field
+    std::unordered_map<u32, f64> calculate_elo_ratings(int iterations = 20) const {
+        std::unordered_map<u32, f64> elo;
+
+        if (!header_.is_aggregated() || aggregated_results_.empty()) {
+            return elo;
+        }
+
+        // Initialize all units at 1500
+        for (const auto& r : aggregated_results_) {
+            elo[r.unit_id] = 1500.0;
+        }
+
+        // Iterate to converge
+        for (int iter = 0; iter < iterations; iter++) {
+            // Calculate average Elo of all units
+            f64 avg_elo = 0.0;
+            size_t count = 0;
+            for (const auto& r : aggregated_results_) {
+                if (r.total_matchups > 0) {
+                    avg_elo += elo[r.unit_id];
+                    count++;
+                }
+            }
+            if (count == 0) break;
+            avg_elo /= count;
+
+            // Update each unit's Elo based on win rate vs average opponent
+            for (const auto& r : aggregated_results_) {
+                if (r.total_matchups == 0) continue;
+
+                f64 win_rate = static_cast<f64>(r.wins) / r.total_matchups;
+
+                // Clamp to avoid log(0) or log(inf)
+                win_rate = std::max(0.001, std::min(0.999, win_rate));
+
+                // Elo difference from win rate: diff = 400 * log10(p / (1-p))
+                f64 elo_diff = 400.0 * std::log10(win_rate / (1.0 - win_rate));
+
+                // New Elo = average opponent Elo + difference
+                elo[r.unit_id] = avg_elo + elo_diff;
+            }
+        }
+
+        return elo;
+    }
+
+    // Get top units by Elo rating
+    std::vector<std::pair<u32, f64>> get_top_units_by_elo(size_t n = 20) const {
+        auto elo = calculate_elo_ratings();
+
+        std::vector<std::pair<u32, f64>> ranked(elo.begin(), elo.end());
+        std::sort(ranked.begin(), ranked.end(),
+            [](const auto& a, const auto& b) {
+                return a.second > b.second;
+            });
+
+        if (ranked.size() > n) {
+            ranked.resize(n);
+        }
+        return ranked;
+    }
+
+    // ===========================================================================
     // Reports
     // ===========================================================================
 
@@ -968,9 +1036,12 @@ public:
         size_t rows_written = 0;
 
         if (header_.is_aggregated()) {
+            // Calculate Elo ratings for all units
+            auto elo_ratings = calculate_elo_ratings();
+
             // Aggregated format - export directly from aggregated results
             out << "unit_id,name,faction,points,quality,defense,models,"
-                << "matches,wins,losses,draws,win_rate,game_win_rate,"
+                << "matches,wins,losses,draws,win_rate,elo_rating,game_win_rate,"
                 << "avg_wounds_dealt,avg_wounds_received,damage_efficiency,"
                 << "avg_models_killed,avg_models_lost,kill_efficiency,"
                 << "total_objective_rounds,underdog_wins,underdog_matchups,underdog_win_rate,"
@@ -985,6 +1056,7 @@ public:
                         static_cast<f64>(r.total_models_killed) / r.total_models_lost : 0.0;
                     f64 game_win_rate = (r.games_won + r.games_lost) > 0 ?
                         100.0 * r.games_won / (r.games_won + r.games_lost) : 0.0;
+                    f64 elo = elo_ratings.count(r.unit_id) ? elo_ratings[r.unit_id] : 1500.0;
 
                     out << r.unit_id << ","
                         << "\"" << u.name.view() << "\","
@@ -998,6 +1070,7 @@ public:
                         << r.losses << ","
                         << r.draws << ","
                         << r.win_rate() << ","
+                        << std::fixed << std::setprecision(1) << elo << ","
                         << game_win_rate << ","
                         << r.avg_wounds_dealt() << ","
                         << r.avg_wounds_received() << ","
