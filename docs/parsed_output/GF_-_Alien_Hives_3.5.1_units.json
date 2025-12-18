@@ -1,0 +1,5118 @@
+{
+  "units": [
+    {
+      "name": "Hive Lord",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 345,
+      "tough": 12,
+      "special_rules": [
+        "Fear(2)",
+        "Fearless",
+        "Hero",
+        "Hive Bond",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Shredder Cannon",
+          "count": 1,
+          "range": 18,
+          "attacks": 4,
+          "ap": null,
+          "special_rules": [
+            "Rending"
+          ]
+        },
+        {
+          "name": "Heavy Razor Claws",
+          "count": 2,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Bio-Tech Master (Increased Shooting Range)",
+              "cost": 15,
+              "rules_granted": [
+                "Increased Shooting Range"
+              ],
+              "weapon": {
+                "name": "Bio-Tech Master",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Increased Shooting Range"
+                ]
+              }
+            },
+            {
+              "text": "Brood Leader (Rapid Charge)",
+              "cost": 15,
+              "rules_granted": [
+                "Rapid Charge"
+              ],
+              "weapon": {
+                "name": "Brood Leader",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Rapid Charge"
+                ]
+              }
+            },
+            {
+              "text": "Combat Bio-Engineer (Furious)",
+              "cost": 20,
+              "rules_granted": [
+                "Furious"
+              ],
+              "weapon": {
+                "name": "Combat Bio-Engineer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Furious"
+                ]
+              }
+            },
+            {
+              "text": "Hive Protector (Shielded)",
+              "cost": 20,
+              "rules_granted": [
+                "Shielded"
+              ],
+              "weapon": {
+                "name": "Hive Protector",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Shielded"
+                ]
+              }
+            },
+            {
+              "text": "Psychic Synapses (Caster(3))",
+              "cost": 60,
+              "rules_granted": [
+                "Caster(3"
+              ],
+              "weapon": {
+                "name": "Psychic Synapses",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Caster(3"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy Razor Claw",
+          "options": [
+            {
+              "text": "Piercing Spike (A1, AP(2), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Club (A1, AP(2), Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Slashing Blade (A3, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Razor Whip (A3, Bane, Precise)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Razor Whip",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Blade (A3, AP(4))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Shredder Cannon",
+          "options": [
+            {
+              "text": "2x Heavy Razor Claws (A3, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Razor Claws",
+                "count": 2,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Spitter Cannon (24\", A2, Blast(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Spitter Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Barb Cannon (36\", A1, AP(2), Blast(3))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Barb Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Piercing Spike (A2, AP(2), Deadly(3), Reliable)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Smashing Club (A2, AP(2), Blast(3), Reliable)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Ravager Cannon (18\", A6, AP(1), Rupture)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Ravager Cannon",
+                "count": 1,
+                "range": 18,
+                "attacks": 6,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Slashing Blade (A6, AP(1), Reliable, Rending)",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Acid Cannon (36\", A1, AP(2), Deadly(6), Unstoppable)",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Acid Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Serrated Blade (A6, AP(4), Reliable)",
+              "cost": 80,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Wings (Ambush, Flying)",
+              "cost": 60,
+              "rules_granted": [
+                "Ambush",
+                "Flying"
+              ],
+              "weapon": {
+                "name": "Wings",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Ambush",
+                  "Flying"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Psy-Barrier (Resistance)",
+              "cost": 35,
+              "rules_granted": [
+                "Resistance"
+              ],
+              "weapon": {
+                "name": "Psy-Barrier",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Resistance"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Recovery (Regeneration)",
+              "cost": 40,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": {
+                "name": "Bio-Recovery",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Regeneration"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Prime Warrior",
+      "size": 1,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 80,
+      "tough": 6,
+      "special_rules": [
+        "Hero",
+        "Hive Bond",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Shredder Gun",
+          "count": 1,
+          "range": 18,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": [
+            "Rending"
+          ]
+        },
+        {
+          "name": "Heavy Razor Claws",
+          "count": 1,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Pheromone Host (Hive Bond Boost Aura)",
+              "cost": 5,
+              "rules_granted": [
+                "Hive Bond Boost Aura"
+              ],
+              "weapon": {
+                "name": "Pheromone Host",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Hive Bond Boost Aura"
+                ]
+              }
+            },
+            {
+              "text": "Brood Leader (Rapid Charge Aura)",
+              "cost": 10,
+              "rules_granted": [
+                "Rapid Charge Aura"
+              ],
+              "weapon": {
+                "name": "Brood Leader",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Rapid Charge Aura"
+                ]
+              }
+            },
+            {
+              "text": "Combat Bio-Engineer (Furious Aura)",
+              "cost": 20,
+              "rules_granted": [
+                "Furious Aura"
+              ],
+              "weapon": {
+                "name": "Combat Bio-Engineer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Furious Aura"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Tech Master (Increased Shooting Range Aura)",
+              "cost": 35,
+              "rules_granted": [
+                "Increased Shooting Range Aura"
+              ],
+              "weapon": {
+                "name": "Bio-Tech Master",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Increased Shooting Range Aura"
+                ]
+              }
+            },
+            {
+              "text": "Psychic Synapses (Caster(2))",
+              "cost": 40,
+              "rules_granted": [
+                "Caster(2"
+              ],
+              "weapon": {
+                "name": "Psychic Synapses",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Caster(2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Shredder Gun",
+          "options": [
+            {
+              "text": "Heavy Razor Claws (A3, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Razor Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Spitter Gun (24\", A1, Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Spitter Gun",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Twin Spine Guns (12\", A4, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Spine Guns",
+                "count": 1,
+                "range": 12,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Ravager Gun (18\", A3, AP(1), Rupture)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Ravager Gun",
+                "count": 1,
+                "range": 18,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Barb Gun (30\", A1, AP(2), Blast(3))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Barb Gun",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Acid Launcher (30\", A1, AP(2), Deadly(3), Unstoppable)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Acid Launcher",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Wings (Ambush, Flying)",
+              "cost": 20,
+              "rules_granted": [
+                "Ambush",
+                "Flying"
+              ],
+              "weapon": {
+                "name": "Wings",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Ambush",
+                  "Flying"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy Razor Claw",
+          "options": [
+            {
+              "text": "Serrated Blade (A2, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Piercing Spike (A1, AP(2), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Club (A1, AP(2), Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Slashing Blade (A3, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Razor Whip (A4, Bane, Precise)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Razor Whip",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Snatcher Lord",
+      "size": 1,
+      "quality": 3,
+      "defense": 4,
+      "base_points": 80,
+      "tough": 3,
+      "special_rules": [
+        "Fast",
+        "Hero",
+        "Hive Bond",
+        "Scout",
+        "Strider",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Claws",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": [
+            "Rending"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Brood Leader (Rapid Charge Aura)",
+              "cost": 10,
+              "rules_granted": [
+                "Rapid Charge Aura"
+              ],
+              "weapon": {
+                "name": "Brood Leader",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Rapid Charge Aura"
+                ]
+              }
+            },
+            {
+              "text": "Hive Protector (Shielded Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Shielded Aura"
+              ],
+              "weapon": {
+                "name": "Hive Protector",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Shielded Aura"
+                ]
+              }
+            },
+            {
+              "text": "Combat Bio-Engineer (Furious Aura)",
+              "cost": 20,
+              "rules_granted": [
+                "Furious Aura"
+              ],
+              "weapon": {
+                "name": "Combat Bio-Engineer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Furious Aura"
+                ]
+              }
+            },
+            {
+              "text": "Psychic Synapses (Caster(2))",
+              "cost": 40,
+              "rules_granted": [
+                "Caster(2"
+              ],
+              "weapon": {
+                "name": "Psychic Synapses",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Caster(2"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Grunt Veteran",
+      "size": 1,
+      "quality": 5,
+      "defense": 5,
+      "base_points": 20,
+      "tough": 3,
+      "special_rules": [
+        "Hero",
+        "Hive Bond",
+        "Strider",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Razor Claws",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Brood Leader (Rapid Charge Aura)",
+              "cost": 10,
+              "rules_granted": [
+                "Rapid Charge Aura"
+              ],
+              "weapon": {
+                "name": "Brood Leader",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Rapid Charge Aura"
+                ]
+              }
+            },
+            {
+              "text": "Hive Protector (Shielded Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Shielded Aura"
+              ],
+              "weapon": {
+                "name": "Hive Protector",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Shielded Aura"
+                ]
+              }
+            },
+            {
+              "text": "Combat Bio-Engineer (Furious Aura)",
+              "cost": 20,
+              "rules_granted": [
+                "Furious Aura"
+              ],
+              "weapon": {
+                "name": "Combat Bio-Engineer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Furious Aura"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Tech Master (Increased Shooting Range Aura)",
+              "cost": 35,
+              "rules_granted": [
+                "Increased Shooting Range Aura"
+              ],
+              "weapon": {
+                "name": "Bio-Tech Master",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Increased Shooting Range Aura"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Razor Claw",
+          "options": [
+            {
+              "text": "Smashing Club (A1, Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Piercing Spike (A1, AP(1), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Slashing Blade (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Blade (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Veteran Bio-Spiner (6\", A3, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Veteran Bio-Spiner",
+                "count": 1,
+                "range": 6,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Veteran Bio-Borer (12\", A3)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Veteran Bio-Borer",
+                "count": 1,
+                "range": 12,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Veteran Bio-Ravager (18\", A2, AP(1))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Veteran Bio-Ravager",
+                "count": 1,
+                "range": 18,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Assault Breed (Fast)",
+              "cost": 5,
+              "rules_granted": [
+                "Fast"
+              ],
+              "weapon": {
+                "name": "Assault Breed",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Fast"
+                ]
+              }
+            },
+            {
+              "text": "Winged Breed (Ambush, Flying)",
+              "cost": 5,
+              "rules_granted": [
+                "Ambush",
+                "Flying"
+              ],
+              "weapon": {
+                "name": "Winged Breed",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Ambush",
+                  "Flying"
+                ]
+              }
+            },
+            {
+              "text": "Psycho Breed (Resistance)",
+              "cost": 10,
+              "rules_granted": [
+                "Resistance"
+              ],
+              "weapon": {
+                "name": "Psycho Breed",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Resistance"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Toxin Cysts (Bane in Melee)",
+              "cost": 5,
+              "rules_granted": [
+                "Bane in Melee"
+              ],
+              "weapon": {
+                "name": "Toxin Cysts",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Bane in Melee"
+                ]
+              }
+            },
+            {
+              "text": "Adrenaline Fueled (Agile)",
+              "cost": 5,
+              "rules_granted": [
+                "Agile"
+              ],
+              "weapon": {
+                "name": "Adrenaline Fueled",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Agile"
+                ]
+              }
+            },
+            {
+              "text": "Combat Mutations (Piercing Growth)",
+              "cost": 5,
+              "rules_granted": [
+                "Piercing Growth"
+              ],
+              "weapon": {
+                "name": "Combat Mutations",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Piercing Growth"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Assault Grunts",
+      "size": 10,
+      "quality": 5,
+      "defense": 5,
+      "base_points": 110,
+      "tough": null,
+      "special_rules": [
+        "Fast",
+        "Hive Bond",
+        "Strider"
+      ],
+      "weapons": [
+        {
+          "name": "Razor Claws",
+          "count": 10,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace up to two Razor Claws",
+          "options": [
+            {
+              "text": "Piercing Claws (A1, AP(1), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Claws (A1, Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Slashing Claws (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Claws (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with one",
+          "options": [
+            {
+              "text": "Adrenaline Fueled (Agile)",
+              "cost": 5,
+              "rules_granted": [
+                "Agile"
+              ],
+              "weapon": {
+                "name": "Adrenaline Fueled",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Agile"
+                ]
+              }
+            },
+            {
+              "text": "Toxic Cysts (Bane in Melee)",
+              "cost": 10,
+              "rules_granted": [
+                "Bane in Melee"
+              ],
+              "weapon": {
+                "name": "Toxic Cysts",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Bane in Melee"
+                ]
+              }
+            },
+            {
+              "text": "Combat Mutations (Piercing Growth)",
+              "cost": 25,
+              "rules_granted": [
+                "Piercing Growth"
+              ],
+              "weapon": {
+                "name": "Combat Mutations",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Piercing Growth"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shooter Grunts",
+      "size": 10,
+      "quality": 5,
+      "defense": 5,
+      "base_points": 110,
+      "tough": null,
+      "special_rules": [
+        "Hive Bond",
+        "Strider"
+      ],
+      "weapons": [
+        {
+          "name": "Bio-Spiners",
+          "count": 10,
+          "range": 6,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Razor Claws",
+          "count": 10,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace all Bio-Spiners",
+          "options": [
+            {
+              "text": "Bio-Borer (12\", A2)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Borer",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Bio-Ravager (18\", A1, AP(1))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Ravager",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace up to two Bio-Spiners",
+          "options": [
+            {
+              "text": "Bio-Plasma (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Plasma",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Fuser (6\", A1, AP(4), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Fuser",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Shredder (9\", A2, Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Shredder",
+                "count": 1,
+                "range": 9,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Flamer (6\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Flamer",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Spiker (18\", A1, AP(1), Reliable, Takedown)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Spiker",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with one",
+          "options": [
+            {
+              "text": "Adrenaline Fueled (Agile)",
+              "cost": 5,
+              "rules_granted": [
+                "Agile"
+              ],
+              "weapon": {
+                "name": "Adrenaline Fueled",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Agile"
+                ]
+              }
+            },
+            {
+              "text": "Toxic Cysts (Bane in Melee)",
+              "cost": 5,
+              "rules_granted": [
+                "Bane in Melee"
+              ],
+              "weapon": {
+                "name": "Toxic Cysts",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Bane in Melee"
+                ]
+              }
+            },
+            {
+              "text": "Combat Mutations (Piercing Growth)",
+              "cost": 25,
+              "rules_granted": [
+                "Piercing Growth"
+              ],
+              "weapon": {
+                "name": "Combat Mutations",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Piercing Growth"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Psycho-Grunts",
+      "size": 10,
+      "quality": 5,
+      "defense": 5,
+      "base_points": 110,
+      "tough": null,
+      "special_rules": [
+        "Hive Bond",
+        "Resistance",
+        "Strider"
+      ],
+      "weapons": [
+        {
+          "name": "Rending Claws",
+          "count": 10,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": [
+            "Rending"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade one model with",
+          "options": [
+            {
+              "text": "Synaptic Relay (Spell Conduit)",
+              "cost": 10,
+              "rules_granted": [
+                "Spell Conduit"
+              ],
+              "weapon": {
+                "name": "Synaptic Relay",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Spell Conduit"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with one",
+          "options": [
+            {
+              "text": "Adrenaline Fueled (Agile)",
+              "cost": 5,
+              "rules_granted": [
+                "Agile"
+              ],
+              "weapon": {
+                "name": "Adrenaline Fueled",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Agile"
+                ]
+              }
+            },
+            {
+              "text": "Toxic Cysts (Bane in Melee)",
+              "cost": 5,
+              "rules_granted": [
+                "Bane in Melee"
+              ],
+              "weapon": {
+                "name": "Toxic Cysts",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Bane in Melee"
+                ]
+              }
+            },
+            {
+              "text": "Combat Mutations (Piercing Growth)",
+              "cost": 10,
+              "rules_granted": [
+                "Piercing Growth"
+              ],
+              "weapon": {
+                "name": "Combat Mutations",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Piercing Growth"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Winged Grunts",
+      "size": 10,
+      "quality": 5,
+      "defense": 5,
+      "base_points": 130,
+      "tough": null,
+      "special_rules": [
+        "Ambush",
+        "Flying",
+        "Hive Bond"
+      ],
+      "weapons": [
+        {
+          "name": "Bio-Spiners",
+          "count": 10,
+          "range": 6,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Razor Claws",
+          "count": 10,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace all Bio-Spiners",
+          "options": [
+            {
+              "text": "Bio-Borer (12\", A2)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Borer",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Bio-Ravager (18\", A1, AP(1))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Ravager",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace up to two Bio-Spiners",
+          "options": [
+            {
+              "text": "Bio-Plasma (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Plasma",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Fuser (6\", A1, AP(4), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Fuser",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Shredder (9\", A2, Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Shredder",
+                "count": 1,
+                "range": 9,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Flamer (6\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Flamer",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Spiker (18\", A1, AP(1), Reliable, Takedown)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Spiker",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with one",
+          "options": [
+            {
+              "text": "Adrenaline Fueled (Agile)",
+              "cost": 5,
+              "rules_granted": [
+                "Agile"
+              ],
+              "weapon": {
+                "name": "Adrenaline Fueled",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Agile"
+                ]
+              }
+            },
+            {
+              "text": "Toxic Cysts (Bane in Melee)",
+              "cost": 5,
+              "rules_granted": [
+                "Bane in Melee"
+              ],
+              "weapon": {
+                "name": "Toxic Cysts",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Bane in Melee"
+                ]
+              }
+            },
+            {
+              "text": "Combat Mutations (Piercing Growth)",
+              "cost": 25,
+              "rules_granted": [
+                "Piercing Growth"
+              ],
+              "weapon": {
+                "name": "Combat Mutations",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Piercing Growth"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Support Grunts",
+      "size": 3,
+      "quality": 5,
+      "defense": 5,
+      "base_points": 140,
+      "tough": null,
+      "special_rules": [
+        "Hive Bond",
+        "Relentless",
+        "Strider"
+      ],
+      "weapons": [
+        {
+          "name": "Ravager Bio-Cannons",
+          "count": 3,
+          "range": 24,
+          "attacks": 3,
+          "ap": null,
+          "special_rules": [
+            "Indirect",
+            "Rupture"
+          ]
+        },
+        {
+          "name": "Razor Claws",
+          "count": 3,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace all Ravager Bio-Cannons",
+          "options": [
+            {
+              "text": "Bio-Cannon (24\", A1, Blast(3), Indirect, Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Bio-Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with one",
+          "options": [
+            {
+              "text": "Adrenaline Fueled (Agile)",
+              "cost": 5,
+              "rules_granted": [
+                "Agile"
+              ],
+              "weapon": {
+                "name": "Adrenaline Fueled",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Agile"
+                ]
+              }
+            },
+            {
+              "text": "Toxic Cysts (Bane in Melee)",
+              "cost": 5,
+              "rules_granted": [
+                "Bane in Melee"
+              ],
+              "weapon": {
+                "name": "Toxic Cysts",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Bane in Melee"
+                ]
+              }
+            },
+            {
+              "text": "Combat Mutations (Piercing Growth)",
+              "cost": 35,
+              "rules_granted": [
+                "Piercing Growth"
+              ],
+              "weapon": {
+                "name": "Combat Mutations",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Piercing Growth"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Soul-Snatchers",
+      "size": 5,
+      "quality": 3,
+      "defense": 4,
+      "base_points": 160,
+      "tough": null,
+      "special_rules": [
+        "Fast",
+        "Hive Bond",
+        "Scout",
+        "Strider"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Claws",
+          "count": 5,
+          "range": null,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": [
+            "Rending"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade one model with",
+          "options": [
+            {
+              "text": "Mind Snatcher (Caster(1))",
+              "cost": 15,
+              "rules_granted": [
+                "Caster(1"
+              ],
+              "weapon": {
+                "name": "Mind Snatcher",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Caster(1"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hive Swarms",
+      "size": 3,
+      "quality": 5,
+      "defense": 6,
+      "base_points": 70,
+      "tough": 3,
+      "special_rules": [
+        "Hive Bond",
+        "Strider",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Swarm Attacks",
+          "count": 3,
+          "range": null,
+          "attacks": 3,
+          "ap": null,
+          "special_rules": [
+            "Bane"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade all models with",
+          "options": [
+            {
+              "text": "Spine Shooter (12\", A4, AP(1))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Spine Shooter",
+                "count": 1,
+                "range": 12,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hive Warriors",
+      "size": 3,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 110,
+      "tough": 3,
+      "special_rules": [
+        "Hive Bond",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Razor Claws",
+          "count": 6,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Any model may replace one Razor Claws",
+          "options": [
+            {
+              "text": "Ravager Gun (18\", A3)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Ravager Gun",
+                "count": 1,
+                "range": 18,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Spitter Gun (24\", A1, Blast(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Spitter Gun",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Twin Spine Guns (12\", A4, AP(1))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Spine Guns",
+                "count": 1,
+                "range": 12,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Ravager Gun",
+          "options": [
+            {
+              "text": "Shredder Gun (18\", A2, Rending)",
+              "cost": 0,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Shredder Gun",
+                "count": 1,
+                "range": 18,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Ravager Gun (18\", A3, AP(1), Rupture)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Ravager Gun",
+                "count": 1,
+                "range": 18,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Barb Gun (30\", A1, AP(2), Blast(3))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Barb Gun",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Acid Launcher (30\", A1, AP(2), Deadly(3), Unstoppable)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Acid Launcher",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with",
+          "options": [
+            {
+              "text": "Wings (Ambush, Flying)",
+              "cost": 35,
+              "rules_granted": [
+                "Ambush",
+                "Flying"
+              ],
+              "weapon": {
+                "name": "Wings",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Ambush",
+                  "Flying"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade one model with",
+          "options": [
+            {
+              "text": "Battle Pheromones (Unpredictable Fighter Mark)",
+              "cost": 30,
+              "rules_granted": [
+                "Unpredictable Fighter Mark"
+              ],
+              "weapon": {
+                "name": "Battle Pheromones",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Unpredictable Fighter Mark"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Razor Claws",
+          "options": [
+            {
+              "text": "Slashing Blade (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Razor Whip (A2, Bane, Precise)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Razor Whip",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Blade (A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Razor Claws",
+          "options": [
+            {
+              "text": "Piercing Spike (A1, AP(2), Deadly(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Club (A1, AP(2), Blast(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ravenous Beasts",
+      "size": 3,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 135,
+      "tough": 3,
+      "special_rules": [
+        "Fast",
+        "Hive Bond",
+        "Strider",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Razor Claws",
+          "count": 6,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade all models with",
+          "options": [
+            {
+              "text": "Burrowing Strike (Ambush)",
+              "cost": 15,
+              "rules_granted": [
+                "Ambush"
+              ],
+              "weapon": {
+                "name": "Burrowing Strike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Ambush"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Razor Claws",
+          "options": [
+            {
+              "text": "Slashing Blade (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Razor Whip (A2, Bane, Precise)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Razor Whip",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Blade (A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Razor Claws",
+          "options": [
+            {
+              "text": "Piercing Spike (A1, AP(2), Deadly(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Club (A1, AP(2), Blast(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Venom Beasts",
+      "size": 3,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 150,
+      "tough": 3,
+      "special_rules": [
+        "Hive Bond",
+        "Regeneration",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Poison Spurts",
+          "count": 3,
+          "range": 12,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": [
+            "Blast(3)",
+            "Bane"
+          ]
+        },
+        {
+          "name": "Toxin Claws",
+          "count": 3,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": [
+            "Bane"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace all Poison Spurts and Toxin Claws",
+          "options": [
+            {
+              "text": "Whip Limbs (A4, Bane, Precise)",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Whip Limbs",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade one model with",
+          "options": [
+            {
+              "text": "Shrouding Mist (Stealth Buff)",
+              "cost": 25,
+              "rules_granted": [
+                "Stealth Buff"
+              ],
+              "weapon": {
+                "name": "Shrouding Mist",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Stealth Buff"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hive Guardians",
+      "size": 3,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 150,
+      "tough": 3,
+      "special_rules": [
+        "Hive Bond",
+        "Relentless",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Razor Claws",
+          "count": 6,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Any model may replace one Razor Claws",
+          "options": [
+            {
+              "text": "Heavy Ravager Gun (18\", A3, AP(1), Rupture)",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Ravager Gun",
+                "count": 1,
+                "range": 18,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Shock Harpoon (24\", A1, AP(2), Deadly(3))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Shock Harpoon",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Skewer Cannon (30\", A2, AP(4), Unstoppable)",
+              "cost": 75,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Skewer Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade one model with",
+          "options": [
+            {
+              "text": "Battle Pheromones (Unpredictable Fighter Mark)",
+              "cost": 30,
+              "rules_granted": [
+                "Unpredictable Fighter Mark"
+              ],
+              "weapon": {
+                "name": "Battle Pheromones",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Unpredictable Fighter Mark"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Razor Claws",
+          "options": [
+            {
+              "text": "Slashing Blade (A2, AP(1), Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Razor Whip (A2, Bane, Precise)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Razor Whip",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Blade (A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Razor Claws",
+          "options": [
+            {
+              "text": "Piercing Spike (A1, AP(2), Deadly(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Club (A1, AP(2), Blast(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shadow Leapers",
+      "size": 3,
+      "quality": 3,
+      "defense": 4,
+      "base_points": 190,
+      "tough": 3,
+      "special_rules": [
+        "Hive Bond",
+        "Scout",
+        "Stealth",
+        "Strider",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Razor Claws",
+          "count": 6,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Razor Claws",
+          "options": [
+            {
+              "text": "Slashing Blade (A2, AP(1), Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Razor Whip (A2, Bane, Precise)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Razor Whip",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Blade (A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Razor Claws",
+          "options": [
+            {
+              "text": "Piercing Spike (A1, AP(2), Deadly(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Club (A1, AP(2), Blast(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Synapse Beasts",
+      "size": 3,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 200,
+      "tough": 3,
+      "special_rules": [
+        "Caster Group",
+        "Hive Bond",
+        "Resistance",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Psy-Blasts",
+          "count": 3,
+          "range": 18,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": [
+            "Blast(3)"
+          ]
+        },
+        {
+          "name": "Psy-Shocks",
+          "count": 3,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": []
+    },
+    {
+      "name": "Spores",
+      "size": 5,
+      "quality": 6,
+      "defense": 6,
+      "base_points": 75,
+      "tough": null,
+      "special_rules": [
+        "No Retreat",
+        "Self-Destruct(2)",
+        "Slow"
+      ],
+      "weapons": [
+        {
+          "name": "Tendrils",
+          "count": 5,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": []
+    },
+    {
+      "name": "Massive Spores",
+      "size": 3,
+      "quality": 6,
+      "defense": 6,
+      "base_points": 145,
+      "tough": 3,
+      "special_rules": [
+        "No Retreat",
+        "Self-Destruct(6)",
+        "Slow",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Tendrils",
+          "count": 3,
+          "range": null,
+          "attacks": 3,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": []
+    },
+    {
+      "name": "Shadow Hunter",
+      "size": 1,
+      "quality": 3,
+      "defense": 4,
+      "base_points": 150,
+      "tough": 6,
+      "special_rules": [
+        "Fear(1)",
+        "Hive Bond",
+        "Infiltrate",
+        "Stealth",
+        "Strider",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Razor Claws",
+          "count": 2,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Heavy Razor Claw",
+          "options": [
+            {
+              "text": "Serrated Blade (A2, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Piercing Spike (A1, AP(2), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Spike",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Club (A1, AP(2), Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Club",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Slashing Blade (A3, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Blade",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Razor Whip (A4, Bane, Precise)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Razor Whip",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Silent Assassin (Takedown Strike)",
+              "cost": 15,
+              "rules_granted": [
+                "Takedown Strike"
+              ],
+              "weapon": {
+                "name": "Silent Assassin",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Takedown Strike"
+                ]
+              }
+            },
+            {
+              "text": "Mind Hunter (Caster(2))",
+              "cost": 40,
+              "rules_granted": [
+                "Caster(2"
+              ],
+              "weapon": {
+                "name": "Mind Hunter",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Caster(2"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mortar Beast",
+      "size": 1,
+      "quality": 4,
+      "defense": 3,
+      "base_points": 155,
+      "tough": 6,
+      "special_rules": [
+        "Fear(1)",
+        "Hive Bond",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Spore Gun",
+          "count": 1,
+          "range": 24,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": [
+            "Blast(3)",
+            "Indirect",
+            "Shred"
+          ]
+        },
+        {
+          "name": "Heavy Razor Claws",
+          "count": 1,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Spore Gun",
+          "options": [
+            {
+              "text": "Spore Carrier (Spawn(Spores [5]))",
+              "cost": 40,
+              "rules_granted": [
+                "Spawn(Spores [5]"
+              ],
+              "weapon": {
+                "name": "Spore Carrier",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Spawn(Spores [5]"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Synapse Tyrant",
+      "size": 1,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 180,
+      "tough": 6,
+      "special_rules": [
+        "Caster(3)",
+        "Fear(1)",
+        "Hive Bond",
+        "Resistance",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Psy-Stinger",
+          "count": 1,
+          "range": 18,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": [
+            "Rupture"
+          ]
+        },
+        {
+          "name": "Psy-Shock",
+          "count": 1,
+          "range": null,
+          "attacks": 3,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Heavy Psy-Stinger",
+          "options": [
+            {
+              "text": "Heavy Psy-Torrent (9\", A2, AP(1), Blast(3), Reliable)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Psy-Torrent",
+                "count": 1,
+                "range": 9,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Psy-Blast (18\", A2, AP(1), Blast(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Psy-Blast",
+                "count": 1,
+                "range": 18,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Flamer Beast",
+      "size": 1,
+      "quality": 4,
+      "defense": 3,
+      "base_points": 185,
+      "tough": 6,
+      "special_rules": [
+        "Fear(1)",
+        "Hive Bond",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Spit Flames",
+          "count": 1,
+          "range": 18,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)",
+            "Reliable"
+          ]
+        },
+        {
+          "name": "Heavy Razor Claws",
+          "count": 1,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": []
+    },
+    {
+      "name": "Invasion Carrier Spore",
+      "size": 1,
+      "quality": 4,
+      "defense": 3,
+      "base_points": 120,
+      "tough": 6,
+      "special_rules": [
+        "Ambush",
+        "Hive Bond",
+        "Slow",
+        "Tough(6)",
+        "Transport(11)"
+      ],
+      "weapons": [
+        {
+          "name": "Razor Tendrils",
+          "count": 1,
+          "range": null,
+          "attacks": 6,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Shredder Gun Array (18\", A4, Rending)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Shredder Gun Array",
+                "count": 1,
+                "range": 18,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Spitter Gun Array (24\", A2, Blast(3))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Spitter Gun Array",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Barb Cannon Array (30\", A2, AP(2), Blast(3))",
+              "cost": 90,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Barb Cannon Array",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Acid Launcher Array (30\", A2, AP(2), Deadly(3), Unstoppable)",
+              "cost": 90,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Acid Launcher Array",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Battle Pheromones (Unpredictable Fighter Mark)",
+              "cost": 30,
+              "rules_granted": [
+                "Unpredictable Fighter Mark"
+              ],
+              "weapon": {
+                "name": "Battle Pheromones",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Unpredictable Fighter Mark"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Carnivo-Rex",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 280,
+      "tough": 12,
+      "special_rules": [
+        "Fear(2)",
+        "Fearless",
+        "Hive Bond",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Razor Claws",
+          "count": 3,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Heavy Razor Claws",
+          "options": [
+            {
+              "text": "Piercing Claws (A1, AP(2), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Claws (A1, AP(2), Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Slashing Claws (A3, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Claws (A3, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Whip Limbs (A4, Bane, Precise)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Whip Limbs",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Bio-Recovery (Regeneration)",
+              "cost": 40,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": {
+                "name": "Bio-Recovery",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Regeneration"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace 3x Heavy Razor Claws",
+          "options": [
+            {
+              "text": "Heavy Shredder Cannon (18\", A8, Rending)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Shredder Cannon",
+                "count": 1,
+                "range": 18,
+                "attacks": 8,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Spitter Cannon (24\", A4, Blast(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Spitter Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Rapid Heavy Ravager Cannon (18\", A12, AP(1), Rupture)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Rapid Heavy Ravager Cannon",
+                "count": 1,
+                "range": 18,
+                "attacks": 12,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Barb Cannon (36\", A2, AP(2), Blast(6))",
+              "cost": 110,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Barb Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Acid Cannon (36\", A2, AP(2), Deadly(6), Unstoppable)",
+              "cost": 110,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Acid Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Razor Claw",
+          "options": [
+            {
+              "text": "Killing Scream (Breath Attack)",
+              "cost": 5,
+              "rules_granted": [
+                "Breath Attack"
+              ],
+              "weapon": {
+                "name": "Killing Scream",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Breath Attack"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Toxico-Rex",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 365,
+      "tough": 12,
+      "special_rules": [
+        "Fear(2)",
+        "Fearless",
+        "Hive Bond",
+        "Regeneration",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Acid Spurt",
+          "count": 1,
+          "range": 12,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": [
+            "Blast(3)",
+            "Bane"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Whip Limbs",
+          "count": 1,
+          "range": null,
+          "attacks": 8,
+          "ap": null,
+          "special_rules": [
+            "Bane",
+            "Precise"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Shrouding Mist (Stealth Buff)",
+              "cost": 25,
+              "rules_granted": [
+                "Stealth Buff"
+              ],
+              "weapon": {
+                "name": "Shrouding Mist",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Stealth Buff"
+                ]
+              }
+            },
+            {
+              "text": "Poison Mist (12\", A1, Blast(6), Bane)",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Poison Mist",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(6"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Psycho-Rex",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 400,
+      "tough": 12,
+      "special_rules": [
+        "Caster(3)",
+        "Fear(2)",
+        "Fearless",
+        "Hive Bond",
+        "Resistance",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Psy-Stinger",
+          "count": 1,
+          "range": 18,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": [
+            "Rupture"
+          ]
+        },
+        {
+          "name": "Heavy Razor Claws",
+          "count": 1,
+          "range": null,
+          "attacks": 6,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Heavy Psy-Stinger",
+          "options": [
+            {
+              "text": "Strength)",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace Heavy Psy-Stinger",
+          "options": [
+            {
+              "text": "Heavy Psy-Torrent (9\", A2, AP(1), Blast(3), Reliable)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Psy-Torrent",
+                "count": 1,
+                "range": 9,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Psy-Blast (18\", A2, AP(1), Blast(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Psy-Blast",
+                "count": 1,
+                "range": 18,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hive Burrower",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 385,
+      "tough": 15,
+      "special_rules": [
+        "Ambush",
+        "Fear(3)",
+        "Fearless",
+        "Hive Bond",
+        "Tough(15)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Razor Claws",
+          "count": 3,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 5,
+          "ap": 2,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace 3x Heavy Razor Claw",
+          "options": [
+            {
+              "text": "Precise)",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace Deep Deployment",
+          "options": [
+            {
+              "text": "Burrow Attack (Surprise Attack(3))",
+              "cost": 40,
+              "rules_granted": [
+                "Surprise Attack(3"
+              ],
+              "weapon": {
+                "name": "Burrow Attack",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Surprise Attack(3"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Venom Burrower (Regeneration, Stealth Buff)",
+              "cost": 75,
+              "rules_granted": [
+                "Regeneration",
+                "Stealth Buff"
+              ],
+              "weapon": {
+                "name": "Venom Burrower",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Regeneration",
+                  "Stealth Buff"
+                ]
+              }
+            },
+            {
+              "text": "Synapse Burrower (Caster(3), Resistance)",
+              "cost": 105,
+              "rules_granted": [
+                "Caster(3"
+              ],
+              "weapon": {
+                "name": "Synapse Burrower",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Caster(3"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy Razor Claws",
+          "options": [
+            {
+              "text": "Piercing Claws (A1, AP(2), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Claws (A1, AP(2), Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Slashing Claws (A3, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Claws (A3, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Whip Limbs (A4, Bane, Precise)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Whip Limbs",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tyrant Heavy Beast",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 440,
+      "tough": 15,
+      "special_rules": [
+        "Fear(3)",
+        "Fearless",
+        "Hive Bond",
+        "Tough(15)"
+      ],
+      "weapons": [
+        {
+          "name": "Bio-Pod",
+          "count": 1,
+          "range": 24,
+          "attacks": 12,
+          "ap": null,
+          "special_rules": []
+        },
+        {
+          "name": "Stinger Launcher",
+          "count": 1,
+          "range": 18,
+          "attacks": 6,
+          "ap": null,
+          "special_rules": [
+            "Rupture"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 5,
+          "ap": 2,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Bio-Recovery (Regeneration)",
+              "cost": 50,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": {
+                "name": "Bio-Recovery",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Regeneration"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Stinger Launcher",
+          "options": [
+            {
+              "text": "Barb Launcher (18\", A2, AP(2), Blast(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Barb Launcher",
+                "count": 1,
+                "range": 18,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Acid Spike Launcher (18\", A2, AP(2), Deadly(3), Unstoppable)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Acid Spike Launcher",
+                "count": 1,
+                "range": 18,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Bio-Pod",
+          "options": [
+            {
+              "text": "Toxic Spray (18\", A12, AP(1))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Toxic Spray",
+                "count": 1,
+                "range": 18,
+                "attacks": 12,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Fracture Cannon (30\", A2, AP(3), Deadly(6))",
+              "cost": 70,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fracture Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(3"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Spawning Heavy Beast",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 445,
+      "tough": 15,
+      "special_rules": [
+        "Fear(3)",
+        "Fearless",
+        "Hive Bond",
+        "Tough(15)"
+      ],
+      "weapons": [
+        {
+          "name": "Stinger Launchers",
+          "count": 3,
+          "range": 18,
+          "attacks": 6,
+          "ap": null,
+          "special_rules": [
+            "Rupture"
+          ]
+        },
+        {
+          "name": "Heavy Razor Claws",
+          "count": 1,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 5,
+          "ap": 2,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Psy-Barrier (Resistance)",
+              "cost": 50,
+              "rules_granted": [
+                "Resistance"
+              ],
+              "weapon": {
+                "name": "Psy-Barrier",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Resistance"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Stinger Launcher",
+          "options": [
+            {
+              "text": "Barb Launcher (18\", A2, AP(2), Blast(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Barb Launcher",
+                "count": 1,
+                "range": 18,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Acid Spike Launcher (18\", A2, AP(2), Deadly(3), Unstoppable)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Acid Spike Launcher",
+                "count": 1,
+                "range": 18,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Swarm Brood (Spawn(Hive Swarms [3]))",
+              "cost": 75,
+              "rules_granted": [
+                "Spawn(Hive Swarms [3]"
+              ],
+              "weapon": {
+                "name": "Swarm Brood",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Spawn(Hive Swarms [3]"
+                ]
+              }
+            },
+            {
+              "text": "Shooter Brood (Spawn(Shooter Grunts [10]))",
+              "cost": 120,
+              "rules_granted": [
+                "Spawn(Shooter Grunts [10]"
+              ],
+              "weapon": {
+                "name": "Shooter Brood",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Spawn(Shooter Grunts [10]"
+                ]
+              }
+            },
+            {
+              "text": "Assault Brood (Spawn(Assault Grunts [10]))",
+              "cost": 120,
+              "rules_granted": [
+                "Spawn(Assault Grunts [10]"
+              ],
+              "weapon": {
+                "name": "Assault Brood",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Spawn(Assault Grunts [10]"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Battle Pheromones (Unpredictable Fighter Mark)",
+              "cost": 30,
+              "rules_granted": [
+                "Unpredictable Fighter Mark"
+              ],
+              "weapon": {
+                "name": "Battle Pheromones",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Unpredictable Fighter Mark"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Devourer Heavy Beast",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 430,
+      "tough": 15,
+      "special_rules": [
+        "Fear(3)",
+        "Fearless",
+        "Hive Bond",
+        "Tough(15)"
+      ],
+      "weapons": [
+        {
+          "name": "Devouring Tongue",
+          "count": 1,
+          "range": 12,
+          "attacks": 3,
+          "ap": 2,
+          "special_rules": [
+            "Deadly(3)",
+            "Takedown"
+          ]
+        },
+        {
+          "name": "Heavy Razor Claws",
+          "count": 3,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 5,
+          "ap": 2,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Psy-Barrier (Resistance)",
+              "cost": 50,
+              "rules_granted": [
+                "Resistance"
+              ],
+              "weapon": {
+                "name": "Psy-Barrier",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Resistance"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy Razor Claws",
+          "options": [
+            {
+              "text": "Piercing Claws (A1, AP(2), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Piercing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Smashing Claws (A1, AP(2), Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Smashing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Slashing Claws (A3, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Slashing Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Serrated Claws (A3, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Serrated Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            },
+            {
+              "text": "Whip Limbs (A4, Bane, Precise)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Whip Limbs",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Bane",
+                  "Precise"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Artillery Heavy Beast",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 570,
+      "tough": 15,
+      "special_rules": [
+        "Fear(3)",
+        "Fearless",
+        "Hive Bond",
+        "Tough(15)"
+      ],
+      "weapons": [
+        {
+          "name": "Shredder Bio-Artillery",
+          "count": 1,
+          "range": 36,
+          "attacks": 3,
+          "ap": null,
+          "special_rules": [
+            "Blast(6)",
+            "Indirect",
+            "Rending"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 5,
+          "ap": 2,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Psy-Barrier (Resistance)",
+              "cost": 50,
+              "rules_granted": [
+                "Resistance"
+              ],
+              "weapon": {
+                "name": "Psy-Barrier",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Resistance"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Shredder Bio-Artillery",
+          "options": [
+            {
+              "text": "Spitter Bio-Artillery (36\", A6, AP(1), Blast(3), Indirect)",
+              "cost": 105,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Spitter Bio-Artillery",
+                "count": 1,
+                "range": 36,
+                "attacks": 6,
+                "ap": null,
+                "special_rules": [
+                  "AP(1"
+                ]
+              }
+            },
+            {
+              "text": "Acid Bio-Artillery (36\", A3, AP(3), Deadly(6), Indirect)",
+              "cost": 165,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Acid Bio-Artillery",
+                "count": 1,
+                "range": 36,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(3"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Bio-Artillery (36\", A3, AP(4), Blast(6), Indirect)",
+              "cost": 255,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Bio-Artillery",
+                "count": 1,
+                "range": 36,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "AP(4"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Invasion Artillery Spore",
+      "size": 1,
+      "quality": 4,
+      "defense": 3,
+      "base_points": 170,
+      "tough": 6,
+      "special_rules": [
+        "Ambush",
+        "Artillery",
+        "Hive Bond",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Spore Gun",
+          "count": 1,
+          "range": 24,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": [
+            "Blast(3)",
+            "Indirect",
+            "Shred"
+          ]
+        },
+        {
+          "name": "Razor Tendrils",
+          "count": 1,
+          "range": null,
+          "attacks": 6,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Spore Gun",
+          "options": [
+            {
+              "text": "Spore Carrier (Spawn(Spores [5]))",
+              "cost": 25,
+              "rules_granted": [
+                "Spawn(Spores [5]"
+              ],
+              "weapon": {
+                "name": "Spore Carrier",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Spawn(Spores [5]"
+                ]
+              }
+            },
+            {
+              "text": "Massive Spore Carrier (Spawn(Massive Spores [3]))",
+              "cost": 110,
+              "rules_granted": [
+                "Spawn(Massive Spores [3]"
+              ],
+              "weapon": {
+                "name": "Massive Spore Carrier",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Spawn(Massive Spores [3]"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Shredder Gun Array (18\", A4, Rending)",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Shredder Gun Array",
+                "count": 1,
+                "range": 18,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Spitter Gun Array (24\", A2, Blast(3))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Spitter Gun Array",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3"
+                ]
+              }
+            },
+            {
+              "text": "Barb Cannon Array (30\", A2, AP(2), Blast(3))",
+              "cost": 110,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Barb Cannon Array",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Acid Launcher Array (30\", A2, AP(2), Deadly(3), Unstoppable)",
+              "cost": 115,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Acid Launcher Array",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Battle Pheromones (Unpredictable Fighter Mark)",
+              "cost": 30,
+              "rules_granted": [
+                "Unpredictable Fighter Mark"
+              ],
+              "weapon": {
+                "name": "Battle Pheromones",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Unpredictable Fighter Mark"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hive Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 645,
+      "tough": 18,
+      "special_rules": [
+        "Fear(3)",
+        "Fearless",
+        "Hive Bond",
+        "Ravage(12)",
+        "Tough(18)"
+      ],
+      "weapons": [
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 6,
+          "ap": 2,
+          "special_rules": []
+        },
+        {
+          "name": "Titanic Heavy Claws",
+          "count": 1,
+          "range": null,
+          "attacks": 18,
+          "ap": 2,
+          "special_rules": [
+            "Rupture"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Psy-Barrier (Resistance)",
+              "cost": 60,
+              "rules_granted": [
+                "Resistance"
+              ],
+              "weapon": {
+                "name": "Psy-Barrier",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Resistance"
+                ]
+              }
+            },
+            {
+              "text": "Bio-Recovery (Regeneration)",
+              "cost": 65,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": {
+                "name": "Bio-Recovery",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Regeneration"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Titanic Heavy Claw",
+          "options": [
+            {
+              "text": "AP(2), Rupture)",
+              "cost": 65,
+              "rules_granted": [
+                "2"
+              ],
+              "weapon": {
+                "name": "AP",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Warrior Emissary",
+          "options": [
+            {
+              "text": "Psychic Emissary (Caster(4))",
+              "cost": 50,
+              "rules_granted": [
+                "Caster(4"
+              ],
+              "weapon": {
+                "name": "Psychic Emissary",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Caster(4"
+                ]
+              }
+            },
+            {
+              "text": "Carrier Titan (Tough(6), Transport(21))",
+              "cost": 165,
+              "rules_granted": [
+                "Tough(6"
+              ],
+              "weapon": {
+                "name": "Carrier Titan",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Tough(6"
+                ]
+              }
+            },
+            {
+              "text": "Winged Titan (Flying, Tough(6))",
+              "cost": 165,
+              "rules_granted": [
+                "Flying",
+                "Tough(6"
+              ],
+              "weapon": {
+                "name": "Winged Titan",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Flying",
+                  "Tough(6"
+                ]
+              }
+            },
+            {
+              "text": "Deadly(3), Takedown), Tough(3))",
+              "cost": 220,
+              "rules_granted": [
+                "3"
+              ],
+              "weapon": {
+                "name": "Deadly",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "3"
+                ]
+              }
+            },
+            {
+              "text": "Bane), Tough(6))",
+              "cost": 285,
+              "rules_granted": [
+                "6"
+              ],
+              "weapon": {
+                "name": "Tough",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "6"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rapacious Beast",
+      "size": 1,
+      "quality": 4,
+      "defense": 2,
+      "base_points": 225,
+      "tough": 6,
+      "special_rules": [
+        "Aircraft",
+        "Fearless",
+        "Hive Bond",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Caustic Cannon",
+          "count": 1,
+          "range": 12,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": [
+            "Blast(3)",
+            "Reliable"
+          ]
+        },
+        {
+          "name": "Spore Bombs",
+          "count": 1,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": [
+            "Blast(6)",
+            "Shred",
+            "Strafing"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Bio-Recovery (Regeneration)",
+              "cost": 20,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": {
+                "name": "Bio-Recovery",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Regeneration"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Caustic Cannon",
+          "options": [
+            {
+              "text": "Twin Barb Guns (30\", A2, AP(2), Blast(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Barb Guns",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(2"
+                ]
+              }
+            },
+            {
+              "text": "Twin Acid Launchers (30\", A2, AP(3), Deadly(3), Unstoppable)",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Acid Launchers",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(3"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Spore Bomb",
+          "options": [
+            {
+              "text": "Stinger Spitter (18\", A3, Rupture)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Stinger Spitter",
+                "count": 1,
+                "range": 18,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "Rupture"
+                ]
+              }
+            },
+            {
+              "text": "Missile Bugs (36\", A2, AP(3), Unstoppable)",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Missile Bugs",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "AP(3"
+                ]
+              }
+            },
+            {
+              "text": "Spawn(Spores [5])",
+              "cost": 80,
+              "rules_granted": [
+                "Spores [5]"
+              ],
+              "weapon": {
+                "name": "Spawn",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Spores [5]"
+                ]
+              }
+            },
+            {
+              "text": "Spawn(Massive Spores [3])",
+              "cost": 165,
+              "rules_granted": [
+                "Massive Spores [3]"
+              ],
+              "weapon": {
+                "name": "Spawn",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Massive Spores [3]"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Druzhak",
+      "size": 1,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 115,
+      "tough": 6,
+      "special_rules": [
+        "Hero",
+        "Hive Bond",
+        "Predator Fighter",
+        "Tough(6)",
+        "Unique"
+      ],
+      "weapons": [
+        {
+          "name": "Carapace Fist",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": 4,
+          "special_rules": []
+        },
+        {
+          "name": "Fierceclaw Sword",
+          "count": 1,
+          "range": null,
+          "attacks": 6,
+          "ap": 1,
+          "special_rules": [
+            "Rupture"
+          ]
+        }
+      ],
+      "upgrade_groups": []
+    },
+    {
+      "name": "Vradhez",
+      "size": 1,
+      "quality": 3,
+      "defense": 4,
+      "base_points": 125,
+      "tough": 3,
+      "special_rules": [
+        "Caster(2)",
+        "Fast",
+        "Furious Aura",
+        "Hero",
+        "Hive Bond",
+        "Scout",
+        "Strider",
+        "Tough(3)",
+        "Unique"
+      ],
+      "weapons": [
+        {
+          "name": "Twin Stingers",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": [
+            "Rupture"
+          ]
+        }
+      ],
+      "upgrade_groups": []
+    }
+  ],
+  "total_units": 37
+}

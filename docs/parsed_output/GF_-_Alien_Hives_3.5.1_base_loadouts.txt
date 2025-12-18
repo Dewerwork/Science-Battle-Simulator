@@ -1,0 +1,110 @@
+Hive Lord [1] Q3+ D2+ | 345pts | Fear(2), Fearless, Hero, Hive Bond, Tough(12)
+18" Shredder Cannon (A4, Rending), 2x Heavy Razor Claws (A3, AP(1)), Stomp (A4, AP(1))
+
+Prime Warrior [1] Q4+ D4+ | 80pts | Hero, Hive Bond, Tough(6)
+18" Shredder Gun (A2, Rending), Heavy Razor Claws (A3, AP(1))
+
+Snatcher Lord [1] Q3+ D4+ | 80pts | Fast, Hero, Hive Bond, Scout, Strider, Tough(3)
+Heavy Claws (A4, AP(1), Rending)
+
+Grunt Veteran [1] Q5+ D5+ | 20pts | Hero, Hive Bond, Strider, Tough(3)
+Razor Claws (A2)
+
+Assault Grunts [10] Q5+ D5+ | 110pts | 10x Fast, 10x Hive Bond, 10x Strider
+10x Razor Claws (A2)
+
+Shooter Grunts [10] Q5+ D5+ | 110pts | 10x Hive Bond, 10x Strider
+10x 6" Bio-Spiners (A2, AP(1)), 10x Razor Claws (A1)
+
+Psycho-Grunts [10] Q5+ D5+ | 110pts | 10x Hive Bond, 10x Resistance, 10x Strider
+10x Rending Claws (A1, Rending)
+
+Winged Grunts [10] Q5+ D5+ | 130pts | 10x Ambush, 10x Flying, 10x Hive Bond
+10x 6" Bio-Spiners (A2, AP(1)), 10x Razor Claws (A1)
+
+Support Grunts [3] Q5+ D5+ | 140pts | 3x Hive Bond, 3x Relentless, 3x Strider
+3x 24" Ravager Bio-Cannons (A3, Indirect, Rupture), 3x Razor Claws (A1)
+
+Soul-Snatchers [5] Q3+ D4+ | 160pts | 5x Fast, 5x Hive Bond, 5x Scout, 5x Strider
+5x Heavy Claws (A2, AP(1), Rending)
+
+Hive Swarms [3] Q5+ D6+ | 70pts | 3x Hive Bond, 3x Strider, 3x Tough(3)
+3x Swarm Attacks (A3, Bane)
+
+Hive Warriors [3] Q4+ D4+ | 110pts | 3x Hive Bond, 3x Tough(3)
+6x Razor Claws (A2)
+
+Ravenous Beasts [3] Q4+ D4+ | 135pts | 3x Fast, 3x Hive Bond, 3x Strider, 3x Tough(3)
+6x Razor Claws (A2)
+
+Venom Beasts [3] Q4+ D4+ | 150pts | 3x Hive Bond, 3x Regeneration, 3x Tough(3)
+3x 12" Poison Spurts (A1, Blast(3), Bane), 3x Toxin Claws (A1, Bane)
+
+Hive Guardians [3] Q3+ D3+ | 150pts | 3x Hive Bond, 3x Relentless, 3x Tough(3)
+6x Razor Claws (A2)
+
+Shadow Leapers [3] Q3+ D4+ | 190pts | 3x Hive Bond, 3x Scout, 3x Stealth, 3x Strider, 3x Tough(3)
+6x Razor Claws (A2)
+
+Synapse Beasts [3] Q4+ D4+ | 200pts | 3x Caster Group, 3x Hive Bond, 3x Resistance, 3x Tough(3)
+3x 18" Psy-Blasts (A1, Blast(3)), 3x Psy-Shocks (A1)
+
+Spores [5] Q6+ D6+ | 75pts | 5x No Retreat, 5x Self-Destruct(2), 5x Slow
+5x Tendrils (A1)
+
+Massive Spores [3] Q6+ D6+ | 145pts | 3x No Retreat, 3x Self-Destruct(6), 3x Slow, 3x Tough(3)
+3x Tendrils (A3)
+
+Shadow Hunter [1] Q3+ D4+ | 150pts | Fear(1), Hive Bond, Infiltrate, Stealth, Strider, Tough(6)
+2x Heavy Razor Claws (A3, AP(1))
+
+Mortar Beast [1] Q4+ D3+ | 155pts | Fear(1), Hive Bond, Tough(6)
+24" Spore Gun (A2, Blast(3), Indirect, Shred), Heavy Razor Claws (A3, AP(1)), Stomp (A2, AP(1))
+
+Synapse Tyrant [1] Q4+ D4+ | 180pts | Caster(3), Fear(1), Hive Bond, Resistance, Tough(6)
+18" Heavy Psy-Stinger (A4, AP(1), Rupture), Psy-Shock (A3)
+
+Flamer Beast [1] Q4+ D3+ | 185pts | Fear(1), Hive Bond, Tough(6)
+18" Spit Flames (A2, AP(1), Blast(3), Reliable), Heavy Razor Claws (A3, AP(1)), Stomp (A2, AP(1))
+
+Invasion Carrier Spore [1] Q4+ D3+ | 120pts | Ambush, Hive Bond, Slow, Tough(6), Transport(11)
+Razor Tendrils (A6, AP(1))
+
+Carnivo-Rex [1] Q4+ D2+ | 280pts | Fear(2), Fearless, Hive Bond, Tough(12)
+3x Heavy Razor Claws (A3, AP(1)), Stomp (A4, AP(1))
+
+Toxico-Rex [1] Q4+ D2+ | 365pts | Fear(2), Fearless, Hive Bond, Regeneration, Tough(12)
+12" Acid Spurt (A2, Blast(3), Bane), Stomp (A4, AP(1)), Whip Limbs (A8, Bane, Precise)
+
+Psycho-Rex [1] Q4+ D2+ | 400pts | Caster(3), Fear(2), Fearless, Hive Bond, Resistance, Tough(12)
+18" Heavy Psy-Stinger (A4, AP(1), Rupture), Heavy Razor Claws (A6, AP(1)), Stomp (A4, AP(1))
+
+Hive Burrower [1] Q4+ D2+ | 385pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x Heavy Razor Claws (A3, AP(1)), Stomp (A5, AP(2))
+
+Tyrant Heavy Beast [1] Q4+ D2+ | 440pts | Fear(3), Fearless, Hive Bond, Tough(15)
+24" Bio-Pod (A12), 18" Stinger Launcher (A6, Rupture), Stomp (A5, AP(2))
+
+Spawning Heavy Beast [1] Q4+ D2+ | 445pts | Fear(3), Fearless, Hive Bond, Tough(15)
+3x 18" Stinger Launchers (A6, Rupture), Heavy Razor Claws (A3, AP(1)), Stomp (A5, AP(2))
+
+Devourer Heavy Beast [1] Q4+ D2+ | 430pts | Fear(3), Fearless, Hive Bond, Tough(15)
+12" Devouring Tongue (A3, AP(2), Deadly(3), Takedown), 3x Heavy Razor Claws (A3, AP(1)), Stomp (A5, AP(2))
+
+Artillery Heavy Beast [1] Q4+ D2+ | 570pts | Fear(3), Fearless, Hive Bond, Tough(15)
+36" Shredder Bio-Artillery (A3, Blast(6), Indirect, Rending), Stomp (A5, AP(2))
+
+Invasion Artillery Spore [1] Q4+ D3+ | 170pts | Ambush, Artillery, Hive Bond, Tough(6)
+24" Spore Gun (A2, Blast(3), Indirect, Shred), Razor Tendrils (A6, AP(1))
+
+Hive Titan [1] Q3+ D2+ | 645pts | Fear(3), Fearless, Hive Bond, Ravage(12), Tough(18)
+Stomp (A6, AP(2)), Titanic Heavy Claws (A18, AP(2), Rupture)
+
+Rapacious Beast [1] Q4+ D2+ | 225pts | Aircraft, Fearless, Hive Bond, Tough(6)
+12" Caustic Cannon (A2, Blast(3), Reliable), Spore Bombs (A1, Blast(6), Shred, Strafing)
+
+Druzhak [1] Q4+ D4+ | 115pts | Hero, Hive Bond, Predator Fighter, Tough(6), Unique
+Carapace Fist (A2, AP(4)), Fierceclaw Sword (A6, AP(1), Rupture)
+
+Vradhez [1] Q3+ D4+ | 125pts | Caster(2), Fast, Furious Aura, Hero, Hive Bond, Scout, Strider, Tough(3), Unique
+Twin Stingers (A2, AP(1), Rupture)
