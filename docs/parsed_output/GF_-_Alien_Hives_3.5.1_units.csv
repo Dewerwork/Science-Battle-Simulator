@@ -1,0 +1,38 @@
+Name,Size,Quality,Defense,Tough,Points,Special Rules,Weapons,Upgrade Groups
+Hive Lord,1,3+,2+,12,345,"Fear(2), Fearless, Hero, Hive Bond, Tough(12)","18"" Shredder Cannon (A4, Rending); 2x Heavy Razor Claws (A3, AP(1)); Stomp (A4, AP(1))",Upgrade with one; Replace any Heavy Razor Claw; Replace Shredder Cannon; Upgrade with; Upgrade with one
+Prime Warrior,1,4+,4+,6,80,"Hero, Hive Bond, Tough(6)","18"" Shredder Gun (A2, Rending); Heavy Razor Claws (A3, AP(1))",Upgrade with one; Replace Shredder Gun; Upgrade with; Replace any Heavy Razor Claw
+Snatcher Lord,1,3+,4+,3,80,"Fast, Hero, Hive Bond, Scout, Strider, Tough(3)","Heavy Claws (A4, AP(1), Rending)",Upgrade with one
+Grunt Veteran,1,5+,5+,3,20,"Hero, Hive Bond, Strider, Tough(3)",Razor Claws (A2),Upgrade with one; Replace Razor Claw; Upgrade with one; Upgrade with one; Upgrade with one
+Assault Grunts,10,5+,5+,-,110,"Fast, Hive Bond, Strider",10x Razor Claws (A2),Replace up to two Razor Claws; Upgrade all models with one
+Shooter Grunts,10,5+,5+,-,110,"Hive Bond, Strider","10x 6"" Bio-Spiners (A2, AP(1)); 10x Razor Claws (A1)",Replace all Bio-Spiners; Replace up to two Bio-Spiners; Upgrade all models with one
+Psycho-Grunts,10,5+,5+,-,110,"Hive Bond, Resistance, Strider","10x Rending Claws (A1, Rending)",Upgrade one model with; Upgrade all models with one
+Winged Grunts,10,5+,5+,-,130,"Ambush, Flying, Hive Bond","10x 6"" Bio-Spiners (A2, AP(1)); 10x Razor Claws (A1)",Replace all Bio-Spiners; Replace up to two Bio-Spiners; Upgrade all models with one
+Support Grunts,3,5+,5+,-,140,"Hive Bond, Relentless, Strider","3x 24"" Ravager Bio-Cannons (A3, Indirect, Rupture); 3x Razor Claws (A1)",Replace all Ravager Bio-Cannons; Upgrade all models with one
+Soul-Snatchers,5,3+,4+,-,160,"Fast, Hive Bond, Scout, Strider","5x Heavy Claws (A2, AP(1), Rending)",Upgrade one model with
+Hive Swarms,3,5+,6+,3,70,"Hive Bond, Strider, Tough(3)","3x Swarm Attacks (A3, Bane)",Upgrade all models with
+Hive Warriors,3,4+,4+,3,110,"Hive Bond, Tough(3)",6x Razor Claws (A2),Any model may replace one Razor Claws; Replace one Ravager Gun; Upgrade all models with; Upgrade one model with; Replace any Razor Claws; Replace one Razor Claws
+Ravenous Beasts,3,4+,4+,3,135,"Fast, Hive Bond, Strider, Tough(3)",6x Razor Claws (A2),Upgrade all models with; Replace any Razor Claws; Replace one Razor Claws
+Venom Beasts,3,4+,4+,3,150,"Hive Bond, Regeneration, Tough(3)","3x 12"" Poison Spurts (A1, Blast(3), Bane); 3x Toxin Claws (A1, Bane)",Replace all Poison Spurts and Toxin Claws; Upgrade one model with
+Hive Guardians,3,3+,3+,3,150,"Hive Bond, Relentless, Tough(3)",6x Razor Claws (A2),Any model may replace one Razor Claws; Upgrade one model with; Replace any Razor Claws; Replace one Razor Claws
+Shadow Leapers,3,3+,4+,3,190,"Hive Bond, Scout, Stealth, Strider, Tough(3)",6x Razor Claws (A2),Replace any Razor Claws; Replace one Razor Claws
+Synapse Beasts,3,4+,4+,3,200,"Caster Group, Hive Bond, Resistance, Tough(3)","3x 18"" Psy-Blasts (A1, Blast(3)); 3x Psy-Shocks (A1)",
+Spores,5,6+,6+,-,75,"No Retreat, Self-Destruct(2), Slow",5x Tendrils (A1),
+Massive Spores,3,6+,6+,3,145,"No Retreat, Self-Destruct(6), Slow, Tough(3)",3x Tendrils (A3),
+Shadow Hunter,1,3+,4+,6,150,"Fear(1), Hive Bond, Infiltrate, Stealth, Strider, Tough(6)","2x Heavy Razor Claws (A3, AP(1))",Replace any Heavy Razor Claw; Upgrade with one
+Mortar Beast,1,4+,3+,6,155,"Fear(1), Hive Bond, Tough(6)","24"" Spore Gun (A2, Blast(3), Indirect, Shred); Heavy Razor Claws (A3, AP(1)); Stomp (A2, AP(1))",Replace Spore Gun
+Synapse Tyrant,1,4+,4+,6,180,"Caster(3), Fear(1), Hive Bond, Resistance, Tough(6)","18"" Heavy Psy-Stinger (A4, AP(1), Rupture); Psy-Shock (A3)",Replace Heavy Psy-Stinger
+Flamer Beast,1,4+,3+,6,185,"Fear(1), Hive Bond, Tough(6)","18"" Spit Flames (A2, AP(1), Blast(3), Reliable); Heavy Razor Claws (A3, AP(1)); Stomp (A2, AP(1))",
+Invasion Carrier Spore,1,4+,3+,6,120,"Ambush, Hive Bond, Slow, Tough(6), Transport(11)","Razor Tendrils (A6, AP(1))",Upgrade with one; Upgrade with
+Carnivo-Rex,1,4+,2+,12,280,"Fear(2), Fearless, Hive Bond, Tough(12)","3x Heavy Razor Claws (A3, AP(1)); Stomp (A4, AP(1))",Replace any Heavy Razor Claws; Upgrade with; Replace 3x Heavy Razor Claws; Replace one Heavy Razor Claw
+Toxico-Rex,1,4+,2+,12,365,"Fear(2), Fearless, Hive Bond, Regeneration, Tough(12)","12"" Acid Spurt (A2, Blast(3), Bane); Stomp (A4, AP(1)); Whip Limbs (A8, Bane, Precise)",Upgrade with one
+Psycho-Rex,1,4+,2+,12,400,"Caster(3), Fear(2), Fearless, Hive Bond, Resistance, Tough(12)","18"" Heavy Psy-Stinger (A4, AP(1), Rupture); Heavy Razor Claws (A6, AP(1)); Stomp (A4, AP(1))",Replace Heavy Psy-Stinger; Replace Heavy Psy-Stinger
+Hive Burrower,1,4+,2+,15,385,"Ambush, Fear(3), Fearless, Hive Bond, Tough(15)","3x Heavy Razor Claws (A3, AP(1)); Stomp (A5, AP(2))",Replace 3x Heavy Razor Claw; Replace Deep Deployment; Upgrade with one; Replace any Heavy Razor Claws
+Tyrant Heavy Beast,1,4+,2+,15,440,"Fear(3), Fearless, Hive Bond, Tough(15)","24"" Bio-Pod (A12); 18"" Stinger Launcher (A6, Rupture); Stomp (A5, AP(2))",Upgrade with; Replace any Stinger Launcher; Replace Bio-Pod
+Spawning Heavy Beast,1,4+,2+,15,445,"Fear(3), Fearless, Hive Bond, Tough(15)","3x 18"" Stinger Launchers (A6, Rupture); Heavy Razor Claws (A3, AP(1)); Stomp (A5, AP(2))",Upgrade with; Replace any Stinger Launcher; Upgrade with one; Upgrade with
+Devourer Heavy Beast,1,4+,2+,15,430,"Fear(3), Fearless, Hive Bond, Tough(15)","12"" Devouring Tongue (A3, AP(2), Deadly(3), Takedown); 3x Heavy Razor Claws (A3, AP(1)); Stomp (A5, AP(2))",Upgrade with; Replace any Heavy Razor Claws
+Artillery Heavy Beast,1,4+,2+,15,570,"Fear(3), Fearless, Hive Bond, Tough(15)","36"" Shredder Bio-Artillery (A3, Blast(6), Indirect, Rending); Stomp (A5, AP(2))",Upgrade with; Replace Shredder Bio-Artillery
+Invasion Artillery Spore,1,4+,3+,6,170,"Ambush, Artillery, Hive Bond, Tough(6)","24"" Spore Gun (A2, Blast(3), Indirect, Shred); Razor Tendrils (A6, AP(1))",Replace Spore Gun; Upgrade with one; Upgrade with
+Hive Titan,1,3+,2+,18,645,"Fear(3), Fearless, Hive Bond, Ravage(12), Tough(18)","Stomp (A6, AP(2)); Titanic Heavy Claws (A18, AP(2), Rupture)",Upgrade with one; Replace Titanic Heavy Claw; Replace Warrior Emissary
+Rapacious Beast,1,4+,2+,6,225,"Aircraft, Fearless, Hive Bond, Tough(6)","12"" Caustic Cannon (A2, Blast(3), Reliable); Spore Bombs (A1, Blast(6), Shred, Strafing)",Upgrade with; Replace Caustic Cannon; Replace Spore Bomb
+Druzhak,1,4+,4+,6,115,"Hero, Hive Bond, Predator Fighter, Tough(6), Unique","Carapace Fist (A2, AP(4)); Fierceclaw Sword (A6, AP(1), Rupture)",
+Vradhez,1,3+,4+,3,125,"Caster(2), Fast, Furious Aura, Hero, Hive Bond, Scout, Strider, Tough(3), Unique","Twin Stingers (A2, AP(1), Rupture)",
