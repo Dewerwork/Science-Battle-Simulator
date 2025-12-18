@@ -1,0 +1,2052 @@
+UNUSED MATRIX RULES REPORT
+================================================================================
+
+Total rules in matrix: 522
+Rules used in unit loadouts: 54
+Rules UNUSED: 468
+
+================================================================================
+UNUSED RULES LIST
+================================================================================
+
+ADVANCED_SIGHT
+    Name: Advanced Sight (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Prime Brothers
+
+AGILE
+    Name: Agile
+    Notes: Base Rule - Movement
+
+AMBUSH
+    Name: Ambush
+    Notes: Base Rule - Movement
+
+AMBUSH_AURA
+    Name: Ambush Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans, Robot Legions, Wormhole Daemons ...
+
+AMBUSH_BEACON
+    Name: Ambush Beacon
+    Notes: Type: Movement. Armies: DAO Union, Eternal Dynasty, Saurian Starhost
+
+AMBUSH_RE_DEPLOYMENT
+    Name: Ambush Re-Deployment
+    Notes: Type: Movement. Armies: Elven Jesters
+
+AMMO_BOOST
+    Name: Ammo Boost (1)
+    Notes: Type: Aura Special Rules. Armies: Goblin Reclaimers
+
+ANIMATE_SPIRIT
+    Name: Animate Spirit (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Alien Hives
+
+ARMOR
+    Name: Armor(X)
+    Notes: Base Rule - Unit
+
+ARMOR_RUNE
+    Name: Armor Rune  (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+ART_OF_PAIN
+    Name: Art of Pain (2)
+    Notes: Type: Aura Special Rules. Armies: Dark Elf Raiders
+
+ASPHYXIATING_FOG
+    Name: Asphyxiating Fog (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Elven Jesters
+
+AURA_OF_PEACE
+    Name: Aura of Peace (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: DAO Union, Rebel Guerrillas
+
+AURA_OF_PESTILENCE
+    Name: Aura of Pestilence (1)
+    Notes: Type: Aura Special Rules. Armies: Plague Disciples, Wormhole Daemons of Plague
+
+BAD_OMEN
+    Name: Bad Omen (2)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Rebel Guerrillas
+
+BAD_SHOT
+    Name: Bad Shot
+    Notes: Base Rule - Attack
+
+BANE_IN_MELEE_AURA
+    Name: Bane in Melee Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Blood Brothers, Blood Prime B...
+
+BANE_IN_MELEE_BUFF
+    Name: Bane in Melee Buff
+    Grant Category: BUFF
+    Notes: Type: Weapon. Armies: Human Defense Force
+
+BANE_MARK
+    Name: Bane Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Saurian Starhost
+
+BANE_WHEN_SHOOTING_AURA
+    Name: Bane when Shooting Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Blood Brothers, Blood Prime B...
+
+BANISHING_SIGIL
+    Name: Banishing Sigil (2)
+    Notes: Type: Aura Special Rules. Armies: Knight Brothers, Knight Prime Brothers
+
+BASH
+    Name: Bash
+    Notes: Type: Weapon. Armies: Infected Colonies
+
+BATTLEBORN
+    Name: Battleborn
+    Notes: Base Rule - Morale
+
+BATTLE_RUNE
+    Name: Battle Rune  (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+BEAUTIFUL_PAIN
+    Name: Beautiful Pain (1)
+    Notes: Type: Aura Special Rules. Armies: Lust Disciples, Wormhole Daemons of Lust
+
+BIO_DISPLACER
+    Name: Bio-Displacer (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+BIO_HORROR
+    Name: Bio-Horror (1)
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies
+
+BLADES_OF_DISCORD
+    Name: Blades of Discord (1)
+    Notes: Type: Aura Special Rules. Armies: Elven Jesters
+
+BLAST
+    Name: Blast(X)
+    Notes: Base Rule - Weapon
+
+BLESSED_AMMO
+    Name: Blessed Ammo (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Dark Brothers, Dark Prime Bro...
+
+BLESSED_VIRUS
+    Name: Blessed Virus (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Plague Disciples, Wormhole Daemons of Plague
+
+BLESSING_OF_SOULS
+    Name: Blessing of Souls (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: High Elf Fleets
+
+BLISSFUL_DANCE
+    Name: Blissful Dance (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Lust Disciples, Wormhole Daemons of Lust
+
+BLOODBORN
+    Name: Bloodborn
+    Notes: Type: Army-Wide Special Rules. Armies: Blood Brothers, Blood Prime Brothers
+
+BLOOD_DOME
+    Name: Blood Dome (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Blood Brothers, Blood Prime Brothers
+
+BLOOD_SIGHT
+    Name: Blood Sight (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Blood Brothers, Blood Prime Brothers
+
+BLOOD_TRAUMA
+    Name: Blood Trauma (1)
+    Notes: Type: Aura Special Rules. Armies: Blood Brothers
+
+BLOOD_WOUND
+    Name: Blood Wound (1)
+    Notes: Type: Aura Special Rules. Armies: Blood Prime Brothers
+
+BOOM
+    Name: Boom! (2)
+    Notes: Type: Aura Special Rules. Armies: Goblin Reclaimers
+
+BOOM!
+
+BOUNDING
+    Name: Bounding
+    Notes: Type: Movement. Armies: Eternal Dynasty, Goblin Reclaimers, Human Inquisition, J...
+
+BOUNDING_AURA
+    Name: Bounding Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Human Inquisition, Plague Disciples, Wormhole ...
+
+BRAIN_BURST
+    Name: Brain Burst (3)
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+BRAIN_INFESTATION
+    Name: Brain Infestation (2)
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies
+
+BREAK
+    Name: Break
+    Notes: Type: Weapon. Armies: Wormhole Daemons of War
+
+BREAKING_RUNE
+    Name: Breaking Rune  (1)
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+BREATH_ATTACK
+    Name: Breath Attack
+    Notes: Type: Weapon. Armies: Alien Hives, Saurian Starhost
+
+BREATH_OF_CHANGE
+    Name: Breath of Change (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Wormhole Daemons of Change
+
+BRUTAL_FIGHTER
+    Name: Brutal Fighter
+    Notes: Type: Weapon. Armies: Human Inquisition
+
+BRUTAL_MASSACRE
+    Name: Brutal Massacre (2)
+    Notes: Type: Aura Special Rules. Armies: War Disciples, Wormhole Daemons of War
+
+BURN_THE_HERETIC
+    Name: Burn the Heretic (1)
+    Grant Category: DEBUFF
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters
+
+BURST_OF_RAGE
+    Name: Burst of Rage (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Blood Brothers, Blood Prime Brothers
+
+BUTCHER
+    Name: Butcher
+    Notes: Type: Weapon. Armies: Wormhole Daemons of Plague
+
+CALCULATED_FORESIGHT
+    Name: Calculated Foresight (2)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Human Defense Force, Human Inquisition, Titan ...
+
+CASTING
+    Name: Casting(X)
+    Notes: Base Rule - Magic
+
+CASTING_DEBUFF
+    Name: Casting Debuff
+    Grant Category: DEBUFF
+    Notes: Type: Unit. Armies: Blessed Sisters, Human Inquisition, Wormhole Daemons of Chan...
+
+CELESTIAL_ROAR
+    Name: Celestial Roar (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Saurian Starhost
+
+CEREBRAL_TRAUMA
+    Name: Cerebral Trauma (1)
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers
+
+CHANGEBOUND
+    Name: Changebound
+    Notes: Type: Defense. Armies: Change Disciples, Titan Lords, Wormhole Daemons of Change
+
+CHANGEBOUND_BOOST
+    Name: Changebound Boost
+    Grant Category: BOOST
+    Notes: Type: Defense. Armies: Wormhole Daemons of Change
+
+CHANGEBOUND_BOOST_AURA
+    Name: Changebound Boost Aura
+    Grant Category: AURA
+    Notes: Type: Unit. Armies: Change Disciples, Wormhole Daemons of Change
+
+CHANGE_BOON
+    Name: Change Boon (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Wormhole Daemons of Change
+
+CLAN_WARRIOR_BOOST_AURA
+    Name: Clan Warrior Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+CLEAVING_RUNE
+    Name: Cleaving Rune  (3)
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+COMBAT_ECSTASY
+    Name: Combat Ecstasy (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Lust Disciples, Wormhole Daemons of Lust
+
+COORDINATE
+    Name: Coordinate
+    Notes: Type: Unit. Armies: Human Defense Force
+
+COORDINATED_AGGRESSION
+    Name: Coordinated Aggression (3)
+    Notes: Type: Aura Special Rules. Armies: DAO Union
+
+CORRODE_WEAPONS
+    Name: Corrode Weapons (3)
+    Notes: Type: Aura Special Rules. Armies: Machine Cult
+
+COUNTER_ATTACK
+    Name: Counter-Attack
+    Notes: Type: Weapon. Armies: Rebel Guerrillas, Wormhole Daemons of Lust
+
+COUNTER_ATTACK_AURA
+    Name: Counter-Attack Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: DAO Union, Eternal Dynasty, Saurian Starhost, ...
+
+COURAGE_AURA
+    Name: Courage Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Blessed Sisters, Blood Brothe...
+
+CRACKLING_BOLT
+    Name: Crackling Bolt (3)
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+CREATOR_OF_ILLUSIONS
+    Name: Creator of Illusions (1)
+    Grant Category: DEBUFF
+    Notes: Type: Aura Special Rules. Armies: High Elf Fleets
+
+CROSSING_ATTACK
+    Name: Crossing Attack
+    Notes: Type: Weapon. Armies: High Elf Fleets, Jackals, Machine Cult
+
+CROSSING_BARRAGE
+    Name: Crossing Barrage
+    Notes: Type: Weapon. Armies: Orc Marauders
+
+CROSSING_STRIKE
+    Name: Crossing Strike
+    Notes: Type: Weapon. Armies: Jackals, Saurian Starhost
+
+CRUSH
+    Name: Crush
+    Notes: Type: Weapon. Armies: Ratmen Clans, Wormhole Daemons of War
+
+CRUSHING_FORCE
+    Name: Crushing Force (3)
+    Notes: Type: Aura Special Rules. Armies: Machine Cult
+
+CURSED_STRIDE
+    Name: Cursed Stride (1)
+    Notes: Type: Aura Special Rules. Armies: Havoc Brothers
+
+CYBORG_ASSAULT
+    Name: Cyborg Assault (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Machine Cult
+
+DANGEROUS_TERRAIN_DEBUFF
+    Name: Dangerous Terrain Debuff
+    Notes: Type: Weapon. Armies: Change Disciples, Goblin Reclaimers, Havoc Brothers, Lust ...
+
+DARKBORN
+    Name: Darkborn
+    Notes: Type: Army-Wide Special Rules. Armies: Dark Brothers, Dark Prime Brothers
+
+DARK_ASSAULT
+    Name: Dark Assault (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Havoc Brothers
+
+DARK_DOME
+    Name: Dark Dome (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Dark Brothers, Dark Prime Brothers
+
+DARK_SIGHT
+    Name: Dark Sight (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Dark Brothers, Dark Prime Brothers
+
+DARK_TRAUMA
+    Name: Dark Trauma (1)
+    Notes: Type: Aura Special Rules. Armies: Dark Brothers
+
+DARK_WOUND
+    Name: Dark Wound (1)
+    Notes: Type: Aura Special Rules. Armies: Dark Prime Brothers
+
+DEADLY
+    Name: Deadly(X)
+    Notes: Base Rule - Weapon
+
+DEADLY_SURGE
+    Name: Deadly Surge (2)
+    Notes: Type: Aura Special Rules. Armies: DAO Union
+
+DEATHSTRIKE
+    Name: Deathstrike
+    Notes: Type: Defense. Armies: Infected Colonies
+
+DEATH_BOLT
+    Name: Death Bolt (1)
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+DECELERATION_RUNE
+    Name: Deceleration Rune  (3)
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+DEEP_HYPNOSIS
+    Name: Deep Hypnosis (2)
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+DEEP_MEDITATION
+    Name: Deep Meditation (3)
+    Notes: Type: Aura Special Rules. Armies: Rebel Guerrillas
+
+DEFENSE_DEBUFF
+    Name: Defense Debuff
+    Notes: Type: Weapon. Armies: Ratmen Clans
+
+DEFENSIVE_GROWTH_AURA
+    Name: Defensive Growth Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Human Inquisition
+
+DELAYED_ACTION
+    Name: Delayed Action
+    Notes: Type: Unit. Armies: Human Inquisition, Titan Lords
+
+DEMOLISH
+    Name: Demolish
+    Notes: Type: Weapon. Armies: Blood Prime Brothers, Dark Prime Brothers, Knight Prime Br...
+
+DESTRUCTIVE
+    Name: Destructive
+    Notes: Type: Weapon. Armies: Jackals, Robot Legions
+
+DESTRUCTIVE_FRENZY
+    Name: Destructive Frenzy
+    Notes: Type: Unit. Armies: Wormhole Daemons of War
+
+DEVASTATING_FRENZY
+    Name: Devastating Frenzy
+    Notes: Type: Unit. Armies: Dwarf Guilds
+
+DEVASTATING_STRIKE
+    Name: Devastating Strike (3)
+    Notes: Type: Aura Special Rules. Armies: DAO Union
+
+DEVOUT
+    Name: Devout
+    Notes: Base Rule - Faction
+
+DEVOUT_BOOST
+    Name: Devout Boost
+    Grant Category: BOOST
+    Notes: Type: Weapon. Armies: Blessed Sisters
+
+DEVOUT_BOOST_AURA
+    Name: Devout Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters
+
+DIFFICULT_TERRAIN_DEBUFF
+    Name: Difficult Terrain Debuff
+    Notes: Type: Movement. Armies: Wormhole Daemons of Plague
+
+DISINTEGRATE
+    Name: Disintegrate
+    Notes: Type: Weapon. Armies: Saurian Starhost
+
+DOOM_STRIKE
+    Name: Doom Strike (2)
+    Notes: Type: Aura Special Rules. Armies: Knight Brothers, Knight Prime Brothers
+
+DRAGON_BREATH
+    Name: Dragon Breath (3)
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+DREAD_STRIKE
+    Name: Dread Strike (2)
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers
+
+ELDER_PROTECTION
+    Name: Elder Protection (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+ELECTRIC_TEMPEST
+    Name: Electric Tempest (1)
+    Notes: Type: Aura Special Rules. Armies: Human Defense Force, Human Inquisition, Titan ...
+
+ELEMENTAL_SEEKER
+    Name: Elemental Seeker (1)
+    Notes: Type: Aura Special Rules. Armies: High Elf Fleets
+
+ENERGY_SHIELD
+    Name: Energy Shield
+    Notes: Base Rule - Unit
+
+ENHANCE_SERUM
+    Name: Enhance Serum (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans
+
+ENTRENCHED_BUFF
+    Name: Entrenched Buff
+    Grant Category: BUFF
+    Notes: Type: Defense. Armies: Human Defense Force
+
+ETERNAL_FLAME
+    Name: Eternal Flame (2)
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters
+
+ETERNAL_GUIDANCE
+    Name: Eternal Guidance (3)
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+EVASIVE_AURA
+    Name: Evasive Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans
+
+EXPEL_THREAT
+    Name: Expel Threat (3)
+    Notes: Type: Aura Special Rules. Armies: Human Defense Force, Human Inquisition, Titan ...
+
+EXTENDED_BUFF_RANGE
+    Name: Extended Buff Range
+    Notes: Type: Unit. Armies: Human Defense Force
+
+FADE_IN_THE_DARK
+    Name: Fade in the Dark (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Dark Elf Raiders
+
+FANATIC
+    Name: Fanatic
+    Notes: Type: Army-Wide Special Rules. Armies: Soul-Snatcher Cults
+
+FAST
+    Name: Fast
+    Notes: Base Rule - Movement
+
+FAST_AURA
+    Name: Fast Aura
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters, Infected Colonies
+
+FATAL_SORROW
+    Name: Fatal Sorrow (3)
+    Notes: Type: Aura Special Rules. Armies: Elven Jesters
+
+FATEFUL_GUIDANCE
+    Name: Fateful Guidance (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Saurian Starhost
+
+FATIGUE_DEBUFF
+    Name: Fatigue Debuff
+    Notes: Type: Defense. Armies: Wormhole Daemons of War
+
+FEARLESS_AURA
+    Name: Fearless Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty, Wormhole Daemons of Change
+
+FERAL_STRIKE
+    Name: Feral Strike (3)
+    Notes: Type: Aura Special Rules. Armies: Jackals
+
+FEROCIOUS
+    Name: Ferocious
+    Notes: Type: Army-Wide Special Rules. Armies: Orc Marauders
+
+FEROCIOUS_BOOST
+    Name: Ferocious Boost
+    Grant Category: BOOST
+    Notes: Type: Weapon. Armies: Orc Marauders
+
+FEROCIOUS_BOOST_AURA
+    Name: Ferocious Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+FIERY_PROTECTION
+    Name: Fiery Protection (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: War Disciples, Wormhole Daemons of War
+
+FLAME_BOTS
+    Name: Flame Bots (2)
+    Notes: Type: Aura Special Rules. Armies: Robot Legions
+
+FLAME_OF_DESTRUCTION
+    Name: Flame of Destruction (1)
+    Notes: Type: Aura Special Rules. Armies: War Disciples, Wormhole Daemons of War
+
+FLYING
+    Name: Flying
+    Notes: Base Rule - Movement
+
+FOCUSED_DEFENDER
+    Name: Focused Defender (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers
+
+FOCUSED_SHOCK
+    Name: Focused Shock (1)
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans
+
+FORTIFIED_AURA
+    Name: Fortified Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters, DAO Union, Infected Colonies
+
+FORTIFIED_GROWTH
+    Name: Fortified Growth
+    Notes: Type: Special Rules. Armies: Wormhole Daemons of Plague
+
+FRACTURE
+    Name: Fracture
+    Notes: Type: Weapon. Armies: Human Defense Force
+
+FURIOUS_AURA
+    Name: Furious Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Alien Hives, Change Disciples, Dark Elf Raider...
+
+FURIOUS_MARK
+    Name: Furious Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Rebel Guerrillas
+
+GAUSS_BOTS
+    Name: Gauss Bots (3)
+    Notes: Type: Aura Special Rules. Armies: Robot Legions
+
+GODLY_THUNDER
+    Name: Godly Thunder (2)
+    Notes: Type: Aura Special Rules. Armies: Wolf Brothers, Wolf Prime Brothers
+
+GROUNDED_PRECISION_AURA
+    Name: Grounded Precision Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+GROUNDED_REINFORCEMENT_AURA
+    Name: Grounded Reinforcement Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+GROUNDED_STEALTH
+    Name: Grounded Stealth
+    Notes: Type: Defense. Armies: Machine Cult
+
+GUARDIAN_BOOST
+    Name: Guardian Boost
+    Grant Category: BOOST
+    Notes: Type: Defense. Armies: Custodian Brothers
+
+GUARDIAN_BOOST_AURA
+    Name: Guardian Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers
+
+GUARDIAN_PROTECTION
+    Name: Guardian Protection (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers
+
+GUERRILLA
+    Name: Guerrilla
+    Notes: Type: Movement. Armies: Rebel Guerrillas
+
+GUERRILLA_BOOST_AURA
+    Name: Guerrilla Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Rebel Guerrillas
+
+HARASSING
+    Name: Harassing
+    Notes: Type: Movement. Armies: Dark Elf Raiders
+
+HARASSING_BOOST_AURA
+    Name: Harassing Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Dark Elf Raiders
+
+HAVOCBOUND
+    Name: Havocbound
+    Notes: Type: Army-Wide Special Rules. Armies: Havoc Brothers
+
+HAVOCBOUND_BOOST_AURA
+    Name: Havocbound Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Havoc Brothers
+
+HAVOC_BOON
+    Name: Havoc Boon (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Havoc Brothers
+
+HAVOC_FOG
+    Name: Havoc Fog (3)
+    Notes: Type: Aura Special Rules. Armies: Havoc Brothers
+
+HAVOC_TERROR
+    Name: Havoc Terror (2)
+    Notes: Type: Aura Special Rules. Armies: Havoc Brothers
+
+HAVOC_TRAUMA
+    Name: Havoc Trauma (1)
+    Notes: Type: Aura Special Rules. Armies: Havoc Brothers
+
+HAZARDOUS
+    Name: Hazardous
+    Notes: Type: Weapon. Armies: Ratmen Clans
+
+HEADTAKER_STRIKE
+    Name: Headtaker Strike (3)
+    Notes: Type: Aura Special Rules. Armies: War Disciples, Wormhole Daemons of War
+
+HEAD_BANG
+    Name: Head Bang (3)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+HEAVENLY_LANCE
+    Name: Heavenly Lance (2)
+    Notes: Type: Aura Special Rules. Armies: Blood Brothers, Blood Prime Brothers
+
+HEAVY_IMPACT
+    Name: Heavy Impact
+    Notes: Type: Special Rules. Armies: Ratmen Clans, Saurian Starhost
+
+HERO
+    Name: Hero
+    Notes: Base Rule - Allocation
+
+HIDDEN_SPIRITS
+    Name: Hidden Spirits (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: High Elf Fleets
+
+HIGHBORN_BOOST_AURA
+    Name: Highborn Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: High Elf Fleets
+
+HIT_AND_RUN
+    Name: Hit & Run
+    Notes: Base Rule - Combat
+
+HIT_AND_RUN_FIGHTER
+
+HIT_AND_RUN_FIGHTER_AURA
+
+HIT_AND_RUN_SHOOTER
+
+HIT_AND_RUN_SHOOTER_AURA
+
+HIT_RUN_FIGHTER
+    Name: Hit & Run Fighter
+    Notes: Type: Movement. Armies: Wormhole Daemons of Lust
+
+HIT_RUN_FIGHTER_AURA
+    Name: Hit & Run Fighter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders, Wormhole Daemons of Lust
+
+HIT_RUN_SHOOTER
+    Name: Hit & Run Shooter
+    Notes: Type: Movement. Armies: Custodian Brothers
+
+HIT_RUN_SHOOTER_AURA
+    Name: Hit & Run Shooter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers, DAO Union, High Elf Fleets
+
+HIVE_BOND
+    Name: Hive Bond
+    Notes: Type: Army-Wide Special Rules. Armies: Alien Hives
+
+HIVE_BOND_BOOST_AURA
+    Name: Hive Bond Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Alien Hives
+
+HIVE_SHRIEK
+    Name: Hive Shriek (3)
+    Notes: Type: Aura Special Rules. Armies: Alien Hives
+
+HOLD_THE_LINE_BOOST_AURA
+    Name: Hold the Line Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Human Defense Force
+
+HOLISTIC_SUFFERING
+    Name: Holistic Suffering (3)
+    Notes: Type: Aura Special Rules. Armies: Dark Elf Raiders
+
+HOLY_RAGE
+    Name: Holy Rage (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters
+
+HONOR_CODE
+    Name: Honor Code
+    Notes: Type: Defense. Armies: Titan Lords
+
+IGNORES_COVER_AURA
+    Name: Ignores Cover Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+IGNORES_COVER_WHEN_SHOOTING
+    Name: Ignores Cover when Shooting
+    Notes: Base Rule - Unit
+
+IGNORES_COVER_WHEN_SHOOTING_AURA
+    Name: Ignores Cover when Shooting Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+IGNORES_REGENERATION_IN_MELEE
+    Name: Ignores Regeneration in Melee
+    Notes: Base Rule - Weapon
+
+IMMOBILE
+    Name: Immobile
+    Notes: Base Rule - Unit
+
+IMPALE
+    Name: Impale
+    Notes: Type: Weapon. Armies: Orc Marauders
+
+INCREASED_SHOOTING_RANGE
+    Name: Increased Shooting Range
+    Notes: Type: Weapon. Armies: Alien Hives
+
+INCREASED_SHOOTING_RANGE_AURA
+    Name: Increased Shooting Range Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Alien Hives, Blessed Sisters, DAO Union, Dwarf...
+
+INCREASED_SHOOTING_RANGE_BUFF
+    Name: Increased Shooting Range Buff
+    Grant Category: BUFF
+    Notes: Type: Weapon. Armies: Soul-Snatcher Cults
+
+INCREASED_SHOOTING_RANGE_MARK
+    Name: Increased Shooting Range Mark
+    Notes: Type: Weapon. Armies: Eternal Dynasty
+
+INDIRECT
+    Name: Indirect
+    Notes: Base Rule - Weapon
+
+INDIRECT_MARK
+    Name: Indirect Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Robot Legions
+
+INDIRECT_WHEN_SHOOTING_AURA
+    Name: Indirect when Shooting Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Wormhole Daemons of Change
+
+INFECTED
+    Name: Infected
+    Notes: Type: Weapon. Armies: Infected Colonies
+
+INFECTED_BOOST_AURA
+    Name: Infected Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies
+
+INFILTRATE
+    Name: Infiltrate
+    Notes: Type: Movement. Armies: Alien Hives, Dark Elf Raiders, Dwarf Guilds, Human Inqui...
+
+INFILTRATE_AURA
+    Name: Infiltrate Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+INFUSE_BLOODTHIRST
+    Name: Infuse Bloodthirst (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Alien Hives
+
+INQUISITORIAL_AGENT
+    Name: Inquisitorial Agent
+    Notes: Type: Army-Wide Special Rules. Armies: Human Inquisition
+
+INSIDIOUS_PROTECTION
+    Name: Insidious Protection (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+INSPIRING_BOTS
+    Name: Inspiring Bots (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Robot Legions
+
+INSTINCTIVE
+    Name: Instinctive
+    Notes: Type: Weapon. Armies: Goblin Reclaimers
+
+JAGUAR_BLAZE
+    Name: Jaguar Blaze (3)
+    Notes: Type: Aura Special Rules. Armies: Saurian Starhost
+
+KILLING_BLOW
+    Name: Killing Blow (1)
+    Notes: Type: Aura Special Rules. Armies: DAO Union
+
+KNIGHTBORN
+    Name: Knightborn
+    Notes: Type: Army-Wide Special Rules. Armies: Knight Brothers, Knight Prime Brothers
+
+KNIGHT_DOME
+    Name: Knight Dome (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Knight Brothers, Knight Prime Brothers
+
+KNIGHT_SIGHT
+    Name: Knight Sight (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Knight Brothers, Knight Prime Brothers
+
+KNIGHT_TRAUMA
+    Name: Knight Trauma (1)
+    Notes: Type: Aura Special Rules. Armies: Knight Brothers
+
+KNIGHT_WOUND
+    Name: Knight Wound (1)
+    Notes: Type: Aura Special Rules. Armies: Knight Prime Brothers
+
+LANCE
+    Name: Lance
+    Notes: Base Rule - Weapon
+
+LIGHTNING_FOG
+    Name: Lightning Fog (2)
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Dark Brothers, Dark Prime Bro...
+
+LIGHT_FRAGMENTS
+    Name: Light Fragments (2)
+    Notes: Type: Aura Special Rules. Armies: Elven Jesters
+
+LIMITED
+    Name: Limited
+    Notes: Base Rule - Weapon
+
+LITANIES_OF_WAR
+    Name: Litanies of War (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters
+
+LOCK_ON
+    Name: Lock-On
+    Notes: Base Rule - Weapon
+
+LUSTBOUND
+    Name: Lustbound
+    Notes: Type: Army-Wide Special Rules. Armies: Lust Disciples, Titan Lords, Wormhole Dae...
+
+LUSTBOUND_BOOST
+    Name: Lustbound Boost
+    Grant Category: BOOST
+    Notes: Type: Movement. Armies: Wormhole Daemons of Lust
+
+LUSTBOUND_BOOST_AURA
+    Name: Lustbound Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Lust Disciples, Wormhole Daemons of Lust
+
+LUST_BOON
+    Name: Lust Boon (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Lust Disciples, Wormhole Daemons of Lust
+
+MACHINE_FOG
+    Name: Machine-Fog
+    Notes: Type: Defense. Armies: Machine Cult
+
+MACHINE_FOG_BOOST_AURA
+    Name: Machine-Fog Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Machine Cult
+
+MASSIVE_SPORES
+    Name: Massive Spores
+    Notes: Faction Rule - Hive Fleets
+
+MELEE_EVASION_AURA
+    Name: Melee Evasion Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty, Goblin Reclaimers, Ratmen Cla...
+
+MELEE_SHROUDING
+    Name: Melee Shrouding
+    Notes: Base Rule - Defense
+
+MELEE_SHROUDING_AURA
+    Name: Melee Shrouding Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Blood Brothers, Blood Prime B...
+
+MELEE_SLAYER_AURA
+    Name: Melee Slayer Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+MEND
+    Name: Mend
+    Notes: Type: Defense. Armies: Battle Brothers, Blood Brothers, Blood Prime Brothers, Ch...
+
+MENDING_BOTS
+    Name: Mending Bots (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Robot Legions
+
+MIND_BREAKER
+    Name: Mind Breaker (1)
+    Notes: Type: Aura Special Rules. Armies: Rebel Guerrillas
+
+MIND_CONTROL
+    Name: Mind Control
+    Notes: Type: Movement. Armies: Soul-Snatcher Cults, Wormhole Daemons of Lust
+
+MIND_CORRUPTION
+    Name: Mind Corruption (1)
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+MIND_GASH
+    Name: Mind Gash (3)
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers
+
+MIND_SHAPER
+    Name: Mind Shaper (2)
+    Notes: Type: Aura Special Rules. Armies: Jackals
+
+MIND_VORTEX
+    Name: Mind Vortex (2)
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+MIND_WOUND
+    Name: Mind Wound (1)
+    Notes: Type: Aura Special Rules. Armies: Prime Brothers
+
+MISCHIEVOUS_BOOST_AURA
+    Name: Mischievous Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Goblin Reclaimers
+
+MOB_FRENZY
+    Name: Mob Frenzy (2)
+    Notes: Type: Aura Special Rules. Armies: Goblin Reclaimers
+
+MORALE_BOOST
+    Name: Morale Boost
+    Notes: Base Rule - Morale
+
+MUTATING_INFERNO
+    Name: Mutating Inferno (2)
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Wormhole Daemons of Change
+
+NO_RETREAT
+    Name: No Retreat
+    Notes: Base Rule - Morale
+
+NO_RETREAT_AURA
+    Name: No Retreat Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies, Robot Legions
+
+NO_RETREAT_BUFF
+    Name: No Retreat Buff
+    Grant Category: BUFF
+    Notes: Type: Defense. Armies: Human Defense Force
+
+OVERPOWERING_LASH
+    Name: Overpowering Lash (3)
+    Notes: Type: Aura Special Rules. Armies: Lust Disciples, Wormhole Daemons of Lust
+
+OVERWHELMING_STRIKE
+    Name: Overwhelming Strike (1)
+    Notes: Type: Aura Special Rules. Armies: Alien Hives
+
+PATH_OF_WAR
+    Name: Path of War (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+PIERCING_ASSAULT_AURA
+    Name: Piercing Assault Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Blood Brothers, Blood Prime Brothers, Ratmen C...
+
+PIERCING_BOTS
+    Name: Piercing Bots (1)
+    Notes: Type: Aura Special Rules. Armies: Robot Legions
+
+PIERCING_FIGHTER_AURA
+    Name: Piercing Fighter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders, Wormhole Daemons of War
+
+PIERCING_GROWTH
+    Name: Piercing Growth
+    Notes: Type: Special Rules. Armies: Alien Hives
+
+PIERCING_HUNTER_AURA
+    Name: Piercing Hunter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Dark Elf Raiders, Eternal Dynasty
+
+PIERCING_PULSE
+    Name: Piercing Pulse (3)
+    Notes: Type: Aura Special Rules. Armies: Rebel Guerrillas
+
+PIERCING_SHOOTER_AURA
+    Name: Piercing Shooter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Wormhole Daemons of War
+
+PIERCING_SHOOTING_DEBUFF
+    Name: Piercing Shooting Debuff
+    Notes: Type: Defense. Armies: Machine Cult
+
+PIERCING_SHOOTING_MARK
+    Name: Piercing Shooting Mark
+    Notes: Type: Weapon. Armies: DAO Union, Goblin Reclaimers
+
+PIERCING_SPOTTER
+    Name: Piercing Spotter
+    Notes: Type: Special Rules. Armies: High Elf Fleets
+
+PIERCING_TAG
+    Name: Piercing Tag
+    Notes: Type: Special Rules. Armies: Human Inquisition, Rebel Guerrillas
+
+PIERCING_TARGET
+    Name: Piercing Target
+    Notes: Type: Weapon. Armies: Custodian Brothers
+
+PIRANHA_CURSE
+    Name: Piranha Curse (2)
+    Notes: Type: Aura Special Rules. Armies: Saurian Starhost
+
+PLAGUEBOUND
+    Name: Plaguebound
+    Notes: Type: Defense. Armies: Plague Disciples, Titan Lords, Wormhole Daemons of Plague
+
+PLAGUEBOUND_BOOST
+    Name: Plaguebound Boost
+    Grant Category: BOOST
+    Notes: Type: Defense. Armies: Wormhole Daemons of Plague
+
+PLAGUEBOUND_BOOST_AURA
+    Name: Plaguebound Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Plague Disciples, Wormhole Daemons of Plague
+
+PLAGUE_BOON
+    Name: Plague Boon (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Plague Disciples, Wormhole Daemons of Plague
+
+PLAGUE_MALEDICTION
+    Name: Plague Malediction (2)
+    Notes: Type: Aura Special Rules. Armies: Plague Disciples, Wormhole Daemons of Plague
+
+POINT_BLANK_PIERCING_AURA
+    Name: Point-Blank Piercing Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters
+
+POISON
+    Name: Poison
+    Notes: Base Rule - Weapon
+
+POW
+    Name: Pow! (3)
+    Notes: Type: Aura Special Rules. Armies: Goblin Reclaimers
+
+POW!
+
+POWER_BEAM
+    Name: Power Beam (1)
+    Notes: Type: Aura Special Rules. Armies: Machine Cult
+
+POWER_BOLT
+    Name: Power Bolt (3)
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Wormhole Daemons of Change
+
+POWER_FIELD
+    Name: Power Field (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Jackals
+
+POWER_MAW
+    Name: Power Maw (1)
+    Notes: Type: Aura Special Rules. Armies: Jackals
+
+POWER_SURGE
+    Name: Power Surge (3)
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans
+
+PRECISE
+    Name: Precise
+    Notes: Base Rule - Weapon
+
+PRECISION
+    Name: Precision
+    Notes: Base Rule - Unit
+
+PRECISION_ATTACKS_BUFF
+    Name: Precision Attacks Buff
+    Notes: Type: Weapon. Armies: Wormhole Daemons of Plague
+
+PRECISION_CHARGE_AURA
+    Name: Precision Charge Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+PRECISION_DEBUFF
+    Name: Precision Debuff
+    Notes: Type: Defense. Armies: Infected Colonies
+
+PRECISION_FIGHTER_AURA
+    Name: Precision Fighter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty, Goblin Reclaimers, Human Inqu...
+
+PRECISION_FIGHTER_BUFF
+    Name: Precision Fighter Buff
+    Notes: Type: Weapon. Armies: Blessed Sisters
+
+PRECISION_FIGHTING_MARK
+    Name: Precision Fighting Mark
+    Notes: Type: Weapon. Armies: Dark Elf Raiders
+
+PRECISION_GROWTH
+    Name: Precision Growth
+    Notes: Type: Special Rules. Armies: Infected Colonies
+
+PRECISION_SHOOTER_AURA
+    Name: Precision Shooter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Human Inquisition, Ratmen Clans
+
+PRECISION_SHOOTING_MARK
+    Name: Precision Shooting Mark
+    Notes: Type: Weapon. Armies: Soul-Snatcher Cults
+
+PRECISION_SPOTTER
+    Name: Precision Spotter
+    Notes: Type: Special Rules. Armies: DAO Union
+
+PRECISION_TAG
+    Name: Precision Tag
+    Notes: Type: Special Rules. Armies: Jackals
+
+PRECISION_TARGET
+    Name: Precision Target
+    Notes: Type: Weapon. Armies: Blessed Sisters, Saurian Starhost
+
+PREDATOR_FIGHTER
+    Name: Predator Fighter
+    Notes: Base Rule - Attack
+
+PRIMAL
+    Name: Primal
+    Notes: Type: Army-Wide Special Rules. Armies: Saurian Starhost
+
+PRIMAL_BOOST_BUFF
+    Name: Primal Boost Buff
+    Grant Category: BUFF
+    Notes: Type: Weapon. Armies: Saurian Starhost
+
+PROTECTED
+    Name: Protected
+    Notes: Base Rule - Defense
+
+PROTECTION_FEAT
+    Name: Protection Feat
+    Notes: Type: Defense. Armies: Saurian Starhost
+
+PROTECTIVE_DOME
+    Name: Protective Dome (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Prime Brothers
+
+PSYCHIC_BLAST
+    Name: Psychic Blast (2)
+    Notes: Type: Aura Special Rules. Armies: Alien Hives
+
+PSYCHIC_ONSLAUGHT
+    Name: Psychic Onslaught (2)
+    Notes: Type: Aura Special Rules. Armies: Soul-Snatcher Cults
+
+PSYCHIC_STABILIZATION
+    Name: Psychic Stabilization (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: DAO Union
+
+PSYCHIC_TERROR
+    Name: Psychic Terror (3)
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Dark Brothers, Dark Prime Bro...
+
+PSYCHIC_VOMIT
+    Name: Psychic Vomit (2)
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+PSY_ADRENALINE
+    Name: Psy-Adrenaline (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Dark Elf Raiders
+
+PSY_DESTRUCTION
+    Name: Psy-Destruction (2)
+    Notes: Type: Aura Special Rules. Armies: High Elf Fleets
+
+PSY_HUNTER
+    Name: Psy-Hunter (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Jackals
+
+PSY_INJECTED_COURAGE
+    Name: Psy-Injected Courage (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Human Defense Force, Human Inquisition, Titan ...
+
+PURGE_THE_IMPURE
+    Name: Purge the Impure (3)
+    Notes: Type: Aura Special Rules. Armies: Knight Brothers, Knight Prime Brothers
+
+QUAKE_WHEN_SHOOTING
+    Name: Quake when Shooting
+    Notes: Type: Weapon. Armies: Dwarf Guilds
+
+QUICK_READJUSTMENT
+    Name: Quick Readjustment
+    Notes: Type: Weapon. Armies: Human Inquisition, Ratmen Clans
+
+QUICK_SHOT_AURA
+    Name: Quick Shot Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Goblin Reclaimers, Soul-Snatcher Cults
+
+QUICK_SHOT_MARK
+    Name: Quick Shot Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Wormhole Daemons of Lust
+
+QUILL_BLAST
+    Name: Quill Blast (2)
+    Notes: Type: Aura Special Rules. Armies: Jackals
+
+RAIDING_DRUGS
+    Name: Raiding Drugs (2)
+    Notes: Type: Aura Special Rules. Armies: Dark Elf Raiders
+
+RANGED_SHROUDING
+    Name: Ranged Shrouding
+    Notes: Base Rule - Defense
+
+RANGED_SHROUDING_AURA
+    Name: Ranged Shrouding Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers, Jackals, Orc Marauders
+
+RANGED_SLAYER_AURA
+    Name: Ranged Slayer Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: DAO Union
+
+RAPID_ADVANCE_AURA
+    Name: Rapid Advance Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+RAPID_ADVANCE_BUFF
+    Name: Rapid Advance Buff
+    Grant Category: BUFF
+    Notes: Type: Movement. Armies: Human Defense Force
+
+RAPID_AMBUSH
+    Name: Rapid Ambush
+    Notes: Type: Movement. Armies: Dark Brothers, Dark Prime Brothers
+
+RAPID_BLINK_BOOST_AURA
+    Name: Rapid Blink Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Elven Jesters
+
+RAPID_CHARGE
+    Name: Rapid Charge
+    Notes: Base Rule - Movement
+
+RAPID_CHARGE_AURA
+    Name: Rapid Charge Aura
+    Notes: Type: Aura Special Rules. Armies: Alien Hives, Eternal Dynasty, Saurian Starhost...
+
+RAPID_MUTATION
+    Name: Rapid Mutation (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies
+
+RAPID_PUTREFACTION
+    Name: Rapid Putrefaction (1)
+    Notes: Type: Aura Special Rules. Armies: Plague Disciples, Wormhole Daemons of Plague
+
+RAPID_RUSH_AURA
+    Name: Rapid Rush Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Blood Brothers, Blood Prime B...
+
+RAVAGE
+    Name: Ravage
+    Notes: Type: Weapon. Armies: Alien Hives, Blood Prime Brothers, Dark Prime Brothers, Kn...
+
+REANIMATION_AURA
+    Name: Reanimation Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Robot Legions
+
+REAP
+    Name: Reap
+    Notes: Type: Weapon. Armies: Soul-Snatcher Cults
+
+REGENERATION_AURA
+    Name: Regeneration Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Blessed Sisters, Blood Brothe...
+
+REGENERATION_BUFF
+    Name: Regeneration Buff
+    Grant Category: BUFF
+    Notes: Type: Defense. Armies: Dark Elf Raiders, Wormhole Daemons of Plague
+
+REGENERATIVE_STRENGTH
+    Name: Regenerative Strength
+    Notes: Type: Weapon. Armies: Alien Hives, Dark Elf Raiders
+
+REINFORCED
+    Name: Reinforced
+    Notes: Type: Army-Wide Special Rules. Armies: Blood Prime Brothers, Dark Prime Brothers...
+
+REINFORCEMENT
+    Name: Reinforcement
+    Notes: Type: Special Rules. Armies: Ratmen Clans
+
+RELENTLESS_AURA
+    Name: Relentless Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Havoc Brothers, Lust Discipl...
+
+RELENTLESS_MARK
+    Name: Relentless Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Human Defense Force
+
+RENDING_IN_MELEE_AURA
+    Name: Rending in Melee Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Rebel Guerrillas, Wormhole Daemons of Plague
+
+RENDING_IN_MELEE_MARK
+    Name: Rending in Melee Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Orc Marauders
+
+RENDING_WHEN_SHOOTING_AURA
+    Name: Rending when Shooting Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Machine Cult, Saurian Starhost
+
+RESISTANCE
+    Name: Resistance
+    Notes: Base Rule - Defense
+
+RESISTANCE_AURA
+    Name: Resistance Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Havoc Brothers, High Elf Fle...
+
+RE_DEPLOYMENT
+    Name: Re-Deployment
+    Notes: Type: Movement. Armies: Battle Brothers, Blood Brothers, Blood Prime Brothers, D...
+
+RE_POSITION_ARTILLERY
+    Name: Re-Position Artillery
+    Notes: Type: Movement. Armies: Battle Brothers, Blood Brothers, Blood Prime Brothers, D...
+
+RIGHTEOUS_FURY
+    Name: Righteous Fury (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Wolf Brothers, Wolf Prime Brothers
+
+RIGHTEOUS_WRATH
+    Name: Righteous Wrath (1)
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters
+
+ROT_WAVE
+    Name: Rot Wave (3)
+    Notes: Type: Aura Special Rules. Armies: Plague Disciples, Wormhole Daemons of Plague
+
+RUINOUS_FRENZY
+    Name: Ruinous Frenzy
+    Notes: Type: Unit. Armies: Dark Elf Raiders
+
+RUPTURE
+    Name: Rupture
+    Notes: Base Rule - Wound
+
+SCOUT
+    Name: Scout
+    Notes: Base Rule - Movement
+
+SCOUT_AURA
+    Name: Scout Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Havoc Brothers, High Elf Fle...
+
+SCRAPPER
+    Name: Scrapper
+    Notes: Type: Army-Wide Special Rules. Armies: Jackals
+
+SCRAPPER_BOOST_AURA
+    Name: Scrapper Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Jackals
+
+SCRATCH
+    Name: Scratch
+    Notes: Type: Weapon. Armies: Jackals
+
+SCURRY
+    Name: Scurry
+    Notes: Type: Army-Wide Special Rules. Armies: Ratmen Clans
+
+SCURRY_BOOST_AURA
+    Name: Scurry Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans
+
+SEARING_ADMONITION
+    Name: Searing Admonition (3)
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters
+
+SEARING_BURST
+    Name: Searing Burst (2)
+    Notes: Type: Aura Special Rules. Armies: Human Defense Force, Human Inquisition, Titan ...
+
+SEARING_SHRAPNEL
+    Name: Searing Shrapnel (2)
+    Notes: Type: Aura Special Rules. Armies: Machine Cult
+
+SELF_DESTRUCT
+    Name: Self-Destruct(X)
+    Notes: Base Rule - Combat
+
+SELF_REPAIR
+    Name: Self-Repair
+    Notes: Type: Defense. Armies: Robot Legions
+
+SELF_REPAIR_BOOST_BUFF
+    Name: Self-Repair Boost Buff
+    Grant Category: BUFF
+    Notes: Type: Defense. Armies: Robot Legions
+
+SERPENT_COMET
+    Name: Serpent Comet (1)
+    Notes: Type: Aura Special Rules. Armies: Saurian Starhost
+
+SHADOW_DANCE
+    Name: Shadow Dance (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Elven Jesters
+
+SHATTER
+    Name: Shatter
+    Notes: Type: Weapon. Armies: Wormhole Daemons of Lust
+
+SHATTERING_CURSE
+    Name: Shattering Curse (3)
+    Notes: Type: Aura Special Rules. Armies: High Elf Fleets
+
+SHIELDED_AURA
+    Name: Shielded Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Alien Hives, Elven Jesters, Wormhole Daemons o...
+
+SHIELD_BREAKER
+    Name: Shield Breaker (3)
+    Notes: Type: Aura Special Rules. Armies: Blood Brothers, Blood Prime Brothers
+
+SHIELD_WALL
+    Name: Shield Wall
+    Notes: Base Rule - Defense
+
+SHIFTING_FORM
+    Name: Shifting Form (1)
+    Grant Category: DEBUFF
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Wormhole Daemons of Change
+
+SHOCK_SPEED
+    Name: Shock Speed (3)
+    Notes: Type: Aura Special Rules. Armies: Human Defense Force, Human Inquisition, Titan ...
+
+SHRED
+    Name: Shred
+    Notes: Base Rule - Wound
+
+SHRED_IN_MELEE_AURA
+    Name: Shred in Melee Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Blessed Sisters, High Elf Fleets, Human Inquis...
+
+SHRED_MARK
+    Name: Shred Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Custodian Brothers
+
+SHRED_WHEN_SHOOTING_AURA
+    Name: Shred when Shooting Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers, Elven Jesters, Watch Broth...
+
+SHROUDING_INCENSE
+    Name: Shrouding Incense (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Machine Cult
+
+SHROUD_FIELD
+    Name: Shroud Field (3)
+    Notes: Type: Aura Special Rules. Armies: Goblin Reclaimers
+
+SKEWER
+    Name: Skewer
+    Notes: Type: Weapon. Armies: Goblin Reclaimers
+
+SKY_BLAZE
+    Name: Sky Blaze (1)
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Wormhole Daemons of Change
+
+SLAM
+    Name: Slam
+    Notes: Type: Weapon. Armies: Change Disciples, Havoc Brothers, Lust Disciples, Plague D...
+
+SLASH
+    Name: Slash
+    Notes: Type: Weapon. Armies: Wormhole Daemons of Change
+
+SLAYER_MARK
+    Name: Slayer Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Elven Jesters
+
+SLOW
+    Name: Slow
+    Notes: Base Rule - Movement
+
+SMASH
+    Name: Smash
+    Notes: Base Rule - Wound
+
+SMITING_RUNE
+    Name: Smiting Rune  (2)
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+SNAKE_BITE
+    Name: Snake Bite (1)
+    Notes: Type: Aura Special Rules. Armies: Dark Elf Raiders
+
+SNIPER
+    Name: Sniper
+    Notes: Base Rule - Weapon
+
+SOUL_SPEAR
+    Name: Soul Spear (1)
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+SPAWN
+    Name: Spawn
+    Notes: Type: Unit. Armies: Alien Hives, Ratmen Clans, Robot Legions, Wormhole Daemons o...
+
+SPEED_BUFF
+    Name: Speed Buff
+    Notes: Type: Movement. Armies: Soul-Snatcher Cults
+
+SPEED_DEBUFF
+    Name: Speed Debuff
+    Notes: Type: Movement. Armies: Dwarf Guilds
+
+SPEED_FEAT_AURA
+    Name: Speed Feat Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Orc Marauders
+
+SPELL_ACCUMULATOR
+    Name: Spell Accumulator
+    Notes: Type: Special Rules. Armies: Human Inquisition, Wormhole Daemons of Change
+
+SPELL_CONDUIT
+    Name: Spell Conduit
+    Notes: Type: Unit. Armies: Alien Hives, Blessed Sisters, High Elf Fleets, Human Inquisi...
+
+SPIRIT_POWER
+    Name: Spirit Power (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+SPIRIT_RESOLVE
+    Name: Spirit Resolve (2)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Eternal Dynasty
+
+SPLIT
+    Name: Split
+    Notes: Type: Unit. Armies: Wormhole Daemons of Change
+
+SPORES
+    Name: Spores
+    Notes: Faction Rule - Hive Fleets
+
+SPREAD_PLAGUE
+    Name: Spread Plague (2)
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies
+
+STEADFAST
+    Name: Steadfast
+    Notes: Type: Defense. Armies: Custodian Brothers, Wormhole Daemons of Plague
+
+STEADFAST_AURA
+    Name: Steadfast Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers, Wormhole Daemons of Plague
+
+STEADFAST_BUFF
+    Name: Steadfast Buff
+    Grant Category: BUFF
+    Notes: Type: Defense. Armies: Change Disciples, Havoc Brothers, Lust Disciples, Plague ...
+
+STEALTH_AURA
+    Name: Stealth Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers, DAO Union, Dwarf Guilds, E...
+
+STEALTH_BUFF
+    Name: Stealth Buff
+    Grant Category: BUFF
+    Notes: Type: Defense. Armies: Alien Hives, Dark Brothers
+
+STORM_OF_CHANGE
+    Name: Storm of Change
+    Notes: Type: Weapon. Armies: Wormhole Daemons of Change
+
+STORM_OF_LUST
+    Name: Storm of Lust
+    Notes: Type: Weapon. Armies: Wormhole Daemons of Lust
+
+STORM_OF_PLAGUE
+    Name: Storm of Plague
+    Notes: Type: Weapon. Armies: Wormhole Daemons of Plague
+
+STORM_OF_POWER
+    Name: Storm of Power (3)
+    Notes: Type: Aura Special Rules. Armies: Wolf Brothers, Wolf Prime Brothers
+
+STORM_OF_WAR
+    Name: Storm of War
+    Notes: Type: Weapon. Armies: Wormhole Daemons of War
+
+STRAFING
+    Name: Strafing
+    Notes: Type: Weapon. Armies: Alien Hives, DAO Union, Dark Brothers, Dark Elf Raiders, M...
+
+STRIDER_AURA
+    Name: Strider Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Rebel Guerrillas, Wormhole Daemons of Lust
+
+STURDY_BOOST_AURA
+    Name: Sturdy Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+SURPRISE_ATTACK
+    Name: Surprise Attack
+    Notes: Type: Special Rules. Armies: Alien Hives, Human Inquisition
+
+SURPRISE_PIERCING_SHOT
+    Name: Surprise Piercing Shot
+    Notes: Type: Movement. Armies: Jackals, Rebel Guerrillas, Robot Legions
+
+SWIFT
+    Name: Swift
+    Notes: Type: Movement. Armies: Dwarf Guilds, Robot Legions
+
+SWIFT_AURA
+    Name: Swift Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds
+
+SWIFT_BUFF
+    Name: Swift Buff
+    Grant Category: BUFF
+    Notes: Type: Movement. Armies: Robot Legions
+
+SYSTEM_TAKEOVER
+    Name: System Takeover (2)
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans
+
+TAKEDOWN
+    Name: Takedown
+    Notes: Base Rule - Allocation
+
+TAKEDOWN_STRIKE
+    Name: Takedown Strike
+    Notes: Type: Weapon. Armies: Alien Hives, Elven Jesters, Ratmen Clans, Rebel Guerrillas...
+
+TARGETING_VISOR_BOOST_AURA
+    Name: Targeting Visor Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: DAO Union
+
+TEAR
+    Name: Tear
+    Notes: Type: Weapon. Armies: Custodian Brothers
+
+TECH_SICKNESS
+    Name: Tech-Sickness (2)
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans
+
+TELEPORT
+    Name: Teleport
+    Notes: Type: Movement. Armies: Custodian Brothers, Eternal Dynasty, High Elf Fleets, Hu...
+
+TELEPORT_AURA
+    Name: Teleport Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers, Elven Jesters, Machine Cul...
+
+TERRIFYING_FURY
+    Name: Terrifying Fury (1)
+    Notes: Type: Aura Special Rules. Armies: War Disciples, Wormhole Daemons of War
+
+TERROR_SEEKER
+    Name: Terror Seeker (3)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Alien Hives
+
+THE_FOUNDER_S_CURSE
+    Name: The Founder's Curse (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers
+
+THRASH
+    Name: Thrash
+    Notes: Type: Weapon. Armies: Rebel Guerrillas
+
+THRUST_IN_MELEE_AURA
+    Name: Thrust in Melee Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies
+
+THUNDEROUS_MIST
+    Name: Thunderous Mist (1)
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers
+
+TOTAL_SEIZURE
+    Name: Total Seizure (2)
+    Notes: Type: Aura Special Rules. Armies: Lust Disciples, Wormhole Daemons of Lust
+
+TOXIN_MIST
+    Name: Toxin Mist (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Saurian Starhost
+
+TRANSPORT
+    Name: Transport(X)
+    Notes: Base Rule - Unit
+
+TRIANGULATION_BOTS
+    Name: Triangulation Bots (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Robot Legions
+
+UNPREDICTABLE
+    Name: Unpredictable
+    Notes: Type: Weapon. Armies: Change Disciples, Havoc Brothers, Lust Disciples, Plague D...
+
+UNPREDICTABLE_FIGHTER_AURA
+    Name: Unpredictable Fighter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Dwarf Guilds, Elven Jesters, Knight Brothers, ...
+
+UNPREDICTABLE_FIGHTER_MARK
+    Name: Unpredictable Fighter Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Alien Hives
+
+UNPREDICTABLE_SHOOTER
+    Name: Unpredictable Shooter
+    Notes: Type: Weapon. Armies: Human Inquisition
+
+UNPREDICTABLE_SHOOTER_AURA
+    Name: Unpredictable Shooter Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies, Jackals, Orc Marauders
+
+UNSTOPPABLE_IN_MELEE_AURA
+    Name: Unstoppable in Melee Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Custodian Brothers, Wormhole Daemons of Change
+
+UNSTOPPABLE_SHOOTING_MARK
+    Name: Unstoppable Shooting Mark
+    Grant Category: MARK
+    Notes: Type: Weapon. Armies: Battle Brothers, Blood Brothers, Blood Prime Brothers, Dar...
+
+UNSTOPPABLE_WHEN_SHOOTING_AURA
+    Name: Unstoppable when Shooting Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Wormhole Daemons of Lust
+
+UNWIELDY_DEBUFF
+    Name: Unwieldy Debuff
+    Grant Category: DEBUFF
+    Notes: Type: Defense. Armies: High Elf Fleets
+
+VEIL_OF_MADNESS
+    Name: Veil of Madness (3)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Elven Jesters
+
+VENGEANCE
+    Name: Vengeance
+    Notes: Type: Special Rules. Armies: Eternal Dynasty
+
+VERSATILE_DEFENSE_AURA
+    Name: Versatile Defense Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Change Disciples, Havoc Brothers, Lust Discipl...
+
+VERSATILE_REACH_AURA
+    Name: Versatile Reach Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: Battle Brothers, Blood Brothers, Blood Prime B...
+
+VIOLENT_ONSLAUGHT
+    Name: Violent Onslaught (1)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies
+
+VOLATILE_INFECTION
+    Name: Volatile Infection (3)
+    Notes: Type: Aura Special Rules. Armies: Infected Colonies
+
+WARBOUND
+    Name: Warbound
+    Notes: Type: Weapon. Armies: Titan Lords, War Disciples, Wormhole Daemons of War
+
+WARBOUND_BOOST
+    Name: Warbound Boost
+    Grant Category: BOOST
+    Notes: Type: Weapon. Armies: Wormhole Daemons of War
+
+WARBOUND_BOOST_AURA
+    Name: Warbound Boost Aura
+    Grant Category: AURA
+    Notes: Type: Aura Special Rules. Armies: War Disciples, Wormhole Daemons of War
+
+WAR_BOON
+    Name: War Boon (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: War Disciples, Wormhole Daemons of War
+
+WATCHBORN
+    Name: Watchborn
+    Notes: Type: Weapon. Armies: Watch Brothers, Watch Prime Brothers
+
+WATCH_DOME
+    Name: Watch Dome (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Watch Brothers, Watch Prime Brothers
+
+WATCH_SIGHT
+    Name: Watch Sight (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Watch Brothers, Watch Prime Brothers
+
+WATCH_TRAUMA
+    Name: Watch Trauma (1)
+    Notes: Type: Aura Special Rules. Armies: Watch Brothers
+
+WATCH_WOUND
+    Name: Watch Wound (1)
+    Notes: Type: Aura Special Rules. Armies: Watch Prime Brothers
+
+WAVE_OF_DISCORD
+    Name: Wave of Discord (2)
+    Notes: Type: Aura Special Rules. Armies: Rebel Guerrillas
+
+WEAPON_BOOSTER
+    Name: Weapon Booster (1)
+    Notes: Type: Aura Special Rules. Armies: Ratmen Clans
+
+WOLFBORN
+    Name: Wolfborn
+    Notes: Type: Army-Wide Special Rules. Armies: Wolf Brothers, Wolf Prime Brothers
+
+WOLF_DOME
+    Name: Wolf Dome (3)
+    Grant Category: BUFF
+    Notes: Type: Aura Special Rules. Armies: Wolf Brothers, Wolf Prime Brothers
+
+WOLF_SIGHT
+    Name: Wolf Sight (1)
+    Grant Category: MARK
+    Notes: Type: Aura Special Rules. Armies: Wolf Brothers, Wolf Prime Brothers
+
+WOLF_TRAUMA
+    Name: Wolf Trauma (1)
+    Notes: Type: Aura Special Rules. Armies: Wolf Brothers
+
+WOLF_WOUND
+    Name: Wolf Wound (1)
+    Notes: Type: Aura Special Rules. Armies: Wolf Prime Brothers
+
+WRECK
+    Name: Wreck
+    Notes: Type: Weapon. Armies: Machine Cult
+
+ZAP
+    Name: Zap! (1)
+    Notes: Type: Aura Special Rules. Armies: Goblin Reclaimers
+
+ZAP!
+

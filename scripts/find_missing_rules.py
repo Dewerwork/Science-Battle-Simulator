@@ -20,9 +20,10 @@ from collections import defaultdict
 UNITS_FILE = '/home/user/Science-Battle-Simulator/docs/MERGED_ALL_TXT.txt'
 MATRIX_FILE = '/home/user/Science-Battle-Simulator/docs/special_rules_review_matrix.xlsx'
 OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt'
+UNUSED_OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/unused_rules_report.txt'
 
 # Script version for debugging
-SCRIPT_VERSION = "1.5"
+SCRIPT_VERSION = "1.6"
 
 
 def normalize_rule_name(rule: str) -> str:
@@ -446,6 +447,7 @@ def main():
         print("\n✓ All rules in the units file are accounted for in the matrix!")
 
     # Show unused matrix rules
+    unused_output_file = Path(UNUSED_OUTPUT_FILE)
     if results['unused_matrix_rules']:
         print(f"\n{'='*80}")
         print("UNUSED MATRIX RULES (in matrix but not found in any unit loadout)")
@@ -462,8 +464,48 @@ def main():
             print(f"  {col1:<{col_width}} {col2}")
 
         print(f"\nTotal unused: {len(results['unused_matrix_rules'])} rules")
+
+        # Write unused rules to file
+        # Load matrix for additional info
+        matrix_df = pd.read_excel(matrix_file)
+
+        with open(unused_output_file, 'w') as f:
+            f.write("UNUSED MATRIX RULES REPORT\n")
+            f.write("="*80 + "\n\n")
+            f.write(f"Total rules in matrix: {len(results['all_matrix_rules'])}\n")
+            f.write(f"Rules used in unit loadouts: {len(results['used_matrix_rules'])}\n")
+            f.write(f"Rules UNUSED: {len(results['unused_matrix_rules'])}\n\n")
+
+            f.write("="*80 + "\n")
+            f.write("UNUSED RULES LIST\n")
+            f.write("="*80 + "\n\n")
+
+            for rule_id in unused_sorted:
+                # Try to get additional info from matrix
+                row = matrix_df[matrix_df['Rule ID'] == rule_id]
+                if not row.empty:
+                    rule_name = row['Rule Name'].values[0] if pd.notna(row['Rule Name'].values[0]) else rule_id
+                    grant_cat = row['Grant Category'].values[0] if pd.notna(row['Grant Category'].values[0]) else ''
+                    notes = row['Notes'].values[0] if pd.notna(row['Notes'].values[0]) else ''
+
+                    f.write(f"{rule_id}\n")
+                    f.write(f"    Name: {rule_name}\n")
+                    if grant_cat:
+                        f.write(f"    Grant Category: {grant_cat}\n")
+                    if notes:
+                        f.write(f"    Notes: {notes[:80]}{'...' if len(str(notes)) > 80 else ''}\n")
+                    f.write("\n")
+                else:
+                    f.write(f"{rule_id}\n\n")
+
+        print(f"\nUnused rules report written to: {unused_output_file}")
     else:
         print("\n✓ All matrix rules are used in unit loadouts!")
+        # Write empty report
+        with open(unused_output_file, 'w') as f:
+            f.write("UNUSED MATRIX RULES REPORT\n")
+            f.write("="*80 + "\n\n")
+            f.write("All matrix rules are used in unit loadouts!\n")
 
     # Also show rules that ARE matched for verification
     print(f"\n{'='*80}")
