@@ -958,6 +958,60 @@ def parse_pdf(pdf_path: str, output_dir: Optional[str] = None) -> List[Unit]:
     return units
 
 
+def process_single_pdf(pdf_path: Path, out_dir: Path, debug: bool = False, dump_lines: int = 0) -> int:
+    """
+    Process a single PDF file.
+
+    Args:
+        pdf_path: Path to the PDF file
+        out_dir: Output directory
+        debug: Print debug information
+        dump_lines: Number of lines to dump (0 = don't dump)
+
+    Returns:
+        Number of units parsed (0 if dump_lines mode)
+    """
+    print(f"\nParsing: {pdf_path}")
+    lines = extract_text_from_pdf(str(pdf_path))
+    print(f"Extracted {len(lines)} lines from PDF")
+
+    # Handle --dump-lines for debugging
+    if dump_lines:
+        print(f"\n=== First {dump_lines} extracted lines ===")
+        for i, line in enumerate(lines[:dump_lines]):
+            print(f"{i:4d}: {repr(line)}")
+        return 0
+
+    # Debug mode: show first few lines around each unit header
+    if debug:
+        print("\n=== DEBUG: Showing context around unit headers ===")
+        for i, line in enumerate(lines):
+            if UNIT_HEADER_RE.match(line):
+                print(f"\n--- Unit found at line {i}: {line} ---")
+                # Show 15 lines after the header
+                for j in range(i, min(i + 16, len(lines))):
+                    marker = ">>>" if j == i else "   "
+                    print(f"{marker} {j:4d}: {repr(lines[j])}")
+
+    # Parse units from the already-extracted lines
+    units = parse_units_from_lines(lines)
+    print(f"Parsed {len(units)} units")
+
+    # Write outputs
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    base_name = pdf_path.stem.replace(" ", "_")
+    json_path = out_dir / f"{base_name}_units.json"
+    txt_path = out_dir / f"{base_name}_base_loadouts.txt"
+    csv_path = out_dir / f"{base_name}_units.csv"
+
+    write_json_output(units, json_path)
+    write_txt_output(units, txt_path)
+    write_base_units_csv(units, csv_path)
+
+    return len(units)
+
+
 def main():
     """CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -966,7 +1020,8 @@ def main():
         epilog="""
 Examples:
     python parse_pdf_loadouts.py "docs/GF - Alien Hives 3.5.1.pdf"
-    python parse_pdf_loadouts.py army.pdf --output-dir ./output
+    python parse_pdf_loadouts.py ./pdfs/                           # Process all PDFs in folder
+    python parse_pdf_loadouts.py ./pdfs/ --output-dir ./output
 
 Output files:
     <name>_units.json       - Full structured data with all upgrades
@@ -975,10 +1030,10 @@ Output files:
         """
     )
 
-    parser.add_argument("pdf_path", help="Path to the faction PDF file")
+    parser.add_argument("pdf_path", help="Path to a PDF file or directory containing PDFs")
     parser.add_argument(
         "--output-dir", "-o",
-        help="Output directory (defaults to PDF directory)"
+        help="Output directory (defaults to PDF directory or input directory)"
     )
     parser.add_argument(
         "--debug", "-d",
@@ -995,65 +1050,59 @@ Output files:
     args = parser.parse_args()
 
     try:
-        pdf_path = Path(args.pdf_path)
-        if not pdf_path.exists():
-            raise FileNotFoundError(f"PDF not found: {pdf_path}")
+        input_path = Path(args.pdf_path)
+        if not input_path.exists():
+            raise FileNotFoundError(f"Path not found: {input_path}")
 
-        # Extract text from PDF first (shared for debug modes)
-        print(f"Parsing: {pdf_path}")
-        lines = extract_text_from_pdf(str(pdf_path))
-        print(f"Extracted {len(lines)} lines from PDF")
-
-        # Handle --dump-lines for debugging
-        if args.dump_lines:
-            print(f"\n=== First {args.dump_lines} extracted lines ===")
-            for i, line in enumerate(lines[:args.dump_lines]):
-                print(f"{i:4d}: {repr(line)}")
-            return
-
-        # Debug mode: show first few lines around each unit header
-        if args.debug:
-            print("\n=== DEBUG: Showing context around unit headers ===")
-            for i, line in enumerate(lines):
-                if UNIT_HEADER_RE.match(line):
-                    print(f"\n--- Unit found at line {i}: {line} ---")
-                    # Show 15 lines after the header
-                    for j in range(i, min(i + 16, len(lines))):
-                        marker = ">>>" if j == i else "   "
-                        print(f"{marker} {j:4d}: {repr(lines[j])}")
-
-        # Parse units from the already-extracted lines
-        units = parse_units_from_lines(lines)
-        print(f"Parsed {len(units)} units")
-
-        # Write outputs
-        if args.output_dir:
-            out_dir = Path(args.output_dir)
+        # Find all PDF files to process
+        if input_path.is_file():
+            if input_path.suffix.lower() != ".pdf":
+                raise ValueError(f"Not a PDF file: {input_path}")
+            pdf_files = [input_path]
         else:
-            out_dir = pdf_path.parent
-        out_dir.mkdir(parents=True, exist_ok=True)
+            # Directory - find all PDFs
+            pdf_files = sorted(input_path.glob("*.pdf"))
+            if not pdf_files:
+                raise FileNotFoundError(f"No PDF files found in: {input_path}")
 
-        base_name = pdf_path.stem.replace(" ", "_")
-        json_path = out_dir / f"{base_name}_units.json"
-        txt_path = out_dir / f"{base_name}_base_loadouts.txt"
-        csv_path = out_dir / f"{base_name}_units.csv"
+        print(f"Found {len(pdf_files)} PDF file(s) to process")
 
-        write_json_output(units, json_path)
-        write_txt_output(units, txt_path)
-        write_base_units_csv(units, csv_path)
+        # Determine output directory
+        if args.output_dir:
+            base_out_dir = Path(args.output_dir)
+        elif input_path.is_file():
+            base_out_dir = input_path.parent
+        else:
+            base_out_dir = input_path
 
-        print(f"\nSuccessfully parsed {len(units)} units!")
+        # Process each PDF
+        total_units = 0
+        successful = 0
+        failed = 0
+
+        for pdf_path in pdf_files:
+            try:
+                # For single file, output to base_out_dir
+                # For multiple files, also use base_out_dir (files are differentiated by name)
+                units_count = process_single_pdf(
+                    pdf_path,
+                    base_out_dir,
+                    debug=args.debug,
+                    dump_lines=args.dump_lines or 0
+                )
+                total_units += units_count
+                successful += 1
+            except Exception as e:
+                print(f"[ERROR] Failed to process {pdf_path.name}: {e}")
+                failed += 1
+                continue
 
         # Print summary
-        print("\nUnit Summary:")
-        print("-" * 60)
-        for unit in units[:10]:  # Show first 10
-            upgrades = sum(len(g.options) for g in unit.upgrade_groups)
-            print(f"  {unit.name} [{unit.size}] Q{unit.quality}+ D{unit.defense}+ "
-                  f"- {unit.base_points}pts ({len(unit.weapons)} weapons, {upgrades} upgrades)")
-
-        if len(units) > 10:
-            print(f"  ... and {len(units) - 10} more units")
+        print(f"\n{'='*60}")
+        print(f"DONE. Processed {successful} PDF file(s), {failed} failed.")
+        print(f"Total units parsed: {total_units}")
+        print(f"Output directory: {base_out_dir}")
+        print(f"{'='*60}")
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
