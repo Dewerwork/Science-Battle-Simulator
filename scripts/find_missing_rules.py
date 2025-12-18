@@ -22,7 +22,7 @@ MATRIX_FILE = '/home/user/Science-Battle-Simulator/docs/special_rules_review_mat
 OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt'
 
 # Script version for debugging
-SCRIPT_VERSION = "1.4"
+SCRIPT_VERSION = "1.5"
 
 
 def normalize_rule_name(rule: str) -> str:
@@ -290,6 +290,7 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
     # Find missing rules
     missing_rules = set()
     matched_rules = set()
+    used_matrix_rules = set()  # Track which matrix rules are actually used
     truncated_rules = {}  # Maps truncated -> fixed name
     not_rules = set()  # Entries that are not actually rules
 
@@ -307,6 +308,7 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
             truncated_rules[rule] = fixed
             if fixed in known_rules:
                 matched_rules.add(rule)
+                used_matrix_rules.add(fixed)
                 continue
             else:
                 # Truncated but the fixed version is also missing
@@ -314,6 +316,7 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
 
         if normalized in known_rules:
             matched_rules.add(rule)
+            used_matrix_rules.add(normalized)
         else:
             # Try some common variations
             found = False
@@ -321,10 +324,15 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
             base_normalized = re.sub(r'_*\d+_*', '', normalized)
             if base_normalized in known_rules:
                 matched_rules.add(rule)
+                used_matrix_rules.add(base_normalized)
                 found = True
 
             if not found:
                 missing_rules.add(rule)
+
+    # Find unused matrix rules
+    all_matrix_rules = set(known_rules.keys())
+    unused_matrix_rules = all_matrix_rules - used_matrix_rules
 
     return {
         'missing_rules': missing_rules,
@@ -334,7 +342,10 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
         'known_rules_matched': matched_rules,
         'known_rules_db': known_rules,
         'truncated_rules': truncated_rules,
-        'not_rules': not_rules
+        'not_rules': not_rules,
+        'used_matrix_rules': used_matrix_rules,
+        'unused_matrix_rules': unused_matrix_rules,
+        'all_matrix_rules': all_matrix_rules
     }
 
 
@@ -371,6 +382,8 @@ def main():
     print(f"Rules NOT in matrix: {len(results['missing_rules'])}")
     print(f"Truncated rules (auto-fixed): {len(results['truncated_rules'])}")
     print(f"Non-rule entries filtered: {len(results['not_rules'])}")
+    print(f"\nMatrix rules used: {len(results['used_matrix_rules'])} / {len(results['all_matrix_rules'])}")
+    print(f"Matrix rules UNUSED: {len(results['unused_matrix_rules'])}")
 
     if results['truncated_rules']:
         print(f"\n{'='*80}")
@@ -431,6 +444,26 @@ def main():
         print(f"\n\nDetailed report written to: {output_file}")
     else:
         print("\n✓ All rules in the units file are accounted for in the matrix!")
+
+    # Show unused matrix rules
+    if results['unused_matrix_rules']:
+        print(f"\n{'='*80}")
+        print("UNUSED MATRIX RULES (in matrix but not found in any unit loadout)")
+        print("="*80)
+
+        # Sort alphabetically and display
+        unused_sorted = sorted(results['unused_matrix_rules'])
+
+        # Display in columns
+        col_width = 40
+        for i in range(0, len(unused_sorted), 2):
+            col1 = unused_sorted[i]
+            col2 = unused_sorted[i+1] if i+1 < len(unused_sorted) else ''
+            print(f"  {col1:<{col_width}} {col2}")
+
+        print(f"\nTotal unused: {len(results['unused_matrix_rules'])} rules")
+    else:
+        print("\n✓ All matrix rules are used in unit loadouts!")
 
     # Also show rules that ARE matched for verification
     print(f"\n{'='*80}")
