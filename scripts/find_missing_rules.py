@@ -54,14 +54,16 @@ TRUNCATION_FIXES = {
     'MORALE_DEBU': 'MORALE_DEBUFF',
     'STEALTH_BU': 'STEALTH_BUFF',
     'DANGEROUS_TERRAIN_DEBU': 'DANGEROUS_TERRAIN_DEBUFF',
-    # Alternate spellings
+    # Alternate spellings/names
     'BANE_IN_MELEE': 'BANE_IN_MELEE_AURA',
     'CASTER': 'CASTING',  # Caster(X) -> Casting(X)
+    'REGENERATIVE': 'REGENERATION',  # Alternate name
 }
 
 # Entries that are NOT rules (data quality issues in source file)
 NOT_RULES = {
     'TAKE_ONE_BOSS_CARBINE_ATTACHMENT',
+    'TAKE_ONE_MASTER_HEAVY_RIFLE_ATTACHMENT',
     'GREAT_ELEMENTAL_SWORD',
     'GREAT_SHIELD',
     'HOLY_STATUE',
@@ -73,6 +75,10 @@ NOT_RULES = {
     'SHOOTER_GRUNTS',
     # Weapon names parsed as rules
     'HEAVY_RAZOR_CLAWS',
+    'STRENGTH',  # Parsed from "Regenerative Strength" weapon
+    # Parsing errors (two rules concatenated without comma in source)
+    'COMBAT_SHIELD_SHIELDED',  # Should be "Combat Shield, Shielded"
+    'MOLDED_BY_WAR_PREDATOR_FIGHTER',  # Should be "Molded by War, Predator Fighter"
 }
 
 
