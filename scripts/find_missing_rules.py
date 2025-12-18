@@ -58,6 +58,20 @@ TRUNCATION_FIXES = {
     'BANE_IN_MELEE': 'BANE_IN_MELEE_AURA',
     'CASTER': 'CASTING',  # Caster(X) -> Casting(X)
     'REGENERATIVE': 'REGENERATION',  # Alternate name
+    # "Hit & Run" parsing issues - & splits the rule name
+    'RUN_FIGHTER_AURA': 'HIT_AND_RUN_FIGHTER_AURA',
+    'RUN_SHOOTER_AURA': 'HIT_AND_RUN_SHOOTER_AURA',
+    'RUN_FIGHTER': 'HIT_AND_RUN_FIGHTER',
+    'RUN_SHOOTER': 'HIT_AND_RUN_SHOOTER',
+    # Conditional rule variants - map to base rules
+    'UNSTOPPABLE_IN_MELEE': 'UNSTOPPABLE',
+    'SHRED_WHEN_SHOOTING': 'SHRED',
+    'RENDING_IN_MELEE': 'RENDING',
+    'RENDING_WHEN_SHOOTING': 'RENDING',
+    'POISON_IN_MELEE': 'POISON',
+    'POISON_WHEN_SHOOTING': 'POISON',
+    # Other alternate names
+    'ARMOR': 'ARMORED',  # Armor(X) -> Armored(X)
 }
 
 # Entries that are NOT rules (data quality issues in source file)
@@ -73,12 +87,38 @@ NOT_RULES = {
     'ASSAULT_GRUNTS',
     'HIVE_SWARMS',
     'SHOOTER_GRUNTS',
+    'LESSER_CHANGE_HORRORS',
+    'MINE_DRONES',
+    'BOT_SWARMS',
+    'LUST_WARRIORS',
+    'CHANGELINGS',
+    'YOURH_SWARMS',  # Typo for "Youth Swarms"
+    'YOURTH_SWARMS',
+    'YOUTH_SWARMS',
+    'YOURHS',  # Typo artifacts
+    'YOURTHS',
     # Weapon names parsed as rules
     'HEAVY_RAZOR_CLAWS',
     'STRENGTH',  # Parsed from "Regenerative Strength" weapon
     # Parsing errors (two rules concatenated without comma in source)
     'COMBAT_SHIELD_SHIELDED',  # Should be "Combat Shield, Shielded"
     'MOLDED_BY_WAR_PREDATOR_FIGHTER',  # Should be "Molded by War, Predator Fighter"
+    # Unit upgrade keywords (not special rules)
+    'BANNER',
+    'MUSICIAN',
+    'SERGEANT',
+    'CHAMPION',
+    'VETERAN',
+    'LEADER',
+    # "Hit & Run" parsing artifacts (& splits the name)
+    'HIT',
+    'RUN',
+    # Single letters or numbers from parsing errors
+    'B',
+    'C',
+    'D',
+    'E',
+    'X',
 }
 
 
