@@ -91,7 +91,7 @@ def reset_uid_counter() -> None:
     _UID_COUNTER = {}
 
 # =========================================================
-# 1) PDF -> units JSON
+# 1) PDF/JSON -> units JSON
 # =========================================================
 UNIT_HEADER_RE = re.compile(r"^(?P<name>.+?)\s+\[(?P<size>\d+)\]\s*-\s*(?P<pts>\d+)pts$")
 STATS_RE = re.compile(r"^Quality\s+(?P<qua>\d)\+\s+Defense\s+(?P<def>\d)\+(?:\s+Tough\s+(?P<tough>\d+))?$")
@@ -105,6 +105,67 @@ WEAPON_RE = re.compile(
     r"(?P<spe>.+)$"
 )
 COST_RE = re.compile(r"^(?P<text>.+?)\s+(?P<cost>(?:\+\d+pts|Free))$")
+
+# =========================================================
+# Load units from JSON (output of parse_pdf_loadouts.py)
+# =========================================================
+def load_units_from_json(json_path: str) -> List[Dict[str, Any]]:
+    """
+    Load units from JSON file produced by parse_pdf_loadouts.py.
+    Converts the JSON format to the format expected by this pipeline.
+    """
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    units_raw = data.get("units", [])
+    units: List[Dict[str, Any]] = []
+
+    for u in units_raw:
+        # Convert weapons: JSON uses int range, pipeline uses str like '18"' or '-'
+        weapons: List[Dict[str, Any]] = []
+        for w in u.get("weapons", []):
+            rng_val = w.get("range")
+            if rng_val is None:
+                rng_str = "-"
+            else:
+                rng_str = f'{rng_val}"'
+
+            weapons.append({
+                "count": w.get("count", 1),
+                "name": w.get("name", ""),
+                "range": rng_str,
+                "attacks": w.get("attacks", 0),
+                "ap": w.get("ap"),
+                "special": w.get("special_rules", []),
+            })
+
+        # Convert upgrade_groups to options format
+        options: List[Dict[str, Any]] = []
+        for ug in u.get("upgrade_groups", []):
+            group_options: List[Dict[str, Any]] = []
+            for opt in ug.get("options", []):
+                group_options.append({
+                    "text": opt.get("text", ""),
+                    "pts": opt.get("cost", 0),
+                })
+            options.append({
+                "header": ug.get("header", ""),
+                "options": group_options,
+            })
+
+        units.append({
+            "name": u.get("name", ""),
+            "size": u.get("size", 1),
+            "base_points": u.get("base_points", 0),
+            "quality": u.get("quality"),
+            "defense": u.get("defense"),
+            "tough": u.get("tough"),
+            "special_rules": u.get("special_rules", []),
+            "weapons": weapons,
+            "options": options,
+        })
+
+    return units
 
 def _is_group_header(line: str) -> bool:
     return bool(re.match(r"^(Upgrade|Replace|Any model)", line))
@@ -1671,24 +1732,38 @@ def parse_faction_from_filename(filename: str) -> Tuple[str, str]:
 
     return faction_name, version
 
-def find_pdf_files(input_path: Path) -> List[Path]:
+def find_input_files(input_path: Path) -> List[Path]:
     """
-    Find all PDF files to process.
+    Find all input files (PDF or JSON) to process.
     If input_path is a file, return it as a single-item list.
-    If input_path is a directory, return all PDF files in it.
+    If input_path is a directory, return all PDF and JSON files in it.
+    JSON files (from parse_pdf_loadouts.py) are preferred over PDFs.
     """
     if input_path.is_file():
-        if input_path.suffix.lower() == ".pdf":
+        suffix = input_path.suffix.lower()
+        if suffix in (".pdf", ".json"):
             return [input_path]
         else:
-            raise ValueError(f"Input file is not a PDF: {input_path}")
+            raise ValueError(f"Input file must be PDF or JSON: {input_path}")
     elif input_path.is_dir():
+        # Look for *_units.json files first (output of parse_pdf_loadouts.py)
+        json_files = sorted(input_path.glob("*_units.json"))
+        if json_files:
+            return json_files
+        # Fall back to PDF files
         pdf_files = sorted(input_path.glob("*.pdf"))
-        if not pdf_files:
-            raise FileNotFoundError(f"No PDF files found in directory: {input_path}")
-        return pdf_files
+        if pdf_files:
+            return pdf_files
+        raise FileNotFoundError(f"No PDF or JSON files found in directory: {input_path}")
     else:
         raise FileNotFoundError(f"Input path not found: {input_path}")
+
+
+def find_pdf_files(input_path: Path) -> List[Path]:
+    """
+    Legacy function - calls find_input_files for backward compatibility.
+    """
+    return find_input_files(input_path)
 
 # =========================================================
 # Merge all *.final.txt files into one army TXT
@@ -1757,32 +1832,47 @@ def merge_final_txts(faction_dir: Path, faction_name: str) -> Optional[Path]:
     out_file.write_text("\n".join(out_lines).rstrip() + "\n", encoding="utf-8")
     return out_file
 
-def process_single_pdf(pdf_path: Path,
-                       out_dir: Path) -> None:
-    """Process a single PDF file and generate all outputs."""
-    faction_name, faction_version = parse_faction_from_filename(pdf_path.name)
+def process_single_input(input_path: Path,
+                         out_dir: Path) -> None:
+    """Process a single PDF or JSON file and generate all outputs."""
+    is_json = input_path.suffix.lower() == ".json"
+
+    # Parse faction name from filename
+    # For JSON files like "GF_-_Alien_Hives_3.5.1_units.json", strip the "_units" suffix
+    filename_for_parsing = input_path.name
+    if is_json and filename_for_parsing.endswith("_units.json"):
+        filename_for_parsing = filename_for_parsing[:-11] + ".pdf"  # Remove "_units.json", add ".pdf" for parser
+
+    faction_name, faction_version = parse_faction_from_filename(filename_for_parsing)
     faction_dir = out_dir / safe_filename(f"{faction_name}_{faction_version}")
     ensure_dir(faction_dir)
 
     print(f"\n{'='*60}")
-    print(f"Processing: {pdf_path.name}")
+    print(f"Processing: {input_path.name}")
+    print(f"Input type: {'JSON (pre-parsed)' if is_json else 'PDF'}")
     print(f"Faction: {faction_name} | Version: {faction_version}")
     print(f"Output: {faction_dir}")
     print(f"{'='*60}")
 
-    # Parse PDF
-    lines = extract_lines(str(pdf_path))
-    units = parse_units(lines)
+    # Load units from JSON or parse from PDF
+    if is_json:
+        units = load_units_from_json(str(input_path))
+    else:
+        lines = extract_lines(str(input_path))
+        units = parse_units(lines)
 
     if not units:
-        print(f"[WARN] No units found in {pdf_path.name}, skipping...")
+        print(f"[WARN] No units found in {input_path.name}, skipping...")
         return
 
-    units_payload = {"faction": faction_name, "version": faction_version, "units": units}
-    units_json_path = faction_dir / f"{safe_filename(faction_name)}_{faction_version}_units.json"
-    units_json_path.write_text(json.dumps(units_payload, indent=2, ensure_ascii=False), encoding="utf-8")
-
-    print(f"[OK] Parsed {len(units)} units -> {units_json_path}")
+    # Only write units JSON if input was PDF (avoid duplicating JSON files)
+    if not is_json:
+        units_payload = {"faction": faction_name, "version": faction_version, "units": units}
+        units_json_path = faction_dir / f"{safe_filename(faction_name)}_{faction_version}_units.json"
+        units_json_path.write_text(json.dumps(units_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"[OK] Parsed {len(units)} units -> {units_json_path}")
+    else:
+        print(f"[OK] Loaded {len(units)} units from JSON")
 
     for u in units:
         unit_name = str(u.get("name", "")).strip()
@@ -1827,35 +1917,49 @@ def process_single_pdf(pdf_path: Path,
     if merged_path:
         print(f"\n  [OK] Merged all units -> {merged_path.name}")
 
+
+def process_single_pdf(pdf_path: Path, out_dir: Path) -> None:
+    """Legacy function - calls process_single_input for backward compatibility."""
+    return process_single_input(pdf_path, out_dir)
+
 def run() -> None:
     input_path = Path(PDF_INPUT_PATH).expanduser()
     out_dir = Path(OUTPUT_DIR).expanduser()
 
     if not input_path.exists():
-        raise FileNotFoundError(f"PDF input path not found: {input_path}")
+        raise FileNotFoundError(f"Input path not found: {input_path}")
 
     ensure_dir(out_dir)
 
-    # Find all PDF files to process
-    pdf_files = find_pdf_files(input_path)
-    print(f"[INFO] Found {len(pdf_files)} PDF file(s) to process")
+    # Find all input files (PDF or JSON) to process
+    input_files = find_input_files(input_path)
+
+    # Count file types
+    json_count = sum(1 for f in input_files if f.suffix.lower() == ".json")
+    pdf_count = len(input_files) - json_count
+
+    print(f"[INFO] Found {len(input_files)} input file(s) to process")
+    if json_count > 0:
+        print(f"[INFO]   - {json_count} JSON file(s) (pre-parsed by parse_pdf_loadouts.py)")
+    if pdf_count > 0:
+        print(f"[INFO]   - {pdf_count} PDF file(s)")
     print(f"[INFO] WORKERS_PER_UNIT={WORKERS_PER_UNIT}, TASKS_PER_UNIT={TASKS_PER_UNIT}")
     print(f"[INFO] RAW_LOADOUT_MODE={RAW_LOADOUT_MODE}")
     if not RAW_LOADOUT_MODE:
         print(f"[INFO] ATTACK_AGNOSTIC_GROUPING={ATTACK_AGNOSTIC_GROUPING}, RULE_AGNOSTIC_GROUPING={RULE_AGNOSTIC_GROUPING}")
 
-    # Process each PDF
-    for pdf_path in pdf_files:
+    # Process each input file
+    for input_file in input_files:
         try:
-            process_single_pdf(pdf_path, out_dir)
+            process_single_input(input_file, out_dir)
         except Exception as e:
-            print(f"[ERROR] Failed to process {pdf_path.name}: {e}")
+            print(f"[ERROR] Failed to process {input_file.name}: {e}")
             import traceback
             traceback.print_exc()
             continue
 
     print(f"\n{'='*60}")
-    print(f"DONE. Processed {len(pdf_files)} PDF file(s).")
+    print(f"DONE. Processed {len(input_files)} input file(s).")
     print(f"Output directory: {out_dir}")
     print(f"{'='*60}")
 
