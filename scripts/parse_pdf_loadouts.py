@@ -980,11 +980,68 @@ Output files:
         "--output-dir", "-o",
         help="Output directory (defaults to PDF directory)"
     )
+    parser.add_argument(
+        "--debug", "-d",
+        action="store_true",
+        help="Print detailed debug information about extracted lines"
+    )
+    parser.add_argument(
+        "--dump-lines",
+        type=int,
+        metavar="N",
+        help="Dump first N extracted lines to stdout and exit (for debugging)"
+    )
 
     args = parser.parse_args()
 
     try:
-        units = parse_pdf(args.pdf_path, args.output_dir)
+        pdf_path = Path(args.pdf_path)
+        if not pdf_path.exists():
+            raise FileNotFoundError(f"PDF not found: {pdf_path}")
+
+        # Extract text from PDF first (shared for debug modes)
+        print(f"Parsing: {pdf_path}")
+        lines = extract_text_from_pdf(str(pdf_path))
+        print(f"Extracted {len(lines)} lines from PDF")
+
+        # Handle --dump-lines for debugging
+        if args.dump_lines:
+            print(f"\n=== First {args.dump_lines} extracted lines ===")
+            for i, line in enumerate(lines[:args.dump_lines]):
+                print(f"{i:4d}: {repr(line)}")
+            return
+
+        # Debug mode: show first few lines around each unit header
+        if args.debug:
+            print("\n=== DEBUG: Showing context around unit headers ===")
+            for i, line in enumerate(lines):
+                if UNIT_HEADER_RE.match(line):
+                    print(f"\n--- Unit found at line {i}: {line} ---")
+                    # Show 15 lines after the header
+                    for j in range(i, min(i + 16, len(lines))):
+                        marker = ">>>" if j == i else "   "
+                        print(f"{marker} {j:4d}: {repr(lines[j])}")
+
+        # Parse units from the already-extracted lines
+        units = parse_units_from_lines(lines)
+        print(f"Parsed {len(units)} units")
+
+        # Write outputs
+        if args.output_dir:
+            out_dir = Path(args.output_dir)
+        else:
+            out_dir = pdf_path.parent
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        base_name = pdf_path.stem.replace(" ", "_")
+        json_path = out_dir / f"{base_name}_units.json"
+        txt_path = out_dir / f"{base_name}_base_loadouts.txt"
+        csv_path = out_dir / f"{base_name}_units.csv"
+
+        write_json_output(units, json_path)
+        write_txt_output(units, txt_path)
+        write_base_units_csv(units, csv_path)
+
         print(f"\nSuccessfully parsed {len(units)} units!")
 
         # Print summary
