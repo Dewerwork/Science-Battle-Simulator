@@ -52,16 +52,7 @@
               "rules_granted": [
                 "Increased Shooting Range"
               ],
-              "weapon": {
-                "name": "Bio-Tech Master",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Increased Shooting Range"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Brood Leader (Rapid Charge)",
@@ -69,16 +60,7 @@
               "rules_granted": [
                 "Rapid Charge"
               ],
-              "weapon": {
-                "name": "Brood Leader",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Rapid Charge"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Bio-Engineer (Furious)",
@@ -86,16 +68,7 @@
               "rules_granted": [
                 "Furious"
               ],
-              "weapon": {
-                "name": "Combat Bio-Engineer",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Furious"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Hive Protector (Shielded)",
@@ -103,16 +76,7 @@
               "rules_granted": [
                 "Shielded"
               ],
-              "weapon": {
-                "name": "Hive Protector",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Shielded"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Psychic Synapses (Caster(3))",
@@ -120,16 +84,7 @@
               "rules_granted": [
                 "Caster(3"
               ],
-              "weapon": {
-                "name": "Psychic Synapses",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Caster(3"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -145,9 +100,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -160,9 +115,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -175,9 +130,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -206,10 +161,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             }
           ]
@@ -226,10 +179,8 @@
                 "count": 2,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             },
             {
@@ -243,7 +194,7 @@
                 "attacks": 2,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)"
                 ]
               }
             },
@@ -256,9 +207,9 @@
                 "count": 1,
                 "range": 36,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -271,9 +222,10 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)",
+                  "Reliable"
                 ]
               }
             },
@@ -286,9 +238,10 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)",
+                  "Reliable"
                 ]
               }
             },
@@ -301,9 +254,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 6,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rupture"
                 ]
               }
             },
@@ -316,9 +269,10 @@
                 "count": 1,
                 "range": null,
                 "attacks": 6,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Reliable",
+                  "Rending"
                 ]
               }
             },
@@ -331,9 +285,10 @@
                 "count": 1,
                 "range": 36,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(6)",
+                  "Unstoppable"
                 ]
               }
             },
@@ -346,9 +301,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 6,
-                "ap": null,
+                "ap": 4,
                 "special_rules": [
-                  "AP(4"
+                  "Reliable"
                 ]
               }
             }
@@ -364,17 +319,7 @@
                 "Ambush",
                 "Flying"
               ],
-              "weapon": {
-                "name": "Wings",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Ambush",
-                  "Flying"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -387,16 +332,7 @@
               "rules_granted": [
                 "Resistance"
               ],
-              "weapon": {
-                "name": "Psy-Barrier",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Resistance"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Bio-Recovery (Regeneration)",
@@ -404,16 +340,7 @@
               "rules_granted": [
                 "Regeneration"
               ],
-              "weapon": {
-                "name": "Bio-Recovery",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Regeneration"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -461,16 +388,7 @@
               "rules_granted": [
                 "Hive Bond Boost Aura"
               ],
-              "weapon": {
-                "name": "Pheromone Host",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Hive Bond Boost Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Brood Leader (Rapid Charge Aura)",
@@ -478,16 +396,7 @@
               "rules_granted": [
                 "Rapid Charge Aura"
               ],
-              "weapon": {
-                "name": "Brood Leader",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Rapid Charge Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Bio-Engineer (Furious Aura)",
@@ -495,16 +404,7 @@
               "rules_granted": [
                 "Furious Aura"
               ],
-              "weapon": {
-                "name": "Combat Bio-Engineer",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Furious Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Bio-Tech Master (Increased Shooting Range Aura)",
@@ -512,16 +412,7 @@
               "rules_granted": [
                 "Increased Shooting Range Aura"
               ],
-              "weapon": {
-                "name": "Bio-Tech Master",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Increased Shooting Range Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Psychic Synapses (Caster(2))",
@@ -529,16 +420,7 @@
               "rules_granted": [
                 "Caster(2"
               ],
-              "weapon": {
-                "name": "Psychic Synapses",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Caster(2"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -554,10 +436,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             },
             {
@@ -571,7 +451,7 @@
                 "attacks": 1,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)"
                 ]
               }
             },
@@ -584,10 +464,8 @@
                 "count": 1,
                 "range": 12,
                 "attacks": 4,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             },
             {
@@ -599,9 +477,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rupture"
                 ]
               }
             },
@@ -614,9 +492,9 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -629,9 +507,10 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)",
+                  "Unstoppable"
                 ]
               }
             }
@@ -647,17 +526,7 @@
                 "Ambush",
                 "Flying"
               ],
-              "weapon": {
-                "name": "Wings",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Ambush",
-                  "Flying"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -673,10 +542,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             },
             {
@@ -688,9 +555,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -703,9 +570,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -718,9 +585,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -781,16 +648,7 @@
               "rules_granted": [
                 "Rapid Charge Aura"
               ],
-              "weapon": {
-                "name": "Brood Leader",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Rapid Charge Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Hive Protector (Shielded Aura)",
@@ -798,16 +656,7 @@
               "rules_granted": [
                 "Shielded Aura"
               ],
-              "weapon": {
-                "name": "Hive Protector",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Shielded Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Bio-Engineer (Furious Aura)",
@@ -815,16 +664,7 @@
               "rules_granted": [
                 "Furious Aura"
               ],
-              "weapon": {
-                "name": "Combat Bio-Engineer",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Furious Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Psychic Synapses (Caster(2))",
@@ -832,16 +672,7 @@
               "rules_granted": [
                 "Caster(2"
               ],
-              "weapon": {
-                "name": "Psychic Synapses",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Caster(2"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -880,16 +711,7 @@
               "rules_granted": [
                 "Rapid Charge Aura"
               ],
-              "weapon": {
-                "name": "Brood Leader",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Rapid Charge Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Hive Protector (Shielded Aura)",
@@ -897,16 +719,7 @@
               "rules_granted": [
                 "Shielded Aura"
               ],
-              "weapon": {
-                "name": "Hive Protector",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Shielded Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Bio-Engineer (Furious Aura)",
@@ -914,16 +727,7 @@
               "rules_granted": [
                 "Furious Aura"
               ],
-              "weapon": {
-                "name": "Combat Bio-Engineer",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Furious Aura"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Bio-Tech Master (Increased Shooting Range Aura)",
@@ -931,16 +735,7 @@
               "rules_granted": [
                 "Increased Shooting Range Aura"
               ],
-              "weapon": {
-                "name": "Bio-Tech Master",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Increased Shooting Range Aura"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -958,7 +753,7 @@
                 "attacks": 1,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)"
                 ]
               }
             },
@@ -971,9 +766,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -986,9 +781,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -1001,10 +796,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             }
           ]
@@ -1021,10 +814,8 @@
                 "count": 1,
                 "range": 6,
                 "attacks": 3,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             },
             {
@@ -1049,10 +840,8 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             }
           ]
@@ -1066,16 +855,7 @@
               "rules_granted": [
                 "Fast"
               ],
-              "weapon": {
-                "name": "Assault Breed",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Fast"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Winged Breed (Ambush, Flying)",
@@ -1084,17 +864,7 @@
                 "Ambush",
                 "Flying"
               ],
-              "weapon": {
-                "name": "Winged Breed",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Ambush",
-                  "Flying"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Psycho Breed (Resistance)",
@@ -1102,16 +872,7 @@
               "rules_granted": [
                 "Resistance"
               ],
-              "weapon": {
-                "name": "Psycho Breed",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Resistance"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -1124,16 +885,7 @@
               "rules_granted": [
                 "Bane in Melee"
               ],
-              "weapon": {
-                "name": "Toxin Cysts",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Bane in Melee"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Adrenaline Fueled (Agile)",
@@ -1141,16 +893,7 @@
               "rules_granted": [
                 "Agile"
               ],
-              "weapon": {
-                "name": "Adrenaline Fueled",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Agile"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Mutations (Piercing Growth)",
@@ -1158,16 +901,7 @@
               "rules_granted": [
                 "Piercing Growth"
               ],
-              "weapon": {
-                "name": "Combat Mutations",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Piercing Growth"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -1208,9 +942,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -1225,7 +959,7 @@
                 "attacks": 1,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)"
                 ]
               }
             },
@@ -1238,9 +972,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -1253,10 +987,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             }
           ]
@@ -1270,16 +1002,7 @@
               "rules_granted": [
                 "Agile"
               ],
-              "weapon": {
-                "name": "Adrenaline Fueled",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Agile"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Toxic Cysts (Bane in Melee)",
@@ -1287,16 +1010,7 @@
               "rules_granted": [
                 "Bane in Melee"
               ],
-              "weapon": {
-                "name": "Toxic Cysts",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Bane in Melee"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Mutations (Piercing Growth)",
@@ -1304,16 +1018,7 @@
               "rules_granted": [
                 "Piercing Growth"
               ],
-              "weapon": {
-                "name": "Combat Mutations",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Piercing Growth"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -1374,10 +1079,8 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             }
           ]
@@ -1394,10 +1097,8 @@
                 "count": 1,
                 "range": 12,
                 "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             },
             {
@@ -1409,9 +1110,9 @@
                 "count": 1,
                 "range": 6,
                 "attacks": 1,
-                "ap": null,
+                "ap": 4,
                 "special_rules": [
-                  "AP(4"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -1441,7 +1142,8 @@
                 "attacks": 1,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)",
+                  "Reliable"
                 ]
               }
             },
@@ -1454,9 +1156,10 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 1,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Reliable",
+                  "Takedown"
                 ]
               }
             }
@@ -1471,16 +1174,7 @@
               "rules_granted": [
                 "Agile"
               ],
-              "weapon": {
-                "name": "Adrenaline Fueled",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Agile"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Toxic Cysts (Bane in Melee)",
@@ -1488,16 +1182,7 @@
               "rules_granted": [
                 "Bane in Melee"
               ],
-              "weapon": {
-                "name": "Toxic Cysts",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Bane in Melee"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Mutations (Piercing Growth)",
@@ -1505,16 +1190,7 @@
               "rules_granted": [
                 "Piercing Growth"
               ],
-              "weapon": {
-                "name": "Combat Mutations",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Piercing Growth"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -1554,16 +1230,7 @@
               "rules_granted": [
                 "Spell Conduit"
               ],
-              "weapon": {
-                "name": "Synaptic Relay",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Spell Conduit"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -1576,16 +1243,7 @@
               "rules_granted": [
                 "Agile"
               ],
-              "weapon": {
-                "name": "Adrenaline Fueled",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Agile"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Toxic Cysts (Bane in Melee)",
@@ -1593,16 +1251,7 @@
               "rules_granted": [
                 "Bane in Melee"
               ],
-              "weapon": {
-                "name": "Toxic Cysts",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Bane in Melee"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Mutations (Piercing Growth)",
@@ -1610,16 +1259,7 @@
               "rules_granted": [
                 "Piercing Growth"
               ],
-              "weapon": {
-                "name": "Combat Mutations",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Piercing Growth"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -1681,10 +1321,8 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             }
           ]
@@ -1701,10 +1339,8 @@
                 "count": 1,
                 "range": 12,
                 "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             },
             {
@@ -1716,9 +1352,9 @@
                 "count": 1,
                 "range": 6,
                 "attacks": 1,
-                "ap": null,
+                "ap": 4,
                 "special_rules": [
-                  "AP(4"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -1748,7 +1384,8 @@
                 "attacks": 1,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)",
+                  "Reliable"
                 ]
               }
             },
@@ -1761,9 +1398,10 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 1,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Reliable",
+                  "Takedown"
                 ]
               }
             }
@@ -1778,16 +1416,7 @@
               "rules_granted": [
                 "Agile"
               ],
-              "weapon": {
-                "name": "Adrenaline Fueled",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Agile"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Toxic Cysts (Bane in Melee)",
@@ -1795,16 +1424,7 @@
               "rules_granted": [
                 "Bane in Melee"
               ],
-              "weapon": {
-                "name": "Toxic Cysts",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Bane in Melee"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Mutations (Piercing Growth)",
@@ -1812,16 +1432,7 @@
               "rules_granted": [
                 "Piercing Growth"
               ],
-              "weapon": {
-                "name": "Combat Mutations",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Piercing Growth"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -1875,7 +1486,9 @@
                 "attacks": 1,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)",
+                  "Indirect",
+                  "Rending"
                 ]
               }
             }
@@ -1890,16 +1503,7 @@
               "rules_granted": [
                 "Agile"
               ],
-              "weapon": {
-                "name": "Adrenaline Fueled",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Agile"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Toxic Cysts (Bane in Melee)",
@@ -1907,16 +1511,7 @@
               "rules_granted": [
                 "Bane in Melee"
               ],
-              "weapon": {
-                "name": "Toxic Cysts",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Bane in Melee"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Combat Mutations (Piercing Growth)",
@@ -1924,16 +1519,7 @@
               "rules_granted": [
                 "Piercing Growth"
               ],
-              "weapon": {
-                "name": "Combat Mutations",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Piercing Growth"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -1974,16 +1560,7 @@
               "rules_granted": [
                 "Caster(1"
               ],
-              "weapon": {
-                "name": "Mind Snatcher",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Caster(1"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -2026,10 +1603,8 @@
                 "count": 1,
                 "range": 12,
                 "attacks": 4,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             }
           ]
@@ -2085,7 +1660,7 @@
                 "attacks": 1,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)"
                 ]
               }
             },
@@ -2098,10 +1673,8 @@
                 "count": 1,
                 "range": 12,
                 "attacks": 4,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             }
           ]
@@ -2133,9 +1706,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rupture"
                 ]
               }
             },
@@ -2148,9 +1721,9 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -2163,9 +1736,10 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)",
+                  "Unstoppable"
                 ]
               }
             }
@@ -2181,17 +1755,7 @@
                 "Ambush",
                 "Flying"
               ],
-              "weapon": {
-                "name": "Wings",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Ambush",
-                  "Flying"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -2204,16 +1768,7 @@
               "rules_granted": [
                 "Unpredictable Fighter Mark"
               ],
-              "weapon": {
-                "name": "Battle Pheromones",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Unpredictable Fighter Mark"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -2229,9 +1784,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -2260,10 +1815,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             }
           ]
@@ -2280,9 +1833,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -2295,9 +1848,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             }
@@ -2338,16 +1891,7 @@
               "rules_granted": [
                 "Ambush"
               ],
-              "weapon": {
-                "name": "Burrowing Strike",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Ambush"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -2363,9 +1907,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -2394,10 +1938,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             }
           ]
@@ -2414,9 +1956,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -2429,9 +1971,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             }
@@ -2505,16 +2047,7 @@
               "rules_granted": [
                 "Stealth Buff"
               ],
-              "weapon": {
-                "name": "Shrouding Mist",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Stealth Buff"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -2555,9 +2088,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rupture"
                 ]
               }
             },
@@ -2570,9 +2103,9 @@
                 "count": 1,
                 "range": 24,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -2585,9 +2118,9 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 2,
-                "ap": null,
+                "ap": 4,
                 "special_rules": [
-                  "AP(4"
+                  "Unstoppable"
                 ]
               }
             }
@@ -2602,16 +2135,7 @@
               "rules_granted": [
                 "Unpredictable Fighter Mark"
               ],
-              "weapon": {
-                "name": "Battle Pheromones",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Unpredictable Fighter Mark"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -2627,9 +2151,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -2658,10 +2182,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             }
           ]
@@ -2678,9 +2200,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -2693,9 +2215,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             }
@@ -2740,9 +2262,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -2771,10 +2293,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             }
           ]
@@ -2791,9 +2311,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -2806,9 +2326,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             }
@@ -2938,10 +2458,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 2,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             },
             {
@@ -2953,9 +2471,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -2968,9 +2486,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -2983,9 +2501,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -3016,16 +2534,7 @@
               "rules_granted": [
                 "Takedown Strike"
               ],
-              "weapon": {
-                "name": "Silent Assassin",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Takedown Strike"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Mind Hunter (Caster(2))",
@@ -3033,16 +2542,7 @@
               "rules_granted": [
                 "Caster(2"
               ],
-              "weapon": {
-                "name": "Mind Hunter",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Caster(2"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -3100,16 +2600,7 @@
               "rules_granted": [
                 "Spawn(Spores [5]"
               ],
-              "weapon": {
-                "name": "Spore Carrier",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Spawn(Spores [5]"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -3162,9 +2653,10 @@
                 "count": 1,
                 "range": 9,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Blast(3)",
+                  "Reliable"
                 ]
               }
             },
@@ -3177,9 +2669,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Blast(3)"
                 ]
               }
             }
@@ -3284,7 +2776,7 @@
                 "attacks": 2,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)"
                 ]
               }
             },
@@ -3297,9 +2789,9 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -3312,9 +2804,10 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)",
+                  "Unstoppable"
                 ]
               }
             }
@@ -3329,16 +2822,7 @@
               "rules_granted": [
                 "Unpredictable Fighter Mark"
               ],
-              "weapon": {
-                "name": "Battle Pheromones",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Unpredictable Fighter Mark"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -3388,9 +2872,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -3403,9 +2887,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -3418,9 +2902,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -3433,10 +2917,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             },
             {
@@ -3466,16 +2948,7 @@
               "rules_granted": [
                 "Regeneration"
               ],
-              "weapon": {
-                "name": "Bio-Recovery",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Regeneration"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -3508,7 +2981,7 @@
                 "attacks": 4,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)"
                 ]
               }
             },
@@ -3521,9 +2994,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 12,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rupture"
                 ]
               }
             },
@@ -3536,9 +3009,9 @@
                 "count": 1,
                 "range": 36,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(6)"
                 ]
               }
             },
@@ -3551,9 +3024,10 @@
                 "count": 1,
                 "range": 36,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(6)",
+                  "Unstoppable"
                 ]
               }
             }
@@ -3568,16 +3042,7 @@
               "rules_granted": [
                 "Breath Attack"
               ],
-              "weapon": {
-                "name": "Killing Scream",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Breath Attack"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -3639,16 +3104,7 @@
               "rules_granted": [
                 "Stealth Buff"
               ],
-              "weapon": {
-                "name": "Shrouding Mist",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Stealth Buff"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Poison Mist (12\", A1, Blast(6), Bane)",
@@ -3661,7 +3117,8 @@
                 "attacks": 1,
                 "ap": null,
                 "special_rules": [
-                  "Blast(6"
+                  "Blast(6)",
+                  "Bane"
                 ]
               }
             }
@@ -3736,9 +3193,10 @@
                 "count": 1,
                 "range": 9,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Blast(3)",
+                  "Reliable"
                 ]
               }
             },
@@ -3751,9 +3209,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 2,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Blast(3)"
                 ]
               }
             }
@@ -3814,16 +3272,7 @@
               "rules_granted": [
                 "Surprise Attack(3"
               ],
-              "weapon": {
-                "name": "Burrow Attack",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Surprise Attack(3"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -3837,17 +3286,7 @@
                 "Regeneration",
                 "Stealth Buff"
               ],
-              "weapon": {
-                "name": "Venom Burrower",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Regeneration",
-                  "Stealth Buff"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Synapse Burrower (Caster(3), Resistance)",
@@ -3855,16 +3294,7 @@
               "rules_granted": [
                 "Caster(3"
               ],
-              "weapon": {
-                "name": "Synapse Burrower",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Caster(3"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -3880,9 +3310,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -3895,9 +3325,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -3910,9 +3340,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -3925,10 +3355,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             },
             {
@@ -4002,16 +3430,7 @@
               "rules_granted": [
                 "Regeneration"
               ],
-              "weapon": {
-                "name": "Bio-Recovery",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Regeneration"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4027,9 +3446,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -4042,9 +3461,10 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)",
+                  "Unstoppable"
                 ]
               }
             }
@@ -4062,10 +3482,8 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 12,
-                "ap": null,
-                "special_rules": [
-                  "AP(1"
-                ]
+                "ap": 1,
+                "special_rules": []
               }
             },
             {
@@ -4077,9 +3495,9 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 2,
-                "ap": null,
+                "ap": 3,
                 "special_rules": [
-                  "AP(3"
+                  "Deadly(6)"
                 ]
               }
             }
@@ -4138,16 +3556,7 @@
               "rules_granted": [
                 "Resistance"
               ],
-              "weapon": {
-                "name": "Psy-Barrier",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Resistance"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4163,9 +3572,9 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -4178,9 +3587,10 @@
                 "count": 1,
                 "range": 18,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)",
+                  "Unstoppable"
                 ]
               }
             }
@@ -4195,16 +3605,7 @@
               "rules_granted": [
                 "Spawn(Hive Swarms [3]"
               ],
-              "weapon": {
-                "name": "Swarm Brood",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Spawn(Hive Swarms [3]"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Shooter Brood (Spawn(Shooter Grunts [10]))",
@@ -4212,16 +3613,7 @@
               "rules_granted": [
                 "Spawn(Shooter Grunts [10]"
               ],
-              "weapon": {
-                "name": "Shooter Brood",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Spawn(Shooter Grunts [10]"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Assault Brood (Spawn(Assault Grunts [10]))",
@@ -4229,16 +3621,7 @@
               "rules_granted": [
                 "Spawn(Assault Grunts [10]"
               ],
-              "weapon": {
-                "name": "Assault Brood",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Spawn(Assault Grunts [10]"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4251,16 +3634,7 @@
               "rules_granted": [
                 "Unpredictable Fighter Mark"
               ],
-              "weapon": {
-                "name": "Battle Pheromones",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Unpredictable Fighter Mark"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -4318,16 +3692,7 @@
               "rules_granted": [
                 "Resistance"
               ],
-              "weapon": {
-                "name": "Psy-Barrier",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Resistance"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4343,9 +3708,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)"
                 ]
               }
             },
@@ -4358,9 +3723,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 1,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -4373,9 +3738,9 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Rending"
                 ]
               }
             },
@@ -4388,10 +3753,8 @@
                 "count": 1,
                 "range": null,
                 "attacks": 3,
-                "ap": null,
-                "special_rules": [
-                  "AP(4"
-                ]
+                "ap": 4,
+                "special_rules": []
               }
             },
             {
@@ -4459,16 +3822,7 @@
               "rules_granted": [
                 "Resistance"
               ],
-              "weapon": {
-                "name": "Psy-Barrier",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Resistance"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4484,9 +3838,10 @@
                 "count": 1,
                 "range": 36,
                 "attacks": 6,
-                "ap": null,
+                "ap": 1,
                 "special_rules": [
-                  "AP(1"
+                  "Blast(3)",
+                  "Indirect"
                 ]
               }
             },
@@ -4499,9 +3854,10 @@
                 "count": 1,
                 "range": 36,
                 "attacks": 3,
-                "ap": null,
+                "ap": 3,
                 "special_rules": [
-                  "AP(3"
+                  "Deadly(6)",
+                  "Indirect"
                 ]
               }
             },
@@ -4514,9 +3870,10 @@
                 "count": 1,
                 "range": 36,
                 "attacks": 3,
-                "ap": null,
+                "ap": 4,
                 "special_rules": [
-                  "AP(4"
+                  "Blast(6)",
+                  "Indirect"
                 ]
               }
             }
@@ -4569,16 +3926,7 @@
               "rules_granted": [
                 "Spawn(Spores [5]"
               ],
-              "weapon": {
-                "name": "Spore Carrier",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Spawn(Spores [5]"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Massive Spore Carrier (Spawn(Massive Spores [3]))",
@@ -4586,16 +3934,7 @@
               "rules_granted": [
                 "Spawn(Massive Spores [3]"
               ],
-              "weapon": {
-                "name": "Massive Spore Carrier",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Spawn(Massive Spores [3]"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4628,7 +3967,7 @@
                 "attacks": 2,
                 "ap": null,
                 "special_rules": [
-                  "Blast(3"
+                  "Blast(3)"
                 ]
               }
             },
@@ -4641,9 +3980,9 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -4656,9 +3995,10 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Deadly(3)",
+                  "Unstoppable"
                 ]
               }
             }
@@ -4673,16 +4013,7 @@
               "rules_granted": [
                 "Unpredictable Fighter Mark"
               ],
-              "weapon": {
-                "name": "Battle Pheromones",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Unpredictable Fighter Mark"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -4732,16 +4063,7 @@
               "rules_granted": [
                 "Resistance"
               ],
-              "weapon": {
-                "name": "Psy-Barrier",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Resistance"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Bio-Recovery (Regeneration)",
@@ -4749,16 +4071,7 @@
               "rules_granted": [
                 "Regeneration"
               ],
-              "weapon": {
-                "name": "Bio-Recovery",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Regeneration"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4771,16 +4084,7 @@
               "rules_granted": [
                 "2"
               ],
-              "weapon": {
-                "name": "AP",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "2"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4793,16 +4097,7 @@
               "rules_granted": [
                 "Caster(4"
               ],
-              "weapon": {
-                "name": "Psychic Emissary",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Caster(4"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Carrier Titan (Tough(6), Transport(21))",
@@ -4810,16 +4105,7 @@
               "rules_granted": [
                 "Tough(6"
               ],
-              "weapon": {
-                "name": "Carrier Titan",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Tough(6"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Winged Titan (Flying, Tough(6))",
@@ -4828,17 +4114,7 @@
                 "Flying",
                 "Tough(6"
               ],
-              "weapon": {
-                "name": "Winged Titan",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Flying",
-                  "Tough(6"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Deadly(3), Takedown), Tough(3))",
@@ -4846,16 +4122,7 @@
               "rules_granted": [
                 "3"
               ],
-              "weapon": {
-                "name": "Deadly",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "3"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Bane), Tough(6))",
@@ -4863,16 +4130,7 @@
               "rules_granted": [
                 "6"
               ],
-              "weapon": {
-                "name": "Tough",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "6"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
@@ -4926,16 +4184,7 @@
               "rules_granted": [
                 "Regeneration"
               ],
-              "weapon": {
-                "name": "Bio-Recovery",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Regeneration"
-                ]
-              }
+              "weapon": null
             }
           ]
         },
@@ -4951,9 +4200,9 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 2,
-                "ap": null,
+                "ap": 2,
                 "special_rules": [
-                  "AP(2"
+                  "Blast(3)"
                 ]
               }
             },
@@ -4966,9 +4215,10 @@
                 "count": 1,
                 "range": 30,
                 "attacks": 2,
-                "ap": null,
+                "ap": 3,
                 "special_rules": [
-                  "AP(3"
+                  "Deadly(3)",
+                  "Unstoppable"
                 ]
               }
             }
@@ -5001,9 +4251,9 @@
                 "count": 1,
                 "range": 36,
                 "attacks": 2,
-                "ap": null,
+                "ap": 3,
                 "special_rules": [
-                  "AP(3"
+                  "Unstoppable"
                 ]
               }
             },
@@ -5013,16 +4263,7 @@
               "rules_granted": [
                 "Spores [5]"
               ],
-              "weapon": {
-                "name": "Spawn",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Spores [5]"
-                ]
-              }
+              "weapon": null
             },
             {
               "text": "Spawn(Massive Spores [3])",
@@ -5030,16 +4271,7 @@
               "rules_granted": [
                 "Massive Spores [3]"
               ],
-              "weapon": {
-                "name": "Spawn",
-                "count": 1,
-                "range": null,
-                "attacks": 1,
-                "ap": null,
-                "special_rules": [
-                  "Massive Spores [3]"
-                ]
-              }
+              "weapon": null
             }
           ]
         }
