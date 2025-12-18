@@ -331,32 +331,60 @@ def parse_weapon_from_table_line(line: str) -> Optional[Weapon]:
 
 
 def parse_inline_weapons(equipment_str: str) -> List[Weapon]:
-    """Parse weapons from inline equipment string like '2x Heavy Claws (A3, AP(1))'."""
+    """Parse weapons from inline equipment string like '2x Heavy Claws (A3, AP(1))'.
+
+    Only returns weapons if the profile contains an attack value (A#).
+    Rule upgrades like 'Bio-Tech Master (Increased Shooting Range)' are not weapons.
+    """
     weapons: List[Weapon] = []
 
-    # Split by common delimiters while preserving parentheses content
-    # Pattern matches: "2x Name (profile)" or "Name (profile)"
-    pattern = r'(\d+x\s+)?([^(,]+?)\s*\(([^)]+)\)'
+    # Find weapon patterns with balanced parentheses
+    # Look for: optional "2x", name, then balanced parentheses with profile
+    i = 0
+    while i < len(equipment_str):
+        # Look for start of a potential weapon (optional count + name + open paren)
+        match = re.match(r'(\d+x\s+)?([^(,]+?)\s*\(', equipment_str[i:])
+        if not match:
+            i += 1
+            continue
 
-    for match in re.finditer(pattern, equipment_str):
         count_str = match.group(1)
         name = match.group(2).strip()
-        profile = match.group(3).strip()
+        paren_start = i + match.end() - 1  # Position of '('
 
-        count = 1
-        if count_str:
-            count = int(count_str.strip().rstrip("x"))
+        # Find matching closing parenthesis (handle nested parens)
+        depth = 1
+        j = paren_start + 1
+        while j < len(equipment_str) and depth > 0:
+            if equipment_str[j] == '(':
+                depth += 1
+            elif equipment_str[j] == ')':
+                depth -= 1
+            j += 1
 
-        range_inches, attacks, ap, special_rules = parse_weapon_profile(profile)
+        if depth == 0:
+            profile = equipment_str[paren_start + 1:j - 1].strip()
 
-        weapons.append(Weapon(
-            name=name,
-            count=count,
-            range_inches=range_inches,
-            attacks=attacks,
-            ap=ap,
-            special_rules=special_rules
-        ))
+            # Only parse as weapon if profile contains an attack value (A#)
+            if re.search(r'\bA\d+\b', profile):
+                count = 1
+                if count_str:
+                    count = int(count_str.strip().rstrip("x"))
+
+                range_inches, attacks, ap, special_rules = parse_weapon_profile(profile)
+
+                weapons.append(Weapon(
+                    name=name,
+                    count=count,
+                    range_inches=range_inches,
+                    attacks=attacks,
+                    ap=ap,
+                    special_rules=special_rules
+                ))
+
+            i = j
+        else:
+            i += 1
 
     return weapons
 
