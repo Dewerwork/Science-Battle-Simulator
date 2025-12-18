@@ -44,6 +44,7 @@ def normalize_rule_name(rule: str) -> str:
 
 
 # Known truncation mappings (source file has truncated rule names)
+# NOTE: Truncation is caused by null bytes (\x00) in source file from fixed-width field export
 TRUNCATION_FIXES = {
     'AIRCRA': 'AIRCRAFT',
     'COURAGE_BU': 'COURAGE_BUFF',
@@ -52,6 +53,7 @@ TRUNCATION_FIXES = {
     'CASTING_BU': 'CASTING_BUFF',
     'MORALE_DEBU': 'MORALE_DEBUFF',
     'STEALTH_BU': 'STEALTH_BUFF',
+    'DANGEROUS_TERRAIN_DEBU': 'DANGEROUS_TERRAIN_DEBUFF',
     # Alternate spellings
     'BANE_IN_MELEE': 'BANE_IN_MELEE_AURA',
     'CASTER': 'CASTING',  # Caster(X) -> Casting(X)
@@ -177,8 +179,13 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
     rule_occurrences = defaultdict(list)
 
     # Read and parse the units file
-    with open(units_file, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
+    # Note: Source file contains null bytes (\x00) from fixed-width field export
+    # We strip them to get clean text
+    with open(units_file, 'rb') as f:
+        content = f.read()
+    # Remove null bytes and decode
+    content = content.replace(b'\x00', b'')
+    lines = content.decode('utf-8', errors='replace').splitlines()
 
     current_unit = None
     line_num = 0
