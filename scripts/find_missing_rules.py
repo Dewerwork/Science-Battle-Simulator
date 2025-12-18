@@ -21,6 +21,9 @@ UNITS_FILE = '/home/user/Science-Battle-Simulator/docs/MERGED_ALL_TXT.txt'
 MATRIX_FILE = '/home/user/Science-Battle-Simulator/docs/special_rules_review_matrix.xlsx'
 OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt'
 
+# Script version for debugging
+SCRIPT_VERSION = "1.3"
+
 
 def normalize_rule_name(rule: str) -> str:
     """
@@ -347,9 +350,10 @@ def main():
         return
 
     print("="*80)
-    print("SPECIAL RULES GAP ANALYSIS")
+    print(f"SPECIAL RULES GAP ANALYSIS (v{SCRIPT_VERSION})")
     print("="*80)
-    print(f"\nUnits file: {units_file}")
+    print(f"\nScript config: {len(TRUNCATION_FIXES)} truncation fixes, {len(NOT_RULES)} NOT_RULES filters")
+    print(f"Units file: {units_file}")
     print(f"Matrix file: {matrix_file}")
     print()
 
