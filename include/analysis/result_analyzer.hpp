@@ -700,9 +700,68 @@ public:
         return elo;
     }
 
+    // Calculate Elo ratings by iterating through matchups in order (like a tournament)
+    // Works with extended and compact formats where we have individual matchup results
+    // K-factor determines how much each match affects ratings (default 32)
+    std::unordered_map<u32, f64> calculate_elo_ratings_iterative(f64 k_factor = 32.0) const {
+        std::unordered_map<u32, f64> elo;
+
+        // Only works with non-aggregated formats
+        if (header_.is_aggregated()) {
+            return calculate_elo_ratings(); // Fall back to direct calculation
+        }
+
+        // Process each matchup and update Elo
+        auto process_match = [&](u32 unit_a, u32 unit_b, int winner) {
+            // Initialize if not seen before
+            if (elo.find(unit_a) == elo.end()) elo[unit_a] = 1500.0;
+            if (elo.find(unit_b) == elo.end()) elo[unit_b] = 1500.0;
+
+            f64 ra = elo[unit_a];
+            f64 rb = elo[unit_b];
+
+            // Expected scores (probability of winning)
+            f64 ea = 1.0 / (1.0 + std::pow(10.0, (rb - ra) / 400.0));
+            f64 eb = 1.0 / (1.0 + std::pow(10.0, (ra - rb) / 400.0));
+
+            // Actual scores (1 = win, 0 = loss, 0.5 = draw)
+            f64 sa, sb;
+            if (winner == 0) {
+                sa = 1.0; sb = 0.0;  // Unit A won
+            } else if (winner == 1) {
+                sa = 0.0; sb = 1.0;  // Unit B won
+            } else {
+                sa = 0.5; sb = 0.5;  // Draw
+            }
+
+            // Update ratings
+            elo[unit_a] = ra + k_factor * (sa - ea);
+            elo[unit_b] = rb + k_factor * (sb - eb);
+        };
+
+        // Iterate through all matchups
+        if (header_.is_extended()) {
+            for (const auto& r : extended_results_) {
+                process_match(r.unit_a_id, r.unit_b_id, r.winner);
+            }
+        } else if (header_.is_compact_extended()) {
+            for (const auto& r : compact_extended_results_) {
+                process_match(r.unit_a_id, r.unit_b_id, r.winner());
+            }
+        } else {
+            // Compact format
+            for (const auto& r : results_) {
+                process_match(r.unit_a_id, r.unit_b_id, r.winner);
+            }
+        }
+
+        return elo;
+    }
+
     // Get top units by Elo rating
-    std::vector<std::pair<u32, f64>> get_top_units_by_elo(size_t n = 20) const {
-        auto elo = calculate_elo_ratings();
+    // If iterative=true, uses match-by-match calculation (for non-aggregated formats)
+    std::vector<std::pair<u32, f64>> get_top_units_by_elo(size_t n = 20, bool iterative = false) const {
+        auto elo = iterative ? calculate_elo_ratings_iterative() : calculate_elo_ratings();
 
         std::vector<std::pair<u32, f64>> ranked(elo.begin(), elo.end());
         std::sort(ranked.begin(), ranked.end(),
