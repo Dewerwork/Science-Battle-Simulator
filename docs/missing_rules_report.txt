@@ -1,0 +1,21 @@
+MISSING RULES REPORT
+================================================================================
+
+Total unique rules in units file: 74
+Rules matched to matrix: 65
+Rules NOT in matrix: 3
+
+MISSING RULES:
+--------------------------------------------------------------------------------
+Aircra                                   (found 26 times)
+    - Line 25117: Razor Fighter (unit_stat)
+    - Line 25120: Razor Fighter (unit_stat)
+    - Line 25213: Sun Bomber (unit_stat)
+Artillery                                (found 17 times)
+    - Line 27805: Artillery Gun (unit_stat)
+    - Line 27808: Artillery Gun (unit_stat)
+    - Line 27811: Artillery Gun (unit_stat)
+Unique                                   (found 11 times)
+    - Line 4207: Constance (unit_stat)
+    - Line 30154: Hadrund oth Irnwuld (unit_stat)
+    - Line 34150: Captain Lyao (unit_stat)
