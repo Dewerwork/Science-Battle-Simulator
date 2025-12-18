@@ -14,6 +14,13 @@ import pandas as pd
 from pathlib import Path
 from collections import defaultdict
 
+# =============================================================================
+# CONFIGURATION - Hardcoded file paths
+# =============================================================================
+UNITS_FILE = '/home/user/Science-Battle-Simulator/docs/MERGED_ALL_TXT.txt'
+MATRIX_FILE = '/home/user/Science-Battle-Simulator/docs/special_rules_review_matrix.xlsx'
+OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt'
+
 
 def normalize_rule_name(rule: str) -> str:
     """
@@ -44,6 +51,10 @@ TRUNCATION_FIXES = {
     'PRECISION_SHOOTER_BU': 'PRECISION_SHOOTER_BUFF',
     'CASTING_BU': 'CASTING_BUFF',
     'MORALE_DEBU': 'MORALE_DEBUFF',
+    'STEALTH_BU': 'STEALTH_BUFF',
+    # Alternate spellings
+    'BANE_IN_MELEE': 'BANE_IN_MELEE_AURA',
+    'CASTER': 'CASTING',  # Caster(X) -> Casting(X)
 }
 
 # Entries that are NOT rules (data quality issues in source file)
@@ -54,6 +65,12 @@ NOT_RULES = {
     'HOLY_STATUE',
     'HOLY_STATUE_S_FLAME_STRIKES',
     'A',  # Parsing artifact
+    # Unit names appearing in Spawning abilities
+    'ASSAULT_GRUNTS',
+    'HIVE_SWARMS',
+    'SHOOTER_GRUNTS',
+    # Weapon names parsed as rules
+    'HEAVY_RAZOR_CLAWS',
 }
 
 
@@ -252,10 +269,10 @@ def find_missing_rules(units_file: str, matrix_file: str) -> dict:
 
 
 def main():
-    # Hardcoded file paths
-    units_file = Path('/home/user/Science-Battle-Simulator/docs/MERGED_ALL_TXT.txt')
-    matrix_file = Path('/home/user/Science-Battle-Simulator/docs/special_rules_review_matrix.xlsx')
-    output_file = Path('/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt')
+    # Use hardcoded paths from constants at top of file
+    units_file = Path(UNITS_FILE)
+    matrix_file = Path(MATRIX_FILE)
+    output_file = Path(OUTPUT_FILE)
 
     # Check files exist
     if not units_file.exists():
