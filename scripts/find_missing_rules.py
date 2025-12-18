@@ -22,7 +22,7 @@ MATRIX_FILE = '/home/user/Science-Battle-Simulator/docs/special_rules_review_mat
 OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt'
 
 # Script version for debugging
-SCRIPT_VERSION = "1.3"
+SCRIPT_VERSION = "1.4"
 
 
 def normalize_rule_name(rule: str) -> str:
@@ -70,6 +70,9 @@ TRUNCATION_FIXES = {
     'SHRED_IN_MELEE': 'SHRED',
     'SHRED_WHEN_SHOOTING': 'SHRED',
     'SURGE_WHEN_SHOOTING': 'SURGE',
+    'UNSTOPPABLE_IN_MELEE': 'UNSTOPPABLE',
+    'RENDING_IN_MELEE': 'RENDING',
+    'RENDING_WHEN_SHOOTING': 'RENDING',
     # Partial "Hit & Run" fragments (when & is parsed as separator) - now handled by & normalization
     # but these may still appear if the rule is split incorrectly
     'RUN_FIGHTER_AURA': 'HIT_AND_RUN_FIGHTER_AURA',
