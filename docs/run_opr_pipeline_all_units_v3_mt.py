@@ -309,6 +309,8 @@ _TRUNCATED_RULE_FIXES = {
     "casting debu": "Casting(1)",  # Common truncation fix
     "casting debug": "Casting(1)",
 }
+# Keywords that are instructions, not rules (from upgrade headers that got mis-parsed)
+_INSTRUCTION_KEYWORDS = {"upgrade", "replace", "any model", "one model", "all models", "up to"}
 
 def _clean_rule(rule: str) -> Optional[str]:
     """
@@ -329,6 +331,14 @@ def _clean_rule(rule: str) -> Optional[str]:
 
     # Filter out standalone "(A1)" type artifacts
     if re.match(r"^\(A\d+\)$", r):
+        return None
+
+    # Filter out instruction keywords that got mis-parsed as rules
+    r_lower = r.lower()
+    if r_lower in _INSTRUCTION_KEYWORDS:
+        return None
+    # Also filter if it starts with these instruction patterns
+    if r_lower.startswith(("upgrade ", "replace ", "any model", "one model", "all models")):
         return None
 
     # Fix truncated rules

@@ -423,7 +423,9 @@ def is_upgrade_header(line: str) -> bool:
     """Check if a line is an upgrade group header."""
     upgrade_patterns = [
         r"^Upgrade\s+",
+        r"^Upgrade$",  # Standalone "Upgrade" (PyMuPDF sometimes splits headers)
         r"^Replace\s+",
+        r"^Replace$",  # Standalone "Replace"
         r"^Any\s+model\s+may",
         r"^Upgrade\s+all\s+models",
         r"^Upgrade\s+one\s+model",
