@@ -333,6 +333,151 @@ def create_rule_id(name):
     clean = clean.strip('_')
     return clean.upper()
 
+def get_base_rules():
+    """Return the base special rules from the core game system."""
+    # These are the base rules defined in types.hpp RuleId enum
+    # Format: (rule_id, name, description, DEP, MOV, CHG, SHT, MEL, MOR, RND,
+    #          trigger_step, trigger_condition, effect_type, effect_target, effect_value, target_unit, priority, notes)
+    return [
+        # Weapon rules (affect attacks)
+        ("AP", "AP(X)", "Armor Piercing - adds X to the target's defense roll requirement",
+         "", "", "", "Y", "Y", "", "", "CALC_AP", "always", "ADD", "defense_target", "X", "ENEMY", "10", "Base Rule - Weapon"),
+        ("BLAST", "Blast(X)", "Each successful hit is multiplied, up to the number of models in the target unit",
+         "", "", "", "Y", "Y", "", "", "AFTER_HIT", "always", "MULTIPLY", "hits", "min(X, enemy_models)", "ENEMY", "20", "Base Rule - Weapon"),
+        ("DEADLY", "Deadly(X)", "Each wound caused is multiplied by X",
+         "", "", "", "Y", "Y", "", "", "AFTER_WOUND", "always", "MULTIPLY", "wounds", "X", "ENEMY", "10", "Base Rule - Weapon"),
+        ("LANCE", "Lance", "Gets +2 AP when charging",
+         "", "", "Y", "", "Y", "", "", "CALC_AP", "is_charging", "ADD", "ap", "2", "WEAPON", "10", "Base Rule - Weapon"),
+        ("POISON", "Poison", "Defender must reroll successful defense rolls of 6",
+         "", "", "", "Y", "Y", "", "", "DEF_ROLL", "always", "REROLL", "defense_6s", "true", "ENEMY", "10", "Base Rule - Weapon"),
+        ("PRECISE", "Precise", "Gets +1 to hit rolls",
+         "", "", "", "Y", "Y", "", "", "HIT_ROLL", "always", "ADD", "quality_mod", "1", "WEAPON", "10", "Base Rule - Weapon"),
+        ("RELIABLE", "Reliable", "Attacks always hit on 2+",
+         "", "", "", "Y", "Y", "", "", "HIT_ROLL", "always", "SET", "effective_quality", "2", "WEAPON", "5", "Base Rule - Weapon"),
+        ("RENDING", "Rending", "Unmodified rolls of 6 to hit get AP(4)",
+         "", "", "", "Y", "Y", "", "", "CALC_AP", "unmodified_6_hit", "SET", "ap", "4", "WEAPON", "20", "Base Rule - Weapon"),
+        ("BANE", "Bane", "Wounds caused cannot be ignored by Regeneration",
+         "", "", "", "Y", "Y", "", "", "REGEN", "always", "NEGATE", "regeneration", "true", "ENEMY", "10", "Base Rule - Weapon"),
+        ("IMPACT", "Impact(X)", "Gets X extra attacks when charging",
+         "", "", "Y", "", "Y", "", "", "CALC_ATTACKS", "is_charging", "ADD", "attacks", "X", "WEAPON", "10", "Base Rule - Weapon"),
+        ("INDIRECT", "Indirect", "May target enemies out of line of sight, ignores cover",
+         "", "", "", "Y", "", "", "", "DEF_ROLL", "always", "NEGATE", "cover_bonus", "true", "ENEMY", "10", "Base Rule - Weapon"),
+        ("SNIPER", "Sniper", "May pick which model in the target unit takes the wounds",
+         "", "", "", "Y", "", "", "", "ALLOCATE", "always", "REPLACE", "allocation_order", "chosen_model", "ENEMY", "10", "Base Rule - Weapon"),
+        ("LOCK_ON", "Lock-On", "Gets +1 to hit against targets with the Vehicle keyword",
+         "", "", "", "Y", "Y", "", "", "HIT_ROLL", "target_is_vehicle", "ADD", "quality_mod", "1", "SELF", "10", "Base Rule - Weapon"),
+        ("PURGE", "Purge", "Gets +1 to hit against targets with Tough(3) or higher",
+         "", "", "", "Y", "Y", "", "", "HIT_ROLL", "target_has_tough_3plus", "ADD", "quality_mod", "1", "SELF", "10", "Base Rule - Weapon"),
+        ("LIMITED", "Limited", "This weapon may only be used once per game",
+         "", "", "", "Y", "Y", "", "", "CALC_ATTACKS", "not_used_this_game", "SET", "weapon_available", "false_after_use", "WEAPON", "1", "Base Rule - Weapon"),
+
+        # Defense rules
+        ("REGENERATION", "Regeneration", "When taking wounds, roll one die for each. On 5+ the wound is ignored",
+         "", "", "", "Y", "Y", "", "", "REGEN", "always", "ROLL", "ignore_wound", "5+", "SELF", "10", "Base Rule - Defense"),
+        ("TOUGH", "Tough(X)", "This model must take X wounds before being removed as a casualty",
+         "", "", "", "Y", "Y", "", "", "ALLOCATE", "always", "SET", "wounds_to_kill", "X", "SELF", "1", "Base Rule - Defense"),
+        ("PROTECTED", "Protected", "Roll one die for each hit. On 6+ reduce the AP of that hit by 1",
+         "", "", "", "Y", "Y", "", "", "CALC_AP", "always", "ROLL", "reduce_ap", "6+ for -1", "SELF", "5", "Base Rule - Defense"),
+        ("STEALTH", "Stealth", "Enemies shooting at this unit from more than 12\" away get -1 to hit",
+         "", "", "", "Y", "", "", "", "HIT_ROLL", "range_over_12", "ADD", "enemy_quality_mod", "-1", "SELF", "10", "Base Rule - Defense"),
+        ("SHIELD_WALL", "Shield Wall", "Gets +1 to defense rolls in melee",
+         "", "", "", "", "Y", "", "", "DEF_ROLL", "phase_is_melee", "ADD", "defense_mod", "1", "SELF", "10", "Base Rule - Defense"),
+        ("SHIELDED", "Shielded", "Gets +1 to defense rolls against hits that are not from spells",
+         "", "", "", "Y", "Y", "", "", "DEF_ROLL", "attack_not_spell", "ADD", "defense_mod", "1", "SELF", "10", "Base Rule - Defense"),
+        ("RESISTANCE", "Resistance", "When taking wounds, roll one die for each. On 6+ it is ignored (2+ vs spells)",
+         "", "", "", "Y", "Y", "", "", "REGEN", "always", "ROLL", "ignore_wound", "6+ OR 2+_vs_spell", "SELF", "20", "Base Rule - Defense"),
+
+        # Morale rules
+        ("FEARLESS", "Fearless", "May reroll failed morale tests",
+         "", "", "", "", "", "Y", "", "MORALE", "morale_failed", "REROLL", "morale_test", "true", "SELF", "10", "Base Rule - Morale"),
+        ("MORALE_BOOST", "Morale Boost", "Gets +1 to morale test rolls",
+         "", "", "", "", "", "Y", "", "MORALE", "always", "ADD", "morale_mod", "1", "SELF", "10", "Base Rule - Morale"),
+        ("NO_RETREAT", "No Retreat", "When failing morale, don't become Shaken. Instead roll dice equal to the margin of failure, taking a wound for each 1-3",
+         "", "", "", "", "", "Y", "", "MORALE", "would_become_shaken", "REPLACE", "shaken_result", "roll_for_wounds", "SELF", "10", "Base Rule - Morale"),
+        ("BATTLEBORN", "Battleborn", "At the beginning of each round, if Shaken, roll one die. On 4+ stop being Shaken",
+         "", "", "", "", "", "", "Y", "ROUND_START", "is_shaken", "ROLL", "rally", "4+", "SELF", "10", "Base Rule - Morale"),
+        ("FEAR", "Fear(X)", "Counts as having caused +X wounds for morale tests in melee",
+         "", "", "", "", "Y", "Y", "", "MORALE", "enemy_checking_morale", "ADD", "effective_wounds", "X", "SELF", "10", "Base Rule - Morale"),
+
+        # Attack modifier rules
+        ("FURIOUS", "Furious", "When charging, unmodified rolls of 6 to hit count as extra hits",
+         "", "", "Y", "", "Y", "", "", "AFTER_HIT", "is_charging", "ADD", "hits", "sixes_rolled", "SELF", "15", "Base Rule - Attack"),
+        ("RELENTLESS", "Relentless", "When shooting at targets more than 9\" away, unmodified 6s to hit count as extra hits",
+         "", "", "", "Y", "", "", "", "AFTER_HIT", "range_over_9", "ADD", "hits", "sixes_rolled", "SELF", "15", "Base Rule - Attack"),
+        ("SURGE", "Surge", "Unmodified rolls of 6 to hit deal 1 extra hit",
+         "", "", "", "Y", "Y", "", "", "AFTER_HIT", "unmodified_6_hit", "ADD", "hits", "sixes_rolled", "SELF", "15", "Base Rule - Attack"),
+        ("THRUST", "Thrust", "Gets +1 to hit and +1 AP when charging",
+         "", "", "Y", "", "Y", "", "", "HIT_ROLL,CALC_AP", "is_charging", "ADD", "quality_mod,ap", "1,1", "SELF", "10", "Base Rule - Attack"),
+        ("PREDATOR_FIGHTER", "Predator Fighter", "For each unmodified 6 to hit in melee, roll one additional attack. Does not apply to newly generated attacks",
+         "", "", "", "", "Y", "", "", "HIT_ROLL", "unmodified_6_hit", "ROLL", "extra_attacks", "recursive", "SELF", "20", "Base Rule - Attack"),
+        ("GOOD_SHOT", "Good Shot", "Gets +1 to hit when shooting",
+         "", "", "", "Y", "", "", "", "HIT_ROLL", "phase_is_shooting", "ADD", "quality_mod", "1", "SELF", "10", "Base Rule - Attack"),
+        ("BAD_SHOT", "Bad Shot", "Gets -1 to hit when shooting",
+         "", "", "", "Y", "", "", "", "HIT_ROLL", "phase_is_shooting", "ADD", "quality_mod", "-1", "SELF", "10", "Base Rule - Attack"),
+        ("VERSATILE_ATTACK", "Versatile Attack", "Before attacking, choose to get either +1 AP or +1 to hit",
+         "", "", "", "Y", "Y", "", "", "PRE_ATTACK", "always", "CHOOSE", "ap OR quality_mod", "1", "SELF", "5", "Base Rule - Attack"),
+        ("POINT_BLANK_SURGE", "Point-Blank Surge", "When shooting at targets within 9\", unmodified 6s to hit deal extra hits",
+         "", "", "", "Y", "", "", "", "AFTER_HIT", "range_0_to_9 AND unmodified_6_hit", "ADD", "hits", "sixes_rolled", "SELF", "15", "Base Rule - Attack"),
+        ("PIERCING_ASSAULT", "Piercing Assault", "Gets AP(1) on melee attacks when charging",
+         "", "", "Y", "", "Y", "", "", "CALC_AP", "is_charging", "ADD", "ap", "1", "SELF", "10", "Base Rule - Attack"),
+
+        # Wound modifier rules
+        ("RUPTURE", "Rupture", "Ignores Regeneration, and unmodified 6s to hit that aren't blocked deal 1 extra wound",
+         "", "", "", "Y", "Y", "", "", "AFTER_WOUND,REGEN", "unmodified_6_hit", "ADD,NEGATE", "wounds,regeneration", "sixes_rolled,true", "ENEMY", "15", "Base Rule - Wound"),
+        ("SHRED", "Shred", "On unmodified defense rolls of 1, this weapon deals 1 extra wound",
+         "", "", "", "Y", "Y", "", "", "AFTER_DEF", "defense_rolled_1", "ADD", "wounds", "ones_rolled", "ENEMY", "15", "Base Rule - Wound"),
+        ("SMASH", "Smash", "Ignores Regeneration, and against Defense 5+ or 6+, gets Blast(+3)",
+         "", "", "", "Y", "Y", "", "", "AFTER_HIT,REGEN", "target_defense_5plus", "ADD,NEGATE", "hits,regeneration", "3,true", "ENEMY", "15", "Base Rule - Wound"),
+
+        # Allocation rules
+        ("HERO", "Hero", "This model takes wounds last in its unit",
+         "", "", "", "Y", "Y", "", "", "ALLOCATE", "always", "SET", "allocation_priority", "last", "SELF", "1", "Base Rule - Allocation"),
+        ("TAKEDOWN", "Takedown", "Pick one enemy model, attacks against it are resolved as if it were a unit of 1",
+         "", "", "", "Y", "Y", "", "", "ALLOCATE", "always", "REPLACE", "allocation_target", "chosen_single", "ENEMY", "1", "Base Rule - Allocation"),
+
+        # Combat order rules
+        ("COUNTER", "Counter", "Strikes first when charged",
+         "", "", "Y", "", "Y", "", "", "COMBAT_ORDER", "is_charged", "SET", "strike_order", "first", "SELF", "1", "Base Rule - Combat"),
+        ("HIT_AND_RUN", "Hit & Run", "May retreat after fighting in melee",
+         "", "", "", "", "Y", "", "Y", "ROUND_END", "after_melee", "ENABLE", "retreat_option", "true", "SELF", "10", "Base Rule - Combat"),
+        ("SELF_DESTRUCT", "Self-Destruct(X)", "If killed in melee, the attacking unit takes X hits. If survives melee, is killed and enemy takes X hits",
+         "", "", "", "", "Y", "", "", "ON_DEATH", "model_killed", "TRIGGER", "hits_to_attacker", "X", "ENEMY", "10", "Base Rule - Combat"),
+
+        # Movement/Deployment rules
+        ("SCOUT", "Scout", "May be deployed up to 12\" outside of the deployment zone",
+         "Y", "", "", "", "", "", "", "DEPLOYMENT", "always", "ADD", "deploy_distance", "12", "SELF", "10", "Base Rule - Movement"),
+        ("AMBUSH", "Ambush", "May be deployed anywhere on the battlefield more than 9\" away from enemies",
+         "Y", "", "", "", "", "", "", "DEPLOYMENT", "always", "SET", "deploy_type", "reserve_9", "SELF", "10", "Base Rule - Movement"),
+        ("FAST", "Fast", "Moves 9\" instead of the standard 6\"",
+         "", "Y", "Y", "", "", "", "", "MOVEMENT", "always", "SET", "move_distance", "9", "SELF", "1", "Base Rule - Movement"),
+        ("SLOW", "Slow", "Moves 4\" instead of the standard 6\"",
+         "", "Y", "Y", "", "", "", "", "MOVEMENT", "always", "SET", "move_distance", "4", "SELF", "1", "Base Rule - Movement"),
+        ("AGILE", "Agile", "Moves +1\" when using Advance, and +2\" when using Rush/Charge",
+         "", "Y", "Y", "", "", "", "", "MOVEMENT", "always", "ADD", "advance,rush,charge", "1,2,2", "SELF", "10", "Base Rule - Movement"),
+        ("FLYING", "Flying", "May move through units and terrain, ignoring movement penalties",
+         "", "Y", "Y", "", "", "", "", "MOVEMENT", "always", "NEGATE", "terrain_penalty,model_blocking", "true,true", "SELF", "10", "Base Rule - Movement"),
+        ("STRIDER", "Strider", "Ignores difficult terrain penalties when moving",
+         "", "Y", "Y", "", "", "", "", "MOVEMENT", "always", "NEGATE", "difficult_terrain", "true", "SELF", "10", "Base Rule - Movement"),
+        ("RAPID_CHARGE", "Rapid Charge", "Moves +4\" when charging",
+         "", "", "Y", "", "", "", "", "MOVEMENT", "is_charging", "ADD", "charge_distance", "4", "SELF", "10", "Base Rule - Movement"),
+
+        # Defense modifier rules (hit-based)
+        ("MELEE_EVASION", "Melee Evasion", "Enemies get -1 to hit this unit in melee",
+         "", "", "", "", "Y", "", "", "HIT_ROLL", "phase_is_melee", "ADD", "enemy_quality_mod", "-1", "SELF", "10", "Base Rule - Defense"),
+        ("MELEE_SHROUDING", "Melee Shrouding", "Enemies get -1 to hit this unit in melee",
+         "", "", "", "", "Y", "", "", "HIT_ROLL", "phase_is_melee", "ADD", "enemy_quality_mod", "-1", "SELF", "10", "Base Rule - Defense"),
+        ("RANGED_SHROUDING", "Ranged Shrouding", "Enemies get -1 to hit this unit when shooting",
+         "", "", "", "Y", "", "", "", "HIT_ROLL", "phase_is_shooting", "ADD", "enemy_quality_mod", "-1", "SELF", "10", "Base Rule - Defense"),
+
+        # Special rules
+        ("UNSTOPPABLE", "Unstoppable", "Ignores Regeneration when attacking, and ignores negative hit modifiers",
+         "", "", "", "Y", "Y", "", "", "HIT_ROLL,REGEN", "always", "NEGATE,NEGATE", "negative_hit_mods,enemy_regeneration", "true,true", "SELF", "5", "Base Rule - Special"),
+        ("CASTING", "Casting(X)", "May cast X spells per round",
+         "", "", "", "", "", "", "Y", "SPELL_PHASE", "always", "SET", "spell_slots", "X", "SELF", "1", "Base Rule - Magic"),
+        ("DEVOUT", "Devout", "Faction-specific bonus (varies by army)",
+         "", "", "", "", "", "", "", "VARIES", "faction_specific", "VARIES", "varies", "varies", "SELF", "10", "Base Rule - Faction"),
+    ]
+
 def create_rules_matrix():
     wb = Workbook()
     ws = wb.active
@@ -360,12 +505,23 @@ def create_rules_matrix():
         "Notes",             # R
     ]
 
+    # Get base rules
+    base_rules = get_base_rules()
+
     # Extract rules from faction file
     rules_data, armies_per_rule = extract_rules_from_faction_file()
 
-    # Process all rules
-    processed_rules = []
+    # Track which base rule names we have (to avoid duplicates from faction file)
+    base_rule_names = {rule[1].lower() for rule in base_rules}  # rule[1] is the Rule Name
+
+    # Start with base rules
+    processed_rules = list(base_rules)
+
+    # Process faction rules (skip duplicates of base rules)
     for name in sorted(rules_data.keys()):
+        # Skip if this is a base rule (case insensitive match)
+        if name.lower() in base_rule_names:
+            continue
         info = rules_data[name]
         parsed = parse_rule_for_engine(name, info)
 
