@@ -667,48 +667,34 @@ public:
     // ===========================================================================
 
     // Calculate Elo ratings for all units from aggregated results
-    // Uses iterative approach: start at 1500, adjust based on win rate vs field
+    // Maps win rate to Elo using logistic formula: Elo = 1500 + 400 * log10(p / (1-p))
+    // 50% win rate = 1500, higher win rates = higher Elo
     std::unordered_map<u32, f64> calculate_elo_ratings(int iterations = 20) const {
         std::unordered_map<u32, f64> elo;
+        (void)iterations; // No longer used - single pass calculation
 
         if (!header_.is_aggregated() || aggregated_results_.empty()) {
             return elo;
         }
 
-        // Initialize all units at 1500
+        // Calculate Elo directly from win rate
+        // This maps win rate to Elo using the inverse of the expected score formula
         for (const auto& r : aggregated_results_) {
-            elo[r.unit_id] = 1500.0;
-        }
-
-        // Iterate to converge
-        for (int iter = 0; iter < iterations; iter++) {
-            // Calculate average Elo of all units
-            f64 avg_elo = 0.0;
-            size_t count = 0;
-            for (const auto& r : aggregated_results_) {
-                if (r.total_matchups > 0) {
-                    avg_elo += elo[r.unit_id];
-                    count++;
-                }
+            if (r.total_matchups == 0) {
+                elo[r.unit_id] = 1500.0;
+                continue;
             }
-            if (count == 0) break;
-            avg_elo /= count;
 
-            // Update each unit's Elo based on win rate vs average opponent
-            for (const auto& r : aggregated_results_) {
-                if (r.total_matchups == 0) continue;
+            // Get win rate as ratio (0-1)
+            f64 win_ratio = r.win_rate() / 100.0;
 
-                f64 win_rate = static_cast<f64>(r.wins) / r.total_matchups;
+            // Clamp to avoid log(0) or log(inf)
+            win_ratio = std::max(0.001, std::min(0.999, win_ratio));
 
-                // Clamp to avoid log(0) or log(inf)
-                win_rate = std::max(0.001, std::min(0.999, win_rate));
-
-                // Elo difference from win rate: diff = 400 * log10(p / (1-p))
-                f64 elo_diff = 400.0 * std::log10(win_rate / (1.0 - win_rate));
-
-                // New Elo = average opponent Elo + difference
-                elo[r.unit_id] = avg_elo + elo_diff;
-            }
+            // Elo from win rate: Elo = 1500 + 400 * log10(p / (1-p))
+            // This gives: 50% = 1500, 75% ≈ 1691, 90% ≈ 1882, 99% ≈ 2298
+            f64 elo_diff = 400.0 * std::log10(win_ratio / (1.0 - win_ratio));
+            elo[r.unit_id] = 1500.0 + elo_diff;
         }
 
         return elo;
