@@ -132,6 +132,15 @@ add_executable(analyze_results src/analyze_results.cpp)
 target_include_directories(analyze_results PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_compile_options(analyze_results PRIVATE ${COMMON_FLAGS})
 
+# OPR Pipeline - Unit loadout generator (C++ port of run_opr_pipeline_all_units_v3_mt.py)
+add_executable(opr_pipeline
+    src/opr_pipeline_main.cpp
+    src/pipeline/opr_pipeline.cpp
+)
+target_include_directories(opr_pipeline PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(opr_pipeline PRIVATE battle_core Threads::Threads)
+target_compile_options(opr_pipeline PRIVATE ${COMMON_FLAGS})
+
 # Commented out until source files are implemented:
 # add_executable(test_dice tests/test_dice.cpp)
 # target_link_libraries(test_dice PRIVATE battle_engine)
