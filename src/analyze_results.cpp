@@ -411,6 +411,7 @@ int main(int argc, char* argv[]) {
         // Use file output if specified, otherwise stdout
         std::ofstream file_out;
         std::ostream* out = &std::cout;
+        bool csv_output = false;
         if (!output_file.empty()) {
             file_out.open(output_file);
             if (!file_out) {
@@ -418,61 +419,49 @@ int main(int argc, char* argv[]) {
                 return 1;
             }
             out = &file_out;
+            // Check if output file ends with .csv
+            csv_output = (output_file.size() >= 4 &&
+                         output_file.substr(output_file.size() - 4) == ".csv");
             std::cout << "Writing Elo ratings to: " << output_file << "\n";
         }
 
-        if (show_all) {
-            *out << "=== All Units by Elo Rating ===\n\n";
-        } else {
-            *out << "=== Top " << n << " Units by Elo Rating ===\n\n";
-        }
-        *out << std::left << std::setw(5) << "Rank"
-             << std::setw(35) << "Unit Name"
-             << std::setw(7) << "Pts"
-             << std::setw(8) << "Elo"
-             << std::setw(9) << "WinRate"
-             << std::setw(10) << "Matchups"
-             << "\n";
-        *out << std::string(74, '-') << "\n";
-
-        for (size_t i = 0; i < top_elo.size(); ++i) {
-            const auto& [id, elo] = top_elo[i];
-            if (id < parse_result.units.size()) {
-                const auto& unit = parse_result.units[id];
-                const auto* stats = analyzer.get_aggregated_stats(id);
-                std::string name_str(unit.name.view());
-                if (name_str.size() > 33) name_str = name_str.substr(0, 33);
-                *out << std::left << std::setw(5) << (i + 1)
-                     << std::setw(35) << name_str
-                     << std::setw(7) << unit.points_cost
-                     << std::fixed << std::setprecision(0)
-                     << std::setw(8) << elo
-                     << std::setprecision(1)
-                     << std::setw(9) << (stats ? std::to_string((int)stats->win_rate()) + "%" : "N/A")
-                     << std::setw(10) << (stats ? stats->total_matchups : 0)
-                     << "\n";
+        if (csv_output) {
+            // CSV format
+            *out << "rank,unit_id,name,faction,points,elo,win_rate,matchups\n";
+            for (size_t i = 0; i < top_elo.size(); ++i) {
+                const auto& [id, elo] = top_elo[i];
+                if (id < parse_result.units.size()) {
+                    const auto& unit = parse_result.units[id];
+                    const auto* stats = analyzer.get_aggregated_stats(id);
+                    *out << (i + 1) << ","
+                         << id << ","
+                         << "\"" << unit.name.view() << "\","
+                         << "\"" << unit.faction.view() << "\","
+                         << unit.points_cost << ","
+                         << std::fixed << std::setprecision(1) << elo << ","
+                         << (stats ? stats->win_rate() : 0.0) << ","
+                         << (stats ? stats->total_matchups : 0) << "\n";
+                }
             }
-        }
-
-        // Also show bottom 10 for context (skip if showing all)
-        size_t bottom_n = 0;
-        if (!show_all) {
-            std::vector<std::pair<u32, f64>> all_elo(elo_map.begin(), elo_map.end());
-            std::sort(all_elo.begin(), all_elo.end(),
-                [](const auto& a, const auto& b) { return a.second < b.second; });
-
-            *out << "\n=== Bottom 10 Units by Elo Rating ===\n\n";
+            std::cout << "Done. Wrote " << top_elo.size() << " entries.\n";
+        } else {
+            // Text table format
+            if (show_all) {
+                *out << "=== All Units by Elo Rating ===\n\n";
+            } else {
+                *out << "=== Top " << n << " Units by Elo Rating ===\n\n";
+            }
             *out << std::left << std::setw(5) << "Rank"
                  << std::setw(35) << "Unit Name"
                  << std::setw(7) << "Pts"
                  << std::setw(8) << "Elo"
                  << std::setw(9) << "WinRate"
+                 << std::setw(10) << "Matchups"
                  << "\n";
-            *out << std::string(64, '-') << "\n";
+            *out << std::string(74, '-') << "\n";
 
-            bottom_n = std::min(size_t(10), all_elo.size());
-            for (size_t i = 0; i < bottom_n; ++i) {
-                const auto& [id, elo] = all_elo[i];
+            for (size_t i = 0; i < top_elo.size(); ++i) {
+                const auto& [id, elo] = top_elo[i];
                 if (id < parse_result.units.size()) {
                     const auto& unit = parse_result.units[id];
                     const auto* stats = analyzer.get_aggregated_stats(id);
@@ -485,13 +474,50 @@ int main(int argc, char* argv[]) {
                          << std::setw(8) << elo
                          << std::setprecision(1)
                          << std::setw(9) << (stats ? std::to_string((int)stats->win_rate()) + "%" : "N/A")
+                         << std::setw(10) << (stats ? stats->total_matchups : 0)
                          << "\n";
                 }
             }
-        }
 
-        if (!output_file.empty()) {
-            std::cout << "Done. Wrote " << (top_elo.size() + bottom_n) << " entries.\n";
+            // Also show bottom 10 for context (skip if showing all)
+            size_t bottom_n = 0;
+            if (!show_all) {
+                std::vector<std::pair<u32, f64>> all_elo(elo_map.begin(), elo_map.end());
+                std::sort(all_elo.begin(), all_elo.end(),
+                    [](const auto& a, const auto& b) { return a.second < b.second; });
+
+                *out << "\n=== Bottom 10 Units by Elo Rating ===\n\n";
+                *out << std::left << std::setw(5) << "Rank"
+                     << std::setw(35) << "Unit Name"
+                     << std::setw(7) << "Pts"
+                     << std::setw(8) << "Elo"
+                     << std::setw(9) << "WinRate"
+                     << "\n";
+                *out << std::string(64, '-') << "\n";
+
+                bottom_n = std::min(size_t(10), all_elo.size());
+                for (size_t i = 0; i < bottom_n; ++i) {
+                    const auto& [id, elo] = all_elo[i];
+                    if (id < parse_result.units.size()) {
+                        const auto& unit = parse_result.units[id];
+                        const auto* stats = analyzer.get_aggregated_stats(id);
+                        std::string name_str(unit.name.view());
+                        if (name_str.size() > 33) name_str = name_str.substr(0, 33);
+                        *out << std::left << std::setw(5) << (i + 1)
+                             << std::setw(35) << name_str
+                             << std::setw(7) << unit.points_cost
+                             << std::fixed << std::setprecision(0)
+                             << std::setw(8) << elo
+                             << std::setprecision(1)
+                             << std::setw(9) << (stats ? std::to_string((int)stats->win_rate()) + "%" : "N/A")
+                             << "\n";
+                    }
+                }
+            }
+
+            if (!output_file.empty()) {
+                std::cout << "Done. Wrote " << (top_elo.size() + bottom_n) << " entries.\n";
+            }
         }
 
         return 0;
