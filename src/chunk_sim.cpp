@@ -27,6 +27,7 @@
 
 // Platform-specific includes for hostname and process ID
 #ifdef _WIN32
+    #define NOMINMAX
     #include <winsock2.h>
     #include <process.h>
     #pragma comment(lib, "ws2_32.lib")
