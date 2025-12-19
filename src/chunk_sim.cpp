@@ -316,9 +316,13 @@ int cmd_run(int argc, char* argv[]) {
     if (no_showcases) sampling_config.enable_showcases = false;
 
     // Load manifest
+    if (!quiet) {
+        std::cout << "Loading manifest: " << manifest_file << std::endl;
+    }
     ChunkManifest manifest = ChunkManifest::load(manifest_file);
     if (manifest.chunks.empty()) {
-        std::cerr << "Error: Failed to load manifest from " << manifest_file << "\n";
+        std::cerr << "Error: Failed to load manifest from " << manifest_file << std::endl;
+        std::cerr << "Make sure the file exists and was created with 'plan' command." << std::endl;
         return 1;
     }
 
@@ -326,19 +330,19 @@ int cmd_run(int argc, char* argv[]) {
     initialize_faction_rules();
 
     if (!quiet) {
-        std::cout << "=== Chunk Simulator ===\n\n";
+        std::cout << "=== Chunk Simulator ===" << std::endl << std::endl;
         ChunkManager::print_summary(manifest);
-        std::cout << "\n";
+        std::cout << std::endl;
     }
 
     // Load units
-    if (!quiet) std::cout << "Loading units from: " << manifest.units_file << "\n";
+    if (!quiet) std::cout << "Loading units from: " << manifest.units_file << std::endl;
     auto parse_result = UnitParser::parse_file(manifest.units_file);
     if (parse_result.units.empty()) {
-        std::cerr << "Error: Failed to load units\n";
+        std::cerr << "Error: Failed to load units" << std::endl;
         return 1;
     }
-    if (!quiet) std::cout << "Loaded " << parse_result.units.size() << " units\n\n";
+    if (!quiet) std::cout << "Loaded " << parse_result.units.size() << " units" << std::endl << std::endl;
 
     // Setup status tracker
     ChunkStatusTracker tracker(manifest.output_dir + "/status.txt");
@@ -352,7 +356,23 @@ int cmd_run(int argc, char* argv[]) {
     } else if (auto_claim || process_all) {
         // Get all pending/failed chunks
         auto status = tracker.load_status();
+
+        if (status.empty()) {
+            std::cerr << "Error: Status file is empty or not found." << std::endl;
+            std::cerr << "Status file expected at: " << manifest.output_dir << "/status.txt" << std::endl;
+            std::cerr << "Did you run 'plan' first to create the chunk manifest?" << std::endl;
+            return 1;
+        }
+
+        u32 pending_count = 0, completed_count = 0, in_progress_count = 0, failed_count = 0;
         for (const auto& prog : status) {
+            switch (prog.status) {
+                case ChunkStatus::Pending: ++pending_count; break;
+                case ChunkStatus::InProgress: ++in_progress_count; break;
+                case ChunkStatus::Completed: ++completed_count; break;
+                case ChunkStatus::Failed: ++failed_count; break;
+            }
+
             if (prog.status == ChunkStatus::Pending || prog.status == ChunkStatus::Failed) {
                 chunks_to_run.push_back(static_cast<int>(prog.chunk_id));
                 if (!process_all && static_cast<int>(chunks_to_run.size()) >= chunks_to_process) {
@@ -360,10 +380,21 @@ int cmd_run(int argc, char* argv[]) {
                 }
             }
         }
+
+        if (!quiet) {
+            std::cout << "Chunk status: " << pending_count << " pending, "
+                      << in_progress_count << " in-progress, "
+                      << completed_count << " completed, "
+                      << failed_count << " failed" << std::endl;
+        }
     }
 
     if (chunks_to_run.empty()) {
-        std::cout << "No chunks to process.\n";
+        std::cout << "No chunks to process." << std::endl;
+        if (auto_claim || process_all) {
+            std::cout << "All chunks are either completed or currently in-progress." << std::endl;
+            std::cout << "Use '" << argv[0] << " status " << manifest_file << "' to check progress." << std::endl;
+        }
         return 0;
     }
 
@@ -374,7 +405,7 @@ int cmd_run(int argc, char* argv[]) {
             std::cout << chunks_to_run[i];
         }
         if (chunks_to_run.size() > 10) std::cout << ", ...";
-        std::cout << "\n\n";
+        std::cout << std::endl << std::endl;
     }
 
     // Process each chunk
