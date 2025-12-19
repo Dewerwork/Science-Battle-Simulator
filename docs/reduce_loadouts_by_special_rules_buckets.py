@@ -269,8 +269,16 @@ class Weapon:
     special: Tuple[str, ...]
 
     def effective_key(self, mapper: Optional[SpecialRulesBucketMapper] = None) -> str:
-        """Generate key based on effective combat characteristics."""
-        rng = range_bucket(self.range_inches)
+        """Generate key based on effective combat characteristics.
+
+        Includes weapon name and exact range - no cross-weapon or range bucketing.
+        """
+        # Use exact range, not bucketed
+        if self.range_inches is None or self.range_inches == 0:
+            rng_str = "Melee"
+        else:
+            rng_str = f"{self.range_inches}\""
+
         ap_str = str(self.ap) if self.ap is not None else "-"
 
         # Map weapon special rules to buckets if mapper provided
@@ -280,7 +288,8 @@ class Weapon:
             specials = tuple(sorted(self.special, key=str.lower))
 
         specials_str = ";".join(specials)
-        return f"R={rng}|A={self.attacks}|AP={ap_str}|S={specials_str}"
+        # Include weapon name to prevent cross-weapon bucketing
+        return f"N={self.name}|R={rng_str}|A={self.attacks}|AP={ap_str}|S={specials_str}"
 
     def __str__(self) -> str:
         """Format weapon for output in OPR format."""
@@ -315,7 +324,15 @@ class UnitLoadout:
     raw_weapons: str
 
     def effective_key(self, mapper: Optional[SpecialRulesBucketMapper] = None) -> str:
-        """Generate key for bucketing effectively identical units."""
+        """Generate key for bucketing effectively identical units.
+
+        Includes unit name to prevent cross-unit and cross-faction bucketing.
+        Only loadouts of the SAME unit with equivalent rules/weapons are grouped.
+        """
+        # Include unit name - this prevents cross-unit and cross-faction bucketing
+        # since unit names are unique within a faction
+        unit_id = f"UNIT={self.name}"
+
         # Unit stats
         stats = f"Q{self.quality}+|D{self.defense}+|S={self.size}"
 
@@ -339,7 +356,7 @@ class UnitLoadout:
         # Sort weapon keys for consistent hashing
         weapons_str = "|".join(f"{k}*{c}" for k, c in sorted(weapon_counts.items()))
 
-        return f"{stats}||RULES={rules_str}||W={weapons_str}"
+        return f"{unit_id}||{stats}||RULES={rules_str}||W={weapons_str}"
 
     def bucket_hash(self, mapper: Optional[SpecialRulesBucketMapper] = None) -> str:
         """Short hash for bucket identification."""
