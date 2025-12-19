@@ -103,6 +103,12 @@ target_include_directories(batch_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(batch_sim PRIVATE battle_core Threads::Threads)
 target_compile_options(batch_sim PRIVATE ${COMMON_FLAGS})
 
+# chunk_sim - chunk-based processing for trillion+ matchups with distributed execution
+add_executable(chunk_sim src/chunk_sim.cpp)
+target_include_directories(chunk_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(chunk_sim PRIVATE battle_core Threads::Threads)
+target_compile_options(chunk_sim PRIVATE ${COMMON_FLAGS})
+
 # ==============================================================================
 # Tests
 # ==============================================================================
