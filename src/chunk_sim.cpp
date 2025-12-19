@@ -321,9 +321,13 @@ int cmd_run(int argc, char* argv[]) {
     }
     ChunkManifest manifest = ChunkManifest::load(manifest_file);
     if (manifest.chunks.empty()) {
-        std::cerr << "Error: Failed to load manifest from " << manifest_file << std::endl;
-        std::cerr << "Make sure the file exists and was created with 'plan' command." << std::endl;
+        std::cout << "Error: Failed to load manifest from " << manifest_file << std::endl;
+        std::cout << "Make sure the file exists and was created with 'plan' command." << std::endl;
         return 1;
+    }
+    if (!quiet) {
+        std::cout << "Manifest loaded: " << manifest.chunks.size() << " chunks, "
+                  << manifest.units_a_count << " units" << std::endl;
     }
 
     // Initialize
@@ -339,7 +343,7 @@ int cmd_run(int argc, char* argv[]) {
     if (!quiet) std::cout << "Loading units from: " << manifest.units_file << std::endl;
     auto parse_result = UnitParser::parse_file(manifest.units_file);
     if (parse_result.units.empty()) {
-        std::cerr << "Error: Failed to load units" << std::endl;
+        std::cout << "Error: Failed to load units from " << manifest.units_file << std::endl;
         return 1;
     }
     if (!quiet) std::cout << "Loaded " << parse_result.units.size() << " units" << std::endl << std::endl;
@@ -358,9 +362,9 @@ int cmd_run(int argc, char* argv[]) {
         auto status = tracker.load_status();
 
         if (status.empty()) {
-            std::cerr << "Error: Status file is empty or not found." << std::endl;
-            std::cerr << "Status file expected at: " << manifest.output_dir << "/status.txt" << std::endl;
-            std::cerr << "Did you run 'plan' first to create the chunk manifest?" << std::endl;
+            std::cout << "Error: Status file is empty or not found." << std::endl;
+            std::cout << "Status file expected at: " << manifest.output_dir << "/status.txt" << std::endl;
+            std::cout << "Did you run 'plan' first to create the chunk manifest?" << std::endl;
             return 1;
         }
 
