@@ -1,5 +1,12 @@
 #pragma once
 
+// Prevent Windows min/max macro conflicts
+#ifdef _WIN32
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+#endif
+
 #include "core/types.hpp"
 #include <vector>
 #include <string>
