@@ -18,6 +18,10 @@
 #include "parser/unit_parser.hpp"
 #include "simulation/batch_simulator.hpp"
 #include "simulation/chunk_manager.hpp"
+#include "simulation/sampling_simulator.hpp"
+#include "simulation/sampling_config.hpp"
+#include "simulation/matchup_sample.hpp"
+#include "simulation/showcase_replay.hpp"
 #include "core/faction_rules.hpp"
 #include <iostream>
 #include <iomanip>
@@ -242,10 +246,16 @@ void print_run_usage(const char* prog) {
     std::cout << "  -r             Resume chunk if partially completed\n";
     std::cout << "  -q             Quiet mode\n";
     std::cout << "  -h             Show this help\n\n";
+    std::cout << "Sampling Options (Tier 2/3 data):\n";
+    std::cout << "  --sample-rate <rate>       Sample rate for matchups (default: 0.003 = 0.3%)\n";
+    std::cout << "  --showcase-strategy <s>    Strategy: biggest_upset|closest_win|highest_elo|most_dramatic\n";
+    std::cout << "  --no-sampling              Disable sampling even if configured\n";
+    std::cout << "  --no-showcases             Disable showcases even if configured\n\n";
     std::cout << "Examples:\n";
     std::cout << "  " << prog << " run manifest.txt -c 0          # Run chunk 0\n";
     std::cout << "  " << prog << " run manifest.txt --auto -n 10  # Run next 10 available\n";
     std::cout << "  " << prog << " run manifest.txt --all         # Run all remaining\n";
+    std::cout << "  " << prog << " run manifest.txt --all --sample-rate 0.003  # With sampling\n";
 }
 
 int cmd_run(int argc, char* argv[]) {
@@ -263,6 +273,15 @@ int cmd_run(int argc, char* argv[]) {
     bool try_resume = false;
     bool quiet = false;
 
+    // Sampling configuration
+    SamplingConfig sampling_config;
+    sampling_config.enable_sampling = false;  // Disabled by default
+    sampling_config.enable_showcases = false;
+    sampling_config.sample_rate = 0.003;      // 0.3% default
+    sampling_config.showcase_strategy = ShowcaseStrategy::BiggestUpset;
+    bool no_sampling = false;
+    bool no_showcases = false;
+
     for (int i = 3; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "-c" && i + 1 < argc) {
@@ -279,8 +298,22 @@ int cmd_run(int argc, char* argv[]) {
             try_resume = true;
         } else if (arg == "-q") {
             quiet = true;
+        } else if (arg == "--sample-rate" && i + 1 < argc) {
+            sampling_config.sample_rate = std::stod(argv[++i]);
+            sampling_config.enable_sampling = true;
+        } else if (arg == "--showcase-strategy" && i + 1 < argc) {
+            sampling_config.showcase_strategy = SamplingConfig::parse_strategy(argv[++i]);
+            sampling_config.enable_showcases = true;
+        } else if (arg == "--no-sampling") {
+            no_sampling = true;
+        } else if (arg == "--no-showcases") {
+            no_showcases = true;
         }
     }
+
+    // Apply overrides
+    if (no_sampling) sampling_config.enable_sampling = false;
+    if (no_showcases) sampling_config.enable_showcases = false;
 
     // Load manifest
     ChunkManifest manifest = ChunkManifest::load(manifest_file);
@@ -432,13 +465,50 @@ int cmd_run(int argc, char* argv[]) {
 
         // Run simulation
         try {
-            BatchSimulator sim(config);
-            if (!quiet) std::cout << "  Using " << sim.thread_count() << " threads\n";
+            // Check if sampling is enabled
+            bool use_sampling = sampling_config.enable_sampling || sampling_config.enable_showcases;
 
-            if (quiet) {
-                sim.simulate_all(chunk_units_a, chunk_units_b, nullptr, try_resume);
+            if (use_sampling) {
+                // Set up output paths for this chunk
+                std::string sample_file = manifest.output_dir + "/chunk_" +
+                    std::to_string(chunk_id) + "_samples.bin";
+                std::string showcase_file = manifest.output_dir + "/chunk_" +
+                    std::to_string(chunk_id) + "_showcases.bin";
+
+                sampling_config.sample_output_path = sample_file;
+                sampling_config.showcase_output_path = showcase_file;
+
+                SamplingSimulator sim(config, sampling_config);
+                if (!quiet) {
+                    std::cout << "  Using " << sim.thread_count() << " threads (with sampling)\n";
+                    if (sampling_config.enable_sampling) {
+                        std::cout << "  Sample rate: " << (sampling_config.sample_rate * 100) << "%\n";
+                    }
+                    if (sampling_config.enable_showcases) {
+                        std::cout << "  Showcase strategy: "
+                                  << SamplingConfig::strategy_name(sampling_config.showcase_strategy) << "\n";
+                    }
+                }
+
+                if (quiet) {
+                    sim.simulate_all_with_sampling(chunk_units_a, chunk_units_b, nullptr);
+                } else {
+                    sim.simulate_all_with_sampling(chunk_units_a, chunk_units_b, progress_cb);
+                }
+
+                if (!quiet && sampling_config.enable_sampling) {
+                    std::cout << "\n  Samples written: " << sim.samples_written() << "\n";
+                }
             } else {
-                sim.simulate_all(chunk_units_a, chunk_units_b, progress_cb, try_resume);
+                // Standard simulation without sampling
+                BatchSimulator sim(config);
+                if (!quiet) std::cout << "  Using " << sim.thread_count() << " threads\n";
+
+                if (quiet) {
+                    sim.simulate_all(chunk_units_a, chunk_units_b, nullptr, try_resume);
+                } else {
+                    sim.simulate_all(chunk_units_a, chunk_units_b, progress_cb, try_resume);
+                }
             }
 
             // Mark as completed
@@ -584,10 +654,181 @@ void print_merge_usage(const char* prog) {
     std::cout << "Merge Command - Combine Chunk Results\n\n";
     std::cout << "Usage: " << prog << " merge <manifest_file> [options]\n\n";
     std::cout << "Options:\n";
-    std::cout << "  -o <file>      Output file (required)\n";
+    std::cout << "  -o <file>      Output file for main results (required)\n";
     std::cout << "  --force        Merge even if some chunks incomplete\n";
     std::cout << "  --delete       Delete chunk files after successful merge\n";
-    std::cout << "  -h             Show this help\n";
+    std::cout << "  -h             Show this help\n\n";
+    std::cout << "Sampling Merge Options:\n";
+    std::cout << "  --merge-samples <file>     Merge sample files into <file>\n";
+    std::cout << "  --merge-showcases <file>   Merge showcase files into <file>\n";
+    std::cout << "  --showcase-strategy <s>    Strategy for selecting best showcases\n";
+}
+
+// Helper function to merge sample files
+void merge_sample_files(
+    const ChunkManifest& manifest,
+    const std::vector<ChunkProgress>& all_status,
+    const std::string& output_file,
+    bool force
+) {
+    std::cout << "\n=== Merging Sample Files ===\n";
+
+    std::ofstream out(output_file, std::ios::binary | std::ios::trunc);
+    if (!out) {
+        std::cerr << "Error: Cannot open sample output file: " << output_file << "\n";
+        return;
+    }
+
+    // Write header (will update counts at end)
+    SampleFileHeader header;
+    header.sample_rate = 0.003;  // Will be read from first chunk
+    header.total_matchups = manifest.total_matchups();
+    header.sampled_count = 0;
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+
+    std::vector<char> buffer(4 * 1024 * 1024);
+    u64 total_samples = 0;
+    bool first_chunk = true;
+
+    for (const auto& chunk : manifest.chunks) {
+        std::string sample_file = manifest.output_dir + "/chunk_" +
+            std::to_string(chunk.chunk_id) + "_samples.bin";
+
+        // Check if file exists
+        std::ifstream in(sample_file, std::ios::binary);
+        if (!in) {
+            if (!force) {
+                std::cout << "  Chunk " << chunk.chunk_id << ": No sample file (skipped)\n";
+            }
+            continue;
+        }
+
+        // Read chunk header
+        SampleFileHeader chunk_header;
+        in.read(reinterpret_cast<char*>(&chunk_header), sizeof(chunk_header));
+
+        if (first_chunk) {
+            header.sample_rate = chunk_header.sample_rate;
+            first_chunk = false;
+        }
+
+        // Copy sample data
+        u64 bytes_to_copy = chunk_header.sampled_count * sizeof(MatchupSample);
+        u64 bytes_copied = 0;
+
+        while (bytes_copied < bytes_to_copy) {
+            size_t to_read = std::min(static_cast<size_t>(bytes_to_copy - bytes_copied), buffer.size());
+            in.read(buffer.data(), to_read);
+            size_t actually_read = in.gcount();
+            if (actually_read == 0) break;
+            out.write(buffer.data(), actually_read);
+            bytes_copied += actually_read;
+        }
+
+        total_samples += chunk_header.sampled_count;
+        std::cout << "  Chunk " << chunk.chunk_id << ": " << chunk_header.sampled_count << " samples\n";
+    }
+
+    // Update header with final count
+    header.sampled_count = total_samples;
+    out.seekp(0);
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    out.close();
+
+    std::cout << "Total samples merged: " << total_samples << "\n";
+    std::cout << "Sample file: " << output_file << "\n";
+}
+
+// Helper function to merge showcase files (selecting best per unit)
+void merge_showcase_files(
+    const ChunkManifest& manifest,
+    const std::vector<ChunkProgress>& all_status,
+    const std::string& output_file,
+    ShowcaseStrategy strategy,
+    bool force
+) {
+    std::cout << "\n=== Merging Showcase Files ===\n";
+
+    // Map to store best showcase per unit
+    std::unordered_map<u32, ShowcaseReplay> best_showcases;
+
+    for (const auto& chunk : manifest.chunks) {
+        std::string showcase_file = manifest.output_dir + "/chunk_" +
+            std::to_string(chunk.chunk_id) + "_showcases.bin";
+
+        std::ifstream in(showcase_file, std::ios::binary);
+        if (!in) {
+            if (!force) {
+                std::cout << "  Chunk " << chunk.chunk_id << ": No showcase file (skipped)\n";
+            }
+            continue;
+        }
+
+        // Read header
+        ShowcaseFileHeader chunk_header;
+        in.read(reinterpret_cast<char*>(&chunk_header), sizeof(chunk_header));
+
+        if (chunk_header.magic != ShowcaseFileHeader::MAGIC) {
+            std::cerr << "  Chunk " << chunk.chunk_id << ": Invalid showcase file\n";
+            continue;
+        }
+
+        // Read index
+        std::vector<ShowcaseIndexEntry> index(chunk_header.unit_count);
+        in.read(reinterpret_cast<char*>(index.data()),
+                index.size() * sizeof(ShowcaseIndexEntry));
+
+        // Read and merge showcases
+        u32 merged_count = 0;
+        for (const auto& entry : index) {
+            ShowcaseReplay replay;
+            in.read(reinterpret_cast<char*>(&replay), sizeof(ShowcaseReplay));
+
+            auto it = best_showcases.find(entry.unit_id);
+            if (it == best_showcases.end() || replay.is_better_than(it->second, strategy)) {
+                best_showcases[entry.unit_id] = replay;
+                merged_count++;
+            }
+        }
+
+        std::cout << "  Chunk " << chunk.chunk_id << ": " << chunk_header.unit_count
+                  << " showcases, " << merged_count << " new best\n";
+    }
+
+    // Write merged output
+    std::ofstream out(output_file, std::ios::binary | std::ios::trunc);
+    if (!out) {
+        std::cerr << "Error: Cannot open showcase output file: " << output_file << "\n";
+        return;
+    }
+
+    // Write header
+    ShowcaseFileHeader header;
+    header.unit_count = static_cast<u32>(best_showcases.size());
+    header.strategy = static_cast<u8>(strategy);
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+
+    // Build index and write data
+    std::vector<ShowcaseIndexEntry> final_index;
+    final_index.reserve(best_showcases.size());
+
+    u32 offset = 0;
+    for (const auto& [unit_id, replay] : best_showcases) {
+        final_index.emplace_back(unit_id, offset);
+        offset += sizeof(ShowcaseReplay);
+    }
+
+    out.write(reinterpret_cast<const char*>(final_index.data()),
+              final_index.size() * sizeof(ShowcaseIndexEntry));
+
+    for (const auto& [unit_id, replay] : best_showcases) {
+        out.write(reinterpret_cast<const char*>(&replay), sizeof(ShowcaseReplay));
+    }
+
+    out.close();
+
+    std::cout << "Total showcases: " << best_showcases.size() << "\n";
+    std::cout << "Showcase file: " << output_file << "\n";
 }
 
 int cmd_merge(int argc, char* argv[]) {
@@ -601,6 +842,11 @@ int cmd_merge(int argc, char* argv[]) {
     bool force = false;
     bool delete_chunks = false;
 
+    // Sampling merge options
+    std::string sample_output_file;
+    std::string showcase_output_file;
+    ShowcaseStrategy showcase_strategy = ShowcaseStrategy::BiggestUpset;
+
     for (int i = 3; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "-o" && i + 1 < argc) {
@@ -609,6 +855,12 @@ int cmd_merge(int argc, char* argv[]) {
             force = true;
         } else if (arg == "--delete") {
             delete_chunks = true;
+        } else if (arg == "--merge-samples" && i + 1 < argc) {
+            sample_output_file = argv[++i];
+        } else if (arg == "--merge-showcases" && i + 1 < argc) {
+            showcase_output_file = argv[++i];
+        } else if (arg == "--showcase-strategy" && i + 1 < argc) {
+            showcase_strategy = SamplingConfig::parse_strategy(argv[++i]);
         }
     }
 
@@ -720,6 +972,16 @@ int cmd_merge(int argc, char* argv[]) {
     std::cout << "\n=== Merge Complete ===\n";
     std::cout << "Total results: " << total_results << "\n";
 
+    // Merge sample files if requested
+    if (!sample_output_file.empty()) {
+        merge_sample_files(manifest, all_status, sample_output_file, force);
+    }
+
+    // Merge showcase files if requested
+    if (!showcase_output_file.empty()) {
+        merge_showcase_files(manifest, all_status, showcase_output_file, showcase_strategy, force);
+    }
+
     // Delete chunk files if requested
     if (delete_chunks) {
         std::cout << "\nDeleting chunk files...\n";
@@ -728,6 +990,14 @@ int cmd_merge(int argc, char* argv[]) {
             std::string ckpt_file = ChunkManager::chunk_checkpoint_filename(manifest, chunk.chunk_id);
             fs::remove(chunk_file);
             fs::remove(ckpt_file);
+
+            // Also delete sample and showcase files if they exist
+            std::string sample_file = manifest.output_dir + "/chunk_" +
+                std::to_string(chunk.chunk_id) + "_samples.bin";
+            std::string showcase_file = manifest.output_dir + "/chunk_" +
+                std::to_string(chunk.chunk_id) + "_showcases.bin";
+            fs::remove(sample_file);
+            fs::remove(showcase_file);
         }
         std::cout << "Deleted " << manifest.total_chunks << " chunk files\n";
     }
