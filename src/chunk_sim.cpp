@@ -25,6 +25,17 @@
 #include <filesystem>
 #include <cstdlib>
 
+// Platform-specific includes for hostname and process ID
+#ifdef _WIN32
+    #include <winsock2.h>
+    #include <process.h>
+    #pragma comment(lib, "ws2_32.lib")
+    #define GET_PID() _getpid()
+#else
+    #include <unistd.h>
+    #define GET_PID() getpid()
+#endif
+
 using namespace battle;
 namespace fs = std::filesystem;
 
@@ -33,15 +44,28 @@ namespace fs = std::filesystem;
 // ==============================================================================
 
 std::string get_hostname() {
+#ifdef _WIN32
+    // Initialize Winsock for gethostname
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        return "unknown";
+    }
+#endif
     char hostname[256];
     if (gethostname(hostname, sizeof(hostname)) == 0) {
+#ifdef _WIN32
+        WSACleanup();
+#endif
         return std::string(hostname);
     }
+#ifdef _WIN32
+    WSACleanup();
+#endif
     return "unknown";
 }
 
 std::string get_worker_id() {
-    return get_hostname() + "_" + std::to_string(getpid());
+    return get_hostname() + "_" + std::to_string(GET_PID());
 }
 
 void print_main_usage(const char* prog) {
