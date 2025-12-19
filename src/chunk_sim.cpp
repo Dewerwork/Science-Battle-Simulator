@@ -331,7 +331,17 @@ int cmd_run(int argc, char* argv[]) {
     }
 
     // Initialize
-    initialize_faction_rules();
+    if (!quiet) std::cout << "Initializing faction rules..." << std::endl;
+    try {
+        initialize_faction_rules();
+    } catch (const std::exception& e) {
+        std::cout << "Error initializing faction rules: " << e.what() << std::endl;
+        return 1;
+    } catch (...) {
+        std::cout << "Unknown error initializing faction rules" << std::endl;
+        return 1;
+    }
+    if (!quiet) std::cout << "Faction rules initialized." << std::endl;
 
     if (!quiet) {
         std::cout << "=== Chunk Simulator ===" << std::endl << std::endl;
