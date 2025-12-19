@@ -38,6 +38,10 @@ if(MSVC)
 
     # Link-time optimization for Release
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+
+    # Increase stack size to 4MB - required for initialize_faction_rules() which
+    # creates ~21KB FactionArmyRules objects for 43 factions on the stack
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:4194304")
 else()
     # GCC/Clang (Linux/macOS)
     set(COMMON_FLAGS -Wall -Wextra -Wpedantic)
