@@ -15,6 +15,24 @@
  *   merge   - Combine chunk results into final output
  */
 
+// Platform-specific includes MUST come first on Windows
+#ifdef _WIN32
+    #ifndef NOMINMAX
+        #define NOMINMAX  // Prevent Windows.h from defining min/max macros
+    #endif
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+    #include <winsock2.h>
+    #include <windows.h>
+    #include <process.h>
+    #pragma comment(lib, "ws2_32.lib")
+    #define GET_PID() _getpid()
+#else
+    #include <unistd.h>
+    #define GET_PID() getpid()
+#endif
+
 #include "parser/unit_parser.hpp"
 #include "simulation/batch_simulator.hpp"
 #include "simulation/chunk_manager.hpp"
@@ -24,17 +42,6 @@
 #include <chrono>
 #include <filesystem>
 #include <cstdlib>
-
-// Platform-specific includes for hostname and process ID
-#ifdef _WIN32
-    #include <winsock2.h>
-    #include <process.h>
-    #pragma comment(lib, "ws2_32.lib")
-    #define GET_PID() _getpid()
-#else
-    #include <unistd.h>
-    #define GET_PID() getpid()
-#endif
 
 using namespace battle;
 namespace fs = std::filesystem;
