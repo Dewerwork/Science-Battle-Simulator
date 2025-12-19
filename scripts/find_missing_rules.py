@@ -23,7 +23,7 @@ OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/missing_rules_report.txt
 UNUSED_OUTPUT_FILE = '/home/user/Science-Battle-Simulator/docs/unused_rules_report.txt'
 
 # Script version for debugging
-SCRIPT_VERSION = "1.6"
+SCRIPT_VERSION = "1.7"
 
 
 def normalize_rule_name(rule: str) -> str:
@@ -33,17 +33,19 @@ def normalize_rule_name(rule: str) -> str:
     - Convert to uppercase
     - Replace spaces/hyphens with underscores
     - Remove parenthetical values like (3) for parameterized rules
+    - Strip punctuation like ! that appears in some rule names
     """
     rule = rule.strip()
     # Extract base rule name (without parameter)
-    match = re.match(r'^([A-Za-z][A-Za-z\s\-\']+?)(?:\s*\([\d\+]+\))?$', rule)
+    match = re.match(r'^([A-Za-z][A-Za-z\s\-\'!]+?)(?:\s*\([\d\+]+\))?$', rule)
     if match:
         base_name = match.group(1).strip()
     else:
         base_name = rule
 
     # Normalize: uppercase, replace spaces/hyphens/ampersands with underscores
-    normalized = base_name.upper().replace(' ', '_').replace('-', '_').replace("'", '_').replace('&', '_AND_')
+    # Also strip ! from rule names (e.g., "Boom!" -> "BOOM")
+    normalized = base_name.upper().replace(' ', '_').replace('-', '_').replace("'", '_').replace('&', '_AND_').replace('!', '')
     # Clean up any double underscores from "& " or " &" patterns
     while '__' in normalized:
         normalized = normalized.replace('__', '_')
@@ -170,8 +172,8 @@ def extract_rules_from_weapon_line(line: str) -> list:
     """
     rules = []
 
-    # Find content inside parentheses
-    paren_match = re.search(r'\(([^)]+)\)', line)
+    # Find content inside parentheses - use greedy match to handle nested parens like AP(1)
+    paren_match = re.search(r'\((.+)\)\s*$', line)
     if paren_match:
         content = paren_match.group(1)
         # Split by comma
