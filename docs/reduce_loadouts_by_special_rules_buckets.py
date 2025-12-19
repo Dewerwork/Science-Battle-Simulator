@@ -323,15 +323,27 @@ class UnitLoadout:
     raw_header: str
     raw_weapons: str
 
+    def base_name(self) -> str:
+        """Get unit name without UID suffix for bucketing purposes.
+
+        Strips patterns like [UID:XXXXXXXX] from unit names so that
+        identical units with different UIDs can be grouped together.
+        """
+        # Remove [UID:XXXXXXXX] pattern (8 hex chars)
+        name = re.sub(r'\s*\[UID:[0-9A-Fa-f]+\]', '', self.name)
+        # Also remove [BKT:XXXXXXXX] pattern if present from prior processing
+        name = re.sub(r'\s*\[BKT:[0-9A-Fa-f]+\]', '', name)
+        return name.strip()
+
     def effective_key(self, mapper: Optional[SpecialRulesBucketMapper] = None) -> str:
         """Generate key for bucketing effectively identical units.
 
-        Includes unit name to prevent cross-unit and cross-faction bucketing.
+        Includes unit name (without UID) to prevent cross-unit and cross-faction bucketing.
         Only loadouts of the SAME unit with equivalent rules/weapons are grouped.
         """
-        # Include unit name - this prevents cross-unit and cross-faction bucketing
-        # since unit names are unique within a faction
-        unit_id = f"UNIT={self.name}"
+        # Include unit name WITHOUT UID - this prevents cross-unit and cross-faction bucketing
+        # while still allowing identical loadouts of the same unit to be grouped
+        unit_id = f"UNIT={self.base_name()}"
 
         # Unit stats
         stats = f"Q{self.quality}+|D{self.defense}+|S={self.size}"
