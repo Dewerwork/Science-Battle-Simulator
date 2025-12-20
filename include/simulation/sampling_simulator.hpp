@@ -22,7 +22,10 @@ namespace battle {
 
 // ==============================================================================
 // Sampling Simulator
-// Extends BatchSimulator with Tier 2 (sampling) and Tier 3 (showcase) support
+// Produces all three tiers of output in a single pass:
+//   Tier 1: Main results (Compact/Extended/CompactExtended/Aggregated)
+//   Tier 2: Random matchup samples for ELO analysis
+//   Tier 3: Showcase replays for storytelling
 // ==============================================================================
 
 class SamplingSimulator {
@@ -43,7 +46,7 @@ public:
     // Get aggregate game stats
     const AggregateGameStats& game_stats() const { return game_stats_; }
 
-    // Main simulation entry point with sampling support
+    // Main simulation entry point - produces all three tiers
     void simulate_all_with_sampling(
         const std::vector<Unit>& units_a,
         const std::vector<Unit>& units_b,
@@ -56,6 +59,7 @@ public:
         // Reset stats
         game_stats_.reset();
         samples_written_ = 0;
+        results_written_ = 0;
 
         // Initialize showcase candidates (one per unit in units_a)
         if (sampling_config_.enable_showcases) {
@@ -63,7 +67,33 @@ public:
             showcase_candidates_.resize(num_units_a);
         }
 
-        // Open sample output file if sampling enabled
+        // =====================================================================
+        // TIER 1: Open main results output file
+        // =====================================================================
+        std::ofstream results_out;
+        std::vector<char> results_write_buffer(4 * 1024 * 1024);  // 4MB buffer
+        std::mutex results_mutex;
+
+        results_out.rdbuf()->pubsetbuf(results_write_buffer.data(), results_write_buffer.size());
+        results_out.open(batch_config_.output_file, std::ios::binary | std::ios::trunc);
+
+        if (!results_out) {
+            throw std::runtime_error("Cannot open results output file: " + batch_config_.output_file);
+        }
+
+        // Write results header
+        u32 magic = 0x42415453;  // "SABS"
+        u32 version = static_cast<u32>(batch_config_.format);
+        u32 units_a_count = static_cast<u32>(num_units_a);
+        u32 units_b_count = static_cast<u32>(num_units_b);
+        results_out.write(reinterpret_cast<const char*>(&magic), sizeof(magic));
+        results_out.write(reinterpret_cast<const char*>(&version), sizeof(version));
+        results_out.write(reinterpret_cast<const char*>(&units_a_count), sizeof(units_a_count));
+        results_out.write(reinterpret_cast<const char*>(&units_b_count), sizeof(units_b_count));
+
+        // =====================================================================
+        // TIER 2: Open sample output file if sampling enabled
+        // =====================================================================
         std::ofstream sample_out;
         std::vector<char> sample_write_buffer(4 * 1024 * 1024);  // 4MB buffer
 
@@ -87,12 +117,15 @@ public:
         std::atomic<u64> completed{0};
         auto start_time = std::chrono::high_resolution_clock::now();
 
-        // Sample buffer for batched writes
+        // Buffers for results and samples
+        std::vector<CompactExtendedMatchResult> results_buffer;
+        results_buffer.reserve(batch_config_.batch_size + 16);
+
         std::vector<MatchupSample> sample_buffer;
         sample_buffer.reserve(100000);  // ~1.6 MB buffer
         std::mutex sample_mutex;
 
-        // Chunk size for L3 cache optimization (like aggregated format)
+        // Chunk size for L3 cache optimization
         constexpr size_t UNITS_PER_CHUNK = 40000;
         const size_t num_chunks = (num_units_a + UNITS_PER_CHUNK - 1) / UNITS_PER_CHUNK;
 
@@ -110,10 +143,10 @@ public:
                     matchups.emplace_back(i, j);
 
                     if (matchups.size() >= batch_config_.batch_size) {
-                        process_batch_with_sampling(
+                        process_batch_all_tiers(
                             units_a, units_b, matchups,
-                            sample_buffer, sample_mutex,
-                            sample_out
+                            results_buffer, results_mutex, results_out,
+                            sample_buffer, sample_mutex, sample_out
                         );
 
                         completed += matchups.size();
@@ -134,15 +167,27 @@ public:
 
             // Process remaining matchups in chunk
             if (!matchups.empty()) {
-                process_batch_with_sampling(
+                process_batch_all_tiers(
                     units_a, units_b, matchups,
-                    sample_buffer, sample_mutex,
-                    sample_out
+                    results_buffer, results_mutex, results_out,
+                    sample_buffer, sample_mutex, sample_out
                 );
                 completed += matchups.size();
                 matchups.clear();
             }
         }
+
+        // Flush remaining results
+        if (!results_buffer.empty()) {
+            results_out.write(
+                reinterpret_cast<const char*>(results_buffer.data()),
+                results_buffer.size() * sizeof(CompactExtendedMatchResult)
+            );
+            results_written_ += results_buffer.size();
+            results_buffer.clear();
+        }
+        results_out.flush();
+        results_out.close();
 
         // Flush remaining samples
         if (sampling_config_.enable_sampling && !sample_buffer.empty()) {
@@ -161,7 +206,7 @@ public:
             sample_out.close();
         }
 
-        // Write showcase file
+        // Write showcase file (Tier 3)
         if (sampling_config_.enable_showcases) {
             write_showcases(units_a);
         }
@@ -176,8 +221,9 @@ public:
         }
     }
 
-    // Get sample count
+    // Get counts
     u64 samples_written() const { return samples_written_; }
+    u64 results_written() const { return results_written_; }
 
     // Get showcase candidates (for merging)
     const std::vector<ShowcaseCandidate>& showcase_candidates() const {
@@ -195,18 +241,22 @@ private:
     AggregateGameStats game_stats_;
     SamplingDecider sampler_;
 
-    // Sampling state
+    // Output state
     std::atomic<u64> samples_written_{0};
+    std::atomic<u64> results_written_{0};
     std::vector<ShowcaseCandidate> showcase_candidates_;
 
     // Number of mutex shards for showcase candidates
     static constexpr size_t SHOWCASE_MUTEX_SHARDS = 4096;
     std::array<std::mutex, SHOWCASE_MUTEX_SHARDS> showcase_mutexes_;
 
-    void process_batch_with_sampling(
+    void process_batch_all_tiers(
         const std::vector<Unit>& units_a,
         const std::vector<Unit>& units_b,
         const std::vector<std::pair<u32, u32>>& matchups,
+        std::vector<CompactExtendedMatchResult>& results_buffer,
+        std::mutex& results_mutex,
+        std::ofstream& results_out,
         std::vector<MatchupSample>& sample_buffer,
         std::mutex& sample_mutex,
         std::ofstream& sample_out
@@ -217,7 +267,8 @@ private:
 
         std::atomic<size_t> threads_done{0};
 
-        // Thread-local sample buffers to reduce contention
+        // Thread-local buffers to reduce contention
+        std::vector<std::vector<CompactExtendedMatchResult>> thread_results(num_threads);
         std::vector<std::vector<MatchupSample>> thread_samples(num_threads);
 
         for (size_t t = 0; t < num_threads; ++t) {
@@ -242,7 +293,8 @@ private:
                 u64 local_wounds = 0;
                 u64 local_models_killed = 0;
 
-                // Reserve space for thread-local samples
+                // Reserve space for thread-local buffers
+                thread_results[t].reserve(end - start);
                 thread_samples[t].reserve((end - start) / 300 + 10);  // ~0.3% sample rate
 
                 for (size_t i = start; i < end; ++i) {
@@ -264,7 +316,11 @@ private:
                     local_wounds += result.total_wounds_dealt_a + result.total_wounds_dealt_b;
                     local_models_killed += result.total_models_killed_a + result.total_models_killed_b;
 
-                    // Check if this matchup should be sampled (Tier 2)
+                    // TIER 1: Store result using the from_match helper
+                    CompactExtendedMatchResult compact_result = CompactExtendedMatchResult::from_match(result);
+                    thread_results[t].push_back(compact_result);
+
+                    // TIER 2: Check if this matchup should be sampled
                     if (sampling_config_.enable_sampling && sampler_.should_sample(a_idx, b_idx)) {
                         MatchupSample sample = MatchupSample::from_match(
                             result, a_idx, b_idx,
@@ -274,7 +330,7 @@ private:
                         thread_samples[t].push_back(sample);
                     }
 
-                    // Check for showcase update (Tier 3)
+                    // TIER 3: Check for showcase update
                     if (sampling_config_.enable_showcases) {
                         // Only consider wins for unit_a
                         if (result.overall_winner == GameWinner::UnitA) {
@@ -298,6 +354,24 @@ private:
         // Wait for all threads
         while (threads_done.load(std::memory_order_acquire) < num_threads) {
             std::this_thread::yield();
+        }
+
+        // Merge thread-local results into main buffer and write
+        {
+            std::lock_guard<std::mutex> lock(results_mutex);
+            for (const auto& tr : thread_results) {
+                results_buffer.insert(results_buffer.end(), tr.begin(), tr.end());
+            }
+
+            // Flush to disk if buffer is large
+            if (results_buffer.size() >= batch_config_.batch_size) {
+                results_out.write(
+                    reinterpret_cast<const char*>(results_buffer.data()),
+                    results_buffer.size() * sizeof(CompactExtendedMatchResult)
+                );
+                results_written_ += results_buffer.size();
+                results_buffer.clear();
+            }
         }
 
         // Merge thread-local samples into main buffer
@@ -374,7 +448,6 @@ private:
         u8 games_played
     ) {
         // Calculate ELO differential (placeholder - use points as proxy)
-        // In real implementation, you'd use actual ELO values
         i16 elo_diff = static_cast<i16>(opponent.points_cost) - static_cast<i16>(unit.points_cost);
 
         // Get mutex shard for this unit
@@ -409,7 +482,7 @@ private:
         replay.total_deaths = static_cast<u8>(std::min(result.total_models_killed_b, u16(255)));
         replay.objective_rounds = result.total_rounds_holding_a;
 
-        // Create game replays (simplified - no per-round data without game_runner modification)
+        // Create game replays (simplified - no per-round data)
         for (u8 g = 0; g < games_played && g < 3; ++g) {
             replay.games[g].winner = game_winners[g];
             replay.games[g].rounds_played = 4;  // Placeholder
@@ -428,7 +501,7 @@ private:
         }
     }
 
-    void write_showcases(const std::vector<Unit>& units) {
+    void write_showcases(const std::vector<Unit>& /*units*/) {
         std::ofstream out(sampling_config_.showcase_output_path, std::ios::binary | std::ios::trunc);
         if (!out) {
             throw std::runtime_error("Cannot open showcase output file: " + sampling_config_.showcase_output_path);
