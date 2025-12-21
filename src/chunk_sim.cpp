@@ -542,7 +542,7 @@ int cmd_run(int argc, char* argv[]) {
                 }
 
                 if (!quiet) {
-                    std::cout << "\n  Results written: " << sim.results_written() << std::endl;
+                    std::cout << "\n  Aggregated results for " << chunk_units_a.size() << " units" << std::endl;
                     if (sampling_config.enable_sampling) {
                         std::cout << "  Samples written: " << sim.samples_written() << std::endl;
                     }
