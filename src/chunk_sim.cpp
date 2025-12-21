@@ -508,11 +508,11 @@ int cmd_run(int argc, char* argv[]) {
             std::cout << "    " << std::flush;
         };
 
+        // Check if sampling is enabled
+        bool use_sampling = sampling_config.enable_sampling || sampling_config.enable_showcases;
+
         // Run simulation
         try {
-            // Check if sampling is enabled
-            bool use_sampling = sampling_config.enable_sampling || sampling_config.enable_showcases;
-
             if (use_sampling) {
                 // Set up output paths for this chunk
                 std::string sample_file = manifest.output_dir + "/chunk_" +
@@ -541,8 +541,11 @@ int cmd_run(int argc, char* argv[]) {
                     sim.simulate_all_with_sampling(chunk_units_a, chunk_units_b, progress_cb);
                 }
 
-                if (!quiet && sampling_config.enable_sampling) {
-                    std::cout << "\n  Samples written: " << sim.samples_written() << "\n";
+                if (!quiet) {
+                    std::cout << "\n  Results written: " << sim.results_written() << std::endl;
+                    if (sampling_config.enable_sampling) {
+                        std::cout << "  Samples written: " << sim.samples_written() << std::endl;
+                    }
                 }
             } else {
                 // Standard simulation without sampling
@@ -564,8 +567,16 @@ int cmd_run(int argc, char* argv[]) {
             if (!quiet) {
                 auto end_time = std::chrono::high_resolution_clock::now();
                 f64 elapsed = std::chrono::duration<f64>(end_time - start_time).count();
-                std::cout << "\n  Completed in " << std::fixed << std::setprecision(1) << elapsed << "s\n";
-                std::cout << "  Output: " << output_file << "\n\n";
+                std::cout << "  Completed in " << std::fixed << std::setprecision(1) << elapsed << "s" << std::endl;
+                std::cout << "  Output files:" << std::endl;
+                std::cout << "    Tier 1 (results):   " << output_file << std::endl;
+                if (use_sampling && sampling_config.enable_sampling) {
+                    std::cout << "    Tier 2 (samples):   " << sampling_config.sample_output_path << std::endl;
+                }
+                if (use_sampling && sampling_config.enable_showcases) {
+                    std::cout << "    Tier 3 (showcases): " << sampling_config.showcase_output_path << std::endl;
+                }
+                std::cout << std::endl;
             }
 
             ++processed;
