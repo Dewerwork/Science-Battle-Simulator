@@ -9,6 +9,10 @@ units with functionally similar rules to be grouped together.
 Example: "Precise", "Good Shot", and other +1 hit modifier rules all map to BUCKET_001,
 allowing units differing only in these rules to be grouped.
 
+Input formats:
+- JSON: all_factions_merged.json from merge_all_factions.py
+- TXT: Legacy .txt format with unit loadouts
+
 Modes:
 - Normal: Maps rules to buckets, keeps parameterized values distinct
 - Aggressive (-a): Groups similar buckets into super-categories for maximum reduction
@@ -20,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -525,10 +530,9 @@ def parse_weapons_line(weapons_str: str) -> List[Weapon]:
     return weapons
 
 
-def parse_loadout_file(filepath: Path) -> List[UnitLoadout]:
-    """Parse a .txt file containing unit loadouts."""
+def parse_lines_to_loadouts(lines: List[str]) -> List[UnitLoadout]:
+    """Parse a list of lines into UnitLoadout objects."""
     loadouts = []
-    lines = filepath.read_text(encoding="utf-8").splitlines()
 
     i = 0
     while i < len(lines):
@@ -571,6 +575,30 @@ def parse_loadout_file(filepath: Path) -> List[UnitLoadout]:
             ))
 
         i += 1
+
+    return loadouts
+
+
+def parse_loadout_file(filepath: Path) -> List[UnitLoadout]:
+    """Parse a .json or .txt file containing unit loadouts."""
+    loadouts = []
+
+    if filepath.suffix.lower() == ".json":
+        # Parse JSON format from merge_all_factions.py
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        for faction in data.get("factions", []):
+            faction_name = faction.get("name", "Unknown")
+            lines = faction.get("units", [])
+            faction_loadouts = parse_lines_to_loadouts(lines)
+            loadouts.extend(faction_loadouts)
+            if faction_loadouts:
+                print(f"    {faction_name}: {len(faction_loadouts)} loadouts")
+    else:
+        # Parse TXT format
+        lines = filepath.read_text(encoding="utf-8").splitlines()
+        loadouts = parse_lines_to_loadouts(lines)
 
     return loadouts
 
@@ -742,7 +770,7 @@ def main():
     parser.add_argument(
         "input",
         type=Path,
-        help="Input .txt file with unit loadouts (e.g., MERGED_ALL_TXT.txt)"
+        help="Input .json or .txt file with unit loadouts (e.g., all_factions_merged.json)"
     )
     parser.add_argument(
         "-o", "--output",
