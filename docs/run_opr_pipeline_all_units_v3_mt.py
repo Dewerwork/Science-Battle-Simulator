@@ -151,6 +151,9 @@ def load_units_from_json(json_path: str) -> List[Dict[str, Any]]:
                 # Preserve weapon data if present (used for correct attack values)
                 if opt.get("weapon"):
                     opt_entry["weapon"] = opt["weapon"]
+                # Preserve rules_granted if present (pre-parsed special rules)
+                if opt.get("rules_granted"):
+                    opt_entry["rules_granted"] = opt["rules_granted"]
                 group_options.append(opt_entry)
             options.append({
                 "header": ug.get("header", ""),
@@ -587,7 +590,8 @@ def _compute_option_weapon_key(opt: Dict[str, Any]) -> Tuple[str, int, int, List
         normalized_name = norm_ws(item_name).lower()
         add_key = f"N={normalized_name}|R=|A=0|AP="
 
-    rules = _extract_rules_from_choice(txt)
+    # Use pre-parsed rules_granted if available, otherwise parse from text
+    rules = opt.get("rules_granted") or _extract_rules_from_choice(txt)
     return (add_key, pts, c, rules)
 
 def _dedupe_options_by_weapon_key(opts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -673,7 +677,7 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                             o = opts[i]
                             pts_each = int(o.get("pts", 0) or 0)
                             pts += pts_each * multiplier
-                            add_rules.extend(_extract_rules_from_choice(str(o.get("text", ""))))
+                            add_rules.extend(o.get("rules_granted") or _extract_rules_from_choice(str(o.get("text", ""))))
                         out.append(make(pts, add_rules, {}))
                 return out
             else:
@@ -689,7 +693,7 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                     o = opts[i]
                     pts_each = int(o.get("pts", 0) or 0)
                     pts += pts_each * multiplier
-                    add_rules.extend(_extract_rules_from_choice(str(o.get("text", ""))))
+                    add_rules.extend(o.get("rules_granted") or _extract_rules_from_choice(str(o.get("text", ""))))
                 out.append(make(pts, add_rules, {}))
         return out
 
@@ -798,7 +802,7 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                 weapon_delta[add_key] = weapon_delta.get(add_key, 0) + int(c)
 
                 # rules added (if any non-weapon payload)
-                add_rules = _extract_rules_from_choice(txt)
+                add_rules = o.get("rules_granted") or _extract_rules_from_choice(txt)
 
                 out.append(make(pts, add_rules, weapon_delta))
             return out
@@ -854,7 +858,7 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                         has_self_replacement = True
 
                     weapon_delta[add_key] = weapon_delta.get(add_key, 0) + int(c)
-                    add_rules.extend(_extract_rules_from_choice(txt))
+                    add_rules.extend(pick.get("rules_granted") or _extract_rules_from_choice(txt))
 
                 # Skip variants that only contain self-replacements (no net change)
                 # Check if weapon_delta results in no actual change
@@ -870,7 +874,8 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
     for o in opts:
         pts = int(o.get("pts", 0) or 0)
         txt = str(o.get("text", "")).strip()
-        out.append(make(pts, _extract_rules_from_choice(txt), {}))
+        rules = o.get("rules_granted") or _extract_rules_from_choice(txt)
+        out.append(make(pts, rules, {}))
     return out
 
 # =========================================================
