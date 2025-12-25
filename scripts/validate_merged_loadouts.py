@@ -275,6 +275,7 @@ def validate_header_format(entries: List[UnitEntry], file_label: str) -> Validat
             failures.append({
                 'Line Number': entry.line_number,
                 'Unit Name': entry.base_name[:50],
+                'ID': f"{entry.identifier_type}:{entry.identifier}" if entry.identifier else '',
                 'Raw Header': entry.raw_header[:100] + ('...' if len(entry.raw_header) > 100 else ''),
                 'Issues': '; '.join(entry.parse_errors),
                 'File': file_label
@@ -331,6 +332,7 @@ def validate_weapon_format(entries: List[UnitEntry], file_label: str) -> Validat
                 failures.append({
                     'Line Number': entry.line_number,
                     'Unit Name': entry.base_name[:40],
+                    'ID': f"{entry.identifier_type}:{entry.identifier}" if entry.identifier else '',
                     'Weapon Line': weapon_line[:80] + ('...' if len(weapon_line) > 80 else ''),
                     'Issues': '; '.join(issues),
                     'File': file_label
@@ -393,7 +395,7 @@ def validate_duplicate_buckets(entries: List[UnitEntry]) -> ValidationResult:
             if count > 1:
                 failures.append({
                     'Unit Name': name,
-                    'Bucket Hash': bucket,
+                    'ID': f"BKT:{bucket}",
                     'Occurrences': count,
                     'Issue': 'Duplicate bucket hash for same unit'
                 })
@@ -451,6 +453,7 @@ def validate_rules(entries: List[UnitEntry], file_label: str) -> ValidationResul
                 failures.append({
                     'Line Number': entry.line_number,
                     'Unit Name': entry.base_name[:40],
+                    'ID': f"{entry.identifier_type}:{entry.identifier}" if entry.identifier else '',
                     'Rule': rule,
                     'Issues': '; '.join(issues),
                     'File': file_label
@@ -500,6 +503,7 @@ def validate_edge_cases(entries: List[UnitEntry], file_label: str) -> Validation
             failures.append({
                 'Line Number': entry.line_number,
                 'Unit Name': entry.base_name[:40],
+                'ID': f"{entry.identifier_type}:{entry.identifier}" if entry.identifier else '',
                 'Points': entry.points,
                 'Size': entry.size,
                 'Issues': '; '.join(issues),
