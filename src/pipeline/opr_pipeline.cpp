@@ -298,6 +298,42 @@ std::vector<UnitData> OprPipeline::load_units_from_json(const std::filesystem::p
                         UpgradeOption option;
                         option.text = opt.get<std::string>("text", "");
                         option.pts = static_cast<int>(opt.get<int64_t>("cost", 0));
+
+                        // Parse weapon data if present
+                        if (opt.contains("weapon") && opt["weapon"].is_object()) {
+                            const auto& w = opt["weapon"];
+                            WeaponData weapon;
+                            weapon.count = static_cast<int>(w.get<int64_t>("count", 1));
+                            weapon.name = w.get<std::string>("name", "");
+                            weapon.attacks = static_cast<int>(w.get<int64_t>("attacks", 0));
+                            if (w.contains("range") && !w["range"].is_null()) {
+                                int64_t rng = w["range"].as_int();
+                                weapon.range = std::to_string(rng) + "\"";
+                            } else {
+                                weapon.range = "-";
+                            }
+                            if (w.contains("ap") && !w["ap"].is_null()) {
+                                weapon.ap = static_cast<int>(w["ap"].as_int());
+                            }
+                            if (w.contains("special_rules") && w["special_rules"].is_array()) {
+                                for (const auto& rule : w["special_rules"].as_array()) {
+                                    if (rule.is_string()) {
+                                        weapon.special_rules.push_back(rule.as_string());
+                                    }
+                                }
+                            }
+                            option.weapon = std::move(weapon);
+                        }
+
+                        // Parse rules_granted if present
+                        if (opt.contains("rules_granted") && opt["rules_granted"].is_array()) {
+                            for (const auto& rule : opt["rules_granted"].as_array()) {
+                                if (rule.is_string()) {
+                                    option.rules_granted.push_back(rule.as_string());
+                                }
+                            }
+                        }
+
                         group.options.push_back(std::move(option));
                     }
                 }
@@ -591,7 +627,11 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                     for (size_t i = 0; i < n; ++i) {
                         if (selector[i]) {
                             pts += group.options[i].pts * multiplier;
-                            auto rules = extract_rules_from_choice(group.options[i].text);
+                            // Use pre-parsed rules_granted if available
+                            const auto& opt = group.options[i];
+                            auto rules = opt.rules_granted.empty()
+                                ? extract_rules_from_choice(opt.text)
+                                : opt.rules_granted;
                             add_rules.insert(add_rules.end(), rules.begin(), rules.end());
                         }
                     }
@@ -613,7 +653,11 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                 for (size_t i = 0; i < n; ++i) {
                     if (selector[i]) {
                         pts += group.options[i].pts * multiplier;
-                        auto rules = extract_rules_from_choice(group.options[i].text);
+                        // Use pre-parsed rules_granted if available
+                        const auto& opt = group.options[i];
+                        auto rules = opt.rules_granted.empty()
+                            ? extract_rules_from_choice(opt.text)
+                            : opt.rules_granted;
                         add_rules.insert(add_rules.end(), rules.begin(), rules.end());
                     }
                 }
@@ -716,14 +760,32 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                     weapon_delta[target_key] -= slots;
                 }
 
-                // Build add key
+                // Build add key - use structured weapon data if available
                 std::string add_key;
-                if (!inside.empty() && looks_like_weapon_profile(inside)) {
-                    // Parse profile to build key
+                if (opt.weapon.has_value()) {
+                    // Use structured weapon data (most reliable)
+                    const auto& w = *opt.weapon;
+                    std::string normalized_name = normalize_whitespace(w.name);
+                    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+                    std::string rng_str = (w.range == "-" || w.range.empty()) ? "" : w.range.substr(0, w.range.size() - 1);  // Remove trailing "
+                    std::string ap_str = w.ap.has_value() ? std::to_string(*w.ap) : "";
+                    add_key = "N=" + normalized_name + "|R=" + rng_str + "|A=" + std::to_string(w.attacks) + "|AP=" + ap_str;
+                    if (!w.special_rules.empty()) {
+                        std::vector<std::string> sorted_rules = w.special_rules;
+                        std::sort(sorted_rules.begin(), sorted_rules.end());
+                        std::string tags;
+                        for (const auto& r : sorted_rules) {
+                            if (!tags.empty()) tags += ";";
+                            tags += r;
+                        }
+                        add_key += "|T=" + tags;
+                    }
+                } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
+                    // Parse profile from text
                     std::string normalized_name = normalize_whitespace(item_name);
                     std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
                     add_key = "N=" + normalized_name + "|R=|A=0|AP=";
-                    // TODO: Parse actual profile values
+                    // TODO: Parse actual profile values from inside string
                 } else {
                     std::string normalized_name = normalize_whitespace(item_name);
                     std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
@@ -734,7 +796,10 @@ std::vector<Variant> OprPipeline::generate_group_variants(
 
                 weapon_delta[add_key] += c;
 
-                auto add_rules = extract_rules_from_choice(opt.text);
+                // Use pre-parsed rules_granted if available
+                auto add_rules = opt.rules_granted.empty()
+                    ? extract_rules_from_choice(opt.text)
+                    : opt.rules_granted;
                 out.push_back(make_variant(opt.pts, add_rules, weapon_delta));
             }
             return out;
@@ -767,12 +832,36 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                             weapon_delta[target_key] -= 1;
                         }
 
-                        std::string normalized_name = normalize_whitespace(item_name);
-                        std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
-                        std::string add_key = "N=" + normalized_name + "|R=|A=0|AP=";
+                        // Build add key - use structured weapon data if available
+                        std::string add_key;
+                        if (pick->weapon.has_value()) {
+                            const auto& w = *pick->weapon;
+                            std::string normalized_name = normalize_whitespace(w.name);
+                            std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+                            std::string rng_str = (w.range == "-" || w.range.empty()) ? "" : w.range.substr(0, w.range.size() - 1);
+                            std::string ap_str = w.ap.has_value() ? std::to_string(*w.ap) : "";
+                            add_key = "N=" + normalized_name + "|R=" + rng_str + "|A=" + std::to_string(w.attacks) + "|AP=" + ap_str;
+                            if (!w.special_rules.empty()) {
+                                std::vector<std::string> sorted_rules = w.special_rules;
+                                std::sort(sorted_rules.begin(), sorted_rules.end());
+                                std::string tags;
+                                for (const auto& r : sorted_rules) {
+                                    if (!tags.empty()) tags += ";";
+                                    tags += r;
+                                }
+                                add_key += "|T=" + tags;
+                            }
+                        } else {
+                            std::string normalized_name = normalize_whitespace(item_name);
+                            std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+                            add_key = "N=" + normalized_name + "|R=|A=0|AP=";
+                        }
                         weapon_delta[add_key] += c;
 
-                        auto rules = extract_rules_from_choice(pick->text);
+                        // Use pre-parsed rules_granted if available
+                        auto rules = pick->rules_granted.empty()
+                            ? extract_rules_from_choice(pick->text)
+                            : pick->rules_granted;
                         add_rules.insert(add_rules.end(), rules.begin(), rules.end());
                     }
 
@@ -803,7 +892,10 @@ std::vector<Variant> OprPipeline::generate_group_variants(
     // Fallback: treat each option as a rule-only choice
     out.push_back(make_variant(0, {}, {}));
     for (const auto& opt : group.options) {
-        auto rules = extract_rules_from_choice(opt.text);
+        // Use pre-parsed rules_granted if available
+        auto rules = opt.rules_granted.empty()
+            ? extract_rules_from_choice(opt.text)
+            : opt.rules_granted;
         out.push_back(make_variant(opt.pts, rules, {}));
     }
 

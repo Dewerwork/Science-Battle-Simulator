@@ -189,6 +189,8 @@ struct WeaponData {
 struct UpgradeOption {
     std::string text;
     int pts = 0;
+    std::optional<WeaponData> weapon;        // Structured weapon data from JSON
+    std::vector<std::string> rules_granted;  // Pre-parsed special rules from JSON
 };
 
 struct UpgradeGroup {
