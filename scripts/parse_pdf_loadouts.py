@@ -463,6 +463,44 @@ def is_upgrade_header(line: str) -> bool:
     return False
 
 
+def is_valid_upgrade_option_text(text: str) -> bool:
+    """
+    Check if text looks like a valid upgrade option, not a garbage fragment.
+
+    Rejects fragments like:
+    - "Precise)" - orphaned closing paren from weapon profile
+    - ")" - just a paren
+    - "3)" - number with paren
+    - Short fragments that are clearly incomplete
+    """
+    if not text:
+        return False
+
+    text = text.strip()
+
+    # Too short to be a valid option name
+    if len(text) < 3:
+        return False
+
+    # Starts with closing paren - definitely a fragment
+    if text.startswith(')'):
+        return False
+
+    # Ends with closing paren but no opening paren - orphaned fragment like "Precise)"
+    if text.endswith(')') and '(' not in text:
+        return False
+
+    # Just a word followed by closing paren, no opening paren (e.g., "Precise)", "Deadly)")
+    if re.match(r'^[A-Za-z]+\)$', text):
+        return False
+
+    # Looks like an orphaned weapon stat fragment (e.g., "AP(1)", "A3", "Blast(3))")
+    if re.match(r'^(AP|A|Blast|Deadly|Rending)\s*\(?', text, re.IGNORECASE) and len(text) < 15:
+        return False
+
+    return True
+
+
 def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
     """Parse an upgrade option line like 'Bio-Recovery (Regeneration) +40pts'."""
     match = COST_RE.match(line)
@@ -471,6 +509,10 @@ def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
 
     text = match.group("text").strip()
     cost_str = match.group("cost")
+
+    # Reject garbage fragments like "Precise)" that aren't real upgrade options
+    if not is_valid_upgrade_option_text(text):
+        return None
 
     cost = 0
     if cost_str != "Free":
@@ -648,6 +690,10 @@ def parse_upgrade_from_multiline(lines: List[str], start_idx: int) -> Tuple[Opti
         return None, start_idx
     if is_weapon_table_header(text_line):
         return None, start_idx + 1
+
+    # Reject garbage fragments like "Precise)" that aren't real upgrade options
+    if not is_valid_upgrade_option_text(text_line):
+        return None, start_idx
 
     # Look for cost on next line
     idx = start_idx + 1
