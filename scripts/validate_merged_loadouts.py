@@ -24,8 +24,8 @@ except ImportError:
 # CONFIGURATION - Hardcoded file paths
 # =============================================================================
 
-SOURCE_FILE = r"C:\Users\David\Documents\Army Factions\pipeline_output\MERGED_ALL_TXT.txt"
-REDUCED_FILE = r"C:\Users\David\Documents\Army Factions\pipeline_output\MERGED_ALL_TXT.bucket_reduced.txt"
+SOURCE_FILE = r"C:\Users\David\Documents\Army Factions\pipeline_output\all_factions_merged.txt"
+REDUCED_FILE = r"C:\Users\David\Documents\Army Factions\pipeline_output\all_faction.reduced.txt"
 OUTPUT_WORKBOOK = r"C:\Users\David\Documents\Army Factions\pipeline_output\validation_report.xlsx"
 
 # =============================================================================
@@ -511,15 +511,20 @@ def auto_width(ws, min_width=10, max_width=60):
     """Auto-adjust column widths based on content."""
     for column_cells in ws.columns:
         max_length = 0
-        column = column_cells[0].column_letter
+        column = None
         for cell in column_cells:
-            try:
-                cell_len = len(str(cell.value)) if cell.value else 0
-                max_length = max(max_length, cell_len)
-            except:
-                pass
-        adjusted_width = min(max(max_length + 2, min_width), max_width)
-        ws.column_dimensions[column].width = adjusted_width
+            # Skip merged cells which don't have column_letter
+            if hasattr(cell, 'column_letter'):
+                if column is None:
+                    column = cell.column_letter
+                try:
+                    cell_len = len(str(cell.value)) if cell.value else 0
+                    max_length = max(max_length, cell_len)
+                except:
+                    pass
+        if column:
+            adjusted_width = min(max(max_length + 2, min_width), max_width)
+            ws.column_dimensions[column].width = adjusted_width
 
 
 def write_summary_sheet(ws, results: List[ValidationResult], source_count: int, reduced_count: int):
