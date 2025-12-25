@@ -157,41 +157,162 @@ def _filter_pdf_lines(text: str) -> List[str]:
     return lines
 
 
+def _count_parens(text: str) -> Tuple[int, int]:
+    """Count open and close parentheses in text. Returns (open_count, close_count)."""
+    return text.count('('), text.count(')')
+
+
+def _is_continuation_line(line: str) -> bool:
+    """
+    Check if a line looks like a continuation of a previous line.
+
+    Continuation indicators:
+    - Starts with a closing parenthesis
+    - Starts with a lowercase letter (continuation of rule name)
+    - Is just a special rule word that commonly appears at end of profiles
+    """
+    if not line:
+        return False
+
+    line = line.strip()
+
+    # Starts with closing paren - definitely a continuation
+    if line.startswith(')'):
+        return True
+
+    # Check for orphaned rule fragments like "Precise)", "Deadly)", "Rending)"
+    # These are rule words followed by closing paren with no opening paren
+    if re.match(r'^[A-Z][a-z]+\)$', line):
+        return True
+
+    # Check for continuation patterns like "Precise)" or "Blast(3))"
+    # that are clearly fragments from weapon profiles
+    if line.endswith(')') and line.count(')') > line.count('('):
+        # More closing parens than opening - likely a continuation
+        return True
+
+    return False
+
+
+def _should_merge_with_next(line: str, next_line: str) -> bool:
+    """
+    Determine if line should be merged with next_line.
+
+    Merge when:
+    - Current line ends with comma (incomplete list)
+    - Current line has unbalanced parentheses (more open than close)
+    - Next line is a continuation line
+    """
+    if not line or not next_line:
+        return False
+
+    line = line.rstrip()
+    next_line = next_line.strip()
+
+    # Don't merge if next line is a cost (standalone +Npts or Free)
+    if re.match(r'^(\+\d+pts|Free)$', next_line):
+        return False
+
+    # Don't merge if next line is a unit header
+    if re.match(r'^.+\s+\[\d+\]\s*-\s*\d+pts$', next_line):
+        return False
+
+    # Don't merge if next line is an upgrade header
+    if re.match(r'^(Upgrade|Replace)\s+', next_line, re.IGNORECASE):
+        return False
+
+    # Check if next line is a continuation
+    if _is_continuation_line(next_line):
+        return True
+
+    # Check for unbalanced parentheses in current line
+    open_count, close_count = _count_parens(line)
+    if open_count > close_count:
+        return True
+
+    # Check if current line ends with comma (incomplete list)
+    if line.endswith(','):
+        # But only if next line looks like a continuation (not a new item)
+        # Next line shouldn't start with a number (like "2x Weapon")
+        if not re.match(r'^\d+x\s+', next_line):
+            return True
+
+    return False
+
+
+def merge_continuation_lines(lines: List[str]) -> List[str]:
+    """
+    Merge lines that were split by PDF extraction.
+
+    PyMuPDF sometimes splits long lines, e.g.:
+        'Acid Spurt (12", A2, Blast(3), Bane), Whip Limbs (A8, Bane,'
+        'Precise)'
+
+    Should become:
+        'Acid Spurt (12", A2, Blast(3), Bane), Whip Limbs (A8, Bane, Precise)'
+    """
+    if not lines:
+        return lines
+
+    merged: List[str] = []
+    i = 0
+
+    while i < len(lines):
+        current = lines[i]
+
+        # Look ahead and merge continuation lines
+        while i + 1 < len(lines) and _should_merge_with_next(current, lines[i + 1]):
+            next_line = lines[i + 1].strip()
+
+            # Handle the merge - add space if current doesn't end with space/comma
+            if current.endswith(',') or current.endswith(' '):
+                current = current + ' ' + next_line
+            else:
+                current = current + ' ' + next_line
+
+            i += 1
+
+        merged.append(current)
+        i += 1
+
+    return merged
+
+
 def extract_text_from_pdf(pdf_path: str) -> List[str]:
     """Extract text lines from a PDF file using PyMuPDF (preferred) or pdfplumber."""
+
+    lines: List[str] = []
 
     # Try PyMuPDF first (more stable, faster)
     try:
         import fitz  # PyMuPDF
-        all_lines: List[str] = []
         doc = fitz.open(pdf_path)
         for page in doc:
             # Extract text page by page to preserve table structure
             text = page.get_text("text")
             page_lines = _filter_pdf_lines(text)
-            all_lines.extend(page_lines)
+            lines.extend(page_lines)
         doc.close()
-        return all_lines
     except ImportError:
-        pass  # Fall through to pdfplumber
+        # Try pdfplumber as fallback
+        try:
+            import pdfplumber
+            with pdfplumber.open(pdf_path) as pdf:
+                for page in pdf.pages:
+                    text = page.extract_text(x_tolerance=1.5, y_tolerance=2, use_text_flow=True) or ""
+                    lines.extend(_filter_pdf_lines(text))
+        except ImportError:
+            raise RuntimeError(
+                "Missing PDF library. Install one of:\n"
+                "  pip install pymupdf  (recommended)\n"
+                "  pip install pdfplumber"
+            )
 
-    # Try pdfplumber as fallback
-    try:
-        import pdfplumber
-        lines: List[str] = []
-        with pdfplumber.open(pdf_path) as pdf:
-            for page in pdf.pages:
-                text = page.extract_text(x_tolerance=1.5, y_tolerance=2, use_text_flow=True) or ""
-                lines.extend(_filter_pdf_lines(text))
-        return lines
-    except ImportError:
-        pass
+    # Merge continuation lines that were split by PDF extraction
+    # This fixes issues like "Whip Limbs (A8, Bane," + "Precise)" being split
+    lines = merge_continuation_lines(lines)
 
-    raise RuntimeError(
-        "Missing PDF library. Install one of:\n"
-        "  pip install pymupdf  (recommended)\n"
-        "  pip install pdfplumber"
-    )
+    return lines
 
 
 # =============================================================================
