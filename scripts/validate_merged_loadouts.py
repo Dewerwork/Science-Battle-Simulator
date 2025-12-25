@@ -481,10 +481,8 @@ def validate_edge_cases(entries: List[UnitEntry], file_label: str) -> Validation
         if entry.points == 0:
             issues.append('Zero points')
 
-        # Extreme points
-        if entry.points > 1000:
-            issues.append(f'Very high points ({entry.points})')
-        elif 0 < entry.points < 5:
+        # Very low points
+        if 0 < entry.points < 5:
             issues.append(f'Very low points ({entry.points})')
 
         # Empty weapons
@@ -617,6 +615,9 @@ def write_summary_sheet(ws, results: List[ValidationResult], source_count: int, 
 
 def write_detail_sheet(ws, result: ValidationResult):
     """Write a detail sheet for a validation result."""
+    # Excel max rows is 1,048,576 - leave room for header and truncation warning
+    MAX_DETAIL_ROWS = 1_000_000
+
     if not result.failures:
         ws['A1'] = 'No issues found - all checks passed!'
         ws['A1'].fill = COLORS['pass']
@@ -626,16 +627,28 @@ def write_detail_sheet(ws, result: ValidationResult):
     # Get headers from first failure
     headers = list(result.failures[0].keys())
 
+    # Check if we need to truncate
+    truncated = len(result.failures) > MAX_DETAIL_ROWS
+    failures_to_write = result.failures[:MAX_DETAIL_ROWS] if truncated else result.failures
+
+    # Write truncation warning if needed
+    start_row = 1
+    if truncated:
+        ws['A1'] = f'WARNING: Results truncated! Showing {MAX_DETAIL_ROWS:,} of {len(result.failures):,} failures.'
+        ws['A1'].fill = COLORS['warning']
+        ws['A1'].font = BOLD_FONT
+        start_row = 3
+
     # Write headers
     for col, header in enumerate(headers, 1):
-        cell = ws.cell(row=1, column=col, value=header)
+        cell = ws.cell(row=start_row, column=col, value=header)
         cell.fill = COLORS['header']
         cell.font = HEADER_FONT
         cell.border = THIN_BORDER
         cell.alignment = Alignment(horizontal='center')
 
     # Write data
-    for row, failure in enumerate(result.failures, 2):
+    for row, failure in enumerate(failures_to_write, start_row + 1):
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=row, column=col, value=failure.get(header, ''))
             cell.border = THIN_BORDER
