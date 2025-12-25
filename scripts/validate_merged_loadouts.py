@@ -294,19 +294,47 @@ def validate_weapon_format(entries: List[UnitEntry], file_label: str) -> Validat
     """Validate weapon line format."""
     failures = []
 
+    # Known special rules that should NOT be weapon names
+    rule_names = {'blast', 'deadly', 'rending', 'poison', 'reliable', 'sniper', 'impact', 'furious'}
+
     for entry in entries:
         for weapon_line in entry.weapon_lines:
-            # Check for basic weapon format: should have parentheses with attack info
-            if not re.search(r'\([^)]*A\d+', weapon_line):
-                # Might be a valid weapon line without explicit attack count, or malformed
-                if not re.search(r'\([^)]+\)', weapon_line):
-                    failures.append({
-                        'Line Number': entry.line_number,
-                        'Unit Name': entry.base_name[:40],
-                        'Weapon Line': weapon_line[:80] + ('...' if len(weapon_line) > 80 else ''),
-                        'Issue': 'Missing weapon profile parentheses',
-                        'File': file_label
-                    })
+            issues = []
+            line_stripped = weapon_line.strip()
+
+            # Check for empty/placeholder weapon lines
+            if line_stripped == '-' or line_stripped == '':
+                issues.append('Empty/placeholder weapon line')
+
+            # Check for zero-attack weapons (A0)
+            if re.search(r'\(A0[,\)]', weapon_line) or re.search(r'\(A0\s', weapon_line):
+                issues.append('Zero-attack weapon (A0)')
+
+            # Check for unbalanced parentheses
+            open_count = weapon_line.count('(')
+            close_count = weapon_line.count(')')
+            if open_count != close_count:
+                issues.append(f'Unbalanced parentheses ({open_count} open, {close_count} close)')
+
+            # Check for rule names used as weapon names (first word before parentheses)
+            first_word_match = re.match(r'^(\d+x\s+)?(\d+")?\s*(\w+)', line_stripped)
+            if first_word_match:
+                potential_name = first_word_match.group(3).lower() if first_word_match.group(3) else ''
+                if potential_name in rule_names:
+                    issues.append(f'Rule name "{potential_name}" used as weapon name')
+
+            # Check for missing weapon profile parentheses (only if not already flagged)
+            if not issues and not re.search(r'\([^)]+\)', weapon_line):
+                issues.append('Missing weapon profile parentheses')
+
+            if issues:
+                failures.append({
+                    'Line Number': entry.line_number,
+                    'Unit Name': entry.base_name[:40],
+                    'Weapon Line': weapon_line[:80] + ('...' if len(weapon_line) > 80 else ''),
+                    'Issues': '; '.join(issues),
+                    'File': file_label
+                })
 
     return ValidationResult(
         test_name='Weapon Format',
@@ -410,6 +438,10 @@ def validate_rules(entries: List[UnitEntry], file_label: str) -> ValidationResul
             # Check for weapon profile leaking into rules
             if weapon_leak_pattern.match(rule):
                 issues.append('Weapon profile in rules')
+
+            # Check for numeric-only rules (model count leaking into rules)
+            if re.match(r'^\d+$', rule.strip()):
+                issues.append('Numeric-only rule (likely model count leak)')
 
             # Check for very short rules (likely truncated)
             if len(rule) < 3 and not rule.isdigit():
