@@ -419,6 +419,32 @@ def parse_special_rules(rules_str: str) -> List[str]:
     return rules
 
 
+def extract_parenthesized_content(text: str) -> Optional[str]:
+    """
+    Extract content from the first set of balanced parentheses in text.
+    Handles nested parentheses correctly.
+
+    Example: "Burrow Attack (Surprise Attack(3))" -> "Surprise Attack(3)"
+    Example: "Bio-Recovery (Regeneration)" -> "Regeneration"
+    """
+    start = text.find('(')
+    if start == -1:
+        return None
+
+    depth = 0
+    for i, char in enumerate(text[start:], start):
+        if char == '(':
+            depth += 1
+        elif char == ')':
+            depth -= 1
+            if depth == 0:
+                # Found the matching closing paren
+                return text[start + 1:i]
+
+    # Unbalanced - return what we have (missing closing paren)
+    return text[start + 1:]
+
+
 def is_upgrade_header(line: str) -> bool:
     """Check if a line is an upgrade group header."""
     upgrade_patterns = [
@@ -450,11 +476,10 @@ def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
     if cost_str != "Free":
         cost = int(cost_str.lstrip("+").rstrip("pts"))
 
-    # Extract rules granted from parentheses
+    # Extract rules granted from parentheses (handles nested parens like "Surprise Attack(3)")
     rules_granted: List[str] = []
-    rules_match = re.search(r"\(([^)]+)\)", text)
-    if rules_match:
-        rules_str = rules_match.group(1)
+    rules_str = extract_parenthesized_content(text)
+    if rules_str:
         # Check if it's a weapon profile (has A# pattern)
         if not re.search(r"\bA\d+\b", rules_str):
             rules_granted = parse_special_rules(rules_str)
@@ -633,11 +658,10 @@ def parse_upgrade_from_multiline(lines: List[str], start_idx: int) -> Tuple[Opti
             cost_str = cost_match.group(1)
             cost = 0 if cost_str == "Free" else int(cost_str.lstrip("+").rstrip("pts"))
 
-            # Extract rules from parentheses
+            # Extract rules from parentheses (handles nested parens like "Surprise Attack(3)")
             rules_granted: List[str] = []
-            rules_match = re.search(r"\(([^)]+)\)", text_line)
-            if rules_match:
-                rules_str = rules_match.group(1)
+            rules_str = extract_parenthesized_content(text_line)
+            if rules_str:
                 # Check if it's a weapon profile (has A# pattern)
                 if not re.search(r'\bA\d+\b', rules_str):
                     rules_granted = parse_special_rules(rules_str)
