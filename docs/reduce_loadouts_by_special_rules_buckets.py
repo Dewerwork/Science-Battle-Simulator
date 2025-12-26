@@ -327,15 +327,19 @@ class UnitLoadout:
     weapons: List[Weapon]
     raw_header: str
     raw_weapons: str
+    faction_id: Optional[str] = None  # Faction ID from [FID:XXXXXXXX] tag
 
     def base_name(self) -> str:
-        """Get unit name without UID suffix for bucketing purposes.
+        """Get unit name without UID/FID/BKT suffixes for bucketing purposes.
 
-        Strips patterns like [UID:XXXXXXXX] from unit names so that
-        identical units with different UIDs can be grouped together.
+        Strips patterns like [UID:XXXXXXXX], [FID:XXXXXXXX], [BKT:XXXXXXXX]
+        from unit names so that identical units with different UIDs can be
+        grouped together. Faction ID is preserved separately for bucketing.
         """
         # Remove [UID:XXXXXXXX] pattern (8 hex chars)
         name = re.sub(r'\s*\[UID:[0-9A-Fa-f]+\]', '', self.name)
+        # Remove [FID:XXXXXXXX] pattern (faction ID)
+        name = re.sub(r'\s*\[FID:[0-9A-Fa-f]+\]', '', name)
         # Also remove [BKT:XXXXXXXX] pattern if present from prior processing
         name = re.sub(r'\s*\[BKT:[0-9A-Fa-f]+\]', '', name)
         return name.strip()
@@ -343,12 +347,16 @@ class UnitLoadout:
     def effective_key(self, mapper: Optional[SpecialRulesBucketMapper] = None) -> str:
         """Generate key for bucketing effectively identical units.
 
-        Includes unit name (without UID) to prevent cross-unit and cross-faction bucketing.
-        Only loadouts of the SAME unit with equivalent rules/weapons are grouped.
+        Includes unit name (without UID) and faction ID to prevent cross-unit
+        and cross-faction bucketing. Only loadouts of the SAME unit from the
+        SAME faction with equivalent rules/weapons are grouped.
         """
-        # Include unit name WITHOUT UID - this prevents cross-unit and cross-faction bucketing
+        # Include faction ID to prevent cross-faction bucketing
+        faction_str = f"FID={self.faction_id}" if self.faction_id else "FID=NONE"
+
+        # Include unit name WITHOUT UID - this prevents cross-unit bucketing
         # while still allowing identical loadouts of the same unit to be grouped
-        unit_id = f"UNIT={self.base_name()}"
+        unit_id = f"{faction_str}|UNIT={self.base_name()}"
 
         # Unit stats
         stats = f"Q{self.quality}+|D{self.defense}+|S={self.size}"
@@ -554,6 +562,12 @@ def parse_lines_to_loadouts(lines: List[str]) -> List[UnitLoadout]:
             points = int(m.group("pts"))
             rules = parse_rules(m.group("rules"))
 
+            # Extract faction ID from name if present
+            faction_id = None
+            fid_match = re.search(r'\[FID:([0-9A-Fa-f]+)\]', name)
+            if fid_match:
+                faction_id = fid_match.group(1)
+
             # Next line should be weapons
             i += 1
             weapons_line = ""
@@ -572,6 +586,7 @@ def parse_lines_to_loadouts(lines: List[str]) -> List[UnitLoadout]:
                 weapons=weapons,
                 raw_header=header_line,
                 raw_weapons=weapons_line,
+                faction_id=faction_id,
             ))
 
         i += 1
@@ -626,9 +641,15 @@ def select_representative(bucket: List[UnitLoadout]) -> UnitLoadout:
 
 
 def format_bucket_header(rep: UnitLoadout, bucket_size: int, bucket_hash: str) -> str:
-    """Format header line with bucket info."""
+    """Format header line with bucket info.
+
+    Preserves faction ID [FID:XXXXXXXX] if present, and adds bucket hash [BKT:XXXXXXXX].
+    """
     rules_str = ", ".join(rep.rules) if rep.rules else "-"
-    return (f"{rep.name} [BKT:{bucket_hash}] [{rep.size}] "
+    # Use base_name (without FID/UID/BKT) and add FID and BKT tags
+    base = rep.base_name()
+    fid_tag = f"[FID:{rep.faction_id}] " if rep.faction_id else ""
+    return (f"{base} {fid_tag}[BKT:{bucket_hash}] [{rep.size}] "
             f"Q{rep.quality}+ D{rep.defense}+ | {rep.points}pts | {rules_str}")
 
 
