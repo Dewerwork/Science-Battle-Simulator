@@ -4,11 +4,23 @@ Merge all faction-specific final merged text files into a single master JSON fil
 
 This script finds all *.final.merged.txt files in the pipeline output directory
 and combines them into one all_factions_merged.json file.
+
+Each unit header is tagged with a Faction ID [FID:XXXXXXXX] to preserve faction
+identity when files are merged. This prevents units from different factions
+with the same name from being incorrectly grouped together.
 """
 
+import hashlib
 import json
+import re
 from pathlib import Path
 from typing import List, Dict, Any
+
+
+def generate_faction_id(faction_name: str) -> str:
+    """Generate a short hash ID for a faction name."""
+    hash_str = hashlib.sha1(faction_name.encode()).hexdigest()[:8].upper()
+    return hash_str
 
 # =========================================================
 # SETTINGS
@@ -83,13 +95,32 @@ def merge_all_factions(output_dir: Path) -> Path:
         while lines and not lines[-1].strip():
             lines.pop()
 
+        # Generate faction ID for this faction
+        faction_id = generate_faction_id(faction_name)
+
+        # Inject [FID:XXXXXXXX] into each unit header line
+        # Unit headers match pattern: "Unit Name [count] Q#+ D#+ | ###pts | rules"
+        tagged_lines = []
+        unit_header_pattern = re.compile(r'^(.+?)(\s*\[\d+\]\s+Q\d+\+\s+D\d+\+\s*\|.+)$')
+        for line in lines:
+            match = unit_header_pattern.match(line)
+            if match:
+                # Inject FID between unit name and the rest of the header
+                unit_name = match.group(1).rstrip()
+                rest_of_line = match.group(2)
+                tagged_line = f"{unit_name} [FID:{faction_id}]{rest_of_line}"
+                tagged_lines.append(tagged_line)
+            else:
+                tagged_lines.append(line)
+
         # Count units for this faction
-        unit_count = sum(1 for line in lines if " Q" in line and " D" in line and "pts |" in line)
+        unit_count = sum(1 for line in tagged_lines if " Q" in line and " D" in line and "pts |" in line)
         total_unit_count += unit_count
 
         factions_data.append({
             "name": faction_name,
-            "units": lines,
+            "faction_id": faction_id,
+            "units": tagged_lines,
             "unit_count": unit_count
         })
 
