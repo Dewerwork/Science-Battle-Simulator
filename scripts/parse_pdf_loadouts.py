@@ -456,6 +456,10 @@ def parse_inline_weapons(equipment_str: str) -> List[Weapon]:
 
     Only returns weapons if the profile contains an attack value (A#).
     Rule upgrades like 'Bio-Tech Master (Increased Shooting Range)' are not weapons.
+
+    Handles nested structures like:
+    'Devourer Titan (Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown), Tough(3))'
+    where the inner 'Titan Devouring Tongue (...)' is the actual weapon.
     """
     weapons: List[Weapon] = []
 
@@ -488,6 +492,50 @@ def parse_inline_weapons(equipment_str: str) -> List[Weapon]:
 
             # Only parse as weapon if profile contains an attack value (A#)
             if re.search(r'\bA\d+\b', profile):
+                # Check if profile contains a NESTED weapon pattern
+                # e.g., "Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown), Tough(3)"
+                # The inner weapon is "Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown)"
+                # We need to find the inner balanced parens that contain A#
+
+                inner_weapon_match = re.search(r'([A-Za-z][A-Za-z\s\-\']+?)\s*\(', profile)
+                if inner_weapon_match:
+                    inner_name = inner_weapon_match.group(1).strip()
+                    inner_paren_start = inner_weapon_match.end() - 1
+
+                    # Find the matching closing paren for this inner weapon
+                    inner_depth = 1
+                    inner_j = inner_paren_start + 1
+                    while inner_j < len(profile) and inner_depth > 0:
+                        if profile[inner_j] == '(':
+                            inner_depth += 1
+                        elif profile[inner_j] == ')':
+                            inner_depth -= 1
+                        inner_j += 1
+
+                    if inner_depth == 0:
+                        inner_profile = profile[inner_paren_start + 1:inner_j - 1].strip()
+
+                        # Verify the inner profile is a valid weapon profile (has A#)
+                        if re.search(r'\bA\d+\b', inner_profile):
+                            count = 1
+                            if count_str:
+                                count = int(count_str.strip().rstrip("x"))
+
+                            range_inches, attacks, ap, special_rules = parse_weapon_profile(inner_profile)
+
+                            weapons.append(Weapon(
+                                name=inner_name,
+                                count=count,
+                                range_inches=range_inches,
+                                attacks=attacks,
+                                ap=ap,
+                                special_rules=special_rules
+                            ))
+
+                            i = j
+                            continue
+
+                # No inner weapon - parse normally
                 count = 1
                 if count_str:
                     count = int(count_str.strip().rstrip("x"))
@@ -623,7 +671,12 @@ def is_valid_upgrade_option_text(text: str) -> bool:
 
 
 def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
-    """Parse an upgrade option line like 'Bio-Recovery (Regeneration) +40pts'."""
+    """Parse an upgrade option line like 'Bio-Recovery (Regeneration) +40pts'.
+
+    Also handles nested structures like:
+    'Devourer Titan (Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown), Tough(3)) +220pts'
+    where 'Titan Devouring Tongue (...)' is the weapon and 'Tough(3)' is a granted rule.
+    """
     match = COST_RE.match(line)
     if not match:
         return None
@@ -639,19 +692,47 @@ def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
     if cost_str != "Free":
         cost = int(cost_str.lstrip("+").rstrip("pts"))
 
-    # Extract rules granted from parentheses (handles nested parens like "Surprise Attack(3)")
+    # Check if option includes a weapon
+    weapon: Optional[Weapon] = None
+    weapons = parse_inline_weapons(text)
+    if weapons:
+        weapon = weapons[0]
+
+    # Extract rules granted from parentheses
     rules_granted: List[str] = []
     rules_str = extract_parenthesized_content(text)
     if rules_str:
         # Check if it's a weapon profile (has A# pattern)
         if not re.search(r"\bA\d+\b", rules_str):
             rules_granted = parse_special_rules(rules_str)
+        elif weapon:
+            # The outer parens contain a weapon, but there might be rules AFTER the weapon
+            # e.g., "Titan Devouring Tongue (18", A3, ..., Takedown), Tough(3)"
+            # The granted rules are after the weapon's closing paren
 
-    # Check if option includes a weapon
-    weapon: Optional[Weapon] = None
-    weapons = parse_inline_weapons(text)
-    if weapons:
-        weapon = weapons[0]
+            # Find where the weapon ends in the rules_str
+            # Look for the weapon's profile pattern and find its closing paren
+            inner_match = re.search(r'([A-Za-z][A-Za-z\s\-\']+?)\s*\(', rules_str)
+            if inner_match:
+                inner_paren_start = inner_match.end() - 1
+                # Find matching closing paren
+                depth = 1
+                j = inner_paren_start + 1
+                while j < len(rules_str) and depth > 0:
+                    if rules_str[j] == '(':
+                        depth += 1
+                    elif rules_str[j] == ')':
+                        depth -= 1
+                    j += 1
+
+                if depth == 0 and j < len(rules_str):
+                    # Everything after the weapon's closing paren are granted rules
+                    # Skip the closing paren and any comma/space
+                    remaining = rules_str[j:].strip()
+                    if remaining.startswith(','):
+                        remaining = remaining[1:].strip()
+                    if remaining:
+                        rules_granted = parse_special_rules(remaining)
 
     return UpgradeOption(
         text=text,
