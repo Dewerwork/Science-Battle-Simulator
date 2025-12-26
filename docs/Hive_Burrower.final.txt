@@ -1,0 +1,2016 @@
+Hive Burrower [UID:EAC2E01D] [1] Q4+ D2+ | 385pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x heavy razor claws (A3, AP(1)), stomp (A5, AP(2))
+
+Hive Burrower [UID:FBB64D36] [1] Q4+ D2+ | 390pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:F53873C9] [1] Q4+ D2+ | 390pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:459D2AC0] [1] Q4+ D2+ | 390pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:E6E07EC1] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:2C6FE93F] [1] Q4+ D2+ | 405pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:FAC8D728] [1] Q4+ D2+ | 395pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), 2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:8F5DE48B] [1] Q4+ D2+ | 395pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:F9EEE688] [1] Q4+ D2+ | 395pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:6A31E3D1] [1] Q4+ D2+ | 405pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:608CFF04] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:73FDB024] [1] Q4+ D2+ | 395pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:36EB7771] [1] Q4+ D2+ | 395pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:47C3F5A6] [1] Q4+ D2+ | 405pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:592C000D] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:CF99EDAE] [1] Q4+ D2+ | 395pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:3EABDDDB] [1] Q4+ D2+ | 405pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:1CFBBCF7] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:AC39A04A] [1] Q4+ D2+ | 415pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:19CD8D91] [1] Q4+ D2+ | 420pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:0C10A632] [1] Q4+ D2+ | 425pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:D62264C0] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:B583DD4C] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:AFB654D0] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:50BD7C58] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:BD297700] [1] Q4+ D2+ | 415pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:19A80D1A] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:863EA2E4] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:48AE925F] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:C1EFE356] [1] Q4+ D2+ | 415pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:23ACFFA5] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:5EA1376F] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:8EDA89E3] [1] Q4+ D2+ | 415pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:0269218E] [1] Q4+ D2+ | 420pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:FA438AC6] [1] Q4+ D2+ | 425pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:1FEE1CCC] [1] Q4+ D2+ | 430pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:C3CB3CC3] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:CC2AAA44] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:50AFEB73] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:88D33C5E] [1] Q4+ D2+ | 415pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:2ABFB5D8] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:C5778334] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:BE19C937] [1] Q4+ D2+ | 415pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:8208D196] [1] Q4+ D2+ | 420pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:E17FF299] [1] Q4+ D2+ | 425pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:EDC2C963] [1] Q4+ D2+ | 430pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:FF3394F6] [1] Q4+ D2+ | 400pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:D68100DA] [1] Q4+ D2+ | 410pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:88E1F7FB] [1] Q4+ D2+ | 415pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:CBC795F5] [1] Q4+ D2+ | 420pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:630A70A8] [1] Q4+ D2+ | 425pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:DC0C0986] [1] Q4+ D2+ | 430pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:62739163] [1] Q4+ D2+ | 430pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:252DD176] [1] Q4+ D2+ | 435pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:D9ECE4F4] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:FCA1213B] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:40914BCC] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x heavy razor claws (A3, AP(1)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3405151A] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:7514B789] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3041CB0B] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:41722BE6] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:DAF3347B] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:1B54D954] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), 2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:6F0CF1B7] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:E13686B2] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:7AC6B7E0] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:E8A6A35D] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:1E17C9C5] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:89613F7F] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:F491B37C] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:EF792532] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:BDA1D1FC] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:9CADAF0E] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:303077A8] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:E7ECADC0] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:BDAE57D2] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:720B3506] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:71500B6E] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:27002E57] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:125E87EC] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:5139ED64] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:F70A6DCB] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:E3F91EC2] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:0E1D8FED] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:73380D2D] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:BE0ED8E2] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:2654C676] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:467DDB07] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:521F9972] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:FD03E8C3] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:A252EDB6] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:F8FBCAAD] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:6D6810EC] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:26D3173B] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:B26EC721] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:5C312F8B] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:7EBBB182] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:8555D2C1] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:5562CBB2] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:BDC40D7A] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3845C8C3] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:CB735A98] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:7441E537] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:8E2AE9C9] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:A3EAA938] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:DFCE64FC] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:BDB768A9] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:E02A04F9] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:226A29CB] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:63C247AE] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:23F7B1EF] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:8E35B439] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:E83A21CB] [1] Q4+ D2+ | 490pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x heavy razor claws (A3, AP(1)), stomp (A5, AP(2))
+
+Hive Burrower [UID:1093F91D] [1] Q4+ D2+ | 495pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:275DC07D] [1] Q4+ D2+ | 495pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:DE2E7F98] [1] Q4+ D2+ | 495pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:1192C788] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:4C08632C] [1] Q4+ D2+ | 510pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:74DF86BF] [1] Q4+ D2+ | 500pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), 2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3A0496B3] [1] Q4+ D2+ | 500pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:65F8460F] [1] Q4+ D2+ | 500pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:F33E0A09] [1] Q4+ D2+ | 510pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:A732B6F0] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:2B7B1781] [1] Q4+ D2+ | 500pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:24E6CD38] [1] Q4+ D2+ | 500pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:B5F97D95] [1] Q4+ D2+ | 510pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:0D4E70A2] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:CB7A7495] [1] Q4+ D2+ | 500pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:AE1C4AE8] [1] Q4+ D2+ | 510pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:D14FCB72] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:BB01EF2F] [1] Q4+ D2+ | 520pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:57FE5DC7] [1] Q4+ D2+ | 525pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:46C46F7F] [1] Q4+ D2+ | 530pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:3CAC381E] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:29E2F4DC] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:2402F6C9] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:EE54D01B] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:90A8C8B7] [1] Q4+ D2+ | 520pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:9434897E] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:E8E5B101] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:D8FD2C55] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:324296DE] [1] Q4+ D2+ | 520pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:B2715C16] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:EAFF9FA4] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:37F5253E] [1] Q4+ D2+ | 520pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:85919181] [1] Q4+ D2+ | 525pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:77A6B15D] [1] Q4+ D2+ | 530pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:BB2C96CF] [1] Q4+ D2+ | 535pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:50902A80] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:6E2D03E7] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:5C2DC8DB] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:ACE2FE9C] [1] Q4+ D2+ | 520pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:0FD91D5E] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3AE28E8E] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:2E0FA789] [1] Q4+ D2+ | 520pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:D4514B48] [1] Q4+ D2+ | 525pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:AFF60B32] [1] Q4+ D2+ | 530pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:14F34827] [1] Q4+ D2+ | 535pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:99A13EAA] [1] Q4+ D2+ | 505pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:8ECE420F] [1] Q4+ D2+ | 515pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:83A63C49] [1] Q4+ D2+ | 520pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:5F0F3D49] [1] Q4+ D2+ | 525pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:8C82D8AC] [1] Q4+ D2+ | 530pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:56A06ED7] [1] Q4+ D2+ | 535pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:0E3A6638] [1] Q4+ D2+ | 535pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:D63ED963] [1] Q4+ D2+ | 540pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:E841B22C] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:2E865842] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:A7042364] [1] Q4+ D2+ | 425pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x heavy razor claws (A3, AP(1)), stomp (A5, AP(2))
+
+Hive Burrower [UID:15D3F5D1] [1] Q4+ D2+ | 430pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:86F6F09E] [1] Q4+ D2+ | 430pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:F8F5940A] [1] Q4+ D2+ | 430pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:C38F1880] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:31C156BF] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:7BBEE9BA] [1] Q4+ D2+ | 435pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:6996DF83] [1] Q4+ D2+ | 435pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:71BAAD52] [1] Q4+ D2+ | 435pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:38A2C2D1] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:22905170] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:6DABCD4A] [1] Q4+ D2+ | 435pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:679F738D] [1] Q4+ D2+ | 435pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:FDBD9E1F] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:74A5C27F] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:68CF717F] [1] Q4+ D2+ | 435pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:CF15268F] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:296FFB24] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:840341AF] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:30E88FB5] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:7876DEAF] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:7F7E4887] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:6E2DB4D2] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:6EE3D31C] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:7872E526] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:A02A2752] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:F04915BA] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:994C4FA8] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:B92BF59B] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:7E2C2779] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:188AA629] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:289D90F1] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:D7B314F9] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:DB3EC5EB] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:0DC65C07] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:74F49F50] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:72B4B588] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:32E40886] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:B606577E] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:0D10B4AE] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:EC2B4790] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:0C340B18] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:527706D7] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:44230B80] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:4F71D3A6] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:07976AD4] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:71DFBF15] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:4C075992] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:8BF465F1] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:218D7BED] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:1CDD4CDB] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:8BCAA5CA] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:0B3BDB70] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:90E23A98] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:805B7BB1] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:E19453C8] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:7BF67ED9] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x heavy razor claws (A3, AP(1)), stomp (A5, AP(2))
+
+Hive Burrower [UID:CE71B5BF] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:35916655] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:F99482D5] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:A1B19835] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:64A037D6] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:C1167872] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:551FBDF6] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:99D35E71] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:2012A647] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:9910A849] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:9221B599] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:9542CB4C] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:5988A6A6] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:026B0DE7] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:A74085B6] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:709B8B5A] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:657A3961] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:FE8CF247] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:9A219BC9] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:A292E218] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:2BF33056] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:F1C13C5E] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:F1C9035A] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:BDF0C422] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:876124DF] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:0BDF1DD9] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:C6611999] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:BE1002F4] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:03967B1B] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:D54F69FE] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:BF1A57D4] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:4FEFEE1E] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:C91E7A05] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:AF385BE0] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:1FFF0CBA] [1] Q4+ D2+ | 545pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:84DAE513] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:1F3CFA05] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:B81137A3] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:54B4DF15] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:6614552A] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:85D91A02] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:CE153444] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:1F216029] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:1825500D] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:7EE03062] [1] Q4+ D2+ | 545pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:5614004B] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:EB693F66] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:85751DC1] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:0CC2D57C] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:F1E6397B] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:0D352C93] [1] Q4+ D2+ | 545pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:1C68B342] [1] Q4+ D2+ | 545pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:DD4A4E6B] [1] Q4+ D2+ | 550pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:DC52A998] [1] Q4+ D2+ | 555pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:C2171634] [1] Q4+ D2+ | 560pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:D8394BDC] [1] Q4+ D2+ | 530pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x heavy razor claws (A3, AP(1)), stomp (A5, AP(2))
+
+Hive Burrower [UID:24B39DA4] [1] Q4+ D2+ | 535pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:32FDEAD6] [1] Q4+ D2+ | 535pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:763C5CFF] [1] Q4+ D2+ | 535pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:0E1ABF61] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:021AAD33] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:EDADF2D1] [1] Q4+ D2+ | 540pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:51E6ACD4] [1] Q4+ D2+ | 540pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3BA49B16] [1] Q4+ D2+ | 540pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:ABA611D0] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:568F0B0B] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:051B611A] [1] Q4+ D2+ | 540pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:4A84E89A] [1] Q4+ D2+ | 540pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:AEB63590] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:1C99CCB1] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:4DFC60B6] [1] Q4+ D2+ | 540pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:17B52B5E] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:FCC4BC47] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:8979AEEF] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:4FEE32C4] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:6516C026] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+heavy razor claws (A3, AP(1)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:DC08C8A8] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:05FA54E3] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:2E2788CE] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:9545BD82] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:9DC393F5] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:E597F1A6] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:9FF9734E] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:8E4FD2F2] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:0636BBD7] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:75D51A96] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:30AD41DE] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:CC5FCCD7] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:A3F2E5E8] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:1486793A] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:ACC8419C] [1] Q4+ D2+ | 575pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:B27E7BFA] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:C0C83B04] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:5C676894] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:AA936EBD] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:3F8359AF] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3D666844] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:2AA222A2] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:CE47D8DE] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3B7ABE76] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:451CA092] [1] Q4+ D2+ | 575pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:52DBC11C] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:F6C51E3C] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:7344BC72] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:3213902F] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2))
+
+Hive Burrower [UID:1A98F696] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:50A5FC8F] [1] Q4+ D2+ | 575pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:363CFEF6] [1] Q4+ D2+ | 575pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2))
+
+Hive Burrower [UID:3BD181A2] [1] Q4+ D2+ | 580pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:E3330153] [1] Q4+ D2+ | 585pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:259B1A3C] [1] Q4+ D2+ | 590pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise)
+
+Hive Burrower [UID:B7B4912A] [1] Q4+ D2+ | 435pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:831C69FB] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:25759E62] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A3AFCC8C] [1] Q4+ D2+ | 440pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:46585FDB] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E482A810] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DCAA8AAB] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:46C1C242] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F5C43FA5] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DF24F1A1] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8C3EAEB3] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C4CDDC12] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FEBCB794] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3DD64A47] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B5D30950] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2A33BFC0] [1] Q4+ D2+ | 445pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6A56585B] [1] Q4+ D2+ | 455pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:979E2930] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:EB2E7659] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:41DDBE19] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:843580AD] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2D3DF06A] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:AB617F93] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E30E73F4] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A030F9D8] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6589BFBD] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:095A84CF] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:202405E5] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B96507A1] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D5AB3A21] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FB5FE0AB] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3CB63D55] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:44EBCA67] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FECFE378] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:30C7C01A] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F6F32F13] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6271F166] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E078C91F] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6802AAB2] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F6A947D1] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:68E63B46] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5BC57D7C] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:84A0D944] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A3BF10A4] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D643D23A] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9E57E6ED] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7CB37C78] [1] Q4+ D2+ | 450pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1D0BBF01] [1] Q4+ D2+ | 460pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F25A7106] [1] Q4+ D2+ | 465pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BBC471AE] [1] Q4+ D2+ | 470pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1836C9B7] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:79AB8261] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:097156A1] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1DFD6C98] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:690E517C] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:71240CA5] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:35BB0970] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4864A5AC] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:CF33ED56] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BF8B41EA] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D622740A] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5D2DA140] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:77F98A86] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7E1D3049] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DBA852B0] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E2DD7285] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E40CE01C] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:179F9D22] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:60254323] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:91D78451] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:79EE675D] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4C8D3843] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D444FB73] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8114E78C] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A0DC64BD] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9A64C61B] [1] Q4+ D2+ | 545pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BD82C8CC] [1] Q4+ D2+ | 550pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C76A75BF] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8EC5CAE0] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:93E23417] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4058D2C9] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:52C63987] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9E7A3B13] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:15DACEA1] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:00AE7EEE] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3366BFB2] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3F059680] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B5485378] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E20D6E7F] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3B9C1592] [1] Q4+ D2+ | 545pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:29E60D78] [1] Q4+ D2+ | 550pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4E6180C5] [1] Q4+ D2+ | 555pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:98CEF438] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:219E0706] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:EF1BB780] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:808D73F5] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BCD7B365] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:45FB74A3] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:56A08567] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6E2935D4] [1] Q4+ D2+ | 545pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FCDFC157] [1] Q4+ D2+ | 550pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4731D4A6] [1] Q4+ D2+ | 555pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:721E55DC] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6FD71E33] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E0EE3B62] [1] Q4+ D2+ | 540pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DA3D9884] [1] Q4+ D2+ | 545pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7D40171E] [1] Q4+ D2+ | 550pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:754543BE] [1] Q4+ D2+ | 555pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:21A6890F] [1] Q4+ D2+ | 555pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8F576EFA] [1] Q4+ D2+ | 560pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:AE518CD8] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:19065774] [1] Q4+ D2+ | 570pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5D1FCC96] [1] Q4+ D2+ | 540pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DCD1691B] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F9CCE36A] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:23E87894] [1] Q4+ D2+ | 545pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6C02D0A6] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:CD3DC87C] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:231D7658] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:36D3015D] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B5D42501] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2E34D6DA] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B252385F] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:CCCAF8D3] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:0E46366D] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BD3094DB] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4157864C] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:568687B1] [1] Q4+ D2+ | 550pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:94CF2DA4] [1] Q4+ D2+ | 560pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F98D8B9F] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6D4D9BAA] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:828ACC87] [1] Q4+ D2+ | 575pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:27751214] [1] Q4+ D2+ | 580pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2DAE8129] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FB0C2FE1] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:AF8C69F6] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:11D3C6DB] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:93AAF2CF] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:569DF99F] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C2179C7F] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:78B9AD22] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BFC41367] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8AFB8034] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F372EF24] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FB054B4C] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:06C52C02] [1] Q4+ D2+ | 575pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:077BD72B] [1] Q4+ D2+ | 580pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2B0F4710] [1] Q4+ D2+ | 585pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A3EDA58A] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C12C4091] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:35AE830E] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A0A62DCB] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:32671F79] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:484EAF9E] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:91D78EA0] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:ED73503A] [1] Q4+ D2+ | 575pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4A1C3059] [1] Q4+ D2+ | 580pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:AAB3F6F9] [1] Q4+ D2+ | 585pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:259BB808] [1] Q4+ D2+ | 555pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:EE4EB8C4] [1] Q4+ D2+ | 565pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D5F04AA5] [1] Q4+ D2+ | 570pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E104DBF4] [1] Q4+ D2+ | 575pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:26BFD6DD] [1] Q4+ D2+ | 580pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3C1BAA49] [1] Q4+ D2+ | 585pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A0F06E1D] [1] Q4+ D2+ | 585pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FF020A01] [1] Q4+ D2+ | 590pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9F53ED2C] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:EC9CA8C6] [1] Q4+ D2+ | 600pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C1A68317] [1] Q4+ D2+ | 475pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E8F0CD16] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:26161118] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:90F01236] [1] Q4+ D2+ | 480pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:845CA79E] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:67BCB3E5] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6A5866A6] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1BEB7E87] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FFFE7129] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7184DB29] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BFC028A4] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7A532D54] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:29C8494C] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:82E631A5] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6E5BDC62] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A7DF6052] [1] Q4+ D2+ | 485pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:49386131] [1] Q4+ D2+ | 495pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6CE288F3] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:AB0C15AB] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4CDED3D2] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:249B474D] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C850161D] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7A14348A] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D8165649] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:CB2B1B70] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C80FF627] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6D3DF811] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B7B1382D] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2B1D7310] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7FC88C94] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2661ED94] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1B6615C4] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8CFD4D68] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:128124F6] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2036B3D1] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:38B3C3A1] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:88F6328A] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BCBB5E67] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6C4F05C4] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:722C08F8] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E882380A] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F04ED486] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:EAEC3329] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:071C47BC] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D06CE3F6] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:735AEB8D] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8BF32C18] [1] Q4+ D2+ | 490pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E2E887CC] [1] Q4+ D2+ | 500pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1FC51389] [1] Q4+ D2+ | 505pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DF826966] [1] Q4+ D2+ | 510pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C219732F] [1] Q4+ D2+ | 515pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B9BB54AE] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F3892AAF] [1] Q4+ D2+ | 520pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5F40D446] [1] Q4+ D2+ | 525pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8134C546] [1] Q4+ D2+ | 530pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DE37C90B] [1] Q4+ D2+ | 535pts | Ambush, Fear(3), Fearless, Hive Bond, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:78D29C47] [1] Q4+ D2+ | 550pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:AD9CC8C9] [1] Q4+ D2+ | 555pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:80644D42] [1] Q4+ D2+ | 555pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4C0E0022] [1] Q4+ D2+ | 555pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:CF90D25E] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5875EE53] [1] Q4+ D2+ | 570pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:793BA94A] [1] Q4+ D2+ | 560pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6B0AE4E4] [1] Q4+ D2+ | 560pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E2E29318] [1] Q4+ D2+ | 560pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B01D018D] [1] Q4+ D2+ | 570pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7D2BE546] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5D23A931] [1] Q4+ D2+ | 560pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D618D93C] [1] Q4+ D2+ | 560pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BAC9442F] [1] Q4+ D2+ | 570pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:413B9F66] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F02906D2] [1] Q4+ D2+ | 560pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:48A90B62] [1] Q4+ D2+ | 570pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DB45B24B] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F43D127C] [1] Q4+ D2+ | 580pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:93E8F087] [1] Q4+ D2+ | 585pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1BF4E4CD] [1] Q4+ D2+ | 590pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F4CA2361] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9137E6CB] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:79F0F543] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:EDDB03AC] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5EAE17D7] [1] Q4+ D2+ | 580pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:282AD2E0] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1156FBD2] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:27B57C71] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BA8DB539] [1] Q4+ D2+ | 580pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1C310429] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:19465477] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BAD8F96F] [1] Q4+ D2+ | 580pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:25A8061F] [1] Q4+ D2+ | 585pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9B4CC016] [1] Q4+ D2+ | 590pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D3D2282C] [1] Q4+ D2+ | 595pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:198E0510] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DB1B359B] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:649B836E] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5A3D83A0] [1] Q4+ D2+ | 580pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B468F122] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3ACD6661] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A81086ED] [1] Q4+ D2+ | 580pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:455ACD34] [1] Q4+ D2+ | 585pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A7448768] [1] Q4+ D2+ | 590pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9B5B48F0] [1] Q4+ D2+ | 595pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4E42F61F] [1] Q4+ D2+ | 565pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4927C6EF] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1151B5BB] [1] Q4+ D2+ | 580pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:751FE50A] [1] Q4+ D2+ | 585pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:60768ED1] [1] Q4+ D2+ | 590pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:95A84F20] [1] Q4+ D2+ | 595pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3C762B64] [1] Q4+ D2+ | 595pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:8FFE9756] [1] Q4+ D2+ | 600pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:15FC75B0] [1] Q4+ D2+ | 605pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:3FF6B00D] [1] Q4+ D2+ | 610pts | Ambush, Fear(3), Fearless, Hive Bond, Regeneration, Stealth Buff, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:04EA1D36] [1] Q4+ D2+ | 580pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5D6B3818] [1] Q4+ D2+ | 585pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:EE0F3AB4] [1] Q4+ D2+ | 585pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:939F2DA3] [1] Q4+ D2+ | 585pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:77C51CB7] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D99F78F3] [1] Q4+ D2+ | 600pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C2255E78] [1] Q4+ D2+ | 590pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:368255A6] [1] Q4+ D2+ | 590pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2F2E92DB] [1] Q4+ D2+ | 590pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:81886667] [1] Q4+ D2+ | 600pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:78A01E49] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BCEB3A91] [1] Q4+ D2+ | 590pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D21948A4] [1] Q4+ D2+ | 590pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:394B1709] [1] Q4+ D2+ | 600pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7F8391C6] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9709FCC9] [1] Q4+ D2+ | 590pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2D74F301] [1] Q4+ D2+ | 600pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1C6D688B] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:A49ED0EF] [1] Q4+ D2+ | 610pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:26F6A0FF] [1] Q4+ D2+ | 615pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:07B51F62] [1] Q4+ D2+ | 620pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DBCFE3D4] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:ECA73C34] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D2D8DB8B] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:C42E0AB0] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:778AF3BC] [1] Q4+ D2+ | 610pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DF9A24A4] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:F0802F79] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:1F710132] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6DE57B2E] [1] Q4+ D2+ | 610pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:07F7441E] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B0DA25BF] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:320C626D] [1] Q4+ D2+ | 610pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:4E25B5DB] [1] Q4+ D2+ | 615pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), 2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:E94C702C] [1] Q4+ D2+ | 620pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:82255D2F] [1] Q4+ D2+ | 625pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+piercing claws (A1, AP(2), Deadly(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:DABDBBE0] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:49B0E4D4] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:6B4DBFA6] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:B14115FF] [1] Q4+ D2+ | 610pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:765D4150] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:55BC1AC6] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D5900F90] [1] Q4+ D2+ | 610pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D337E197] [1] Q4+ D2+ | 615pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:AC2D574F] [1] Q4+ D2+ | 620pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:BCB52D4D] [1] Q4+ D2+ | 625pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+smashing claws (A1, AP(2), Blast(3)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:9338834C] [1] Q4+ D2+ | 595pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:7A557EA8] [1] Q4+ D2+ | 605pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), 2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:2220A1ED] [1] Q4+ D2+ | 610pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:48C9557C] [1] Q4+ D2+ | 615pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:5BBF400D] [1] Q4+ D2+ | 620pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:44B7D0C6] [1] Q4+ D2+ | 625pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+slashing claws (A3, AP(1), Rending), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:FFB1BF85] [1] Q4+ D2+ | 625pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+3x serrated claws (A3, AP(4)), stomp (A5, AP(2)), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:D4C2DD87] [1] Q4+ D2+ | 630pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+2x serrated claws (A3, AP(4)), stomp (A5, AP(2)), whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:258089B8] [1] Q4+ D2+ | 635pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+serrated claws (A3, AP(4)), stomp (A5, AP(2)), 2x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+
+Hive Burrower [UID:36FF689A] [1] Q4+ D2+ | 640pts | Ambush, Caster(3), Fear(3), Fearless, Hive Bond, Resistance, Surprise Attack(3), Tough(15)
+stomp (A5, AP(2)), 3x whip limbs (A4, Bane, Precise), 12" acid spurt (A2, Bane, Blast(3))
+

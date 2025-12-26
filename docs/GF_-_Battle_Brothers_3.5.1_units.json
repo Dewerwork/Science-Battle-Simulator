@@ -1,0 +1,5278 @@
+{
+  "units": [
+    {
+      "name": "Master Destroyer",
+      "size": 1,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 130,
+      "tough": 6,
+      "special_rules": [
+        "Ambush",
+        "Battleborn",
+        "Fearless",
+        "Hero",
+        "Shielded",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "CCW",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Guardian (Melee Shrouding Aura)",
+              "cost": 10,
+              "rules_granted": [
+                "Melee Shrouding Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Preacher (Bane in Melee Aura)",
+              "cost": 30,
+              "rules_granted": [
+                "Bane in Melee Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Archivist (Caster(2))",
+              "cost": 35,
+              "rules_granted": [
+                "Caster(2)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Captain (Bane when Shooting Aura)",
+              "cost": 40,
+              "rules_granted": [
+                "Bane when Shooting Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Lieutenant (Re-Deployment)",
+              "cost": 45,
+              "rules_granted": [
+                "Re-Deployment"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Master Archivist (Caster(3))",
+              "cost": 55,
+              "rules_granted": [
+                "Caster(3)"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace Combat Shield and CCW",
+          "options": [
+            {
+              "text": "Dual Energy Claws (A8, Rending)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Dual Energy Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 8,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Rapid Storm Rifle (24\", A6, AP(1)), CCW (A4)",
+              "cost": 70,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Rapid Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace CCW",
+          "options": [
+            {
+              "text": "Energy Hammer (A2, Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            },
+            {
+              "text": "Energy Sword (A4, AP(1), Rending)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Chain-Fist (A2, AP(2), Deadly(3))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Chain-Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Energy Fist (A4, AP(4))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Veteran Master Brother",
+      "size": 1,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 65,
+      "tough": 3,
+      "special_rules": [
+        "Battleborn",
+        "Fearless",
+        "Hero",
+        "Shielded",
+        "Tough(3)",
+        "Versatile Attack"
+      ],
+      "weapons": [
+        {
+          "name": "CCW",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Commander (Rapid Rush Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Rapid Rush Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Artillerist (Re-Position Artillery)",
+              "cost": 15,
+              "rules_granted": [
+                "Re-Position Artillery"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Preacher (Bane in Melee Aura)",
+              "cost": 30,
+              "rules_granted": [
+                "Bane in Melee Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Archivist (Caster(2))",
+              "cost": 35,
+              "rules_granted": [
+                "Caster(2)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Engineer (Mend)",
+              "cost": 40,
+              "rules_granted": [
+                "Mend"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Captain (Bane when Shooting Aura)",
+              "cost": 40,
+              "rules_granted": [
+                "Bane when Shooting Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Lieutenant (Re-Deployment)",
+              "cost": 45,
+              "rules_granted": [
+                "Re-Deployment"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Master Archivist (Caster(3))",
+              "cost": 55,
+              "rules_granted": [
+                "Caster(3)"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Jetpack (Ambush, Flying)",
+              "cost": 15,
+              "rules_granted": [
+                "Ambush",
+                "Flying"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Combat Bike (Twin Heavy Rifle (24\", A2, AP(1)), Fast, Tough(3))",
+              "cost": 110,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Combat Shield and CCW",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash), CCW (A2)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash), Combat Shield (Bash (A1), Shielded)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Dual Energy Claws (A4, Rending)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Dual Energy Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Chainsaw Sword (A4, AP(1))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Chainsaw Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Gravity Pistol",
+          "options": [
+            {
+              "text": "Flamer Pistol (6\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer Pistol",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Master Heavy Pistol (12\", A2, AP(1))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Fusion Pistol (6\", A1, AP(4), Deadly(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Pistol",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Master Plasma Pistol (12\", A2, AP(4))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Master Heavy Rifle (24\", A2, AP(1))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Master Storm Rifle (24\", A4, AP(1))",
+              "cost": 75,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Gravity-Mod (18\", A1, AP(1), Limited, Smash)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity-Mod",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Limited",
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Flamer-Mod (12\", A1, Blast(3), Limited, Reliable)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer-Mod",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Limited",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Plasma-Mod (24\", A1, AP(4), Limited)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma-Mod",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Limited"
+                ]
+              }
+            },
+            {
+              "text": "Fusion-Mod (12\", A1, AP(4), Deadly(3), Limited)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion-Mod",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Limited"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace CCW",
+          "options": [
+            {
+              "text": "Energy Hammer (A1, Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            },
+            {
+              "text": "Energy Sword (A2, AP(1), Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Chain-Fist (A1, AP(2), Deadly(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Chain-Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Master Brother",
+      "size": 1,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 55,
+      "tough": 3,
+      "special_rules": [
+        "Battleborn",
+        "Fearless",
+        "Hero",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Gravity Pistol",
+          "count": 1,
+          "range": 9,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": [
+            "Smash"
+          ]
+        },
+        {
+          "name": "CCW",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Commander (Rapid Rush Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Rapid Rush Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Artillerist (Re-Position Artillery)",
+              "cost": 15,
+              "rules_granted": [
+                "Re-Position Artillery"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Preacher (Bane in Melee Aura)",
+              "cost": 30,
+              "rules_granted": [
+                "Bane in Melee Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Archivist (Caster(2))",
+              "cost": 35,
+              "rules_granted": [
+                "Caster(2)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Engineer (Mend)",
+              "cost": 40,
+              "rules_granted": [
+                "Mend"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Captain (Bane when Shooting Aura)",
+              "cost": 40,
+              "rules_granted": [
+                "Bane when Shooting Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Lieutenant (Re-Deployment)",
+              "cost": 45,
+              "rules_granted": [
+                "Re-Deployment"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Master Archivist (Caster(3))",
+              "cost": 55,
+              "rules_granted": [
+                "Caster(3)"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace Gravity Pistol and CCW",
+          "options": [
+            {
+              "text": "Dual Energy Claws (A4, Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Dual Energy Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Chainsaw Sword (A4, AP(1))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Chainsaw Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Gravity Pistol",
+          "options": [
+            {
+              "text": "Flamer Pistol (6\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer Pistol",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Master Heavy Pistol (12\", A2, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Fusion Pistol (6\", A1, AP(4), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Pistol",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Master Plasma Pistol (12\", A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Master Heavy Rifle (24\", A2, AP(1))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Master Storm Rifle (24\", A4, AP(1))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Gravity-Mod (18\", A1, AP(1), Limited, Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity-Mod",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Limited",
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Flamer-Mod (12\", A1, Blast(3), Limited, Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer-Mod",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Limited",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Plasma-Mod (24\", A1, AP(4), Limited)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma-Mod",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Limited"
+                ]
+              }
+            },
+            {
+              "text": "Fusion-Mod (12\", A1, AP(4), Deadly(3), Limited)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion-Mod",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Limited"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace CCW",
+          "options": [
+            {
+              "text": "Energy Hammer (A1, Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            },
+            {
+              "text": "Energy Sword (A2, AP(1), Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Chain-Fist (A1, AP(2), Deadly(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Chain-Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Jetpack (Ambush, Flying)",
+              "cost": 15,
+              "rules_granted": [
+                "Ambush",
+                "Flying"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Combat Bike (Twin Heavy Rifle (24\", A2, AP(1)), Fast, Tough(3))",
+              "cost": 85,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Elite Pathfinder",
+      "size": 1,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 50,
+      "tough": 3,
+      "special_rules": [
+        "Battleborn",
+        "Fearless",
+        "Hero",
+        "Strider",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Gravity Pistol",
+          "count": 1,
+          "range": 9,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": [
+            "Smash"
+          ]
+        },
+        {
+          "name": "CCW",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Guardian (Melee Shrouding Aura)",
+              "cost": 10,
+              "rules_granted": [
+                "Melee Shrouding Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Commander (Rapid Rush Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Rapid Rush Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Captain (Bane when Shooting Aura)",
+              "cost": 40,
+              "rules_granted": [
+                "Bane when Shooting Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Lieutenant (Re-Deployment)",
+              "cost": 45,
+              "rules_granted": [
+                "Re-Deployment"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace Gravity Pistol",
+          "options": [
+            {
+              "text": "Master Shotgun (12\", A3, AP(1))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Shotgun",
+                "count": 1,
+                "range": 12,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Master Sniper Rifle (30\", A2, AP(1), Reliable, Takedown)",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Sniper Rifle",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Reliable",
+                  "Takedown"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Forward Sentry (Scout)",
+              "cost": 5,
+              "rules_granted": [
+                "Scout"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Camo Cloak (Stealth)",
+              "cost": 5,
+              "rules_granted": [
+                "Stealth"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Combat Bike (Twin Heavy Rifle (24\", A2, AP(1)), Fast, Tough(3))",
+              "cost": 70,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Gravity Pistol and CCW",
+          "options": [
+            {
+              "text": "Dual Energy Claws (A4, Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Dual Energy Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Chainsaw Sword (A4, AP(1))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Chainsaw Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Gravity Pistol",
+          "options": [
+            {
+              "text": "Flamer Pistol (6\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer Pistol",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Master Heavy Pistol (12\", A2, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Fusion Pistol (6\", A1, AP(4), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Pistol",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Master Plasma Pistol (12\", A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Master Heavy Rifle (24\", A2, AP(1))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Master Storm Rifle (24\", A4, AP(1))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Master Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Gravity-Mod (18\", A1, AP(1), Limited, Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity-Mod",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Limited",
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Flamer-Mod (12\", A1, Blast(3), Limited, Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer-Mod",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Limited",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Plasma-Mod (24\", A1, AP(4), Limited)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma-Mod",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Limited"
+                ]
+              }
+            },
+            {
+              "text": "Fusion-Mod (12\", A1, AP(4), Deadly(3), Limited)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion-Mod",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Limited"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace CCW",
+          "options": [
+            {
+              "text": "Energy Hammer (A1, Blast(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            },
+            {
+              "text": "Energy Sword (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Chain-Fist (A1, AP(2), Deadly(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Chain-Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pathfinders",
+      "size": 5,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 115,
+      "tough": null,
+      "special_rules": [
+        "Battleborn",
+        "Fearless",
+        "Strider"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Pistols",
+          "count": 5,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "CCWs",
+          "count": 5,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace all Heavy Pistols and CCWs",
+          "options": [
+            {
+              "text": "Heavy Rifle (24\", A1, AP(1)), CCW (A1)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Shotgun (12\", A2, AP(1)), CCW (A1)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Shotgun",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Rifle (18\", A1, AP(1), Smash)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Rifle (24\", A1, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Flamer (12\", A1, Blast(3), Reliable)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Missile Launcher (30\", A1, AP(2), Deadly(3), Unstoppable)",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Missile Launcher",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace up to three Heavy Rifles",
+          "options": [
+            {
+              "text": "Sniper Rifle (30\", A1, AP(1), Reliable, Takedown)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Sniper Rifle",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Reliable",
+                  "Takedown"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with any",
+          "options": [
+            {
+              "text": "Camo Cloaks (Stealth)",
+              "cost": 10,
+              "rules_granted": [
+                "Stealth"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Forward Sentries (Scout)",
+              "cost": 10,
+              "rules_granted": [
+                "Scout"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Upgrade one model with",
+          "options": [
+            {
+              "text": "Targeting Array (Unstoppable Shooting Mark)",
+              "cost": 35,
+              "rules_granted": [
+                "Unstoppable Shooting Mark"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Pistol and CCW",
+          "options": [
+            {
+              "text": "Sgt. Heavy Pistol (12\", A1, AP(1)), Energy Sword (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Sgt. Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Sgt. Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Energy Sword",
+          "options": [
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Battle Brothers",
+      "size": 5,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 150,
+      "tough": null,
+      "special_rules": [
+        "Battleborn",
+        "Fearless"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Rifles",
+          "count": 5,
+          "range": 24,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "CCWs",
+          "count": 5,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade one model with one",
+          "options": [
+            {
+              "text": "Detachment Banner (Courage Aura)",
+              "cost": 5,
+              "rules_granted": [
+                "Courage Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "The Founder's Banner (Versatile Reach Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Versatile Reach Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Medical Training (Regeneration Aura)",
+              "cost": 30,
+              "rules_granted": [
+                "Regeneration Aura"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Rifle",
+          "options": [
+            {
+              "text": "Gravity Rifle (18\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Flamer (12\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Rifle (24\", A1, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Flamer (12\", A1, AP(1), Blast(3), Reliable)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Gravity Cannon (24\", A1, AP(2), Smash)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Fusion Rifle (12\", A1, AP(4), Deadly(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Rifle",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Missile Launcher (30\", A1, AP(2), Deadly(3), Unstoppable)",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Missile Launcher",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Unstoppable"
+                ]
+              }
+            },
+            {
+              "text": "Laser Cannon (36\", A1, AP(3), Deadly(3))",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Cannon (30\", A1, AP(4), Blast(3))",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Rifle and CCW",
+          "options": [
+            {
+              "text": "Sgt. Heavy Pistol (12\", A1, AP(1)), Energy Sword (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Sgt. Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Sgt. Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Energy Sword",
+          "options": [
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Assault Brothers",
+      "size": 5,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 165,
+      "tough": null,
+      "special_rules": [
+        "Battleborn",
+        "Fearless"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Pistols",
+          "count": 5,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Heavy CCWs",
+          "count": 5,
+          "range": null,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade one model with one",
+          "options": [
+            {
+              "text": "Detachment Banner (Courage Aura)",
+              "cost": 5,
+              "rules_granted": [
+                "Courage Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "The Founder's Banner (Versatile Reach Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Versatile Reach Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Medical Training (Regeneration Aura)",
+              "cost": 30,
+              "rules_granted": [
+                "Regeneration Aura"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace up to two Heavy Pistols",
+          "options": [
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Pistol",
+          "options": [
+            {
+              "text": "Flamer (12\", A1, Blast(3), Reliable)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Pistol and Heavy CCW",
+          "options": [
+            {
+              "text": "Heavy Pistol (12\", A1, AP(1)), Energy Hammer (A1, Blast(3))",
+              "cost": 0,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Pistol (12\", A1, AP(1)), Energy Sword (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Chainsaw Sword (A4, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Chainsaw Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Pistol (12\", A1, AP(1)), Energy Fist (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with",
+          "options": [
+            {
+              "text": "Jetpacks (Ambush, Flying)",
+              "cost": 25,
+              "rules_granted": [
+                "Ambush",
+                "Flying"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Pistol and Heavy CCW",
+          "options": [
+            {
+              "text": "Sgt. Heavy Pistol (12\", A1, AP(1)), Energy Sword (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Sgt. Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Sgt. Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Energy Sword",
+          "options": [
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Veteran Assault Brothers",
+      "size": 3,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 95,
+      "tough": null,
+      "special_rules": [
+        "Battleborn",
+        "Fearless",
+        "Shielded",
+        "Versatile Attack"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Pistols",
+          "count": 3,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Bashes",
+          "count": 3,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade one model with one",
+          "options": [
+            {
+              "text": "Detachment Banner (Courage Aura)",
+              "cost": 5,
+              "rules_granted": [
+                "Courage Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "The Founder's Banner (Versatile Reach Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Versatile Reach Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Medical Training (Regeneration Aura)",
+              "cost": 30,
+              "rules_granted": [
+                "Regeneration Aura"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy Pistol and Combat Shield",
+          "options": [
+            {
+              "text": "Heavy CCW (A2, AP(1)), Combat Shield (Shielded)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy CCW",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Pistol (12\", A1, AP(1)), Heavy CCW (A2, AP(1))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Dual Energy Claws (A4, Rending)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Dual Energy Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Chainsaw Sword (A4, AP(1))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Chainsaw Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Flamer Pistol (6\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer Pistol",
+                "count": 1,
+                "range": 6,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy CCW",
+          "options": [
+            {
+              "text": "Energy Sword (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade all models with",
+          "options": [
+            {
+              "text": "Jetpacks (Ambush, Flying)",
+              "cost": 15,
+              "rules_granted": [
+                "Ambush",
+                "Flying"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Pistol and Heavy CCW",
+          "options": [
+            {
+              "text": "Sgt. Heavy Pistol (12\", A1, AP(1)), Energy Sword (A2, AP(1), Rending)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Sgt. Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Sgt. Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Energy Sword",
+          "options": [
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Veteran Battle Brothers",
+      "size": 3,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 125,
+      "tough": null,
+      "special_rules": [
+        "Battleborn",
+        "Fearless",
+        "Versatile Attack"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Rifles",
+          "count": 3,
+          "range": 24,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "CCWs",
+          "count": 3,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade one model with one",
+          "options": [
+            {
+              "text": "Detachment Banner (Courage Aura)",
+              "cost": 5,
+              "rules_granted": [
+                "Courage Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "The Founder's Banner (Versatile Reach Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Versatile Reach Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Medical Training (Regeneration Aura)",
+              "cost": 30,
+              "rules_granted": [
+                "Regeneration Aura"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy Rifle",
+          "options": [
+            {
+              "text": "Gravity Rifle (18\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Flamer (12\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Rifle (24\", A1, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Flamer (12\", A1, AP(1), Blast(3), Reliable)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Gravity Cannon (24\", A1, AP(2), Smash)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Fusion Rifle (12\", A1, AP(4), Deadly(3))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Rifle",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Missile Launcher (30\", A1, AP(2), Deadly(3), Unstoppable)",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Missile Launcher",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Unstoppable"
+                ]
+              }
+            },
+            {
+              "text": "Laser Cannon (36\", A1, AP(3), Deadly(3))",
+              "cost": 80,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Cannon (30\", A1, AP(4), Blast(3))",
+              "cost": 85,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Any model may take one Heavy Rifle attachment",
+          "options": [
+            {
+              "text": "Gravity-Mod (18\", A1, AP(1), Limited, Smash)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity-Mod",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Limited",
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Flamer-Mod (12\", A1, Blast(3), Limited, Reliable)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer-Mod",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Limited",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Plasma-Mod (24\", A1, AP(4), Limited)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma-Mod",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Limited"
+                ]
+              }
+            },
+            {
+              "text": "Fusion-Mod (12\", A1, AP(4), Deadly(3), Limited)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion-Mod",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Limited"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Rifle and CCW",
+          "options": [
+            {
+              "text": "Sgt. Heavy Pistol (12\", A1, AP(1)), Energy Sword (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Sgt. Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Sgt. Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Energy Sword",
+          "options": [
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Support Brothers",
+      "size": 3,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 155,
+      "tough": null,
+      "special_rules": [
+        "Battleborn",
+        "Fearless",
+        "Relentless"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Flamers",
+          "count": 3,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)",
+            "Reliable"
+          ]
+        },
+        {
+          "name": "CCWs",
+          "count": 3,
+          "range": null,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Heavy Flamer",
+          "options": [
+            {
+              "text": "Gravity Cannon (24\", A1, AP(2), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Missile Launcher (30\", A1, AP(2), Deadly(3), Unstoppable)",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Missile Launcher",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Unstoppable"
+                ]
+              }
+            },
+            {
+              "text": "Laser Cannon (36\", A1, AP(3), Deadly(3))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Cannon (30\", A1, AP(4), Blast(3))",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Destroyers",
+      "size": 3,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 205,
+      "tough": 3,
+      "special_rules": [
+        "Ambush",
+        "Battleborn",
+        "Fearless",
+        "Shielded",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "CCWs",
+          "count": 3,
+          "range": null,
+          "attacks": 3,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade one model with one",
+          "options": [
+            {
+              "text": "Detachment Banner (Courage Aura)",
+              "cost": 5,
+              "rules_granted": [
+                "Courage Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "The Founder's Banner (Versatile Reach Aura)",
+              "cost": 15,
+              "rules_granted": [
+                "Versatile Reach Aura"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Medical Training (Regeneration Aura)",
+              "cost": 30,
+              "rules_granted": [
+                "Regeneration Aura"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace all Combat Shields and CCWS",
+          "options": [
+            {
+              "text": "Dual Energy Claws (A4, Rending)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Dual Energy Claws",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": null,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Storm Rifle (24\", A3, AP(1)), CCW (A1)",
+              "cost": 80,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Storm Rifle",
+          "options": [
+            {
+              "text": "Minigun (24\", A4, AP(1))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Minigun",
+                "count": 1,
+                "range": 24,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Twin Heavy Flamer (12\", A2, AP(1), Blast(3), Reliable)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Cyclone Missiles (24\", A1, AP(2), Deadly(3), Unstoppable), Storm Rifle (24\", A3, AP(1))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Cyclone Missiles",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any CCW",
+          "options": [
+            {
+              "text": "Energy Hammer (A1, Blast(3))",
+              "cost": 0,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            },
+            {
+              "text": "Chain-Fist (A1, AP(2), Deadly(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Chain-Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Energy Sword (A3, AP(1), Rending)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Energy Fist (A3, AP(4))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pathfinder Bikers",
+      "size": 3,
+      "quality": 4,
+      "defense": 4,
+      "base_points": 230,
+      "tough": 3,
+      "special_rules": [
+        "Battleborn",
+        "Fast",
+        "Fearless",
+        "Scout",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Grenade Launchers",
+          "count": 3,
+          "range": 24,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": [
+            "Blast(3)"
+          ]
+        },
+        {
+          "name": "Heavy Pistols",
+          "count": 3,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "CCWs",
+          "count": 3,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Grenade Launcher",
+          "options": [
+            {
+              "text": "Twin Heavy Rifle (24\", A2, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace all Heavy Pistols and CCWs",
+          "options": [
+            {
+              "text": "Heavy Rifle (24\", A1, AP(1)), CCW (A1)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade one model with",
+          "options": [
+            {
+              "text": "Targeting Array (Unstoppable Shooting Mark)",
+              "cost": 35,
+              "rules_granted": [
+                "Unstoppable Shooting Mark"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Pistol and CCW",
+          "options": [
+            {
+              "text": "Sgt. Heavy Pistol (12\", A1, AP(1)), Energy Sword (A2, AP(1), Rending)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Sgt. Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Sgt. Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Energy Sword",
+          "options": [
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Brother Bikers",
+      "size": 3,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 280,
+      "tough": 3,
+      "special_rules": [
+        "Battleborn",
+        "Fast",
+        "Fearless",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Twin Heavy Rifles",
+          "count": 3,
+          "range": 24,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Heavy Pistols",
+          "count": 3,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "CCWs",
+          "count": 3,
+          "range": null,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace all Heavy Pistols and CCWs",
+          "options": [
+            {
+              "text": "Heavy Rifle (24\", A1, AP(1)), CCW (A1)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Rifle",
+          "options": [
+            {
+              "text": "Gravity Rifle (18\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Flamer (12\", A1, Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Rifle (24\", A1, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Fusion Rifle (12\", A1, AP(4), Deadly(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Rifle",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Pistol and CCW",
+          "options": [
+            {
+              "text": "Sgt. Heavy Pistol (12\", A1, AP(1)), Energy Sword (A2, AP(1), Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Sgt. Heavy Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Sgt. Heavy Pistol",
+          "options": [
+            {
+              "text": "Gravity Pistol (9\", A1, AP(1), Smash)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gravity Pistol",
+                "count": 1,
+                "range": 9,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Pistol (12\", A1, AP(4))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Pistol",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Energy Sword",
+          "options": [
+            {
+              "text": "Energy Fist (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Energy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Support Bike",
+      "size": 1,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 175,
+      "tough": 6,
+      "special_rules": [
+        "Battleborn",
+        "Fast",
+        "Fearless",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Twin Heavy Rifle",
+          "count": 1,
+          "range": 24,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Heavy Flamer",
+          "count": 1,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)",
+            "Reliable"
+          ]
+        },
+        {
+          "name": "Heavy Pistol",
+          "count": 1,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "CCW",
+          "count": 1,
+          "range": null,
+          "attacks": 3,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Heavy Flamer",
+          "options": [
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Heavy Pistol",
+          "options": [
+            {
+              "text": "Heavy Rifle (24\", A1, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "APC",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 205,
+      "tough": 6,
+      "special_rules": [
+        "Battleborn",
+        "Fast",
+        "Fearless",
+        "Impact(3)",
+        "Tough(6)",
+        "Transport(11)"
+      ],
+      "weapons": [
+        {
+          "name": "Storm Rifle",
+          "count": 1,
+          "range": 24,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Targeting Array (Unstoppable Shooting Mark)",
+              "cost": 35,
+              "rules_granted": [
+                "Unstoppable Shooting Mark"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Storm Rifle (24\", A3, AP(1))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Dozer Blade (Strider)",
+              "cost": 5,
+              "rules_granted": [
+                "Strider"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Hunter Missiles (24\", A1, AP(2), Deadly(3), Limited, Unstoppable)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hunter Missiles",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Limited",
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Attack APC",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 205,
+      "tough": 6,
+      "special_rules": [
+        "Battleborn",
+        "Fast",
+        "Fearless",
+        "Impact(3)",
+        "Tough(6)",
+        "Transport(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Twin Heavy Flamer",
+          "count": 1,
+          "range": 12,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)",
+            "Reliable"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Twin Heavy Flamer",
+          "options": [
+            {
+              "text": "Twin Heavy Machinegun (30\", A6, AP(1))",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Twin Minigun (24\", A8, AP(1))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Minigun",
+                "count": 1,
+                "range": 24,
+                "attacks": 8,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "(24\", A2, AP(4))",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": null
+            },
+            {
+              "text": "Twin Laser Cannon (36\", A2, AP(3), Deadly(3))",
+              "cost": 85,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Dozer Blade (Strider)",
+              "cost": 5,
+              "rules_granted": [
+                "Strider"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Drop Pod",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 135,
+      "tough": 6,
+      "special_rules": [
+        "Ambush",
+        "Battleborn",
+        "Fearless",
+        "Immobile",
+        "Tough(6)",
+        "Transport(11)"
+      ],
+      "weapons": [
+        {
+          "name": "Death Launcher",
+          "count": 1,
+          "range": 18,
+          "attacks": 1,
+          "ap": null,
+          "special_rules": [
+            "Blast(6)"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Death Launcher",
+          "options": [
+            {
+              "text": "Rapid Storm Rifle (24\", A6, AP(1))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Rapid Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with",
+          "options": [
+            {
+              "text": "Targeting Array (Unstoppable Shooting Mark)",
+              "cost": 35,
+              "rules_granted": [
+                "Unstoppable Shooting Mark"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Attack Speeder",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 215,
+      "tough": 6,
+      "special_rules": [
+        "Ambush",
+        "Battleborn",
+        "Fast",
+        "Fearless",
+        "Impact(3)",
+        "Strider",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Flamers",
+          "count": 2,
+          "range": 12,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)",
+            "Reliable"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Heavy Flamer",
+          "options": [
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Minigun (24\", A4, AP(1))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Minigun",
+                "count": 1,
+                "range": 24,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Flamer",
+          "options": [
+            {
+              "text": "Twin Typhoon Missiles (24\", A4, AP(2), Unstoppable)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Typhoon Missiles",
+                "count": 1,
+                "range": 24,
+                "attacks": 4,
+                "ap": 2,
+                "special_rules": [
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Open Sides (Transport(6))",
+              "cost": 15,
+              "rules_granted": [
+                "Transport(6)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Targeting Array (Unstoppable Shooting Mark)",
+              "cost": 35,
+              "rules_granted": [
+                "Unstoppable Shooting Mark"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Heavy Exo-Suit",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 165,
+      "tough": 6,
+      "special_rules": [
+        "Battleborn",
+        "Fear(1)",
+        "Fearless",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Twin Flamer",
+          "count": 1,
+          "range": 12,
+          "attacks": 2,
+          "ap": null,
+          "special_rules": [
+            "Blast(3)",
+            "Reliable"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Twin Flamer",
+          "options": [
+            {
+              "text": "Twin Light Gravity Cannon (24\", A2, AP(2), Smash)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Light Gravity Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 2,
+                "special_rules": [
+                  "Smash"
+                ]
+              }
+            },
+            {
+              "text": "Twin Fusion Rifle (12\", A2, AP(4), Deadly(3))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Fusion Rifle",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Twin Heavy Machinegun (30\", A6, AP(1))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Twin Laser Cannon (36\", A2, AP(3), Deadly(3))",
+              "cost": 105,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Dual Heavy Fists (A2, Blast(3))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Dual Heavy Fists",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            },
+            {
+              "text": "Dual Combat Drills (A4, AP(4))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Dual Combat Drills",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 4,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Chest Missiles (24\", A1, AP(2), Unstoppable)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Chest Missiles",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Unstoppable"
+                ]
+              }
+            },
+            {
+              "text": "Chest-Rifles (24\", A2, AP(1))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Chest-Rifles",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Battle Tank",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 475,
+      "tough": 12,
+      "special_rules": [
+        "Battleborn",
+        "Fast",
+        "Fearless",
+        "Impact(6)",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Twin Heavy Machinegun",
+          "count": 1,
+          "range": 30,
+          "attacks": 6,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Twin Storm Cannon",
+          "count": 1,
+          "range": 30,
+          "attacks": 4,
+          "ap": 2,
+          "special_rules": [
+            "Unstoppable"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Twin Storm Cannon",
+          "options": [
+            {
+              "text": "Spear Missile Launcher (30\", A1, AP(3), Deadly(6), Unstoppable)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Spear Missile Launcher",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(6)",
+                  "Unstoppable"
+                ]
+              }
+            },
+            {
+              "text": "Twin Laser Cannon (36\", A2, AP(3), Deadly(3))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Rapid Autocannon (36\", A6, AP(2))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Rapid Autocannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 6,
+                "ap": 2,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Demolition Cannon (24\", A1, AP(4), Blast(6), Indirect)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Demolition Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(6)",
+                  "Indirect"
+                ]
+              }
+            },
+            {
+              "text": "Wind Missile Launcher (36\", A2, AP(1), Blast(3), Indirect)",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Wind Missile Launcher",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Indirect"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Twin Heavy Machineguns",
+          "options": [
+            {
+              "text": "Twin Laser Cannon (36\", A2, AP(3), Deadly(3))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Storm Rifle (24\", A3, AP(1))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Dozer Blade (Strider)",
+              "cost": 15,
+              "rules_granted": [
+                "Strider"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Hunter Missiles (24\", A1, AP(2), Deadly(3), Limited, Unstoppable)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hunter Missiles",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Limited",
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Combat Walker",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 365,
+      "tough": 12,
+      "special_rules": [
+        "Battleborn",
+        "Fear(2)",
+        "Fearless",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Walker Fists",
+          "count": 2,
+          "range": null,
+          "attacks": 4,
+          "ap": 4,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace one Walker Fist",
+          "options": [
+            {
+              "text": "Twin Heavy Flamer (12\", A2, AP(1), Blast(3), Reliable)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Super-Heavy Fusion Rifle (18\", A1, AP(4), Deadly(6))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Super-Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(6)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Rifle Array (24\", A6, AP(1))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Rifle Array",
+                "count": 1,
+                "range": 24,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Twin Heavy Machinegun (30\", A6, AP(1))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Plasma Cannon (30\", A1, AP(4), Blast(6))",
+              "cost": 75,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Plasma Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(6)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Minigun (24\", A6, AP(2))",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Minigun",
+                "count": 1,
+                "range": 24,
+                "attacks": 6,
+                "ap": 2,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Twin Laser Cannon (36\", A2, AP(3), Deadly(3))",
+              "cost": 95,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Walker Fist",
+          "options": [
+            {
+              "text": "Missile Array (30\", A4, AP(2), Unstoppable)",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Missile Array",
+                "count": 1,
+                "range": 30,
+                "attacks": 4,
+                "ap": 2,
+                "special_rules": [
+                  "Unstoppable"
+                ]
+              }
+            },
+            {
+              "text": "Twin Autocannon (36\", A6, AP(2))",
+              "cost": 95,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Autocannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 6,
+                "ap": 2,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade any Walker Fist with one",
+          "options": [
+            {
+              "text": "Heavy Flamer (12\", A1, AP(1), Blast(3), Reliable)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Fusion Rifle (12\", A1, AP(4), Deadly(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Rifle",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Storm Rifle (24\", A3, AP(1))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Veteran Combat Walker",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 420,
+      "tough": 12,
+      "special_rules": [
+        "Battleborn",
+        "Fear(2)",
+        "Fearless",
+        "Tough(12)",
+        "Versatile Attack"
+      ],
+      "weapons": [
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Walker Fists",
+          "count": 2,
+          "range": null,
+          "attacks": 4,
+          "ap": 4,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace one Walker Fist",
+          "options": [
+            {
+              "text": "Twin Heavy Flamer (12\", A2, AP(1), Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Super-Heavy Fusion Rifle (18\", A1, AP(4), Deadly(6))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Super-Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(6)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Rifle Array (24\", A6, AP(1))",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Rifle Array",
+                "count": 1,
+                "range": 24,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Twin Heavy Machinegun (30\", A6, AP(1))",
+              "cost": 80,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Plasma Cannon (30\", A1, AP(4), Blast(6))",
+              "cost": 95,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Plasma Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(6)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Minigun (24\", A6, AP(2))",
+              "cost": 100,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Minigun",
+                "count": 1,
+                "range": 24,
+                "attacks": 6,
+                "ap": 2,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Twin Laser Cannon (36\", A2, AP(3), Deadly(3))",
+              "cost": 135,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Walker Fist",
+          "options": [
+            {
+              "text": "Missile Array (30\", A4, AP(2), Unstoppable)",
+              "cost": 70,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Missile Array",
+                "count": 1,
+                "range": 30,
+                "attacks": 4,
+                "ap": 2,
+                "special_rules": [
+                  "Unstoppable"
+                ]
+              }
+            },
+            {
+              "text": "Twin Autocannon (36\", A6, AP(2))",
+              "cost": 140,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Autocannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 6,
+                "ap": 2,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade any Walker Fist with one",
+          "options": [
+            {
+              "text": "Heavy Flamer (12\", A1, AP(1), Blast(3), Reliable)",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Flamer",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Fusion Rifle (12\", A1, AP(4), Deadly(3))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Rifle",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Storm Rifle (24\", A3, AP(1))",
+              "cost": 70,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Artillery Gun",
+      "size": 1,
+      "quality": 3,
+      "defense": 3,
+      "base_points": 165,
+      "tough": 3,
+      "special_rules": [
+        "Artillery",
+        "Battleborn",
+        "Fearless",
+        "Tough(3)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Gatling Cannon",
+          "count": 1,
+          "range": 24,
+          "attacks": 6,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Crew",
+          "count": 1,
+          "range": null,
+          "attacks": 3,
+          "ap": null,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Heavy Gatling Cannon",
+          "options": [
+            {
+              "text": "Heavy Flak Cannon (30\", A2, AP(3), Deadly(3), Unstoppable)",
+              "cost": 70,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Flak Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Unstoppable"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Thunder Cannon (30\", A2, AP(2), Blast(3), Indirect)",
+              "cost": 120,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Thunder Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": 2,
+                "special_rules": [
+                  "Blast(3)",
+                  "Indirect"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Crack Cannon (30\", A6, AP(1), Indirect, Rending)",
+              "cost": 125,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Crack Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": [
+                  "Indirect",
+                  "Rending"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Heavy Tank",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 740,
+      "tough": 18,
+      "special_rules": [
+        "Battleborn",
+        "Fast",
+        "Fearless",
+        "Impact(9)",
+        "Tough(18)",
+        "Transport(11)"
+      ],
+      "weapons": [
+        {
+          "name": "Twin Heavy Machinegun",
+          "count": 1,
+          "range": 30,
+          "attacks": 6,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Twin Heavy Rifle Array",
+          "count": 1,
+          "range": 24,
+          "attacks": 12,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Storm Rifle (24\", A3, AP(1))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Storm Rifle",
+                "count": 1,
+                "range": 24,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Dozer Blade (Strider)",
+              "cost": 20,
+              "rules_granted": [
+                "Strider"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Hunter Missiles (24\", A1, AP(2), Deadly(3), Limited, Unstoppable)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hunter Missiles",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Limited",
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Twin Heavy Rifle Array",
+          "options": [
+            {
+              "text": "Quad Flamer Cannon (18\", A4, AP(1), Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Quad Flamer Cannon",
+                "count": 1,
+                "range": 18,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Quad Laser Cannon (36\", A4, AP(3), Deadly(3))",
+              "cost": 120,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Quad Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 4,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Twin Heavy Machinegun",
+          "options": [
+            {
+              "text": "Twin Minigun (24\", A8, AP(1))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Minigun",
+                "count": 1,
+                "range": 24,
+                "attacks": 8,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Light Gunship",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 340,
+      "tough": 6,
+      "special_rules": [
+        "Aircraft",
+        "Battleborn",
+        "Fearless",
+        "Tough(6)"
+      ],
+      "weapons": [
+        {
+          "name": "Minigun",
+          "count": 1,
+          "range": 24,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Twin Typhoon Missiles",
+          "count": 1,
+          "range": 24,
+          "attacks": 4,
+          "ap": 2,
+          "special_rules": [
+            "Unstoppable"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Laser Talon (24\", A2, AP(3))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Laser Talon",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Storm Cannon (30\", A2, AP(2), Unstoppable)",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Storm Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": 2,
+                "special_rules": [
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Twin Typhoon Missiles",
+          "options": [
+            {
+              "text": "Twin Heavy Machinegun (30\", A6, AP(1))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Twin Laser Cannon (36\", A2, AP(3), Deadly(3))",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Twin Hammer Missiles (36\", A2, AP(3), Deadly(3), Unstoppable)",
+              "cost": 75,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Hammer Missiles",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)",
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Heavy Gunship",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 625,
+      "tough": 9,
+      "special_rules": [
+        "Aircraft",
+        "Battleborn",
+        "Fearless",
+        "Tough(9)",
+        "Transport(11)"
+      ],
+      "weapons": [
+        {
+          "name": "Storm Missiles",
+          "count": 1,
+          "range": 36,
+          "attacks": 1,
+          "ap": 3,
+          "special_rules": [
+            "Deadly(3)"
+          ]
+        },
+        {
+          "name": "Light Heavy Rifle Array",
+          "count": 1,
+          "range": 24,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Twin Minigun",
+          "count": 1,
+          "range": 24,
+          "attacks": 8,
+          "ap": 1,
+          "special_rules": []
+        },
+        {
+          "name": "Typhoon Missiles",
+          "count": 1,
+          "range": 24,
+          "attacks": 2,
+          "ap": 2,
+          "special_rules": [
+            "Unstoppable"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace Twin Minigun",
+          "options": [
+            {
+              "text": "Twin Laser Cannon (36\", A2, AP(3), Deadly(3))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Twin Plasma Cannon (30\", A2, AP(4), Blast(3))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Plasma Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Typhoon Missiles",
+          "options": [
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Fusion Rifle (18\", A1, AP(4), Deadly(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fusion Rifle",
+                "count": 1,
+                "range": 18,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "total_units": 26
+}
