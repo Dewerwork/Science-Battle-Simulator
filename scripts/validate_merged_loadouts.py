@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """
 Validation script for merged loadout files.
-Compares MERGED_ALL_TXT.txt against MERGED_ALL_TXT.bucket_reduced.txt
-and generates an Excel report with validation results.
+Compares source file against reduced file and generates an Excel report.
+
+Supports both JSON (from merge_all_factions.py) and TXT formats.
+When reading JSON, properly extracts unit lines from the factions structure.
 """
 
+import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -181,8 +184,80 @@ def parse_header(header: str, line_number: int) -> Optional[UnitEntry]:
     )
 
 
+def parse_lines_to_entries(lines: List[str], start_line: int = 1) -> List[UnitEntry]:
+    """Parse a list of lines into UnitEntry objects."""
+    entries = []
+    current_entry = None
+    line_number = start_line
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Skip empty lines - they separate entries
+        if not stripped:
+            if current_entry:
+                entries.append(current_entry)
+                current_entry = None
+            line_number += 1
+            continue
+
+        # Check if this looks like a header line (has Q#+ D#+ pattern)
+        if re.search(r'Q\d\+\s+D\d\+', stripped):
+            if current_entry:
+                entries.append(current_entry)
+            current_entry = parse_header(stripped, line_number)
+        elif current_entry:
+            # This is a weapon line
+            current_entry.weapon_lines.append(stripped)
+
+        line_number += 1
+
+    # Don't forget the last entry
+    if current_entry:
+        entries.append(current_entry)
+
+    return entries
+
+
 def parse_merged_file(filepath: str) -> List[UnitEntry]:
-    """Parse a merged TXT file into a list of UnitEntry objects."""
+    """Parse a merged TXT or JSON file into a list of UnitEntry objects."""
+    entries = []
+
+    path = Path(filepath)
+    if not path.exists():
+        print(f"ERROR: File not found: {filepath}")
+        return entries
+
+    # Check if it's a JSON file
+    if path.suffix.lower() == '.json':
+        try:
+            with open(path, 'r', encoding='utf-8-sig') as f:
+                data = json.load(f)
+
+            # Parse JSON format from merge_all_factions.py
+            line_number = 1
+            for faction in data.get("factions", []):
+                faction_name = faction.get("name", "Unknown")
+                unit_lines = faction.get("units", [])
+                faction_entries = parse_lines_to_entries(unit_lines, line_number)
+                entries.extend(faction_entries)
+                line_number += len(unit_lines) + 1
+                print(f"    {faction_name}: {len(faction_entries)} entries")
+
+            return entries
+        except json.JSONDecodeError as e:
+            print(f"ERROR: Failed to parse JSON: {e}")
+            print("  Falling back to text parsing...")
+
+    # Parse as TXT file
+    with open(path, 'r', encoding='utf-8-sig') as f:
+        lines = f.readlines()
+
+    return parse_lines_to_entries(lines)
+
+
+def _legacy_parse_merged_file(filepath: str) -> List[UnitEntry]:
+    """Legacy parser - kept for reference."""
     entries = []
 
     path = Path(filepath)
