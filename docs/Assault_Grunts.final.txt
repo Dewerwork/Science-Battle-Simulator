@@ -1,0 +1,180 @@
+Assault Grunts [UID:67CF4658] [10] Q5+ D5+ | 110pts | Fast, Hive Bond, Strider
+10x razor claws (A2)
+
+Assault Grunts [UID:1C49D241] [10] Q5+ D5+ | 160pts | Agile, Fast, Hive Bond, Strider
+10x razor claws (A2)
+
+Assault Grunts [UID:79DD36B7] [10] Q5+ D5+ | 210pts | Bane in Melee, Fast, Hive Bond, Strider
+10x razor claws (A2)
+
+Assault Grunts [UID:26CC1DCF] [10] Q5+ D5+ | 360pts | Fast, Hive Bond, Piercing Growth, Strider
+10x razor claws (A2)
+
+Assault Grunts [UID:713D1029] [10] Q5+ D5+ | 115pts | Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 9x razor claws (A2)
+
+Assault Grunts [UID:06D6AE61] [10] Q5+ D5+ | 165pts | Agile, Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 9x razor claws (A2)
+
+Assault Grunts [UID:1FE08B2F] [10] Q5+ D5+ | 215pts | Bane in Melee, Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 9x razor claws (A2)
+
+Assault Grunts [UID:FA770B6F] [10] Q5+ D5+ | 365pts | Fast, Hive Bond, Piercing Growth, Strider
+piercing claws (A1, AP(1), Deadly(3)), 9x razor claws (A2)
+
+Assault Grunts [UID:9145E160] [10] Q5+ D5+ | 115pts | Fast, Hive Bond, Strider
+9x razor claws (A2), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:B3173B5E] [10] Q5+ D5+ | 165pts | Agile, Fast, Hive Bond, Strider
+9x razor claws (A2), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:5C36990C] [10] Q5+ D5+ | 215pts | Bane in Melee, Fast, Hive Bond, Strider
+9x razor claws (A2), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:E827E2F6] [10] Q5+ D5+ | 365pts | Fast, Hive Bond, Piercing Growth, Strider
+9x razor claws (A2), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:053EFC80] [10] Q5+ D5+ | 115pts | Fast, Hive Bond, Strider
+9x razor claws (A2), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:53D9FAFF] [10] Q5+ D5+ | 165pts | Agile, Fast, Hive Bond, Strider
+9x razor claws (A2), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:8F2B13AD] [10] Q5+ D5+ | 215pts | Bane in Melee, Fast, Hive Bond, Strider
+9x razor claws (A2), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:48258A56] [10] Q5+ D5+ | 365pts | Fast, Hive Bond, Piercing Growth, Strider
+9x razor claws (A2), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:E3C31017] [10] Q5+ D5+ | 120pts | Fast, Hive Bond, Strider
+9x razor claws (A2), serrated claws (A2, AP(4))
+
+Assault Grunts [UID:3DEEABDF] [10] Q5+ D5+ | 170pts | Agile, Fast, Hive Bond, Strider
+9x razor claws (A2), serrated claws (A2, AP(4))
+
+Assault Grunts [UID:513D19D9] [10] Q5+ D5+ | 220pts | Bane in Melee, Fast, Hive Bond, Strider
+9x razor claws (A2), serrated claws (A2, AP(4))
+
+Assault Grunts [UID:93E52085] [10] Q5+ D5+ | 370pts | Fast, Hive Bond, Piercing Growth, Strider
+9x razor claws (A2), serrated claws (A2, AP(4))
+
+Assault Grunts [UID:5FC82A86] [10] Q5+ D5+ | 120pts | Fast, Hive Bond, Strider
+2x piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2)
+
+Assault Grunts [UID:FBD75E45] [10] Q5+ D5+ | 170pts | Agile, Fast, Hive Bond, Strider
+2x piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2)
+
+Assault Grunts [UID:6457E46F] [10] Q5+ D5+ | 220pts | Bane in Melee, Fast, Hive Bond, Strider
+2x piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2)
+
+Assault Grunts [UID:E640B4C8] [10] Q5+ D5+ | 370pts | Fast, Hive Bond, Piercing Growth, Strider
+2x piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2)
+
+Assault Grunts [UID:4B649DFA] [10] Q5+ D5+ | 120pts | Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:880B42C5] [10] Q5+ D5+ | 170pts | Agile, Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:266323B7] [10] Q5+ D5+ | 220pts | Bane in Melee, Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:5CFC3200] [10] Q5+ D5+ | 370pts | Fast, Hive Bond, Piercing Growth, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:78BD6DB8] [10] Q5+ D5+ | 120pts | Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:FE0580BF] [10] Q5+ D5+ | 170pts | Agile, Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:D256EC3D] [10] Q5+ D5+ | 220pts | Bane in Melee, Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:82ACAFF8] [10] Q5+ D5+ | 370pts | Fast, Hive Bond, Piercing Growth, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:743F384F] [10] Q5+ D5+ | 125pts | Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), serrated claws (A2, AP(4))
+
+Assault Grunts [UID:78F8E333] [10] Q5+ D5+ | 175pts | Agile, Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), serrated claws (A2, AP(4))
+
+Assault Grunts [UID:AB4501C3] [10] Q5+ D5+ | 225pts | Bane in Melee, Fast, Hive Bond, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), serrated claws (A2, AP(4))
+
+Assault Grunts [UID:11B88D60] [10] Q5+ D5+ | 375pts | Fast, Hive Bond, Piercing Growth, Strider
+piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), serrated claws (A2, AP(4))
+
+Assault Grunts [UID:F59F024D] [10] Q5+ D5+ | 120pts | Fast, Hive Bond, Strider
+8x razor claws (A2), 2x smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:045A7C72] [10] Q5+ D5+ | 170pts | Agile, Fast, Hive Bond, Strider
+8x razor claws (A2), 2x smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:D5B930C5] [10] Q5+ D5+ | 220pts | Bane in Melee, Fast, Hive Bond, Strider
+8x razor claws (A2), 2x smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:04BA372A] [10] Q5+ D5+ | 370pts | Fast, Hive Bond, Piercing Growth, Strider
+8x razor claws (A2), 2x smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:FBBFD3FD] [10] Q5+ D5+ | 120pts | Fast, Hive Bond, Strider
+8x razor claws (A2), slashing claws (A2, AP(1), Rending), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:EF865198] [10] Q5+ D5+ | 170pts | Agile, Fast, Hive Bond, Strider
+8x razor claws (A2), slashing claws (A2, AP(1), Rending), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:5376256B] [10] Q5+ D5+ | 220pts | Bane in Melee, Fast, Hive Bond, Strider
+8x razor claws (A2), slashing claws (A2, AP(1), Rending), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:7B9A7392] [10] Q5+ D5+ | 370pts | Fast, Hive Bond, Piercing Growth, Strider
+8x razor claws (A2), slashing claws (A2, AP(1), Rending), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:8F43D399] [10] Q5+ D5+ | 125pts | Fast, Hive Bond, Strider
+8x razor claws (A2), serrated claws (A2, AP(4)), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:4412B90A] [10] Q5+ D5+ | 175pts | Agile, Fast, Hive Bond, Strider
+8x razor claws (A2), serrated claws (A2, AP(4)), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:C87B0BBC] [10] Q5+ D5+ | 225pts | Bane in Melee, Fast, Hive Bond, Strider
+8x razor claws (A2), serrated claws (A2, AP(4)), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:47504F30] [10] Q5+ D5+ | 375pts | Fast, Hive Bond, Piercing Growth, Strider
+8x razor claws (A2), serrated claws (A2, AP(4)), smashing claws (A1, Blast(3))
+
+Assault Grunts [UID:91D94494] [10] Q5+ D5+ | 120pts | Fast, Hive Bond, Strider
+8x razor claws (A2), 2x slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:2EC461A4] [10] Q5+ D5+ | 170pts | Agile, Fast, Hive Bond, Strider
+8x razor claws (A2), 2x slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:56633BB6] [10] Q5+ D5+ | 220pts | Bane in Melee, Fast, Hive Bond, Strider
+8x razor claws (A2), 2x slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:1836EEFC] [10] Q5+ D5+ | 370pts | Fast, Hive Bond, Piercing Growth, Strider
+8x razor claws (A2), 2x slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:D99CAB48] [10] Q5+ D5+ | 125pts | Fast, Hive Bond, Strider
+8x razor claws (A2), serrated claws (A2, AP(4)), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:BB18F17A] [10] Q5+ D5+ | 175pts | Agile, Fast, Hive Bond, Strider
+8x razor claws (A2), serrated claws (A2, AP(4)), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:68CE80B9] [10] Q5+ D5+ | 225pts | Bane in Melee, Fast, Hive Bond, Strider
+8x razor claws (A2), serrated claws (A2, AP(4)), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:E2B50AB2] [10] Q5+ D5+ | 375pts | Fast, Hive Bond, Piercing Growth, Strider
+8x razor claws (A2), serrated claws (A2, AP(4)), slashing claws (A2, AP(1), Rending)
+
+Assault Grunts [UID:D6DF863C] [10] Q5+ D5+ | 130pts | Fast, Hive Bond, Strider
+8x razor claws (A2), 2x serrated claws (A2, AP(4))
+
+Assault Grunts [UID:FF7FADA3] [10] Q5+ D5+ | 180pts | Agile, Fast, Hive Bond, Strider
+8x razor claws (A2), 2x serrated claws (A2, AP(4))
+
+Assault Grunts [UID:5D30FB55] [10] Q5+ D5+ | 230pts | Bane in Melee, Fast, Hive Bond, Strider
+8x razor claws (A2), 2x serrated claws (A2, AP(4))
+
+Assault Grunts [UID:68B672D6] [10] Q5+ D5+ | 380pts | Fast, Hive Bond, Piercing Growth, Strider
+8x razor claws (A2), 2x serrated claws (A2, AP(4))
+
