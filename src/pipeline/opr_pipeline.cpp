@@ -762,6 +762,7 @@ std::vector<Variant> OprPipeline::generate_group_variants(
 
                 // Build add key - use structured weapon data if available
                 std::string add_key;
+                bool has_weapon_to_add = false;
                 if (opt.weapon.has_value()) {
                     // Use structured weapon data (most reliable)
                     const auto& w = *opt.weapon;
@@ -780,21 +781,23 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                         }
                         add_key += "|T=" + tags;
                     }
+                    has_weapon_to_add = true;
                 } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
                     // Parse profile from text
                     std::string normalized_name = normalize_whitespace(item_name);
                     std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
                     add_key = "N=" + normalized_name + "|R=|A=0|AP=";
                     // TODO: Parse actual profile values from inside string
-                } else {
-                    std::string normalized_name = normalize_whitespace(item_name);
-                    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
-                    add_key = "N=" + normalized_name + "|R=|A=0|AP=";
+                    has_weapon_to_add = true;
                 }
+                // If no weapon data and doesn't look like a weapon profile,
+                // this is a rule-only upgrade (e.g., "Killing Scream (Breath Attack)")
+                // Don't add a weapon entry - just apply the rules
 
-                if (add_key == target_key) continue;  // Self-replacement
-
-                weapon_delta[add_key] += c;
+                if (has_weapon_to_add) {
+                    if (add_key == target_key) continue;  // Self-replacement
+                    weapon_delta[add_key] += c;
+                }
 
                 // Use pre-parsed rules_granted if available
                 auto add_rules = opt.rules_granted.empty()
@@ -834,6 +837,7 @@ std::vector<Variant> OprPipeline::generate_group_variants(
 
                         // Build add key - use structured weapon data if available
                         std::string add_key;
+                        bool has_weapon_to_add = false;
                         if (pick->weapon.has_value()) {
                             const auto& w = *pick->weapon;
                             std::string normalized_name = normalize_whitespace(w.name);
@@ -851,12 +855,19 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                                 }
                                 add_key += "|T=" + tags;
                             }
-                        } else {
+                            has_weapon_to_add = true;
+                        } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
+                            // Parse profile from text (fallback for legacy data)
                             std::string normalized_name = normalize_whitespace(item_name);
                             std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
                             add_key = "N=" + normalized_name + "|R=|A=0|AP=";
+                            has_weapon_to_add = true;
                         }
-                        weapon_delta[add_key] += c;
+                        // If no weapon data and doesn't look like a weapon profile,
+                        // this is a rule-only upgrade - don't add a weapon entry
+                        if (has_weapon_to_add) {
+                            weapon_delta[add_key] += c;
+                        }
 
                         // Use pre-parsed rules_granted if available
                         auto rules = pick->rules_granted.empty()
