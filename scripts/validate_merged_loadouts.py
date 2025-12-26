@@ -36,9 +36,10 @@ OUTPUT_WORKBOOK = r"C:\Users\David\Documents\Army Factions\pipeline_output\valid
 class UnitEntry:
     """Represents a single unit loadout entry from the merged file."""
     raw_header: str
-    base_name: str              # Unit name without UID/BKT
+    base_name: str              # Unit name without UID/BKT/FID
     identifier: str             # UID or BKT hash (empty if none)
     identifier_type: str        # 'UID', 'BKT', or ''
+    faction_id: str             # FID hash (empty if none) - kept separate for grouping
     size: int
     quality: int
     defense: int
@@ -73,25 +74,40 @@ HEADER_PATTERN = re.compile(
     r'\s*(.*)$'                             # Rules (rest of line)
 )
 
-# Pattern to extract UID or BKT from unit name
-IDENTIFIER_PATTERN = re.compile(r'\[(UID|BKT):([A-F0-9]+)\]', re.IGNORECASE)
+# Pattern to extract UID, BKT, or FID from unit name
+IDENTIFIER_PATTERN = re.compile(r'\[(UID|BKT|FID):([A-F0-9]+)\]', re.IGNORECASE)
 
 # Weapon line patterns
 WEAPON_PATTERN = re.compile(r'(\d+x\s+)?(\d+")?\s*(.+?)\s*\(([^)]+)\)')
 
 
-def extract_identifier(name: str) -> Tuple[str, str, str]:
+def extract_identifier(name: str) -> Tuple[str, str, str, str]:
     """
-    Extract identifier from unit name.
-    Returns: (base_name, identifier, identifier_type)
+    Extract identifier and faction ID from unit name.
+    Returns: (base_name, identifier, identifier_type, faction_id)
+
+    FID is extracted separately since it's used for grouping units by faction,
+    while UID/BKT are used for other purposes.
     """
-    match = IDENTIFIER_PATTERN.search(name)
-    if match:
+    faction_id = ''
+    identifier = ''
+    identifier_type = ''
+
+    # Extract all identifiers
+    for match in IDENTIFIER_PATTERN.finditer(name):
         id_type = match.group(1).upper()
         id_value = match.group(2).upper()
-        base_name = IDENTIFIER_PATTERN.sub('', name).strip()
-        return base_name, id_value, id_type
-    return name.strip(), '', ''
+
+        if id_type == 'FID':
+            faction_id = id_value
+        else:
+            # UID or BKT - keep the last one found
+            identifier = id_value
+            identifier_type = id_type
+
+    # Remove all identifier tags from name
+    base_name = IDENTIFIER_PATTERN.sub('', name).strip()
+    return base_name, identifier, identifier_type, faction_id
 
 
 def parse_header(header: str, line_number: int) -> Optional[UnitEntry]:
@@ -107,6 +123,7 @@ def parse_header(header: str, line_number: int) -> Optional[UnitEntry]:
             base_name=header[:50] + "..." if len(header) > 50 else header,
             identifier='',
             identifier_type='',
+            faction_id='',
             size=0,
             quality=0,
             defense=0,
@@ -118,7 +135,7 @@ def parse_header(header: str, line_number: int) -> Optional[UnitEntry]:
         )
 
     name_with_id = match.group(1).strip()
-    base_name, identifier, id_type = extract_identifier(name_with_id)
+    base_name, identifier, id_type, faction_id = extract_identifier(name_with_id)
 
     try:
         size = int(match.group(2))
@@ -152,6 +169,7 @@ def parse_header(header: str, line_number: int) -> Optional[UnitEntry]:
         base_name=base_name,
         identifier=identifier,
         identifier_type=id_type,
+        faction_id=faction_id,
         size=size,
         quality=quality,
         defense=defense,
@@ -349,21 +367,29 @@ def validate_weapon_format(entries: List[UnitEntry], file_label: str) -> Validat
 
 
 def validate_stats_consistency(entries: List[UnitEntry], file_label: str) -> ValidationResult:
-    """Check for units with inconsistent Q/D stats across entries."""
-    # Group by base name and check for stat variations
-    unit_stats: Dict[str, List[Tuple[int, int, int]]] = defaultdict(list)
+    """Check for units with inconsistent Q/D stats across entries.
+
+    Groups units by base_name + faction_id, so units with the same name
+    from different factions are treated as separate units.
+    """
+    # Group by base name + faction ID and check for stat variations
+    # Key is (base_name, faction_id) tuple
+    unit_stats: Dict[Tuple[str, str], List[Tuple[int, int, int]]] = defaultdict(list)
 
     for entry in entries:
         if entry.quality > 0 and entry.defense > 0:  # Only valid entries
-            unit_stats[entry.base_name].append((entry.quality, entry.defense, entry.line_number))
+            key = (entry.base_name, entry.faction_id)
+            unit_stats[key].append((entry.quality, entry.defense, entry.line_number))
 
     failures = []
-    for name, stats_list in unit_stats.items():
+    for (name, fid), stats_list in unit_stats.items():
         unique_stats = set((q, d) for q, d, _ in stats_list)
         if len(unique_stats) > 1:
             stats_str = ', '.join(f"Q{q}+ D{d}+" for q, d in sorted(unique_stats))
+            # Include FID in the output if present
+            display_name = f"{name} [FID:{fid}]" if fid else name
             failures.append({
-                'Unit Name': name,
+                'Unit Name': display_name,
                 'Variations Found': stats_str,
                 'Entry Count': len(stats_list),
                 'Issue': 'Inconsistent Q/D stats across entries',
