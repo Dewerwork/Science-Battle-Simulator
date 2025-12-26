@@ -1,0 +1,2218 @@
+{
+  "units": [
+    {
+      "name": "Vassal Micro-Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 190,
+      "tough": 9,
+      "special_rules": [
+        "Fear(1)",
+        "Fortified",
+        "Honor Code",
+        "Tough(9)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Hammer",
+          "count": 1,
+          "range": null,
+          "attacks": 1,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 3,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Titan Core (Delayed Action)",
+              "cost": 20,
+              "rules_granted": [
+                "Delayed Action"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Energy Field (Regeneration)",
+              "cost": 30,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Vanguard Config (Scout, Strider)",
+              "cost": 35,
+              "rules_granted": [
+                "Scout",
+                "Strider"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Psychic Lord (Caster(2))",
+              "cost": 40,
+              "rules_granted": [
+                "Caster(2)"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace any Heavy Hammer",
+          "options": [
+            {
+              "text": "Heavy Lance (A3, Thrust)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Lance",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "Thrust"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Chainsaw (A1, AP(2), Deadly(3))",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Chainsaw",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Fist (A2, AP(4))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Sword (A3, AP(1), Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Flail (A3, Reliable, Rending)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Flail",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": null,
+                "special_rules": [
+                  "Reliable",
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Claw (A3, AP(1), Reliable)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Claw",
+                "count": 1,
+                "range": null,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": [
+                  "Reliable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Titan Shield",
+          "options": [
+            {
+              "text": "Heavy Hammer (A1, AP(1), Blast(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 1,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace one Heavy Hammer",
+          "options": [
+            {
+              "text": "Fusion Blaster (24\", A1, AP(4), Deadly(6))",
+              "cost": 90,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Fusion Blaster",
+                "count": 1,
+                "range": 24,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(6)"
+                ]
+              }
+            },
+            {
+              "text": "Gatling Cannon (30\", A6, AP(1), Rending)",
+              "cost": 105,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gatling Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Hell Autocannon (36\", A6, AP(2))",
+              "cost": 130,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hell Autocannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 6,
+                "ap": 2,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Disciple of War (Warbound)",
+              "cost": 5,
+              "rules_granted": [
+                "Warbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Lust (Lustbound)",
+              "cost": 15,
+              "rules_granted": [
+                "Lustbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Change (Changebound)",
+              "cost": 20,
+              "rules_granted": [
+                "Changebound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Plague (Plaguebound)",
+              "cost": 20,
+              "rules_granted": [
+                "Plaguebound"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Errant Mini-Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 300,
+      "tough": 12,
+      "special_rules": [
+        "Fear(2)",
+        "Fortified",
+        "Furious",
+        "Honor Code",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Heavy Hammer",
+          "count": 1,
+          "range": null,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Heavy Hammer",
+          "options": [
+            {
+              "text": "Heavy Lance (A6, Thrust)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Lance",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": null,
+                "special_rules": [
+                  "Thrust"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Chainsaw (A2, AP(2), Deadly(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Chainsaw",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Fist (A4, AP(4))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Sword (A6, AP(1), Rending)",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Flail (A6, Reliable, Rending)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Flail",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": null,
+                "special_rules": [
+                  "Reliable",
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Claw (A6, AP(1), Reliable)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Claw",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": [
+                  "Reliable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Titan Shield",
+          "options": [
+            {
+              "text": "Heavy Hammer (A2, AP(1), Blast(3))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Disciple of War (Warbound)",
+              "cost": 5,
+              "rules_granted": [
+                "Warbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Lust (Lustbound)",
+              "cost": 20,
+              "rules_granted": [
+                "Lustbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Change (Changebound)",
+              "cost": 25,
+              "rules_granted": [
+                "Changebound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Plague (Plaguebound)",
+              "cost": 25,
+              "rules_granted": [
+                "Plaguebound"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Top-Fuser (12\", A1, AP(4), Deadly(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Fuser",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Top-Machinegun (30\", A3, AP(1))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Top-Launcher (36\", A1, Blast(3), Indirect)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Launcher",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Indirect"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Titan Core (Delayed Action)",
+              "cost": 20,
+              "rules_granted": [
+                "Delayed Action"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Psychic Lord (Caster(2))",
+              "cost": 40,
+              "rules_granted": [
+                "Caster(2)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Energy Field (Regeneration)",
+              "cost": 40,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Assault Config (Fast, Strider)",
+              "cost": 45,
+              "rules_granted": [
+                "Fast",
+                "Strider"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pilgrim Mini-Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 350,
+      "tough": 12,
+      "special_rules": [
+        "Fear(2)",
+        "Fortified",
+        "Honor Code",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Fusion Blaster",
+          "count": 1,
+          "range": 24,
+          "attacks": 1,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(6)"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Heavy Hammer",
+          "options": [
+            {
+              "text": "Heavy Lance (A6, Thrust)",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Lance",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": null,
+                "special_rules": [
+                  "Thrust"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Chainsaw (A2, AP(2), Deadly(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Chainsaw",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Fist (A4, AP(4))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Heavy Sword (A6, AP(1), Rending)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Flail (A6, Reliable, Rending)",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Flail",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": null,
+                "special_rules": [
+                  "Reliable",
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Heavy Claw (A6, AP(1), Reliable)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Claw",
+                "count": 1,
+                "range": null,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": [
+                  "Reliable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Titan Shield",
+          "options": [
+            {
+              "text": "Heavy Hammer (A2, AP(1), Blast(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Fusion Blaster",
+          "options": [
+            {
+              "text": "Gatling Cannon (30\", A6, AP(1), Rending)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gatling Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Hell Autocannon (36\", A6, AP(2))",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hell Autocannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 6,
+                "ap": 2,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Disciple of War (Warbound)",
+              "cost": 5,
+              "rules_granted": [
+                "Warbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Lust (Lustbound)",
+              "cost": 20,
+              "rules_granted": [
+                "Lustbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Change (Changebound)",
+              "cost": 25,
+              "rules_granted": [
+                "Changebound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Plague (Plaguebound)",
+              "cost": 25,
+              "rules_granted": [
+                "Plaguebound"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Top-Fuser (12\", A1, AP(4), Deadly(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Fuser",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Top-Machinegun (30\", A3, AP(1))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Top-Launcher (36\", A1, Blast(3), Indirect)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Launcher",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Indirect"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Titan Core (Delayed Action)",
+              "cost": 20,
+              "rules_granted": [
+                "Delayed Action"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Psychic Lord (Caster(2))",
+              "cost": 40,
+              "rules_granted": [
+                "Caster(2)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Energy Field (Regeneration)",
+              "cost": 40,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Assault Config (Fast, Strider)",
+              "cost": 45,
+              "rules_granted": [
+                "Fast",
+                "Strider"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Yeoman Mini-Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 495,
+      "tough": 12,
+      "special_rules": [
+        "Fear(2)",
+        "Honor Code",
+        "Relentless",
+        "Tough(12)"
+      ],
+      "weapons": [
+        {
+          "name": "Fusion Blasters",
+          "count": 2,
+          "range": 24,
+          "attacks": 1,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(6)"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Fusion Blaster",
+          "options": [
+            {
+              "text": "Gatling Cannon (30\", A6, AP(1), Rending)",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Gatling Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 6,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Hell Autocannon (36\", A6, AP(2))",
+              "cost": 50,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hell Autocannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 6,
+                "ap": 2,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Disciple of War (Warbound)",
+              "cost": 5,
+              "rules_granted": [
+                "Warbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Lust (Lustbound)",
+              "cost": 20,
+              "rules_granted": [
+                "Lustbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Change (Changebound)",
+              "cost": 25,
+              "rules_granted": [
+                "Changebound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Plague (Plaguebound)",
+              "cost": 25,
+              "rules_granted": [
+                "Plaguebound"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Top-Fuser (12\", A1, AP(4), Deadly(3))",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Fuser",
+                "count": 1,
+                "range": 12,
+                "attacks": 1,
+                "ap": 4,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Top-Machinegun (30\", A3, AP(1))",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Top-Launcher (36\", A1, Blast(3), Indirect)",
+              "cost": 75,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Launcher",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Indirect"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Titan Core (Delayed Action)",
+              "cost": 20,
+              "rules_granted": [
+                "Delayed Action"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Psychic Lord (Caster(2))",
+              "cost": 40,
+              "rules_granted": [
+                "Caster(2)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Energy Field (Regeneration)",
+              "cost": 40,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Assault Config (Fast, Strider)",
+              "cost": 45,
+              "rules_granted": [
+                "Fast",
+                "Strider"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Questor Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 705,
+      "tough": 24,
+      "special_rules": [
+        "Fear(4)",
+        "Fortified",
+        "Furious",
+        "Honor Code",
+        "Tough(24)"
+      ],
+      "weapons": [
+        {
+          "name": "Hull-Fuser",
+          "count": 1,
+          "range": 12,
+          "attacks": 1,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(3)"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 8,
+          "ap": 2,
+          "special_rules": []
+        },
+        {
+          "name": "Titan Hammer",
+          "count": 1,
+          "range": null,
+          "attacks": 4,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)"
+          ]
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Titan Hammer",
+          "options": [
+            {
+              "text": "Titan Lance (A12, Thrust)",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Lance",
+                "count": 1,
+                "range": null,
+                "attacks": 12,
+                "ap": null,
+                "special_rules": [
+                  "Thrust"
+                ]
+              }
+            },
+            {
+              "text": "Titan Chainsaw (A4, AP(2), Deadly(3))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Chainsaw",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Titan Sword (A12, AP(1), Rending)",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 12,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Titan Fist (A9, AP(4))",
+              "cost": 55,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 9,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Titan Flail (A12, Reliable, Rending)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Flail",
+                "count": 1,
+                "range": null,
+                "attacks": 12,
+                "ap": null,
+                "special_rules": [
+                  "Reliable",
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Titan Claw (A12, AP(1), Reliable)",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Claw",
+                "count": 1,
+                "range": null,
+                "attacks": 12,
+                "ap": 1,
+                "special_rules": [
+                  "Reliable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Titan Shield",
+          "options": [
+            {
+              "text": "Titan Hammer (A4, AP(1), Blast(3))",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Disciple of War (Warbound)",
+              "cost": 5,
+              "rules_granted": [
+                "Warbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Lust (Lustbound)",
+              "cost": 35,
+              "rules_granted": [
+                "Lustbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Change (Changebound)",
+              "cost": 50,
+              "rules_granted": [
+                "Changebound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Plague (Plaguebound)",
+              "cost": 55,
+              "rules_granted": [
+                "Plaguebound"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace any Hull-Fuser",
+          "options": [
+            {
+              "text": "Hull-Machinegun (30\", A3, AP(1))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hull-Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Top-Rocket (36\", A1, Blast(3), Indirect)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Rocket",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Indirect"
+                ]
+              }
+            },
+            {
+              "text": "Top-Missile (36\", A1, AP(2), Deadly(3))",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Missile",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Top-Anti-Air (36\", A3, AP(1), Unstoppable)",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Anti-Air",
+                "count": 1,
+                "range": 36,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": [
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Titan Core (Delayed Action)",
+              "cost": 20,
+              "rules_granted": [
+                "Delayed Action"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Exploration Config (Strider)",
+              "cost": 30,
+              "rules_granted": [
+                "Strider"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Psychic Lord (Caster(3))",
+              "cost": 65,
+              "rules_granted": [
+                "Caster(3)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Energy Field (Regeneration)",
+              "cost": 90,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Knight Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 810,
+      "tough": 24,
+      "special_rules": [
+        "Fear(4)",
+        "Fortified",
+        "Honor Code",
+        "Tough(24)"
+      ],
+      "weapons": [
+        {
+          "name": "Titan Fusion Cannon",
+          "count": 1,
+          "range": 24,
+          "attacks": 2,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(6)"
+          ]
+        },
+        {
+          "name": "Hull-Fuser",
+          "count": 1,
+          "range": 12,
+          "attacks": 1,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(3)"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 8,
+          "ap": 2,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Titan Hammer",
+          "options": [
+            {
+              "text": "Titan Lance (A12, Thrust)",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Lance",
+                "count": 1,
+                "range": null,
+                "attacks": 12,
+                "ap": null,
+                "special_rules": [
+                  "Thrust"
+                ]
+              }
+            },
+            {
+              "text": "Titan Chainsaw (A4, AP(2), Deadly(3))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Chainsaw",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Titan Sword (A12, AP(1), Rending)",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Sword",
+                "count": 1,
+                "range": null,
+                "attacks": 12,
+                "ap": 1,
+                "special_rules": [
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Titan Fist (A9, AP(4))",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Fist",
+                "count": 1,
+                "range": null,
+                "attacks": 9,
+                "ap": 4,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Titan Flail (A12, Reliable, Rending)",
+              "cost": 45,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Flail",
+                "count": 1,
+                "range": null,
+                "attacks": 12,
+                "ap": null,
+                "special_rules": [
+                  "Reliable",
+                  "Rending"
+                ]
+              }
+            },
+            {
+              "text": "Titan Claw (A12, AP(1), Reliable)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Claw",
+                "count": 1,
+                "range": null,
+                "attacks": 12,
+                "ap": 1,
+                "special_rules": [
+                  "Reliable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace Titan Shield",
+          "options": [
+            {
+              "text": "Titan Hammer (A4, AP(1), Blast(3))",
+              "cost": 40,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Hammer",
+                "count": 1,
+                "range": null,
+                "attacks": 4,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Titan Fusion Cannon",
+          "options": [
+            {
+              "text": "Titan Laser Cannon (36\", A3, AP(3), Deadly(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 3,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "(12\", A1, AP(1), Blast(3), Reliable)",
+              "cost": 5,
+              "rules_granted": [],
+              "weapon": null
+            },
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1)), Titan Battle Cannon (30\", A3, AP(2), Blast(3))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Titan Pulse Laser (30\", A9, AP(3))",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Pulse Laser",
+                "count": 1,
+                "range": 30,
+                "attacks": 9,
+                "ap": 3,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Titan Plasma Cannon (30\", A3, AP(4), Blast(3))",
+              "cost": 30,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Plasma Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Disciple of War (Warbound)",
+              "cost": 5,
+              "rules_granted": [
+                "Warbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Lust (Lustbound)",
+              "cost": 35,
+              "rules_granted": [
+                "Lustbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Change (Changebound)",
+              "cost": 50,
+              "rules_granted": [
+                "Changebound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Plague (Plaguebound)",
+              "cost": 55,
+              "rules_granted": [
+                "Plaguebound"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace any Hull-Fuser",
+          "options": [
+            {
+              "text": "Hull-Machinegun (30\", A3, AP(1))",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hull-Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Top-Rocket (36\", A1, Blast(3), Indirect)",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Rocket",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Indirect"
+                ]
+              }
+            },
+            {
+              "text": "Top-Missile (36\", A1, AP(2), Deadly(3))",
+              "cost": 60,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Missile",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Top-Anti-Air (36\", A3, AP(1), Unstoppable)",
+              "cost": 65,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Anti-Air",
+                "count": 1,
+                "range": 36,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": [
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Titan Core (Delayed Action)",
+              "cost": 20,
+              "rules_granted": [
+                "Delayed Action"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Exploration Config (Strider)",
+              "cost": 30,
+              "rules_granted": [
+                "Strider"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Psychic Lord (Caster(3))",
+              "cost": 65,
+              "rules_granted": [
+                "Caster(3)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Energy Field (Regeneration)",
+              "cost": 90,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Duke Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 1105,
+      "tough": 24,
+      "special_rules": [
+        "Fear(4)",
+        "Honor Code",
+        "Relentless",
+        "Tough(24)"
+      ],
+      "weapons": [
+        {
+          "name": "Titan Fusion Cannons",
+          "count": 2,
+          "range": 24,
+          "attacks": 2,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(6)"
+          ]
+        },
+        {
+          "name": "Hull-Fuser",
+          "count": 1,
+          "range": 12,
+          "attacks": 1,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(3)"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 8,
+          "ap": 2,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Replace any Titan Fusion Cannon",
+          "options": [
+            {
+              "text": "Titan Laser Cannon (36\", A3, AP(3), Deadly(3))",
+              "cost": 10,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Laser Cannon",
+                "count": 1,
+                "range": 36,
+                "attacks": 3,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "(12\", A1, AP(1), Blast(3), Reliable)",
+              "cost": 15,
+              "rules_granted": [],
+              "weapon": null
+            },
+            {
+              "text": "Heavy Machinegun (30\", A3, AP(1)), Titan Battle Cannon (30\", A3, AP(2), Blast(3))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Heavy Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Titan Pulse Laser (30\", A9, AP(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Pulse Laser",
+                "count": 1,
+                "range": 30,
+                "attacks": 9,
+                "ap": 3,
+                "special_rules": []
+              }
+            },
+            {
+              "text": "Titan Plasma Cannon (30\", A3, AP(4), Blast(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Plasma Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Disciple of War (Warbound)",
+              "cost": 5,
+              "rules_granted": [
+                "Warbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Lust (Lustbound)",
+              "cost": 35,
+              "rules_granted": [
+                "Lustbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Change (Changebound)",
+              "cost": 50,
+              "rules_granted": [
+                "Changebound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Plague (Plaguebound)",
+              "cost": 55,
+              "rules_granted": [
+                "Plaguebound"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace any Hull-Fuser",
+          "options": [
+            {
+              "text": "Hull-Machinegun (30\", A3, AP(1))",
+              "cost": 20,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Hull-Machinegun",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": []
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Top-Rocket (36\", A1, Blast(3), Indirect)",
+              "cost": 75,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Rocket",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": null,
+                "special_rules": [
+                  "Blast(3)",
+                  "Indirect"
+                ]
+              }
+            },
+            {
+              "text": "Top-Missile (36\", A1, AP(2), Deadly(3))",
+              "cost": 75,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Missile",
+                "count": 1,
+                "range": 36,
+                "attacks": 1,
+                "ap": 2,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Top-Anti-Air (36\", A3, AP(1), Unstoppable)",
+              "cost": 90,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Anti-Air",
+                "count": 1,
+                "range": 36,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": [
+                  "Unstoppable"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Titan Core (Delayed Action)",
+              "cost": 20,
+              "rules_granted": [
+                "Delayed Action"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Exploration Config (Strider)",
+              "cost": 30,
+              "rules_granted": [
+                "Strider"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Psychic Lord (Caster(3))",
+              "cost": 65,
+              "rules_granted": [
+                "Caster(3)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Energy Field (Regeneration)",
+              "cost": 90,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "King Heavy Titan",
+      "size": 1,
+      "quality": 3,
+      "defense": 2,
+      "base_points": 1080,
+      "tough": 30,
+      "special_rules": [
+        "Fear(4)",
+        "Honor Code",
+        "Tough(30)"
+      ],
+      "weapons": [
+        {
+          "name": "Twin Shoulder-Cannon",
+          "count": 1,
+          "range": 24,
+          "attacks": 2,
+          "ap": 1,
+          "special_rules": [
+            "Blast(3)"
+          ]
+        },
+        {
+          "name": "Titan Harpoon Cannons",
+          "count": 2,
+          "range": 18,
+          "attacks": 1,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(9)"
+          ]
+        },
+        {
+          "name": "Twin Hull-Fuser",
+          "count": 1,
+          "range": 12,
+          "attacks": 2,
+          "ap": 4,
+          "special_rules": [
+            "Deadly(3)"
+          ]
+        },
+        {
+          "name": "Stomp",
+          "count": 1,
+          "range": null,
+          "attacks": 10,
+          "ap": 3,
+          "special_rules": []
+        }
+      ],
+      "upgrade_groups": [
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Disciple of War (Warbound)",
+              "cost": 5,
+              "rules_granted": [
+                "Warbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Lust (Lustbound)",
+              "cost": 45,
+              "rules_granted": [
+                "Lustbound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Change (Changebound)",
+              "cost": 65,
+              "rules_granted": [
+                "Changebound"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Disciple of Plague (Plaguebound)",
+              "cost": 75,
+              "rules_granted": [
+                "Plaguebound"
+              ],
+              "weapon": null
+            }
+          ]
+        },
+        {
+          "header": "Replace any Titan Harpoon Cannon",
+          "options": [
+            {
+              "text": "Titan Triple Flamer (18\", A3, AP(1), Blast(3), Reliable)",
+              "cost": 25,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Triple Flamer",
+                "count": 1,
+                "range": 18,
+                "attacks": 3,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)",
+                  "Reliable"
+                ]
+              }
+            },
+            {
+              "text": "Titan Volcano Cannon (30\", A3, AP(3), Deadly(3))",
+              "cost": 85,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Titan Volcano Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            },
+            {
+              "text": "Plasma Battle Cannon (30\", A3, AP(4), Blast(3))",
+              "cost": 125,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Plasma Battle Cannon",
+                "count": 1,
+                "range": 30,
+                "attacks": 3,
+                "ap": 4,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Replace any Twin Shoulder-Cannons",
+          "options": [
+            {
+              "text": "Twin Shoulder-Missile (24\", A2, AP(3), Deadly(3))",
+              "cost": 35,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Twin Shoulder-Missile",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with one",
+          "options": [
+            {
+              "text": "Top-Cannon (24\", A2, AP(1), Blast(3))",
+              "cost": 80,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Cannon",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 1,
+                "special_rules": [
+                  "Blast(3)"
+                ]
+              }
+            },
+            {
+              "text": "Top-Missile (24\", A2, AP(3), Deadly(3))",
+              "cost": 120,
+              "rules_granted": [],
+              "weapon": {
+                "name": "Top-Missile",
+                "count": 1,
+                "range": 24,
+                "attacks": 2,
+                "ap": 3,
+                "special_rules": [
+                  "Deadly(3)"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "header": "Upgrade with any",
+          "options": [
+            {
+              "text": "Titan Core (Delayed Action)",
+              "cost": 20,
+              "rules_granted": [
+                "Delayed Action"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Exploration Config (Strider)",
+              "cost": 35,
+              "rules_granted": [
+                "Strider"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Psychic Lord (Caster(3))",
+              "cost": 65,
+              "rules_granted": [
+                "Caster(3)"
+              ],
+              "weapon": null
+            },
+            {
+              "text": "Energy Field (Regeneration)",
+              "cost": 120,
+              "rules_granted": [
+                "Regeneration"
+              ],
+              "weapon": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "total_units": 8
+}
