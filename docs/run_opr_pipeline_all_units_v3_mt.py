@@ -149,8 +149,12 @@ def load_units_from_json(json_path: str) -> List[Dict[str, Any]]:
                     "pts": opt.get("cost", 0),
                 }
                 # Preserve weapon data if present (used for correct attack values)
-                if opt.get("weapon"):
-                    opt_entry["weapon"] = opt["weapon"]
+                # Handle both new format (weapons array) and old format (weapon singular)
+                if opt.get("weapons"):
+                    opt_entry["weapons"] = opt["weapons"]
+                elif opt.get("weapon"):
+                    # Legacy support: convert single weapon to array
+                    opt_entry["weapons"] = [opt["weapon"]]
                 # Preserve rules_granted if present (pre-parsed special rules)
                 if opt.get("rules_granted"):
                     opt_entry["rules_granted"] = opt["rules_granted"]
@@ -328,10 +332,6 @@ def _clean_rule(rule: str) -> Optional[str]:
     """
     r = norm_ws(rule)
     if not r:
-        return None
-
-    # Filter out numeric-only values (likely page numbers or model count leaks)
-    if re.fullmatch(r'\d+', r):
         return None
 
     # Filter out cost modifiers (+20pts, +55pts, etc.)
@@ -559,13 +559,11 @@ def _extract_rules_from_choice(choice_text: str) -> List[str]:
             # Split by comma (respecting nested parentheses) to handle multi-rule options
             # e.g., "Fear(2), Relentless" -> ["Fear(2)", "Relentless"]
             rules = _split_top_level_commas(inside)
-            # Filter out numeric-only values (likely artifacts)
-            return [r.strip() for r in rules if r.strip() and not re.fullmatch(r'\d+', r.strip())]
+            return [r.strip() for r in rules if r.strip()]
         return []
     # No parentheses: treat whole thing as rule-ish
     t = name_part.strip()
-    # Filter out numeric-only values
-    if t and not re.fullmatch(r'\d+', t):
+    if t:
         return [t]
     return []
 
@@ -573,6 +571,8 @@ def _compute_option_weapon_key(opt: Dict[str, Any]) -> Tuple[str, int, int, List
     """
     Compute the weapon key for an option to enable deduplication.
     Returns: (weapon_key, pts, count, rules)
+
+    Handles both single weapon and multiple weapons (dual-weapon upgrades).
     """
     pts = int(opt.get("pts", 0) or 0)
     txt = str(opt.get("text", "")).strip()
@@ -580,17 +580,27 @@ def _compute_option_weapon_key(opt: Dict[str, Any]) -> Tuple[str, int, int, List
     c, item_name = parse_count_prefix(name_part)
 
     # Try to use structured weapon data first (most reliable)
-    weapon_data = opt.get("weapon")
-    if weapon_data:
-        normalized_name = norm_ws(weapon_data.get("name", item_name)).lower()
-        rng = weapon_data.get("range")
-        attacks = weapon_data.get("attacks", 0)
-        ap = weapon_data.get("ap")
-        special_rules = weapon_data.get("special_rules", [])
-        add_key = f"N={normalized_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
-        if special_rules:
-            tags_sorted = tuple(sorted([x for x in special_rules if x], key=lambda x: x.lower()))
-            add_key += "|T=" + ";".join(tags_sorted)
+    # Handle both new format (weapons array) and legacy format (weapon singular)
+    weapons_data = opt.get("weapons", [])
+    if not weapons_data and opt.get("weapon"):
+        weapons_data = [opt["weapon"]]
+
+    if weapons_data:
+        # Create composite key from all weapons
+        weapon_keys = []
+        for weapon_data in weapons_data:
+            normalized_name = norm_ws(weapon_data.get("name", item_name)).lower()
+            rng = weapon_data.get("range")
+            attacks = weapon_data.get("attacks", 0)
+            ap = weapon_data.get("ap")
+            special_rules = weapon_data.get("special_rules", [])
+            wkey = f"N={normalized_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
+            if special_rules:
+                tags_sorted = tuple(sorted([x for x in special_rules if x], key=lambda x: x.lower()))
+                wkey += "|T=" + ";".join(tags_sorted)
+            weapon_keys.append(wkey)
+        # Sort weapon keys for consistent ordering
+        add_key = "+".join(sorted(weapon_keys))
     elif inside and looks_like_weapon_profile(inside):
         add_key = weapon_key_from_profile(inside, item_name)[0]
     else:
@@ -783,31 +793,41 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                     weapon_delta[target_key] = weapon_delta.get(target_key, 0) - int(slots)
 
                 # Use structured weapon data if available (most reliable)
-                add_key = None
-                weapon_data = o.get("weapon")
-                if weapon_data:
-                    normalized_name = norm_ws(weapon_data.get("name", item_name)).lower()
-                    rng = weapon_data.get("range")
-                    attacks = weapon_data.get("attacks", 0)
-                    ap = weapon_data.get("ap")
-                    special_rules = weapon_data.get("special_rules", [])
-                    add_key = f"N={normalized_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
-                    if special_rules:
-                        tags_sorted = tuple(sorted([x for x in special_rules if x], key=lambda x: x.lower()))
-                        add_key += "|T=" + ";".join(tags_sorted)
+                # Handle both new format (weapons array) and legacy format (weapon singular)
+                weapons_data = o.get("weapons", [])
+                if not weapons_data and o.get("weapon"):
+                    weapons_data = [o["weapon"]]
+
+                add_keys = []
+                if weapons_data:
+                    # Process all weapons in the array (supports dual-weapon upgrades)
+                    for weapon_data in weapons_data:
+                        normalized_name = norm_ws(weapon_data.get("name", item_name)).lower()
+                        rng = weapon_data.get("range")
+                        attacks = weapon_data.get("attacks", 0)
+                        ap = weapon_data.get("ap")
+                        special_rules = weapon_data.get("special_rules", [])
+                        wkey = f"N={normalized_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
+                        if special_rules:
+                            tags_sorted = tuple(sorted([x for x in special_rules if x], key=lambda x: x.lower()))
+                            wkey += "|T=" + ";".join(tags_sorted)
+                        add_keys.append(wkey)
                 elif inside and looks_like_weapon_profile(inside):
-                    add_key = weapon_key_from_profile(inside, item_name)[0]
+                    add_keys.append(weapon_key_from_profile(inside, item_name)[0])
                 else:
                     # For melee weapons without explicit profile, use the weapon name
                     # Normalize name for consistent key generation
                     normalized_name = norm_ws(item_name).lower()
-                    add_key = f"N={normalized_name}|R=|A=0|AP="
+                    add_keys.append(f"N={normalized_name}|R=|A=0|AP=")
 
                 # OPTIMIZATION 3: Skip self-replacements (replacing weapon with itself)
-                if add_key == target_key:
+                # Only skip if ALL weapons are self-replacements
+                if len(add_keys) == 1 and add_keys[0] == target_key:
                     continue  # No actual change - skip this variant
 
-                weapon_delta[add_key] = weapon_delta.get(add_key, 0) + int(c)
+                # Add all weapons from this upgrade
+                for add_key in add_keys:
+                    weapon_delta[add_key] = weapon_delta.get(add_key, 0) + int(c)
 
                 # rules added (if any non-weapon payload)
                 add_rules = o.get("rules_granted") or _extract_rules_from_choice(txt)
@@ -842,30 +862,41 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                         weapon_delta[target_key] = weapon_delta.get(target_key, 0) - 1
 
                     # Use structured weapon data if available (most reliable)
-                    weapon_data = pick.get("weapon")
-                    if weapon_data:
-                        normalized_name = norm_ws(weapon_data.get("name", item_name)).lower()
-                        rng = weapon_data.get("range")
-                        attacks = weapon_data.get("attacks", 0)
-                        ap = weapon_data.get("ap")
-                        special_rules = weapon_data.get("special_rules", [])
-                        add_key = f"N={normalized_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
-                        if special_rules:
-                            tags_sorted = tuple(sorted([x for x in special_rules if x], key=lambda x: x.lower()))
-                            add_key += "|T=" + ";".join(tags_sorted)
+                    # Handle both new format (weapons array) and legacy format (weapon singular)
+                    weapons_data = pick.get("weapons", [])
+                    if not weapons_data and pick.get("weapon"):
+                        weapons_data = [pick["weapon"]]
+
+                    add_keys = []
+                    if weapons_data:
+                        # Process all weapons in the array (supports dual-weapon upgrades)
+                        for weapon_data in weapons_data:
+                            normalized_name = norm_ws(weapon_data.get("name", item_name)).lower()
+                            rng = weapon_data.get("range")
+                            attacks = weapon_data.get("attacks", 0)
+                            ap = weapon_data.get("ap")
+                            special_rules = weapon_data.get("special_rules", [])
+                            wkey = f"N={normalized_name}|R={'' if rng is None else rng}|A={attacks}|AP={'' if ap is None else ap}"
+                            if special_rules:
+                                tags_sorted = tuple(sorted([x for x in special_rules if x], key=lambda x: x.lower()))
+                                wkey += "|T=" + ";".join(tags_sorted)
+                            add_keys.append(wkey)
                     elif inside and looks_like_weapon_profile(inside):
-                        add_key = weapon_key_from_profile(inside, item_name)[0]
+                        add_keys.append(weapon_key_from_profile(inside, item_name)[0])
                     else:
                         # For melee weapons without explicit profile, use the weapon name
                         # Normalize name for consistent key generation
                         normalized_name = norm_ws(item_name).lower()
-                        add_key = f"N={normalized_name}|R=|A=0|AP="
+                        add_keys.append(f"N={normalized_name}|R=|A=0|AP=")
 
                     # OPTIMIZATION 3: Track if this is a self-replacement
-                    if add_key == target_key:
+                    # Only track if ALL weapons are self-replacements
+                    if len(add_keys) == 1 and add_keys[0] == target_key:
                         has_self_replacement = True
 
-                    weapon_delta[add_key] = weapon_delta.get(add_key, 0) + int(c)
+                    # Add all weapons from this upgrade
+                    for add_key in add_keys:
+                        weapon_delta[add_key] = weapon_delta.get(add_key, 0) + int(c)
                     add_rules.extend(pick.get("rules_granted") or _extract_rules_from_choice(txt))
 
                 # Skip variants that only contain self-replacements (no net change)
