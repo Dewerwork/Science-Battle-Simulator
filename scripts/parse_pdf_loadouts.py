@@ -168,6 +168,7 @@ def _is_continuation_line(line: str) -> bool:
 
     Continuation indicators:
     - Starts with a closing parenthesis
+    - Starts with an opening parenthesis followed by weapon profile (e.g., "(24", A2, AP(4))")
     - Starts with a lowercase letter (continuation of rule name)
     - Is just a special rule word that commonly appears at end of profiles
     """
@@ -178,6 +179,11 @@ def _is_continuation_line(line: str) -> bool:
 
     # Starts with closing paren - definitely a continuation
     if line.startswith(')'):
+        return True
+
+    # Starts with opening paren followed by what looks like a weapon profile
+    # e.g., "(24", A2, AP(4))" - this is a continuation of a dual-weapon upgrade
+    if line.startswith('(') and re.search(r'\bA\d+\b', line):
         return True
 
     # Check for orphaned rule fragments like "Precise)", "Deadly)", "Rending)"
@@ -640,6 +646,7 @@ def is_valid_upgrade_option_text(text: str) -> bool:
     - "Precise)" - orphaned closing paren from weapon profile
     - ")" - just a paren
     - "3)" - number with paren
+    - "(24", A2, AP(4))" - orphaned weapon profile (starts with paren)
     - Short fragments that are clearly incomplete
     """
     if not text:
@@ -653,6 +660,11 @@ def is_valid_upgrade_option_text(text: str) -> bool:
 
     # Starts with closing paren - definitely a fragment
     if text.startswith(')'):
+        return False
+
+    # Starts with opening paren - orphaned weapon profile fragment like "(24", A2, AP(4))"
+    # Valid options should start with a name, not a parenthesis
+    if text.startswith('('):
         return False
 
     # Ends with closing paren but no opening paren - orphaned fragment like "Precise)"
