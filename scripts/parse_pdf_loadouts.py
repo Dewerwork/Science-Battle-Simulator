@@ -76,7 +76,7 @@ class UpgradeOption:
     text: str
     cost: int  # 0 for free
     rules_granted: List[str] = field(default_factory=list)
-    weapon: Optional[Weapon] = None
+    weapons: List[Weapon] = field(default_factory=list)  # Supports multiple weapons (e.g., dual-weapon upgrades)
 
 
 @dataclass
@@ -577,19 +577,13 @@ def parse_special_rules(rules_str: str) -> List[str]:
             current += char
         elif char == "," and depth == 0:
             if current.strip():
-                val = current.strip()
-                # Skip numeric-only values (likely page numbers or model count leaks)
-                if not re.fullmatch(r'\d+', val):
-                    rules.append(val)
+                rules.append(current.strip())
             current = ""
         else:
             current += char
 
     if current.strip():
-        val = current.strip()
-        # Skip numeric-only values (likely page numbers or model count leaks)
-        if not re.fullmatch(r'\d+', val):
-            rules.append(val)
+        rules.append(current.strip())
 
     return rules
 
@@ -682,6 +676,10 @@ def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
     Also handles nested structures like:
     'Devourer Titan (Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown), Tough(3)) +220pts'
     where 'Titan Devouring Tongue (...)' is the weapon and 'Tough(3)' is a granted rule.
+
+    Supports dual-weapon upgrades like:
+    'Laser Cannon (36", A1, AP(3), Deadly(3)), Twin Plasma Rifle (24", A2, AP(4)) +75pts'
+    where both weapons are parsed and stored.
     """
     match = COST_RE.match(line)
     if not match:
@@ -698,11 +696,8 @@ def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
     if cost_str != "Free":
         cost = int(cost_str.lstrip("+").rstrip("pts"))
 
-    # Check if option includes a weapon
-    weapon: Optional[Weapon] = None
+    # Check if option includes weapons (may be multiple for dual-weapon upgrades)
     weapons = parse_inline_weapons(text)
-    if weapons:
-        weapon = weapons[0]
 
     # Extract rules granted from parentheses
     rules_granted: List[str] = []
@@ -711,7 +706,7 @@ def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
         # Check if it's a weapon profile (has A# pattern)
         if not re.search(r"\bA\d+\b", rules_str):
             rules_granted = parse_special_rules(rules_str)
-        elif weapon:
+        elif weapons:
             # The outer parens contain a weapon, but there might be rules AFTER the weapon
             # e.g., "Titan Devouring Tongue (18", A3, ..., Takedown), Tough(3)"
             # The granted rules are after the weapon's closing paren
@@ -744,7 +739,7 @@ def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
         text=text,
         cost=cost,
         rules_granted=rules_granted,
-        weapon=weapon
+        weapons=weapons  # Store all parsed weapons, not just the first
     )
 
 
@@ -920,17 +915,14 @@ def parse_upgrade_from_multiline(lines: List[str], start_idx: int) -> Tuple[Opti
                 if not re.search(r'\bA\d+\b', rules_str):
                     rules_granted = parse_special_rules(rules_str)
 
-            # Check if option includes a weapon
-            weapon: Optional[Weapon] = None
+            # Check if option includes weapons (may be multiple for dual-weapon upgrades)
             weapons = parse_inline_weapons(text_line)
-            if weapons:
-                weapon = weapons[0]
 
             return UpgradeOption(
                 text=text_line,
                 cost=cost,
                 rules_granted=rules_granted,
-                weapon=weapon
+                weapons=weapons  # Store all parsed weapons
             ), idx + 1
 
     return None, start_idx
@@ -1121,14 +1113,17 @@ def unit_to_dict(unit: Unit) -> Dict[str, Any]:
                         "text": o.text,
                         "cost": o.cost,
                         "rules_granted": o.rules_granted,
-                        "weapon": {
-                            "name": o.weapon.name,
-                            "count": o.weapon.count,
-                            "range": o.weapon.range_inches,
-                            "attacks": o.weapon.attacks,
-                            "ap": o.weapon.ap,
-                            "special_rules": o.weapon.special_rules
-                        } if o.weapon else None
+                        "weapons": [
+                            {
+                                "name": w.name,
+                                "count": w.count,
+                                "range": w.range_inches,
+                                "attacks": w.attacks,
+                                "ap": w.ap,
+                                "special_rules": w.special_rules
+                            }
+                            for w in o.weapons
+                        ]
                     }
                     for o in g.options
                 ]
