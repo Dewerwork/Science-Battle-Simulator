@@ -220,7 +220,11 @@ def parse_lines_to_entries(lines: List[str], start_line: int = 1) -> List[UnitEn
 
 
 def parse_merged_file(filepath: str) -> List[UnitEntry]:
-    """Parse a merged TXT or JSON file into a list of UnitEntry objects."""
+    """Parse a merged TXT or JSON file into a list of UnitEntry objects.
+
+    Detects JSON content by checking both file extension and file content,
+    so JSON files with .txt extension are handled correctly.
+    """
     entries = []
 
     path = Path(filepath)
@@ -228,11 +232,16 @@ def parse_merged_file(filepath: str) -> List[UnitEntry]:
         print(f"ERROR: File not found: {filepath}")
         return entries
 
-    # Check if it's a JSON file
-    if path.suffix.lower() == '.json':
+    # Read file content first
+    with open(path, 'r', encoding='utf-8-sig') as f:
+        content = f.read()
+
+    # Detect JSON by extension OR by content starting with '{'
+    is_json = path.suffix.lower() == '.json' or content.lstrip().startswith('{')
+
+    if is_json:
         try:
-            with open(path, 'r', encoding='utf-8-sig') as f:
-                data = json.load(f)
+            data = json.loads(content)
 
             # Parse JSON format from merge_all_factions.py
             line_number = 1
@@ -250,9 +259,7 @@ def parse_merged_file(filepath: str) -> List[UnitEntry]:
             print("  Falling back to text parsing...")
 
     # Parse as TXT file
-    with open(path, 'r', encoding='utf-8-sig') as f:
-        lines = f.readlines()
-
+    lines = content.splitlines()
     return parse_lines_to_entries(lines)
 
 
