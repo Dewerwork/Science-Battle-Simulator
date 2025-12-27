@@ -815,10 +815,17 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                 elif inside and looks_like_weapon_profile(inside):
                     add_keys.append(weapon_key_from_profile(inside, item_name)[0])
                 else:
-                    # For melee weapons without explicit profile, use the weapon name
-                    # Normalize name for consistent key generation
-                    normalized_name = norm_ws(item_name).lower()
-                    add_keys.append(f"N={normalized_name}|R=|A=0|AP=")
+                    # Fallback: try to parse weapon profile from the full option text
+                    # This handles cases where weapons array is empty but text has profile
+                    full_match = re.search(r'\(([^)]*\bA\d+[^)]*)\)', txt)
+                    if full_match:
+                        profile_str = full_match.group(1)
+                        add_keys.append(weapon_key_from_profile(profile_str, item_name)[0])
+                    else:
+                        # For melee weapons without explicit profile, use the weapon name
+                        # Normalize name for consistent key generation
+                        normalized_name = norm_ws(item_name).lower()
+                        add_keys.append(f"N={normalized_name}|R=|A=0|AP=")
 
                 # OPTIMIZATION 3: Skip self-replacements (replacing weapon with itself)
                 # Only skip if ALL weapons are self-replacements
@@ -884,10 +891,17 @@ def group_variants(unit: Dict[str, Any], group: Dict[str, Any], name_to_key: Dic
                     elif inside and looks_like_weapon_profile(inside):
                         add_keys.append(weapon_key_from_profile(inside, item_name)[0])
                     else:
-                        # For melee weapons without explicit profile, use the weapon name
-                        # Normalize name for consistent key generation
-                        normalized_name = norm_ws(item_name).lower()
-                        add_keys.append(f"N={normalized_name}|R=|A=0|AP=")
+                        # Fallback: try to parse weapon profile from the full option text
+                        # This handles cases where weapons array is empty but text has profile
+                        full_match = re.search(r'\(([^)]*\bA\d+[^)]*)\)', txt)
+                        if full_match:
+                            profile_str = full_match.group(1)
+                            add_keys.append(weapon_key_from_profile(profile_str, item_name)[0])
+                        else:
+                            # For melee weapons without explicit profile, use the weapon name
+                            # Normalize name for consistent key generation
+                            normalized_name = norm_ws(item_name).lower()
+                            add_keys.append(f"N={normalized_name}|R=|A=0|AP=")
 
                     # OPTIMIZATION 3: Track if this is a self-replacement
                     # Only track if ALL weapons are self-replacements
