@@ -559,11 +559,15 @@ def _extract_rules_from_choice(choice_text: str) -> List[str]:
             # Split by comma (respecting nested parentheses) to handle multi-rule options
             # e.g., "Fear(2), Relentless" -> ["Fear(2)", "Relentless"]
             rules = _split_top_level_commas(inside)
-            return [r.strip() for r in rules if r.strip()]
+            # Filter out numeric-only values (likely artifacts)
+            return [r.strip() for r in rules if r.strip() and not re.fullmatch(r'\d+', r.strip())]
         return []
     # No parentheses: treat whole thing as rule-ish
     t = name_part.strip()
-    return [t] if t else []
+    # Filter out numeric-only values
+    if t and not re.fullmatch(r'\d+', t):
+        return [t]
+    return []
 
 def _compute_option_weapon_key(opt: Dict[str, Any]) -> Tuple[str, int, int, List[str]]:
     """
