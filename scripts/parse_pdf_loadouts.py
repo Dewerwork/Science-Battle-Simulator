@@ -466,6 +466,10 @@ def parse_inline_weapons(equipment_str: str) -> List[Weapon]:
     Handles nested structures like:
     'Devourer Titan (Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown), Tough(3))'
     where the inner 'Titan Devouring Tongue (...)' is the actual weapon.
+
+    Also handles wrapper structures with multiple weapons like:
+    'Sponson-Array (Laser Cannon (36", A1, ...), Heavy Flamer (12", A1, ...), Tough(6))'
+    where ALL inner weapons are extracted.
     """
     weapons: List[Weapon] = []
 
@@ -498,13 +502,15 @@ def parse_inline_weapons(equipment_str: str) -> List[Weapon]:
 
             # Only parse as weapon if profile contains an attack value (A#)
             if re.search(r'\bA\d+\b', profile):
-                # Check if profile contains a NESTED weapon pattern
-                # e.g., "Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown), Tough(3)"
-                # The inner weapon is "Titan Devouring Tongue (18", A3, AP(4), Deadly(3), Takedown)"
-                # We need to find the inner balanced parens that contain A#
-
+                # Check if this is a wrapper structure (like Sponson-Array) containing nested weapons
+                # A wrapper is detected if:
+                # 1. The profile contains nested weapon patterns (Name (profile with A#))
+                # 2. AND the outer name doesn't look like a direct weapon (no range/attacks in outer profile)
                 inner_weapon_match = re.search(r'([A-Za-z][A-Za-z\s\-\']+?)\s*\(', profile)
+
                 if inner_weapon_match:
+                    # Check if the first part of profile looks like a nested weapon name
+                    # If so, this is likely a wrapper - parse ALL weapons inside
                     inner_name = inner_weapon_match.group(1).strip()
                     inner_paren_start = inner_weapon_match.end() - 1
 
@@ -523,25 +529,24 @@ def parse_inline_weapons(equipment_str: str) -> List[Weapon]:
 
                         # Verify the inner profile is a valid weapon profile (has A#)
                         if re.search(r'\bA\d+\b', inner_profile):
-                            count = 1
-                            if count_str:
-                                count = int(count_str.strip().rstrip("x"))
+                            # This is a wrapper structure - recursively parse ALL weapons inside
+                            # The profile contains multiple weapons like:
+                            # "Laser Cannon (...), Heavy Flamer (...), Tough(6)"
+                            inner_weapons = parse_inline_weapons(profile)
+                            if inner_weapons:
+                                # Found nested weapons - add them all
+                                count = 1
+                                if count_str:
+                                    count = int(count_str.strip().rstrip("x"))
+                                # Apply count to all inner weapons if count > 1
+                                for w in inner_weapons:
+                                    if count > 1:
+                                        w.count *= count
+                                    weapons.append(w)
+                                i = j
+                                continue
 
-                            range_inches, attacks, ap, special_rules = parse_weapon_profile(inner_profile)
-
-                            weapons.append(Weapon(
-                                name=inner_name,
-                                count=count,
-                                range_inches=range_inches,
-                                attacks=attacks,
-                                ap=ap,
-                                special_rules=special_rules
-                            ))
-
-                            i = j
-                            continue
-
-                # No inner weapon - parse normally
+                # No inner weapon structure - parse normally as a direct weapon
                 count = 1
                 if count_str:
                     count = int(count_str.strip().rstrip("x"))
@@ -717,35 +722,56 @@ def parse_upgrade_option(line: str) -> Optional[UpgradeOption]:
     if rules_str:
         # Check if it's a weapon profile (has A# pattern)
         if not re.search(r"\bA\d+\b", rules_str):
-            rules_granted = parse_special_rules(rules_str)
+            # Check if rules_str is just a numeric parameter (like "21" in "Transport(21)")
+            # In this case, the whole text IS the rule, not the extracted content
+            if re.fullmatch(r'\d+', rules_str.strip()):
+                # This is a parameterized rule like Transport(21), Tough(6), etc.
+                # The whole text is the rule
+                rules_granted = [text]
+            else:
+                rules_granted = parse_special_rules(rules_str)
         elif weapons:
-            # The outer parens contain a weapon, but there might be rules AFTER the weapon
-            # e.g., "Titan Devouring Tongue (18", A3, ..., Takedown), Tough(3)"
-            # The granted rules are after the weapon's closing paren
+            # The outer parens contain weapons, but there might be rules AFTER the weapons
+            # e.g., "Sponson-Array (Laser Cannon (...), Heavy Flamer (...), Tough(6))"
+            # We need to find rules that come after ALL the weapons
 
-            # Find where the weapon ends in the rules_str
-            # Look for the weapon's profile pattern and find its closing paren
-            inner_match = re.search(r'([A-Za-z][A-Za-z\s\-\']+?)\s*\(', rules_str)
-            if inner_match:
-                inner_paren_start = inner_match.end() - 1
-                # Find matching closing paren
-                depth = 1
-                j = inner_paren_start + 1
-                while j < len(rules_str) and depth > 0:
-                    if rules_str[j] == '(':
-                        depth += 1
-                    elif rules_str[j] == ')':
-                        depth -= 1
-                    j += 1
+            # Extract rules by finding patterns like "RuleName(value)" where value doesn't have A#
+            # Scan through rules_str and collect non-weapon parenthesized items
+            extracted_rules = []
+            scan_pos = 0
+            while scan_pos < len(rules_str):
+                # Look for pattern like "Word(" or "Word-Word("
+                rule_match = re.match(r'([A-Za-z][A-Za-z\s\-\']*?)\s*\(', rules_str[scan_pos:])
+                if rule_match:
+                    rule_name = rule_match.group(1).strip()
+                    paren_start = scan_pos + rule_match.end() - 1
 
-                if depth == 0 and j < len(rules_str):
-                    # Everything after the weapon's closing paren are granted rules
-                    # Skip the closing paren and any comma/space
-                    remaining = rules_str[j:].strip()
-                    if remaining.startswith(','):
-                        remaining = remaining[1:].strip()
-                    if remaining:
-                        rules_granted = parse_special_rules(remaining)
+                    # Find matching closing paren
+                    depth = 1
+                    paren_j = paren_start + 1
+                    while paren_j < len(rules_str) and depth > 0:
+                        if rules_str[paren_j] == '(':
+                            depth += 1
+                        elif rules_str[paren_j] == ')':
+                            depth -= 1
+                        paren_j += 1
+
+                    if depth == 0:
+                        paren_content = rules_str[paren_start + 1:paren_j - 1].strip()
+
+                        # If content has NO A# pattern, this is a rule not a weapon
+                        if not re.search(r'\bA\d+\b', paren_content):
+                            # This is a rule like Tough(6), not a weapon
+                            extracted_rules.append(f"{rule_name}({paren_content})")
+
+                        scan_pos = paren_j
+                    else:
+                        scan_pos += 1
+                else:
+                    scan_pos += 1
+
+            if extracted_rules:
+                rules_granted = extracted_rules
 
     return UpgradeOption(
         text=text,
@@ -919,16 +945,55 @@ def parse_upgrade_from_multiline(lines: List[str], start_idx: int) -> Tuple[Opti
             cost_str = cost_match.group(1)
             cost = 0 if cost_str == "Free" else int(cost_str.lstrip("+").rstrip("pts"))
 
+            # Check if option includes weapons (may be multiple for dual-weapon upgrades)
+            weapons = parse_inline_weapons(text_line)
+
             # Extract rules from parentheses (handles nested parens like "Surprise Attack(3)")
             rules_granted: List[str] = []
             rules_str = extract_parenthesized_content(text_line)
             if rules_str:
                 # Check if it's a weapon profile (has A# pattern)
                 if not re.search(r'\bA\d+\b', rules_str):
-                    rules_granted = parse_special_rules(rules_str)
+                    # Check if rules_str is just a numeric parameter (like "21" in "Transport(21)")
+                    # In this case, the whole text IS the rule, not the extracted content
+                    if re.fullmatch(r'\d+', rules_str.strip()):
+                        # This is a parameterized rule like Transport(21), Tough(6), etc.
+                        rules_granted = [text_line]
+                    else:
+                        rules_granted = parse_special_rules(rules_str)
+                elif weapons:
+                    # The outer parens contain weapons, but there might be rules AFTER the weapons
+                    # e.g., "Sponson-Array (Laser Cannon (...), Heavy Flamer (...), Tough(6))"
+                    # Extract rules by finding patterns like "RuleName(value)" where value doesn't have A#
+                    extracted_rules = []
+                    scan_pos = 0
+                    while scan_pos < len(rules_str):
+                        rule_match = re.match(r'([A-Za-z][A-Za-z\s\-\']*?)\s*\(', rules_str[scan_pos:])
+                        if rule_match:
+                            rule_name = rule_match.group(1).strip()
+                            paren_start = scan_pos + rule_match.end() - 1
 
-            # Check if option includes weapons (may be multiple for dual-weapon upgrades)
-            weapons = parse_inline_weapons(text_line)
+                            depth = 1
+                            paren_j = paren_start + 1
+                            while paren_j < len(rules_str) and depth > 0:
+                                if rules_str[paren_j] == '(':
+                                    depth += 1
+                                elif rules_str[paren_j] == ')':
+                                    depth -= 1
+                                paren_j += 1
+
+                            if depth == 0:
+                                paren_content = rules_str[paren_start + 1:paren_j - 1].strip()
+                                if not re.search(r'\bA\d+\b', paren_content):
+                                    extracted_rules.append(f"{rule_name}({paren_content})")
+                                scan_pos = paren_j
+                            else:
+                                scan_pos += 1
+                        else:
+                            scan_pos += 1
+
+                    if extracted_rules:
+                        rules_granted = extracted_rules
 
             return UpgradeOption(
                 text=text_line,
