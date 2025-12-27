@@ -330,6 +330,10 @@ def _clean_rule(rule: str) -> Optional[str]:
     if not r:
         return None
 
+    # Filter out numeric-only values (likely page numbers or model count leaks)
+    if re.fullmatch(r'\d+', r):
+        return None
+
     # Filter out cost modifiers (+20pts, +55pts, etc.)
     if _COST_MODIFIER_RE.match(r):
         return None
