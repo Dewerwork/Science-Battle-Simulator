@@ -577,13 +577,19 @@ def parse_special_rules(rules_str: str) -> List[str]:
             current += char
         elif char == "," and depth == 0:
             if current.strip():
-                rules.append(current.strip())
+                val = current.strip()
+                # Skip numeric-only values (likely page numbers or model count leaks)
+                if not re.fullmatch(r'\d+', val):
+                    rules.append(val)
             current = ""
         else:
             current += char
 
     if current.strip():
-        rules.append(current.strip())
+        val = current.strip()
+        # Skip numeric-only values (likely page numbers or model count leaks)
+        if not re.fullmatch(r'\d+', val):
+            rules.append(val)
 
     return rules
 
