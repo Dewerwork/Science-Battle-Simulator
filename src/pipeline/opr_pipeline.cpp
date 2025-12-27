@@ -494,6 +494,84 @@ bool looks_like_weapon_profile(const std::string& inside) {
     return std::regex_search(inside, attacks_re) || std::regex_search(inside, ap_re);
 }
 
+// Parse weapon profile from text like: "24", A2, AP(4), Corrosive
+// Returns weapon key string: N=name|R=range|A=attacks|AP=ap|T=tags
+std::string parse_weapon_key_from_profile(const std::string& name, const std::string& profile_text) {
+    std::string normalized_name = OprPipeline::normalize_whitespace(name);
+    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+
+    std::string range_str;
+    int attacks = 1;  // Default to 1 attack if not found
+    std::string ap_str;
+    std::vector<std::string> tags;
+
+    // Split profile by commas, handling parentheses properly
+    std::vector<std::string> parts;
+    std::string current;
+    int paren_depth = 0;
+    for (char c : profile_text) {
+        if (c == '(') paren_depth++;
+        else if (c == ')') paren_depth--;
+
+        if (c == ',' && paren_depth == 0) {
+            if (!current.empty()) {
+                parts.push_back(OprPipeline::normalize_whitespace(current));
+                current.clear();
+            }
+        } else {
+            current += c;
+        }
+    }
+    if (!current.empty()) {
+        parts.push_back(OprPipeline::normalize_whitespace(current));
+    }
+
+    static const std::regex range_re(R"re(^"?(\d+)"?$)re");
+    static const std::regex attacks_re(R"re(^A(\d+)$)re");
+    static const std::regex ap_re(R"re(^AP\(\s*(-?\d+)\s*\)$)re");
+
+    for (const auto& part : parts) {
+        std::smatch match;
+
+        // Check for range (e.g., "24" or just 24")
+        if (std::regex_match(part, match, range_re)) {
+            range_str = match[1].str();
+            continue;
+        }
+
+        // Check for attacks (e.g., A2, A4)
+        if (std::regex_match(part, match, attacks_re)) {
+            attacks = std::stoi(match[1].str());
+            continue;
+        }
+
+        // Check for AP (e.g., AP(2), AP(4))
+        if (std::regex_match(part, match, ap_re)) {
+            ap_str = match[1].str();
+            continue;
+        }
+
+        // Everything else is a special rule/tag
+        if (!part.empty()) {
+            tags.push_back(part);
+        }
+    }
+
+    std::string key = "N=" + normalized_name + "|R=" + range_str + "|A=" + std::to_string(attacks) + "|AP=" + ap_str;
+
+    if (!tags.empty()) {
+        std::sort(tags.begin(), tags.end());
+        std::string tags_str;
+        for (const auto& t : tags) {
+            if (!tags_str.empty()) tags_str += ";";
+            tags_str += t;
+        }
+        key += "|T=" + tags_str;
+    }
+
+    return key;
+}
+
 std::pair<std::string, std::string> split_name_and_parens(const std::string& text) {
     std::string t = OprPipeline::normalize_whitespace(text);
     static const std::regex re(R"(^(.+?)\s*\((.+)\)\s*$)");
@@ -784,10 +862,7 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                     has_weapon_to_add = true;
                 } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
                     // Parse profile from text
-                    std::string normalized_name = normalize_whitespace(item_name);
-                    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
-                    add_key = "N=" + normalized_name + "|R=|A=0|AP=";
-                    // TODO: Parse actual profile values from inside string
+                    add_key = parse_weapon_key_from_profile(item_name, inside);
                     has_weapon_to_add = true;
                 }
                 // If no weapon data and doesn't look like a weapon profile,
@@ -858,9 +933,7 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                             has_weapon_to_add = true;
                         } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
                             // Parse profile from text (fallback for legacy data)
-                            std::string normalized_name = normalize_whitespace(item_name);
-                            std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
-                            add_key = "N=" + normalized_name + "|R=|A=0|AP=";
+                            add_key = parse_weapon_key_from_profile(item_name, inside);
                             has_weapon_to_add = true;
                         }
                         // If no weapon data and doesn't look like a weapon profile,
