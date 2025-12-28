@@ -299,13 +299,12 @@ std::vector<UnitData> OprPipeline::load_units_from_json(const std::filesystem::p
                         option.text = opt.get<std::string>("text", "");
                         option.pts = static_cast<int>(opt.get<int64_t>("cost", 0));
 
-                        // Parse weapon data if present
-                        if (opt.contains("weapon") && opt["weapon"].is_object()) {
-                            const auto& w = opt["weapon"];
+                        // Parse weapons - support both new format (weapons array) and legacy format (weapon singular)
+                        auto parse_weapon_object = [](const auto& w) -> WeaponData {
                             WeaponData weapon;
-                            weapon.count = static_cast<int>(w.get<int64_t>("count", 1));
-                            weapon.name = w.get<std::string>("name", "");
-                            weapon.attacks = static_cast<int>(w.get<int64_t>("attacks", 0));
+                            weapon.count = static_cast<int>(w.template get<int64_t>("count", 1));
+                            weapon.name = w.template get<std::string>("name", "");
+                            weapon.attacks = static_cast<int>(w.template get<int64_t>("attacks", 0));
                             if (w.contains("range") && !w["range"].is_null()) {
                                 int64_t rng = w["range"].as_int();
                                 weapon.range = std::to_string(rng) + "\"";
@@ -322,7 +321,17 @@ std::vector<UnitData> OprPipeline::load_units_from_json(const std::filesystem::p
                                     }
                                 }
                             }
-                            option.weapon = std::move(weapon);
+                            return weapon;
+                        };
+
+                        if (opt.contains("weapons") && opt["weapons"].is_array()) {
+                            // New format: weapons array
+                            for (const auto& w : opt["weapons"].as_array()) {
+                                option.weapons.push_back(parse_weapon_object(w));
+                            }
+                        } else if (opt.contains("weapon") && opt["weapon"].is_object()) {
+                            // Legacy format: single weapon object - convert to array
+                            option.weapons.push_back(parse_weapon_object(opt["weapon"]));
                         }
 
                         // Parse rules_granted if present
@@ -838,41 +847,42 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                     weapon_delta[target_key] -= slots;
                 }
 
-                // Build add key - use structured weapon data if available
-                std::string add_key;
+                // Build weapon keys - use structured weapon data if available
                 bool has_weapon_to_add = false;
-                if (opt.weapon.has_value()) {
+                if (!opt.weapons.empty()) {
                     // Use structured weapon data (most reliable)
-                    const auto& w = *opt.weapon;
-                    std::string normalized_name = normalize_whitespace(w.name);
-                    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
-                    std::string rng_str = (w.range == "-" || w.range.empty()) ? "" : w.range.substr(0, w.range.size() - 1);  // Remove trailing "
-                    std::string ap_str = w.ap.has_value() ? std::to_string(*w.ap) : "";
-                    add_key = "N=" + normalized_name + "|R=" + rng_str + "|A=" + std::to_string(w.attacks) + "|AP=" + ap_str;
-                    if (!w.special_rules.empty()) {
-                        std::vector<std::string> sorted_rules = w.special_rules;
-                        std::sort(sorted_rules.begin(), sorted_rules.end());
-                        std::string tags;
-                        for (const auto& r : sorted_rules) {
-                            if (!tags.empty()) tags += ";";
-                            tags += r;
+                    for (const auto& w : opt.weapons) {
+                        std::string normalized_name = normalize_whitespace(w.name);
+                        std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+                        std::string rng_str = (w.range == "-" || w.range.empty()) ? "" : w.range.substr(0, w.range.size() - 1);  // Remove trailing "
+                        std::string ap_str = w.ap.has_value() ? std::to_string(*w.ap) : "";
+                        std::string add_key = "N=" + normalized_name + "|R=" + rng_str + "|A=" + std::to_string(w.attacks) + "|AP=" + ap_str;
+                        if (!w.special_rules.empty()) {
+                            std::vector<std::string> sorted_rules = w.special_rules;
+                            std::sort(sorted_rules.begin(), sorted_rules.end());
+                            std::string tags;
+                            for (const auto& r : sorted_rules) {
+                                if (!tags.empty()) tags += ";";
+                                tags += r;
+                            }
+                            add_key += "|T=" + tags;
                         }
-                        add_key += "|T=" + tags;
+                        if (add_key != target_key) {  // Skip self-replacement
+                            weapon_delta[add_key] += w.count;
+                        }
+                        has_weapon_to_add = true;
                     }
-                    has_weapon_to_add = true;
                 } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
-                    // Parse profile from text
-                    add_key = parse_weapon_key_from_profile(item_name, inside);
+                    // Parse profile from text (fallback)
+                    std::string add_key = parse_weapon_key_from_profile(item_name, inside);
+                    if (add_key != target_key) {
+                        weapon_delta[add_key] += c;
+                    }
                     has_weapon_to_add = true;
                 }
                 // If no weapon data and doesn't look like a weapon profile,
                 // this is a rule-only upgrade (e.g., "Killing Scream (Breath Attack)")
                 // Don't add a weapon entry - just apply the rules
-
-                if (has_weapon_to_add) {
-                    if (add_key == target_key) continue;  // Self-replacement
-                    weapon_delta[add_key] += c;
-                }
 
                 // Use pre-parsed rules_granted if available
                 auto add_rules = opt.rules_granted.empty()
@@ -910,37 +920,37 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                             weapon_delta[target_key] -= 1;
                         }
 
-                        // Build add key - use structured weapon data if available
-                        std::string add_key;
+                        // Build weapon keys - use structured weapon data if available
                         bool has_weapon_to_add = false;
-                        if (pick->weapon.has_value()) {
-                            const auto& w = *pick->weapon;
-                            std::string normalized_name = normalize_whitespace(w.name);
-                            std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
-                            std::string rng_str = (w.range == "-" || w.range.empty()) ? "" : w.range.substr(0, w.range.size() - 1);
-                            std::string ap_str = w.ap.has_value() ? std::to_string(*w.ap) : "";
-                            add_key = "N=" + normalized_name + "|R=" + rng_str + "|A=" + std::to_string(w.attacks) + "|AP=" + ap_str;
-                            if (!w.special_rules.empty()) {
-                                std::vector<std::string> sorted_rules = w.special_rules;
-                                std::sort(sorted_rules.begin(), sorted_rules.end());
-                                std::string tags;
-                                for (const auto& r : sorted_rules) {
-                                    if (!tags.empty()) tags += ";";
-                                    tags += r;
+                        if (!pick->weapons.empty()) {
+                            // Use structured weapon data (most reliable)
+                            for (const auto& w : pick->weapons) {
+                                std::string normalized_name = normalize_whitespace(w.name);
+                                std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+                                std::string rng_str = (w.range == "-" || w.range.empty()) ? "" : w.range.substr(0, w.range.size() - 1);
+                                std::string ap_str = w.ap.has_value() ? std::to_string(*w.ap) : "";
+                                std::string add_key = "N=" + normalized_name + "|R=" + rng_str + "|A=" + std::to_string(w.attacks) + "|AP=" + ap_str;
+                                if (!w.special_rules.empty()) {
+                                    std::vector<std::string> sorted_rules = w.special_rules;
+                                    std::sort(sorted_rules.begin(), sorted_rules.end());
+                                    std::string tags;
+                                    for (const auto& r : sorted_rules) {
+                                        if (!tags.empty()) tags += ";";
+                                        tags += r;
+                                    }
+                                    add_key += "|T=" + tags;
                                 }
-                                add_key += "|T=" + tags;
+                                weapon_delta[add_key] += w.count;
+                                has_weapon_to_add = true;
                             }
-                            has_weapon_to_add = true;
                         } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
                             // Parse profile from text (fallback for legacy data)
-                            add_key = parse_weapon_key_from_profile(item_name, inside);
+                            std::string add_key = parse_weapon_key_from_profile(item_name, inside);
+                            weapon_delta[add_key] += c;
                             has_weapon_to_add = true;
                         }
                         // If no weapon data and doesn't look like a weapon profile,
                         // this is a rule-only upgrade - don't add a weapon entry
-                        if (has_weapon_to_add) {
-                            weapon_delta[add_key] += c;
-                        }
 
                         // Use pre-parsed rules_granted if available
                         auto rules = pick->rules_granted.empty()
