@@ -299,31 +299,39 @@ std::vector<UnitData> OprPipeline::load_units_from_json(const std::filesystem::p
                         option.text = opt.get<std::string>("text", "");
                         option.pts = static_cast<int>(opt.get<int64_t>("cost", 0));
 
-                        // Parse weapons array if present
-                        if (opt.contains("weapons") && opt["weapons"].is_array()) {
-                            for (const auto& w : opt["weapons"].as_array()) {
-                                WeaponData weapon;
-                                weapon.count = static_cast<int>(w.get<int64_t>("count", 1));
-                                weapon.name = w.get<std::string>("name", "");
-                                weapon.attacks = static_cast<int>(w.get<int64_t>("attacks", 0));
-                                if (w.contains("range") && !w["range"].is_null()) {
-                                    int64_t rng = w["range"].as_int();
-                                    weapon.range = std::to_string(rng) + "\"";
-                                } else {
-                                    weapon.range = "-";
-                                }
-                                if (w.contains("ap") && !w["ap"].is_null()) {
-                                    weapon.ap = static_cast<int>(w["ap"].as_int());
-                                }
-                                if (w.contains("special_rules") && w["special_rules"].is_array()) {
-                                    for (const auto& rule : w["special_rules"].as_array()) {
-                                        if (rule.is_string()) {
-                                            weapon.special_rules.push_back(rule.as_string());
-                                        }
+                        // Parse weapons - support both new format (weapons array) and legacy format (weapon singular)
+                        auto parse_weapon_object = [](const auto& w) -> WeaponData {
+                            WeaponData weapon;
+                            weapon.count = static_cast<int>(w.template get<int64_t>("count", 1));
+                            weapon.name = w.template get<std::string>("name", "");
+                            weapon.attacks = static_cast<int>(w.template get<int64_t>("attacks", 0));
+                            if (w.contains("range") && !w["range"].is_null()) {
+                                int64_t rng = w["range"].as_int();
+                                weapon.range = std::to_string(rng) + "\"";
+                            } else {
+                                weapon.range = "-";
+                            }
+                            if (w.contains("ap") && !w["ap"].is_null()) {
+                                weapon.ap = static_cast<int>(w["ap"].as_int());
+                            }
+                            if (w.contains("special_rules") && w["special_rules"].is_array()) {
+                                for (const auto& rule : w["special_rules"].as_array()) {
+                                    if (rule.is_string()) {
+                                        weapon.special_rules.push_back(rule.as_string());
                                     }
                                 }
-                                option.weapons.push_back(std::move(weapon));
                             }
+                            return weapon;
+                        };
+
+                        if (opt.contains("weapons") && opt["weapons"].is_array()) {
+                            // New format: weapons array
+                            for (const auto& w : opt["weapons"].as_array()) {
+                                option.weapons.push_back(parse_weapon_object(w));
+                            }
+                        } else if (opt.contains("weapon") && opt["weapon"].is_object()) {
+                            // Legacy format: single weapon object - convert to array
+                            option.weapons.push_back(parse_weapon_object(opt["weapon"]));
                         }
 
                         // Parse rules_granted if present
