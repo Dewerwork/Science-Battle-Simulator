@@ -11,6 +11,8 @@
 #include <sstream>
 #include <regex>
 #include <unordered_map>
+#include <algorithm>
+#include <cctype>
 
 namespace battle {
 
@@ -36,11 +38,14 @@ public:
         size_t units_parsed = 0;
     };
 
-    // Parse a file containing multiple units
+    // Parse a file containing multiple units (auto-detects JSON or text format)
     static ParseResult parse_file(const std::string& filepath, std::string_view faction_name = "");
 
-    // Parse a string containing multiple units
+    // Parse a string containing multiple units (text format)
     static ParseResult parse_string(const std::string& content, std::string_view faction_name = "");
+
+    // Parse a JSON string containing units
+    static ParseResult parse_json_string(const std::string& content, std::string_view faction_name = "");
 
     // Parse a single unit from two lines (header + weapons)
     static std::optional<Unit> parse_unit(std::string_view header_line,
@@ -48,6 +53,23 @@ public:
                                           std::string_view faction_name = "");
 
 private:
+    // Check if content looks like JSON
+    static bool is_json_content(const std::string& content);
+
+    // Simple JSON value extraction helpers
+    static std::string json_get_string(const std::string& json, const std::string& key);
+    static int json_get_int(const std::string& json, const std::string& key, int default_val = 0);
+    static std::vector<std::string> json_get_string_array(const std::string& json, const std::string& key);
+    static std::vector<std::string> json_get_object_array(const std::string& json, const std::string& key);
+    static std::string find_json_array(const std::string& json, const std::string& key);
+
+    // Parse a single unit from JSON object string
+    static std::optional<Unit> parse_unit_from_json(const std::string& json_obj, std::string_view faction_name);
+
+    // Parse a weapon from JSON object string
+    static std::optional<Weapon> parse_weapon_from_json(const std::string& json_obj);
+
+
     // Parse the header line: "UnitName [count] QX+ DX+ | Xpts | Rules..."
     static bool parse_header(std::string_view line, Unit& unit);
 
@@ -507,6 +529,7 @@ inline UnitParser::ParseResult UnitParser::parse_file(const std::string& filepat
 
     std::stringstream buffer;
     buffer << file.rdbuf();
+    std::string content = buffer.str();
 
     // Try to extract faction name from filename if not provided
     std::string faction;
@@ -514,13 +537,16 @@ inline UnitParser::ParseResult UnitParser::parse_file(const std::string& filepat
         // Extract from filename:
         // "Blessed_Sisters_pipeline.final.merged.txt" -> "Blessed Sisters"
         // "Blessed_Sisters.reduced.txt" -> "Blessed Sisters"
+        // "all_faction.reduced.json" -> "all faction"
         size_t last_slash = filepath.find_last_of("/\\");
         std::string filename = (last_slash == std::string::npos) ? filepath : filepath.substr(last_slash + 1);
 
         // Remove extension and pipeline/reduced suffix
-        size_t pos = filename.find(".reduced.txt");
+        size_t pos = filename.find(".reduced.json");
+        if (pos == std::string::npos) pos = filename.find(".reduced.txt");
         if (pos == std::string::npos) pos = filename.find("_pipeline");
         if (pos == std::string::npos) pos = filename.find(".final.merged");
+        if (pos == std::string::npos) pos = filename.find(".json");
         if (pos == std::string::npos) pos = filename.find(".txt");
         if (pos == std::string::npos) pos = filename.find(".");
         if (pos != std::string::npos) {
@@ -533,7 +559,305 @@ inline UnitParser::ParseResult UnitParser::parse_file(const std::string& filepat
         faction = std::string(faction_name);
     }
 
-    return parse_string(buffer.str(), faction);
+    // Auto-detect JSON format
+    if (is_json_content(content)) {
+        return parse_json_string(content, faction);
+    }
+
+    return parse_string(content, faction);
+}
+
+// ==============================================================================
+// JSON Parsing Implementation
+// ==============================================================================
+
+inline bool UnitParser::is_json_content(const std::string& content) {
+    // Skip whitespace and check if content starts with '{'
+    for (char c : content) {
+        if (std::isspace(c)) continue;
+        return c == '{';
+    }
+    return false;
+}
+
+inline std::string UnitParser::json_get_string(const std::string& json, const std::string& key) {
+    // Find "key": "value" pattern
+    std::string search = "\"" + key + "\"";
+    size_t pos = json.find(search);
+    if (pos == std::string::npos) return "";
+
+    pos = json.find(':', pos + search.length());
+    if (pos == std::string::npos) return "";
+
+    // Skip whitespace and find opening quote
+    pos++;
+    while (pos < json.length() && std::isspace(json[pos])) pos++;
+    if (pos >= json.length() || json[pos] != '"') return "";
+
+    pos++; // Skip opening quote
+    size_t end = pos;
+    while (end < json.length() && json[end] != '"') {
+        if (json[end] == '\\' && end + 1 < json.length()) {
+            end += 2; // Skip escaped character
+        } else {
+            end++;
+        }
+    }
+
+    return json.substr(pos, end - pos);
+}
+
+inline int UnitParser::json_get_int(const std::string& json, const std::string& key, int default_val) {
+    // Find "key": number pattern
+    std::string search = "\"" + key + "\"";
+    size_t pos = json.find(search);
+    if (pos == std::string::npos) return default_val;
+
+    pos = json.find(':', pos + search.length());
+    if (pos == std::string::npos) return default_val;
+
+    // Skip whitespace and find number
+    pos++;
+    while (pos < json.length() && std::isspace(json[pos])) pos++;
+    if (pos >= json.length()) return default_val;
+
+    // Handle negative numbers
+    bool negative = false;
+    if (json[pos] == '-') {
+        negative = true;
+        pos++;
+    }
+
+    if (!std::isdigit(json[pos])) return default_val;
+
+    int value = 0;
+    while (pos < json.length() && std::isdigit(json[pos])) {
+        value = value * 10 + (json[pos] - '0');
+        pos++;
+    }
+
+    return negative ? -value : value;
+}
+
+inline std::vector<std::string> UnitParser::json_get_string_array(const std::string& json, const std::string& key) {
+    std::vector<std::string> result;
+
+    std::string array_content = find_json_array(json, key);
+    if (array_content.empty()) return result;
+
+    // Parse strings from array
+    size_t pos = 0;
+    while (pos < array_content.length()) {
+        // Find opening quote
+        size_t start = array_content.find('"', pos);
+        if (start == std::string::npos) break;
+
+        start++; // Skip quote
+        size_t end = start;
+        while (end < array_content.length() && array_content[end] != '"') {
+            if (array_content[end] == '\\' && end + 1 < array_content.length()) {
+                end += 2;
+            } else {
+                end++;
+            }
+        }
+
+        result.push_back(array_content.substr(start, end - start));
+        pos = end + 1;
+    }
+
+    return result;
+}
+
+inline std::string UnitParser::find_json_array(const std::string& json, const std::string& key) {
+    std::string search = "\"" + key + "\"";
+    size_t pos = json.find(search);
+    if (pos == std::string::npos) return "";
+
+    pos = json.find(':', pos + search.length());
+    if (pos == std::string::npos) return "";
+
+    // Skip whitespace and find opening bracket
+    pos++;
+    while (pos < json.length() && std::isspace(json[pos])) pos++;
+    if (pos >= json.length() || json[pos] != '[') return "";
+
+    // Find matching closing bracket
+    size_t start = pos + 1;
+    int depth = 1;
+    pos++;
+    while (pos < json.length() && depth > 0) {
+        if (json[pos] == '[') depth++;
+        else if (json[pos] == ']') depth--;
+        else if (json[pos] == '"') {
+            // Skip string content
+            pos++;
+            while (pos < json.length() && json[pos] != '"') {
+                if (json[pos] == '\\' && pos + 1 < json.length()) pos++;
+                pos++;
+            }
+        }
+        pos++;
+    }
+
+    return json.substr(start, pos - start - 1);
+}
+
+inline std::vector<std::string> UnitParser::json_get_object_array(const std::string& json, const std::string& key) {
+    std::vector<std::string> result;
+
+    std::string array_content = find_json_array(json, key);
+    if (array_content.empty()) return result;
+
+    // Parse objects from array
+    size_t pos = 0;
+    while (pos < array_content.length()) {
+        // Find opening brace
+        size_t start = array_content.find('{', pos);
+        if (start == std::string::npos) break;
+
+        // Find matching closing brace
+        int depth = 1;
+        size_t end = start + 1;
+        while (end < array_content.length() && depth > 0) {
+            if (array_content[end] == '{') depth++;
+            else if (array_content[end] == '}') depth--;
+            else if (array_content[end] == '"') {
+                // Skip string content
+                end++;
+                while (end < array_content.length() && array_content[end] != '"') {
+                    if (array_content[end] == '\\' && end + 1 < array_content.length()) end++;
+                    end++;
+                }
+            }
+            end++;
+        }
+
+        result.push_back(array_content.substr(start, end - start));
+        pos = end;
+    }
+
+    return result;
+}
+
+inline std::optional<Weapon> UnitParser::parse_weapon_from_json(const std::string& json_obj) {
+    Weapon weapon;
+
+    std::string name = json_get_string(json_obj, "name");
+    if (name.empty()) return std::nullopt;
+
+    weapon.name = Name(name);
+    weapon.attacks = static_cast<u8>(json_get_int(json_obj, "attacks", 1));
+    weapon.ap = static_cast<u8>(json_get_int(json_obj, "ap", 0));
+    weapon.range = static_cast<u8>(json_get_int(json_obj, "range", 0));
+
+    // Parse special rules
+    auto specials = json_get_string_array(json_obj, "special");
+    for (const auto& special : specials) {
+        if (auto rule = parse_rule(special)) {
+            weapon.add_rule(rule->id, rule->value);
+        }
+    }
+
+    return weapon;
+}
+
+inline std::optional<Unit> UnitParser::parse_unit_from_json(const std::string& json_obj,
+                                                             std::string_view faction_name) {
+    Unit unit;
+
+    std::string name = json_get_string(json_obj, "name");
+    if (name.empty()) return std::nullopt;
+
+    unit.name = Name(name);
+    unit.faction = Name(faction_name);
+
+    // Get bucket hash if present
+    std::string bucket_hash = json_get_string(json_obj, "bucket_hash");
+    if (!bucket_hash.empty()) {
+        unit.set_bucket_hash(bucket_hash);
+    }
+
+    unit.model_count = static_cast<u8>(json_get_int(json_obj, "size", 1));
+    unit.quality = static_cast<u8>(json_get_int(json_obj, "quality", 4));
+    unit.defense = static_cast<u8>(json_get_int(json_obj, "defense", 4));
+    unit.points_cost = static_cast<u16>(json_get_int(json_obj, "points", 0));
+
+    // Create models
+    for (u8 i = 0; i < unit.model_count && i < MAX_MODELS_PER_UNIT; ++i) {
+        Model model;
+        model.quality = unit.quality;
+        model.defense = unit.defense;
+        model.tough = 1;
+        unit.models[i] = model;
+    }
+    unit.alive_count = unit.model_count;
+
+    // Parse rules
+    auto rules = json_get_string_array(json_obj, "rules");
+    for (const auto& rule_str : rules) {
+        if (auto rule = parse_rule(rule_str)) {
+            unit.add_rule(rule->id, rule->value);
+
+            if (rule->id == RuleId::Tough) {
+                for (u8 i = 0; i < unit.model_count; ++i) {
+                    unit.models[i].tough = rule->value;
+                }
+            } else if (rule->id == RuleId::Hero) {
+                if (unit.model_count > 0) {
+                    unit.models[0].is_hero = true;
+                }
+            }
+        }
+    }
+
+    // Parse weapons
+    auto weapons = json_get_object_array(json_obj, "weapons");
+    for (const auto& weapon_json : weapons) {
+        if (auto weapon = parse_weapon_from_json(weapon_json)) {
+            // Handle weapon count (multiple of same weapon)
+            int count = json_get_int(weapon_json, "count", 1);
+            for (int i = 0; i < count; ++i) {
+                u8 idx = unit.add_weapon(*weapon);
+                if (unit.model_count > 0) {
+                    unit.models[0].add_weapon(idx);
+                }
+            }
+        }
+    }
+
+    // Compute AI type based on weapons
+    unit.compute_ai_type();
+
+    return unit;
+}
+
+inline UnitParser::ParseResult UnitParser::parse_json_string(const std::string& content,
+                                                              std::string_view faction_name) {
+    ParseResult result;
+
+    // Find the "units" array
+    auto unit_objects = json_get_object_array(content, "units");
+
+    if (unit_objects.empty()) {
+        result.errors.push_back("No 'units' array found in JSON");
+        return result;
+    }
+
+    u32 unit_id = 0;
+    for (const auto& unit_json : unit_objects) {
+        result.lines_processed++;
+
+        if (auto unit = parse_unit_from_json(unit_json, faction_name)) {
+            unit->unit_id = unit_id++;
+            result.units.push_back(std::move(*unit));
+            result.units_parsed++;
+        } else {
+            result.errors.push_back("Failed to parse unit from JSON object");
+        }
+    }
+
+    return result;
 }
 
 } // namespace battle
