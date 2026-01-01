@@ -364,25 +364,23 @@ inline std::optional<Weapon> UnitParser::parse_weapon(std::string_view weapon_st
 inline bool UnitParser::parse_header(std::string_view line, Unit& unit) {
     // Format: "UnitName [count] QX+ DX+ | Xpts | Rules..."
     // Reduced format: "UnitName [BKT:XXXXXXXX] [count] QX+ DX+ | Xpts | Rules..."
-    // Example: "Assault Walker [1] Q4+ D2+ | 350pts | Devout, Fear(2), Fearless"
-    // Reduced: "Assault Walker [BKT:A1B2C3D4] [1] Q4+ D2+ | 350pts | Devout, Fear(2)"
+    // Merged format: "UnitName [FID:XXXXXXXX] [count] QX+ DX+ | Xpts | Rules..."
+    // Full format: "UnitName [FID:XXXXXXXX] [BKT:YYYYYYYY] [count] QX+ DX+ | Xpts | Rules..."
 
     std::string line_str(line);
-
-    // Try reduced format first (with bucket hash)
-    std::regex reduced_re(R"(^(.+?)\s*\[BKT:([A-Fa-f0-9]{8})\]\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
     std::smatch match;
 
-    if (std::regex_match(line_str, match, reduced_re)) {
-        // Reduced format with bucket hash
+    // Try format with both FID and BKT tags
+    std::regex fid_bkt_re(R"(^(.+?)\s*\[FID:([A-Fa-f0-9]{8})\]\s*\[BKT:([A-Fa-f0-9]{8})\]\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
+    if (std::regex_match(line_str, match, fid_bkt_re)) {
         unit.name = Name(trim(match[1].str()));
-        unit.set_bucket_hash(match[2].str());
-        unit.model_count = static_cast<u8>(std::stoi(match[3].str()));
-        unit.quality = static_cast<u8>(std::stoi(match[4].str()));
-        unit.defense = static_cast<u8>(std::stoi(match[5].str()));
-        unit.points_cost = static_cast<u16>(std::stoi(match[6].str()));
+        // FID is match[2] - faction ID, not used here (faction set by caller)
+        unit.set_bucket_hash(match[3].str());
+        unit.model_count = static_cast<u8>(std::stoi(match[4].str()));
+        unit.quality = static_cast<u8>(std::stoi(match[5].str()));
+        unit.defense = static_cast<u8>(std::stoi(match[6].str()));
+        unit.points_cost = static_cast<u16>(std::stoi(match[7].str()));
 
-        // Create models
         for (u8 i = 0; i < unit.model_count && i < MAX_MODELS_PER_UNIT; ++i) {
             Model model;
             model.quality = unit.quality;
@@ -391,41 +389,75 @@ inline bool UnitParser::parse_header(std::string_view line, Unit& unit) {
             unit.models[i] = model;
         }
         unit.alive_count = unit.model_count;
-
-        // Parse rules
-        std::string rules_str = match[7].str();
-        parse_rules(rules_str, unit);
-
+        parse_rules(match[8].str(), unit);
         return true;
     }
 
-    // Fall back to original format (no bucket hash)
-    std::regex header_re(R"(^(.+?)\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
+    // Try format with FID tag only (from merge_all_factions.py)
+    std::regex fid_re(R"(^(.+?)\s*\[FID:([A-Fa-f0-9]{8})\]\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
+    if (std::regex_match(line_str, match, fid_re)) {
+        unit.name = Name(trim(match[1].str()));
+        // FID is match[2] - faction ID, not used here (faction set by caller)
+        unit.model_count = static_cast<u8>(std::stoi(match[3].str()));
+        unit.quality = static_cast<u8>(std::stoi(match[4].str()));
+        unit.defense = static_cast<u8>(std::stoi(match[5].str()));
+        unit.points_cost = static_cast<u16>(std::stoi(match[6].str()));
 
+        for (u8 i = 0; i < unit.model_count && i < MAX_MODELS_PER_UNIT; ++i) {
+            Model model;
+            model.quality = unit.quality;
+            model.defense = unit.defense;
+            model.tough = 1;
+            unit.models[i] = model;
+        }
+        unit.alive_count = unit.model_count;
+        parse_rules(match[7].str(), unit);
+        return true;
+    }
+
+    // Try reduced format (BKT tag only)
+    std::regex reduced_re(R"(^(.+?)\s*\[BKT:([A-Fa-f0-9]{8})\]\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
+    if (std::regex_match(line_str, match, reduced_re)) {
+        unit.name = Name(trim(match[1].str()));
+        unit.set_bucket_hash(match[2].str());
+        unit.model_count = static_cast<u8>(std::stoi(match[3].str()));
+        unit.quality = static_cast<u8>(std::stoi(match[4].str()));
+        unit.defense = static_cast<u8>(std::stoi(match[5].str()));
+        unit.points_cost = static_cast<u16>(std::stoi(match[6].str()));
+
+        for (u8 i = 0; i < unit.model_count && i < MAX_MODELS_PER_UNIT; ++i) {
+            Model model;
+            model.quality = unit.quality;
+            model.defense = unit.defense;
+            model.tough = 1;
+            unit.models[i] = model;
+        }
+        unit.alive_count = unit.model_count;
+        parse_rules(match[7].str(), unit);
+        return true;
+    }
+
+    // Fall back to original format (no tags)
+    std::regex header_re(R"(^(.+?)\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
     if (!std::regex_match(line_str, match, header_re)) {
         return false;
     }
 
-    // Extract components
     unit.name = Name(trim(match[1].str()));
     unit.model_count = static_cast<u8>(std::stoi(match[2].str()));
     unit.quality = static_cast<u8>(std::stoi(match[3].str()));
     unit.defense = static_cast<u8>(std::stoi(match[4].str()));
     unit.points_cost = static_cast<u16>(std::stoi(match[5].str()));
 
-    // Create models
     for (u8 i = 0; i < unit.model_count && i < MAX_MODELS_PER_UNIT; ++i) {
         Model model;
         model.quality = unit.quality;
         model.defense = unit.defense;
-        model.tough = 1; // Default, will be overwritten by Tough rule
+        model.tough = 1;
         unit.models[i] = model;
     }
     unit.alive_count = unit.model_count;
-
-    // Parse rules
-    std::string rules_str = match[6].str();
-    parse_rules(rules_str, unit);
+    parse_rules(match[6].str(), unit);
 
     return true;
 }
@@ -770,7 +802,14 @@ inline std::optional<Unit> UnitParser::parse_unit_from_json(const std::string& j
     if (name.empty()) return std::nullopt;
 
     unit.name = Name(name);
-    unit.faction = Name(faction_name);
+
+    // Check for per-unit faction field first, then fall back to provided faction_name
+    std::string unit_faction = json_get_string(json_obj, "faction");
+    if (!unit_faction.empty()) {
+        unit.faction = Name(unit_faction);
+    } else {
+        unit.faction = Name(faction_name);
+    }
 
     // Get bucket hash if present
     std::string bucket_hash = json_get_string(json_obj, "bucket_hash");
@@ -836,11 +875,58 @@ inline UnitParser::ParseResult UnitParser::parse_json_string(const std::string& 
                                                               std::string_view faction_name) {
     ParseResult result;
 
-    // Find the "units" array
+    // Check for "factions" array format (from merge_all_factions.py)
+    // This format has: { "factions": [ { "name": "...", "units": ["text lines..."] } ] }
+    auto faction_objects = json_get_object_array(content, "factions");
+
+    if (!faction_objects.empty()) {
+        // Parse factions format - each faction contains text-based unit lines
+        u32 unit_id = 0;
+
+        for (const auto& faction_json : faction_objects) {
+            std::string current_faction = json_get_string(faction_json, "name");
+
+            // Get the "units" array which contains text lines (not structured objects)
+            auto unit_lines = json_get_string_array(faction_json, "units");
+
+            // Parse unit lines in pairs (header + weapons)
+            std::string pending_header;
+            for (const auto& line : unit_lines) {
+                result.lines_processed++;
+
+                if (line.empty()) {
+                    pending_header.clear();
+                    continue;
+                }
+
+                // Check if this looks like a header line
+                bool looks_like_header = (line.find('[') != std::string::npos &&
+                                          line.find(']') != std::string::npos &&
+                                          line.find("pts") != std::string::npos);
+
+                if (looks_like_header) {
+                    pending_header = line;
+                } else if (!pending_header.empty()) {
+                    // This should be the weapons line
+                    if (auto unit = parse_unit(pending_header, line, current_faction)) {
+                        unit->unit_id = unit_id++;
+                        result.units.push_back(std::move(*unit));
+                        result.units_parsed++;
+                    }
+                    pending_header.clear();
+                }
+            }
+        }
+
+        return result;
+    }
+
+    // Fall back to "units" array format (from bucket_reduced_to_json.py)
+    // This format has: { "units": [ { "name": "...", "size": 1, ... } ] }
     auto unit_objects = json_get_object_array(content, "units");
 
     if (unit_objects.empty()) {
-        result.errors.push_back("No 'units' array found in JSON");
+        result.errors.push_back("No 'units' or 'factions' array found in JSON");
         return result;
     }
 
