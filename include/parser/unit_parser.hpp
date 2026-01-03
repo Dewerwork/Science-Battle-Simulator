@@ -374,7 +374,7 @@ inline bool UnitParser::parse_header(std::string_view line, Unit& unit) {
     std::regex fid_bkt_re(R"(^(.+?)\s*\[FID:([A-Fa-f0-9]{8})\]\s*\[BKT:([A-Fa-f0-9]{8})\]\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
     if (std::regex_match(line_str, match, fid_bkt_re)) {
         unit.name = Name(trim(match[1].str()));
-        // FID is match[2] - faction ID, not used here (faction set by caller)
+        unit.set_faction_id(match[2].str());
         unit.set_bucket_hash(match[3].str());
         unit.model_count = static_cast<u8>(std::stoi(match[4].str()));
         unit.quality = static_cast<u8>(std::stoi(match[5].str()));
@@ -397,7 +397,7 @@ inline bool UnitParser::parse_header(std::string_view line, Unit& unit) {
     std::regex fid_re(R"(^(.+?)\s*\[FID:([A-Fa-f0-9]{8})\]\s*\[(\d+)\]\s*Q(\d)\+\s*D(\d)\+\s*\|\s*(\d+)\s*pts\s*\|\s*(.*)$)");
     if (std::regex_match(line_str, match, fid_re)) {
         unit.name = Name(trim(match[1].str()));
-        // FID is match[2] - faction ID, not used here (faction set by caller)
+        unit.set_faction_id(match[2].str());
         unit.model_count = static_cast<u8>(std::stoi(match[3].str()));
         unit.quality = static_cast<u8>(std::stoi(match[4].str()));
         unit.defense = static_cast<u8>(std::stoi(match[5].str()));
