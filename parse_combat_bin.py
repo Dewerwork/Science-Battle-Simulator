@@ -147,7 +147,7 @@ class CombatHeader:
 class CombatLog:
     """Complete combat log with header and events."""
     header: CombatHeader
-    events: list[CombatEvent]
+    events: List[CombatEvent]
 
 
 # ==============================================================================
@@ -207,7 +207,7 @@ def write_event(f: BinaryIO, event: CombatEvent) -> None:
     f.write(data_bytes)
 
 
-def read_event(f: BinaryIO) -> CombatEvent | None:
+def read_event(f: BinaryIO) -> Optional[CombatEvent]:
     """Read a single event from binary format."""
     header_data = f.read(6)
     if len(header_data) < 6:
@@ -350,19 +350,19 @@ def read_combat_log(filepath: Path) -> CombatLog:
 # Sample Combat Generation
 # ==============================================================================
 
-def roll_d6(count: int = 1) -> list[int]:
+def roll_d6(count: int = 1) -> List[int]:
     """Roll D6 dice."""
     return [random.randint(1, 6) for _ in range(count)]
 
 
-def count_successes(rolls: list[int], target: int) -> int:
+def count_successes(rolls: List[int], target: int) -> int:
     """Count dice that meet or exceed target."""
     return sum(1 for r in rolls if r >= target)
 
 
 def generate_sample_combat() -> CombatLog:
     """Generate a sample combat between two units."""
-    events: list[CombatEvent] = []
+    events: List[CombatEvent] = []
     timestamp = 0
 
     def add_event(event_type: EventType, desc: str, round_num: int = 0, **data) -> None:
@@ -879,7 +879,7 @@ def get_event_icon(event_type: EventType) -> str:
     return icons.get(event_type, "   ")
 
 
-def format_dice_rolls(rolls: list[int], target: int) -> str:
+def format_dice_rolls(rolls: List[int], target: int) -> str:
     """Format dice rolls with highlighting for successes."""
     result = []
     for r in rolls:
