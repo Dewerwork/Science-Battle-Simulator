@@ -3,9 +3,10 @@
 import os
 import re
 import time
+import threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any, Callable
 
 try:
     import duckdb
@@ -41,6 +42,8 @@ class QueryResult:
     row_count: int
     execution_time_ms: float
     error: Optional[ErrorResult] = None
+    timed_out: bool = False
+    cancelled: bool = False
 
 
 class DatabaseManager:
@@ -55,6 +58,8 @@ class DatabaseManager:
         self._conn = duckdb.connect(":memory:")
         self._tables: Dict[str, TableInfo] = {}
         self._error_handler = error_handler or ErrorHandler()
+        self._cancel_requested = False
+        self._query_running = False
 
         # Configure DuckDB for better CSV handling
         self._conn.execute("SET threads TO 4")
@@ -154,7 +159,7 @@ class DatabaseManager:
 
         Args:
             sql: SQL query to execute.
-            timeout_seconds: Optional query timeout.
+            timeout_seconds: Optional query timeout in seconds.
 
         Returns:
             QueryResult with data or error information.
@@ -169,12 +174,64 @@ class DatabaseManager:
                 error=self._error_handler.warning("Empty query")
             )
 
+        self._cancel_requested = False
+        self._query_running = True
         start_time = time.perf_counter()
 
         try:
-            result = self._conn.execute(sql)
+            # If timeout specified, run with timeout
+            if timeout_seconds and timeout_seconds > 0:
+                result_container = {"result": None, "error": None}
+
+                def run_query():
+                    try:
+                        result_container["result"] = self._conn.execute(sql)
+                    except Exception as e:
+                        result_container["error"] = e
+
+                thread = threading.Thread(target=run_query)
+                thread.start()
+                thread.join(timeout=timeout_seconds)
+
+                if thread.is_alive():
+                    # Query timed out
+                    self._query_running = False
+                    execution_time_ms = (time.perf_counter() - start_time) * 1000
+                    self._error_handler.warning(
+                        f"Query timed out after {timeout_seconds}s",
+                        suggestion="Try adding LIMIT or simplifying the query."
+                    )
+                    return QueryResult(
+                        success=False,
+                        data=None,
+                        row_count=0,
+                        execution_time_ms=execution_time_ms,
+                        timed_out=True
+                    )
+
+                if result_container["error"]:
+                    raise result_container["error"]
+
+                result = result_container["result"]
+            else:
+                result = self._conn.execute(sql)
+
+            # Check if cancelled
+            if self._cancel_requested:
+                self._query_running = False
+                execution_time_ms = (time.perf_counter() - start_time) * 1000
+                self._error_handler.info("Query cancelled")
+                return QueryResult(
+                    success=False,
+                    data=None,
+                    row_count=0,
+                    execution_time_ms=execution_time_ms,
+                    cancelled=True
+                )
+
             df = result.fetchdf()
             execution_time_ms = (time.perf_counter() - start_time) * 1000
+            self._query_running = False
 
             row_count = len(df)
 
@@ -193,6 +250,7 @@ class DatabaseManager:
 
         except Exception as e:
             execution_time_ms = (time.perf_counter() - start_time) * 1000
+            self._query_running = False
             error_result = self._error_handler.handle_query_error(e, sql)
 
             return QueryResult(
@@ -202,6 +260,23 @@ class DatabaseManager:
                 execution_time_ms=execution_time_ms,
                 error=error_result
             )
+
+    def cancel_query(self) -> None:
+        """Request cancellation of the running query."""
+        if self._query_running:
+            self._cancel_requested = True
+            try:
+                self._conn.interrupt()
+            except Exception:
+                pass  # Interrupt may not be supported in all versions
+
+    def is_query_running(self) -> bool:
+        """Check if a query is currently running.
+
+        Returns:
+            True if a query is running.
+        """
+        return self._query_running
 
     def get_tables(self) -> List[TableInfo]:
         """Get list of all loaded tables.
