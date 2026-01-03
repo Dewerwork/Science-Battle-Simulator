@@ -178,8 +178,14 @@ class CSVQueryApp:
         self._schema_panel.pack(fill=tk.BOTH, expand=True)
         self._schema_panel.set_insert_callback(self._insert_query_text)
 
+        # Connect file panel insert callback (for double-click to insert)
+        self._file_panel.set_insert_callback(self._insert_query_text)
+
         # Set up menu
         self._setup_menu()
+
+        # Initialize database status display
+        self._update_db_status()
 
     def _setup_menu(self) -> None:
         """Set up the menu bar."""
@@ -347,6 +353,8 @@ LIMIT 20'''),
     def _on_table_change(self) -> None:
         """Handle table changes."""
         self._schema_panel.refresh()
+        self._file_panel._update_tables_list()
+        self._update_db_status()
 
     def _execute_query(self, query: str) -> None:
         """Execute a SQL query.

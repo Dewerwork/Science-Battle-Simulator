@@ -10,7 +10,7 @@ from ..utils.config import Config
 
 
 class FilePanel(ttk.Frame):
-    """Panel for loading and managing CSV files."""
+    """Panel for loading and managing CSV files with expandable table/column tree."""
 
     def __init__(self, parent: tk.Widget, db_manager: DatabaseManager,
                  config: Config, on_table_change: Optional[Callable[[], None]] = None):
@@ -58,35 +58,50 @@ class FilePanel(ttk.Frame):
         self._refresh_btn.pack(side=tk.LEFT, padx=2)
 
         # Tables label
-        tables_label = ttk.Label(self, text="Loaded Tables:")
+        tables_label = ttk.Label(self, text="Tables & Columns:")
         tables_label.pack(anchor=tk.W, padx=5, pady=(10, 2))
 
-        # Tables listbox with scrollbar
-        list_frame = ttk.Frame(self)
-        list_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=2)
+        # Treeview for tables and columns (with expand/collapse)
+        tree_frame = ttk.Frame(self)
+        tree_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=2)
 
-        self._tables_list = tk.Listbox(list_frame, height=6, selectmode=tk.SINGLE)
-        scrollbar = ttk.Scrollbar(list_frame, orient=tk.VERTICAL,
-                                  command=self._tables_list.yview)
-        self._tables_list.configure(yscrollcommand=scrollbar.set)
+        self._tree = ttk.Treeview(tree_frame, show="tree", selectmode="browse")
+        scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL,
+                                  command=self._tree.yview)
+        self._tree.configure(yscrollcommand=scrollbar.set)
 
-        self._tables_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self._tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Bind right-click for context menu
-        self._tables_list.bind("<Button-3>", self._show_context_menu)
-        self._tables_list.bind("<Double-1>", self._on_table_double_click)
+        # Bind events
+        self._tree.bind("<Button-3>", self._show_context_menu)
+        self._tree.bind("<Double-1>", self._on_double_click)
+        self._tree.bind("<<TreeviewSelect>>", self._on_select)
 
         # Context menu
         self._context_menu = tk.Menu(self, tearoff=0)
-        self._context_menu.add_command(label="Show Schema", command=self._show_schema)
-        self._context_menu.add_command(label="Preview Data", command=self._preview_data)
+        self._context_menu.add_command(label="Insert SELECT *", command=self._insert_select_all)
+        self._context_menu.add_command(label="Insert Column Name", command=self._insert_column)
         self._context_menu.add_separator()
-        self._context_menu.add_command(label="Unload Table", command=self._unload_selected)
+        self._context_menu.add_command(label="Preview Data", command=self._preview_data)
+        self._context_menu.add_command(label="Show Full Schema", command=self._show_schema)
+        self._context_menu.add_separator()
+        self._context_menu.add_command(label="Drop Table", command=self._unload_selected)
 
         # Info label
         self._info_label = ttk.Label(self, text="No tables loaded", foreground="gray")
         self._info_label.pack(anchor=tk.W, padx=5, pady=2)
+
+        # Callback for inserting text into query editor
+        self._insert_callback: Optional[Callable[[str], None]] = None
+
+    def set_insert_callback(self, callback: Callable[[str], None]) -> None:
+        """Set callback for inserting text into query editor.
+
+        Args:
+            callback: Function that takes a string to insert.
+        """
+        self._insert_callback = callback
 
     def _load_csv(self) -> None:
         """Open file dialog and load selected CSV."""
@@ -150,22 +165,37 @@ class FilePanel(ttk.Frame):
         self._recent_var.set("Recent Files")
 
     def _refresh_tables(self) -> None:
-        """Reload all tables from their source files."""
-        tables = self._db.get_tables()
-        for table_info in tables:
-            self._db.load_csv(table_info.path, table_info.name)
+        """Refresh the table list from the database."""
         self._update_tables_list()
         if self._on_table_change:
             self._on_table_change()
 
     def _update_tables_list(self) -> None:
-        """Update the tables listbox."""
-        self._tables_list.delete(0, tk.END)
+        """Update the tables tree with tables and their columns."""
+        # Clear existing items
+        for item in self._tree.get_children():
+            self._tree.delete(item)
 
         tables = self._db.get_tables()
+
         for table_info in tables:
-            display = f"{table_info.name} ({table_info.row_count:,} rows)"
-            self._tables_list.insert(tk.END, display)
+            # Add table as parent node with icon indicator
+            table_display = f"📊 {table_info.name} ({table_info.row_count:,} rows)"
+            table_id = self._tree.insert(
+                "", "end", text=table_display,
+                open=False,  # Collapsed by default
+                tags=("table",),
+                values=(table_info.name,)
+            )
+
+            # Add columns as children
+            for col_name, col_type in table_info.columns:
+                col_display = f"  📋 {col_name} ({col_type})"
+                self._tree.insert(
+                    table_id, "end", text=col_display,
+                    tags=("column",),
+                    values=(table_info.name, col_name, col_type)
+                )
 
         # Update info label
         if tables:
@@ -177,30 +207,82 @@ class FilePanel(ttk.Frame):
         else:
             self._info_label.config(text="No tables loaded", foreground="gray")
 
+    def _on_select(self, event) -> None:
+        """Handle selection change."""
+        pass  # Could update status or enable/disable buttons
+
+    def _on_double_click(self, event) -> None:
+        """Handle double-click - insert name into query editor."""
+        item = self._tree.focus()
+        if not item:
+            return
+
+        tags = self._tree.item(item, "tags")
+        values = self._tree.item(item, "values")
+
+        if not self._insert_callback:
+            return
+
+        if "table" in tags and values:
+            # Insert table name
+            table_name = values[0]
+            self._insert_callback(f'"{table_name}"')
+        elif "column" in tags and len(values) >= 2:
+            # Insert column name
+            col_name = values[1]
+            self._insert_callback(f'"{col_name}"')
+
     def _show_context_menu(self, event) -> None:
         """Show context menu on right-click."""
         # Select item under cursor
-        index = self._tables_list.nearest(event.y)
-        if index >= 0:
-            self._tables_list.selection_clear(0, tk.END)
-            self._tables_list.selection_set(index)
+        item = self._tree.identify_row(event.y)
+        if item:
+            self._tree.selection_set(item)
+            self._tree.focus(item)
             self._context_menu.post(event.x_root, event.y_root)
 
     def _get_selected_table(self) -> Optional[TableInfo]:
-        """Get the currently selected table.
+        """Get the table info for the selected item (table or column).
 
         Returns:
-            TableInfo or None if nothing selected.
+            TableInfo or None if nothing valid selected.
         """
-        selection = self._tables_list.curselection()
-        if not selection:
+        item = self._tree.focus()
+        if not item:
             return None
 
-        tables = self._db.get_tables()
-        index = selection[0]
-        if index < len(tables):
-            return tables[index]
-        return None
+        tags = self._tree.item(item, "tags")
+        values = self._tree.item(item, "values")
+
+        if not values:
+            return None
+
+        # Get table name (first value for both table and column items)
+        table_name = values[0]
+        return self._db.get_table(table_name)
+
+    def _insert_select_all(self) -> None:
+        """Insert SELECT * FROM table query."""
+        table_info = self._get_selected_table()
+        if table_info and self._insert_callback:
+            query = f'SELECT * FROM "{table_info.name}" LIMIT 100'
+            self._insert_callback(query)
+
+    def _insert_column(self) -> None:
+        """Insert the selected column name."""
+        item = self._tree.focus()
+        if not item:
+            return
+
+        tags = self._tree.item(item, "tags")
+        values = self._tree.item(item, "values")
+
+        if "column" in tags and len(values) >= 2 and self._insert_callback:
+            col_name = values[1]
+            self._insert_callback(f'"{col_name}"')
+        elif "table" in tags and values and self._insert_callback:
+            table_name = values[0]
+            self._insert_callback(f'"{table_name}"')
 
     def _show_schema(self) -> None:
         """Show schema for selected table."""
@@ -222,7 +304,6 @@ class FilePanel(ttk.Frame):
             df = self._db.get_sample(table_info.name, limit=10)
             if df is not None:
                 preview = df.to_string()
-                # Show in a simple dialog
                 self._show_preview_dialog(table_info.name, preview)
 
     def _show_preview_dialog(self, table_name: str, content: str) -> None:
@@ -255,17 +336,14 @@ class FilePanel(ttk.Frame):
             row=2, column=0, columnspan=2, pady=5
         )
 
-    def _on_table_double_click(self, event) -> None:
-        """Handle double-click on table."""
-        self._preview_data()
-
     def _unload_selected(self) -> None:
         """Unload the selected table."""
         table_info = self._get_selected_table()
         if table_info:
             if messagebox.askyesno(
-                "Confirm Unload",
-                f"Unload table '{table_info.name}'?"
+                "Confirm Drop",
+                f"Drop table '{table_info.name}'?\n\n"
+                "This will remove it from the database."
             ):
                 self._db.unload_table(table_info.name)
                 self._update_tables_list()
