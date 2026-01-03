@@ -1,11 +1,11 @@
 """Main application class for CSV Query Tool."""
 
 import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog
+from tkinter import ttk, messagebox, simpledialog, filedialog
 import logging
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from .database import DatabaseManager
 from .utils.config import Config
@@ -116,6 +116,13 @@ class CSVQueryApp:
         self._status_frame = ttk.Frame(status_container)
         self._status_frame.pack(fill=tk.X, padx=5, pady=2)
 
+        # Database status label (left side)
+        self._db_status_label = ttk.Label(
+            self._status_frame, text="In-Memory",
+            relief=tk.SUNKEN, padding=(5, 2), width=30
+        )
+        self._db_status_label.pack(side=tk.LEFT, padx=(0, 5))
+
         # Status label
         self._status_label = ttk.Label(
             self._status_frame, text="Ready",
@@ -189,6 +196,24 @@ class CSVQueryApp:
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self._on_close,
                               accelerator="Ctrl+Q")
+
+        # Database menu
+        db_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Database", menu=db_menu)
+        db_menu.add_command(label="New Database...", command=self._new_database)
+        db_menu.add_command(label="Open Database...", command=self._open_database)
+        db_menu.add_separator()
+        db_menu.add_command(label="Import CSVs...", command=self._import_csvs)
+        db_menu.add_command(label="Import Parquet...", command=self._import_parquet)
+        db_menu.add_separator()
+        db_menu.add_command(label="Create Index...", command=self._show_create_index)
+        db_menu.add_command(label="Manage Indexes...", command=self._show_manage_indexes)
+        db_menu.add_separator()
+        db_menu.add_command(label="Export Table to Parquet...",
+                            command=self._export_table_parquet)
+        db_menu.add_command(label="Compact Database", command=self._vacuum_database)
+        db_menu.add_separator()
+        db_menu.add_command(label="Switch to In-Memory", command=self._switch_to_memory)
 
         # Query menu
         query_menu = tk.Menu(menubar, tearoff=0)
@@ -622,7 +647,7 @@ Tip: Drag the border between Query and Results
 
     def _show_about(self) -> None:
         """Show about dialog."""
-        about = """CSV Query Tool v1.1
+        about = """CSV Query Tool v1.2
 
 A SQL-based CSV analysis tool for
 Science Battle Simulator.
@@ -631,6 +656,8 @@ Powered by DuckDB for fast analytics.
 
 Features:
 - Load and query CSV files with SQL
+- Persistent database for large datasets
+- Create indexes for faster queries
 - View and export results
 - Create charts for visualization
 - Save queries to favorites
@@ -638,6 +665,429 @@ Features:
 - Full query history
 """
         messagebox.showinfo("About", about)
+
+    # =========================================================================
+    # Database Management Methods
+    # =========================================================================
+
+    def _new_database(self) -> None:
+        """Create a new persistent database."""
+        path = filedialog.asksaveasfilename(
+            title="Create New Database",
+            defaultextension=".duckdb",
+            filetypes=[("DuckDB Database", "*.duckdb"), ("All Files", "*.*")],
+            parent=self._root
+        )
+
+        if path:
+            if self._db.create_database(path):
+                self._update_db_status()
+                self._on_table_change()
+                messagebox.showinfo(
+                    "Database Created",
+                    f"Created new database:\n{Path(path).name}\n\n"
+                    "Use Database → Import CSVs to import your data."
+                )
+
+    def _open_database(self) -> None:
+        """Open an existing database."""
+        path = filedialog.askopenfilename(
+            title="Open Database",
+            filetypes=[("DuckDB Database", "*.duckdb"), ("All Files", "*.*")],
+            parent=self._root
+        )
+
+        if path:
+            if self._db.connect_to_database(path):
+                self._update_db_status()
+                self._on_table_change()
+
+                # Show info about loaded tables
+                tables = self._db.get_tables()
+                if tables:
+                    table_info = "\n".join(
+                        f"  • {t.name}: {t.row_count:,} rows"
+                        for t in tables
+                    )
+                    messagebox.showinfo(
+                        "Database Opened",
+                        f"Opened database with {len(tables)} table(s):\n\n{table_info}"
+                    )
+                else:
+                    messagebox.showinfo(
+                        "Database Opened",
+                        "Database opened (no tables yet).\n\n"
+                        "Use Database → Import CSVs to add data."
+                    )
+
+    def _import_csvs(self) -> None:
+        """Import multiple CSV files into the database."""
+        paths = filedialog.askopenfilenames(
+            title="Select CSV Files to Import",
+            filetypes=[("CSV Files", "*.csv"), ("All Files", "*.*")],
+            parent=self._root
+        )
+
+        if not paths:
+            return
+
+        # Show progress dialog
+        progress_dialog = tk.Toplevel(self._root)
+        progress_dialog.title("Importing CSVs")
+        progress_dialog.geometry("400x150")
+        progress_dialog.transient(self._root)
+        progress_dialog.grab_set()
+
+        ttk.Label(progress_dialog, text="Importing CSV files...").pack(pady=10)
+
+        progress_var = tk.DoubleVar(value=0)
+        progress_bar = ttk.Progressbar(
+            progress_dialog, variable=progress_var,
+            maximum=len(paths), length=350
+        )
+        progress_bar.pack(pady=10, padx=20)
+
+        status_var = tk.StringVar(value="Starting...")
+        status_label = ttk.Label(progress_dialog, textvariable=status_var)
+        status_label.pack(pady=5)
+
+        def update_progress(msg: str, current: int, total: int):
+            progress_var.set(current)
+            status_var.set(f"{current}/{total}: {msg}")
+            progress_dialog.update()
+
+        # Import files
+        self._root.after(100, lambda: self._do_import_csvs(
+            paths, progress_dialog, update_progress
+        ))
+
+    def _do_import_csvs(self, paths: tuple, dialog: tk.Toplevel,
+                        progress_callback) -> None:
+        """Perform CSV import (called after dialog is shown)."""
+        results = self._db.import_multiple_csvs(list(paths), progress_callback)
+        dialog.destroy()
+
+        # Refresh UI
+        self._on_table_change()
+        self._update_db_status()
+
+        # Show summary
+        if results:
+            total_rows = sum(t.row_count for t in results)
+            table_info = "\n".join(
+                f"  • {t.name}: {t.row_count:,} rows"
+                for t in results
+            )
+            messagebox.showinfo(
+                "Import Complete",
+                f"Imported {len(results)} file(s) ({total_rows:,} total rows):\n\n{table_info}"
+            )
+        else:
+            messagebox.showwarning("Import Failed", "No files were imported.")
+
+    def _import_parquet(self) -> None:
+        """Import a Parquet file."""
+        path = filedialog.askopenfilename(
+            title="Select Parquet File",
+            filetypes=[("Parquet Files", "*.parquet"), ("All Files", "*.*")],
+            parent=self._root
+        )
+
+        if path:
+            result = self._db.import_parquet(path)
+            if result:
+                self._on_table_change()
+                self._update_db_status()
+                messagebox.showinfo(
+                    "Import Complete",
+                    f"Imported '{result.name}' ({result.row_count:,} rows)"
+                )
+
+    def _show_create_index(self) -> None:
+        """Show dialog to create an index."""
+        tables = self._db.get_tables()
+        if not tables:
+            messagebox.showwarning(
+                "No Tables",
+                "No tables in database. Import some data first."
+            )
+            return
+
+        # Create dialog
+        dialog = tk.Toplevel(self._root)
+        dialog.title("Create Index")
+        dialog.geometry("450x400")
+        dialog.transient(self._root)
+        dialog.grab_set()
+
+        # Table selection
+        table_frame = ttk.LabelFrame(dialog, text="Select Table", padding=10)
+        table_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        table_var = tk.StringVar(value=tables[0].name)
+        table_combo = ttk.Combobox(
+            table_frame, textvariable=table_var,
+            values=[t.name for t in tables], state="readonly"
+        )
+        table_combo.pack(fill=tk.X)
+
+        # Column selection
+        col_frame = ttk.LabelFrame(dialog, text="Select Columns", padding=10)
+        col_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        # Columns listbox with scrollbar
+        col_list_frame = ttk.Frame(col_frame)
+        col_list_frame.pack(fill=tk.BOTH, expand=True)
+
+        col_listbox = tk.Listbox(
+            col_list_frame, selectmode=tk.MULTIPLE, exportselection=False
+        )
+        col_scrollbar = ttk.Scrollbar(
+            col_list_frame, orient=tk.VERTICAL, command=col_listbox.yview
+        )
+        col_listbox.configure(yscrollcommand=col_scrollbar.set)
+        col_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        col_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        def update_columns(*args):
+            col_listbox.delete(0, tk.END)
+            table = self._db.get_table(table_var.get())
+            if table:
+                for col_name, col_type in table.columns:
+                    col_listbox.insert(tk.END, f"{col_name} ({col_type})")
+
+        table_combo.bind("<<ComboboxSelected>>", update_columns)
+        update_columns()
+
+        # Options
+        opt_frame = ttk.Frame(dialog)
+        opt_frame.pack(fill=tk.X, padx=10, pady=5)
+
+        unique_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(
+            opt_frame, text="Unique index", variable=unique_var
+        ).pack(side=tk.LEFT)
+
+        # Index name
+        name_frame = ttk.Frame(dialog)
+        name_frame.pack(fill=tk.X, padx=10, pady=5)
+
+        ttk.Label(name_frame, text="Index name (optional):").pack(side=tk.LEFT)
+        name_var = tk.StringVar()
+        ttk.Entry(name_frame, textvariable=name_var, width=30).pack(
+            side=tk.LEFT, padx=5
+        )
+
+        # Buttons
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        def create_index():
+            selections = col_listbox.curselection()
+            if not selections:
+                messagebox.showwarning("Select Columns", "Please select at least one column.")
+                return
+
+            table = self._db.get_table(table_var.get())
+            if not table:
+                return
+
+            columns = [table.columns[i][0] for i in selections]
+            index_name = name_var.get().strip() or None
+
+            if self._db.create_index(
+                table_var.get(), columns, index_name, unique_var.get()
+            ):
+                dialog.destroy()
+
+        ttk.Button(btn_frame, text="Create Index", command=create_index).pack(
+            side=tk.RIGHT, padx=5
+        )
+        ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(
+            side=tk.RIGHT, padx=5
+        )
+
+    def _show_manage_indexes(self) -> None:
+        """Show dialog to manage existing indexes."""
+        indexes = self._db.get_indexes()
+
+        # Create dialog
+        dialog = tk.Toplevel(self._root)
+        dialog.title("Manage Indexes")
+        dialog.geometry("500x350")
+        dialog.transient(self._root)
+        dialog.grab_set()
+
+        if not indexes:
+            ttk.Label(
+                dialog, text="No indexes in database.\n\nUse 'Create Index...' to add one.",
+                justify=tk.CENTER
+            ).pack(expand=True)
+            ttk.Button(dialog, text="Close", command=dialog.destroy).pack(pady=10)
+            return
+
+        # Index list
+        list_frame = ttk.Frame(dialog)
+        list_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        columns = ("name", "table", "columns", "unique")
+        tree = ttk.Treeview(list_frame, columns=columns, show="headings")
+        tree.heading("name", text="Index Name")
+        tree.heading("table", text="Table")
+        tree.heading("columns", text="Columns")
+        tree.heading("unique", text="Unique")
+
+        tree.column("name", width=150)
+        tree.column("table", width=120)
+        tree.column("columns", width=150)
+        tree.column("unique", width=60)
+
+        scrollbar = ttk.Scrollbar(list_frame, orient=tk.VERTICAL, command=tree.yview)
+        tree.configure(yscrollcommand=scrollbar.set)
+
+        tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        for idx in indexes:
+            tree.insert("", tk.END, values=(
+                idx.name, idx.table_name,
+                ", ".join(idx.columns),
+                "Yes" if idx.is_unique else "No"
+            ))
+
+        # Buttons
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        def drop_selected():
+            selection = tree.selection()
+            if not selection:
+                return
+            item = tree.item(selection[0])
+            name = item["values"][0]
+
+            if messagebox.askyesno("Drop Index", f"Drop index '{name}'?"):
+                if self._db.drop_index(name):
+                    tree.delete(selection[0])
+
+        ttk.Button(btn_frame, text="Drop Selected", command=drop_selected).pack(
+            side=tk.LEFT, padx=5
+        )
+        ttk.Button(btn_frame, text="Close", command=dialog.destroy).pack(
+            side=tk.RIGHT, padx=5
+        )
+
+    def _export_table_parquet(self) -> None:
+        """Export a table to Parquet format."""
+        tables = self._db.get_tables()
+        if not tables:
+            messagebox.showwarning("No Tables", "No tables to export.")
+            return
+
+        # Ask which table
+        table_names = [t.name for t in tables]
+
+        dialog = tk.Toplevel(self._root)
+        dialog.title("Export to Parquet")
+        dialog.geometry("350x150")
+        dialog.transient(self._root)
+        dialog.grab_set()
+
+        ttk.Label(dialog, text="Select table to export:").pack(pady=10)
+
+        table_var = tk.StringVar(value=table_names[0])
+        ttk.Combobox(
+            dialog, textvariable=table_var,
+            values=table_names, state="readonly", width=35
+        ).pack(pady=5)
+
+        def do_export():
+            dialog.destroy()
+            table_name = table_var.get()
+
+            path = filedialog.asksaveasfilename(
+                title="Save Parquet File",
+                defaultextension=".parquet",
+                initialfile=f"{table_name}.parquet",
+                filetypes=[("Parquet Files", "*.parquet"), ("All Files", "*.*")],
+                parent=self._root
+            )
+
+            if path:
+                if self._db.export_table_to_parquet(table_name, path):
+                    messagebox.showinfo(
+                        "Export Complete",
+                        f"Table '{table_name}' exported to:\n{path}"
+                    )
+
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(pady=10)
+        ttk.Button(btn_frame, text="Export", command=do_export).pack(
+            side=tk.LEFT, padx=5
+        )
+        ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(
+            side=tk.LEFT, padx=5
+        )
+
+    def _vacuum_database(self) -> None:
+        """Compact the database file."""
+        if not self._db.is_persistent():
+            messagebox.showinfo(
+                "In-Memory Database",
+                "Compacting is only available for persistent databases."
+            )
+            return
+
+        self._set_status("Compacting database...", "info")
+        self._root.update()
+
+        if self._db.vacuum():
+            size = self._db.get_database_size()
+            if size:
+                size_mb = size / (1024 * 1024)
+                messagebox.showinfo(
+                    "Compact Complete",
+                    f"Database compacted.\nSize: {size_mb:.2f} MB"
+                )
+            self._update_db_status()
+
+    def _switch_to_memory(self) -> None:
+        """Switch back to in-memory database."""
+        if not self._db.is_persistent():
+            messagebox.showinfo("Already In-Memory", "Already using in-memory database.")
+            return
+
+        if messagebox.askyesno(
+            "Switch to In-Memory",
+            "This will close the current database.\n"
+            "Your data will be preserved in the file.\n\n"
+            "Continue?"
+        ):
+            # Re-create in-memory database
+            self._db.close()
+            self._db = DatabaseManager(self._error_handler)
+            self._update_db_status()
+            self._on_table_change()
+
+    def _update_db_status(self) -> None:
+        """Update the database status indicator."""
+        if self._db.is_persistent():
+            path = self._db.get_database_path()
+            name = Path(path).name if path else "Unknown"
+            size = self._db.get_database_size()
+            tables = len(self._db.get_tables())
+
+            if size:
+                size_mb = size / (1024 * 1024)
+                status = f"📁 {name} ({size_mb:.1f}MB, {tables} tables)"
+            else:
+                status = f"📁 {name} ({tables} tables)"
+
+            self._db_status_label.config(text=status, foreground="#2e7d32")
+        else:
+            tables = len(self._db.get_tables())
+            status = f"💾 In-Memory ({tables} tables)"
+            self._db_status_label.config(text=status, foreground="#1976d2")
 
     def _on_close(self) -> None:
         """Handle window close."""
