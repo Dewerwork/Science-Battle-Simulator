@@ -23,6 +23,9 @@ struct Unit {
     // Bucket hash for reduced faction files (8 hex chars + null terminator)
     std::array<char, 9> bucket_hash{};  // Empty if not from reduced file
 
+    // Faction ID hash for merged files (8 hex chars + null terminator)
+    std::array<char, 9> faction_id{};   // Empty if not from merged file
+
     u32 unit_id      = 0;    // Unique identifier for this loadout
     u16 points_cost  = 0;    // Points value
     u8  model_count  = 0;    // Total models in unit
@@ -85,6 +88,18 @@ struct Unit {
         size_t len = std::min(hash.size(), size_t{8});
         std::copy_n(hash.begin(), len, bucket_hash.begin());
         bucket_hash[len] = '\0';
+    }
+
+    // Faction ID helpers
+    bool has_faction_id() const { return faction_id[0] != '\0'; }
+    std::string_view get_faction_id() const {
+        if (!has_faction_id()) return {};
+        return {faction_id.data(), 8};
+    }
+    void set_faction_id(std::string_view fid) {
+        size_t len = std::min(fid.size(), size_t{8});
+        std::copy_n(fid.begin(), len, faction_id.begin());
+        faction_id[len] = '\0';
     }
 
     // Properties
