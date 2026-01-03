@@ -46,6 +46,8 @@ Usage:
     python parse_combat_bin.py sample_combat.bin --verbose
 """
 
+from __future__ import annotations
+
 import struct
 import sys
 import argparse
@@ -53,7 +55,7 @@ import random
 from dataclasses import dataclass, field
 from enum import IntEnum
 from pathlib import Path
-from typing import BinaryIO
+from typing import BinaryIO, Optional, List, Dict
 
 
 # ==============================================================================
