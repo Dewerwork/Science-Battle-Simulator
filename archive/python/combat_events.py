@@ -51,9 +51,6 @@ class CombatEventType(str, Enum):
     STRIKE_BACK_START = "strike_back_start"
     STRIKE_BACK_END = "strike_back_end"
 
-    # Movement events
-    MOVEMENT = "movement"  # Unit moves on the battlefield (advance, rush, charge movement)
-
 
 @dataclass
 class CombatEvent:
@@ -276,44 +273,25 @@ class CombatEventRecorder:
         unit_name: str,
         action: str,
         is_fatigued: bool = False,
-        position: int | None = None,
     ) -> None:
-        """Record unit activation starting.
-
-        Args:
-            unit_name: Name of the activating unit
-            action: Action type ("charge", "melee", "rally", "advance", "rush", "hold")
-            is_fatigued: Whether the unit is fatigued
-            position: Current position (distance from center, negative = A side)
-        """
+        """Record unit activation starting."""
         self._active_unit = unit_name
         fatigue_str = " (fatigued - only hits on 6s)" if is_fatigued else ""
-        position_str = f" at {position}\"" if position is not None else ""
         event = self._create_event(
             CombatEventType.ACTIVATION_START,
-            f"{unit_name} activates to {action}{fatigue_str}{position_str}",
+            f"{unit_name} activates to {action}{fatigue_str}",
             extra_data={
                 "action": action,
                 "is_fatigued": is_fatigued,
-                "position": position,
             },
         )
         self.log.add_event(event)
 
-    def record_activation_end(self, unit_name: str, position: int | None = None) -> None:
-        """Record activation ending.
-
-        Args:
-            unit_name: Name of the unit finishing activation
-            position: Final position (distance from center, negative = A side)
-        """
-        position_str = f" at {position}\"" if position is not None else ""
+    def record_activation_end(self, unit_name: str) -> None:
+        """Record activation ending."""
         event = self._create_event(
             CombatEventType.ACTIVATION_END,
-            f"{unit_name} finishes activation{position_str}",
-            extra_data={
-                "position": position,
-            },
+            f"{unit_name} finishes activation",
         )
         self.log.add_event(event)
         self._active_unit = ""
@@ -326,55 +304,14 @@ class CombatEventRecorder:
         )
         self.log.add_event(event)
 
-    def record_movement(
-        self,
-        unit_name: str,
-        movement_type: str,
-        distance_moved: int,
-        position_before: int,
-        position_after: int,
-    ) -> None:
-        """Record unit movement on the battlefield.
-
-        Args:
-            unit_name: Name of the moving unit
-            movement_type: Type of movement ("advance", "rush", "charge")
-            distance_moved: Distance moved in inches
-            position_before: Position before movement (distance from center, negative = A side)
-            position_after: Position after movement (distance from center)
-        """
-        event = self._create_event(
-            CombatEventType.MOVEMENT,
-            f"{unit_name} moves {distance_moved}\" ({movement_type}): "
-            f"position {position_before}\" -> {position_after}\"",
-            extra_data={
-                "movement_type": movement_type,
-                "distance_moved": distance_moved,
-                "position_before": position_before,
-                "position_after": position_after,
-            },
-        )
-        self.log.add_event(event)
-
     def record_attack_start(
         self,
         attacker_name: str,
         defender_name: str,
         phase: str,
         is_charging: bool,
-        attacker_position: int | None = None,
-        defender_position: int | None = None,
     ) -> None:
-        """Record attack sequence starting.
-
-        Args:
-            attacker_name: Name of the attacking unit
-            defender_name: Name of the defending unit
-            phase: Combat phase ("melee" or "shooting")
-            is_charging: Whether this is a charge attack
-            attacker_position: Attacker position (distance from center)
-            defender_position: Defender position (distance from center)
-        """
+        """Record attack sequence starting."""
         # Update active and target units to match the current attack
         self._active_unit = attacker_name
         self._target_unit = defender_name
@@ -385,8 +322,6 @@ class CombatEventRecorder:
             extra_data={
                 "phase": phase,
                 "is_charging": is_charging,
-                "attacker_position": attacker_position,
-                "defender_position": defender_position,
             },
         )
         self.log.add_event(event)
