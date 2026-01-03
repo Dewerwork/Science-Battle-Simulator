@@ -1085,7 +1085,7 @@ public:
             auto elo_ratings = calculate_elo_ratings();
 
             // Aggregated format - export directly from aggregated results
-            out << "unit_id,name,faction,points,quality,defense,models,"
+            out << "unit_id,name,bucket_hash,faction,points,quality,defense,models,"
                 << "matches,wins,losses,draws,win_rate,elo_rating,game_win_rate,"
                 << "avg_wounds_dealt,avg_wounds_received,damage_efficiency,"
                 << "avg_models_killed,avg_models_lost,kill_efficiency,"
@@ -1105,6 +1105,7 @@ public:
 
                     out << r.unit_id << ","
                         << "\"" << u.name.view() << "\","
+                        << "\"" << u.get_bucket_hash() << "\","
                         << "\"" << u.faction.view() << "\","
                         << u.points_cost << ","
                         << (int)u.quality << ","
@@ -1137,7 +1138,7 @@ public:
             auto stats = calculate_extended_unit_stats();
 
             // Extended header
-            out << "unit_id,name,faction,points,quality,defense,models,"
+            out << "unit_id,name,bucket_hash,faction,points,quality,defense,models,"
                 << "matches,wins,losses,draws,win_rate,game_win_rate,"
                 << "avg_wounds_dealt,avg_wounds_received,damage_efficiency,"
                 << "avg_models_killed,avg_models_lost,kill_efficiency,"
@@ -1149,6 +1150,7 @@ public:
                     const Unit& u = units[id];
                     out << id << ","
                         << "\"" << u.name.view() << "\","
+                        << "\"" << u.get_bucket_hash() << "\","
                         << "\"" << u.faction.view() << "\","
                         << u.points_cost << ","
                         << (int)u.quality << ","
@@ -1175,7 +1177,7 @@ public:
             auto stats = calculate_unit_stats();
 
             // Basic header
-            out << "unit_id,name,faction,points,quality,defense,models,"
+            out << "unit_id,name,bucket_hash,faction,points,quality,defense,models,"
                 << "matches,wins,losses,draws,win_rate,game_win_rate\n";
 
             // Data rows
@@ -1184,6 +1186,7 @@ public:
                     const Unit& u = units[id];
                     out << id << ","
                         << "\"" << u.name.view() << "\","
+                        << "\"" << u.get_bucket_hash() << "\","
                         << "\"" << u.faction.view() << "\","
                         << u.points_cost << ","
                         << (int)u.quality << ","
