@@ -40,9 +40,6 @@ class CSVQueryApp:
         self._history = QueryHistory(max_size=self._config.max_history_size)
         self._favorites = QueryFavorites()
 
-        # Query settings
-        self._query_timeout = tk.IntVar(value=self._config.query_timeout_seconds)
-
         # Create error handler
         self._error_handler = ErrorHandler(self._logger)
         self._error_handler.set_status_callback(self._on_status_update)
@@ -50,10 +47,13 @@ class CSVQueryApp:
         # Create database manager
         self._db = DatabaseManager(self._error_handler)
 
-        # Create main window
+        # Create main window (must be before tk.IntVar)
         self._root = tk.Tk()
         self._root.title("CSV Query Tool")
         self._root.geometry(self._config.get_geometry())
+
+        # Query settings (must be after tk.Tk())
+        self._query_timeout = tk.IntVar(value=self._config.query_timeout_seconds)
 
         # Set minimum window size
         self._root.minsize(800, 600)
