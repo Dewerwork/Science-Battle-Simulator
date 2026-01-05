@@ -645,22 +645,14 @@ This tool will help validate:
 
 ---
 
-## Questions for User
+## Design Decisions
 
-1. **JSON Library**: Use nlohmann/json (header-only, easy) or manual serialization (no dependencies)?
+1. **JSON Library**: `nlohmann/json` (header-only, easy integration)
 
-2. **Dice Roll Detail Level**:
-   - Minimal: Just final results
-   - Standard: Rolls grouped by attack
-   - Verbose: Every individual die roll
+2. **Dice Roll Detail Level**: **Verbose** - Every individual die roll with full context
 
-3. **AI Decision Logging**: How much detail about AI reasoning?
-   - Basic: Just the action chosen
-   - Detailed: Factors considered and scores
+3. **AI Decision Logging**: **Yes** - Include detailed reasoning (factors considered, scores, why action was chosen)
 
-4. **Output Location**:
-   - Current directory?
-   - Dedicated `exports/` folder?
-   - User-specified?
+4. **Output Location**: **User-specified** via CLI argument (e.g., `-o /path/to/output`)
 
-5. **Seed Control**: Should there be an option to run the same game multiple times with different seeds to see variance?
+5. **Multi-seed Mode**: **No** - Single game export only
