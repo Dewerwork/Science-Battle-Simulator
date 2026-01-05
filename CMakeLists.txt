@@ -142,6 +142,12 @@ add_executable(analyze_results src/analyze_results.cpp)
 target_include_directories(analyze_results PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_compile_options(analyze_results PRIVATE ${COMMON_FLAGS})
 
+# export_game - Single game export with full logging for validation/debugging
+add_executable(export_game src/export_game.cpp)
+target_include_directories(export_game PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(export_game PRIVATE battle_core)
+target_compile_options(export_game PRIVATE ${COMMON_FLAGS})
+
 # OPR Pipeline - Unit loadout generator (C++ port of run_opr_pipeline_all_units_v3_mt.py)
 add_executable(opr_pipeline
     src/opr_pipeline_main.cpp
