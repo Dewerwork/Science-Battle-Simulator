@@ -333,6 +333,17 @@ inline std::optional<Weapon> UnitParser::parse_weapon(std::string_view weapon_st
         auto stat_trimmed = trim(stat);
         if (stat_trimmed.empty()) continue;
 
+        // Check for range inside parens: "6"", "12"", "24""
+        if (stat_trimmed.size() >= 2 && std::isdigit(stat_trimmed[0])) {
+            auto quote_pos = stat_trimmed.find('"');
+            if (quote_pos != std::string_view::npos && quote_pos == stat_trimmed.size() - 1) {
+                try {
+                    weapon.range = static_cast<u8>(std::stoi(std::string(stat_trimmed.substr(0, quote_pos))));
+                } catch (...) {}
+                continue;
+            }
+        }
+
         // Check for attacks: "A3", "A10"
         if (stat_trimmed[0] == 'A' && stat_trimmed.size() > 1 && std::isdigit(stat_trimmed[1])) {
             try {

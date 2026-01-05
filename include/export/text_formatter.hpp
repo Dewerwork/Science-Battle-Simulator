@@ -144,7 +144,7 @@ private:
                 for (const auto& w : model.weapons) {
                     out << "        - " << w.name << " (";
                     if (w.range > 0) {
-                        out << w.range << "\", ";
+                        out << static_cast<int>(w.range) << "\", ";
                     } else {
                         out << "Melee, ";
                     }
