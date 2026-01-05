@@ -3,9 +3,11 @@
 // ==============================================================================
 //
 // Usage:
-//   ./export_game [options]
+//   ./export_game -a <unit_a.txt> -b <unit_b.txt> [options]
 //
 // Options:
+//   -a, --unit-a <file>    Unit A text file (required)
+//   -b, --unit-b <file>    Unit B text file (required)
 //   -o, --output <path>    Output file path (without extension)
 //   -s, --seed <number>    Random seed for reproducibility
 //   --json-only            Only output JSON format
@@ -13,7 +15,7 @@
 //   -h, --help             Show this help message
 //
 // Example:
-//   ./export_game -o game_001 -s 12345
+//   ./export_game -a hive_lord.txt -b battle_sisters.txt -o game_001 -s 12345
 //
 // ==============================================================================
 
@@ -24,6 +26,7 @@
 #include "core/faction_rules.hpp"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
@@ -31,10 +34,22 @@
 using namespace battle;
 using namespace battle::export_data;
 
+std::string read_file(const std::string& path) {
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        return "";
+    }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return buffer.str();
+}
+
 void print_usage(const char* program_name) {
-    std::cout << "Usage: " << program_name << " [options]\n\n";
+    std::cout << "Usage: " << program_name << " -a <unit_a.txt> -b <unit_b.txt> [options]\n\n";
     std::cout << "Export complete game data for validation and debugging.\n\n";
     std::cout << "Options:\n";
+    std::cout << "  -a, --unit-a <file>    Unit A text file (required)\n";
+    std::cout << "  -b, --unit-b <file>    Unit B text file (required)\n";
     std::cout << "  -o, --output <path>    Output file path (without extension)\n";
     std::cout << "                         Default: game_export\n";
     std::cout << "  -s, --seed <number>    Random seed for reproducibility\n";
@@ -43,8 +58,12 @@ void print_usage(const char* program_name) {
     std::cout << "  --text-only            Only output text format\n";
     std::cout << "  -h, --help             Show this help message\n";
     std::cout << "\n";
+    std::cout << "Unit file format:\n";
+    std::cout << "  Unit Name [count] Q#+ D#+ | pts | Rules\n";
+    std::cout << "  Weapon (A#, ...), ...\n";
+    std::cout << "\n";
     std::cout << "Example:\n";
-    std::cout << "  " << program_name << " -o game_001 -s 12345\n";
+    std::cout << "  " << program_name << " -a hive_lord.txt -b sisters.txt -o game_001 -s 12345\n";
     std::cout << "\n";
     std::cout << "Output files:\n";
     std::cout << "  <path>.json   Complete JSON export with all dice rolls\n";
@@ -54,6 +73,8 @@ void print_usage(const char* program_name) {
 int main(int argc, char* argv[]) {
     // Default options
     std::string output_path = "game_export";
+    std::string unit_a_file;
+    std::string unit_b_file;
     u64 seed = static_cast<u64>(std::time(nullptr));
     bool output_json = true;
     bool output_text = true;
@@ -63,6 +84,20 @@ int main(int argc, char* argv[]) {
         if (std::strcmp(argv[i], "-h") == 0 || std::strcmp(argv[i], "--help") == 0) {
             print_usage(argv[0]);
             return 0;
+        } else if (std::strcmp(argv[i], "-a") == 0 || std::strcmp(argv[i], "--unit-a") == 0) {
+            if (i + 1 < argc) {
+                unit_a_file = argv[++i];
+            } else {
+                std::cerr << "Error: -a requires an argument\n";
+                return 1;
+            }
+        } else if (std::strcmp(argv[i], "-b") == 0 || std::strcmp(argv[i], "--unit-b") == 0) {
+            if (i + 1 < argc) {
+                unit_b_file = argv[++i];
+            } else {
+                std::cerr << "Error: -b requires an argument\n";
+                return 1;
+            }
         } else if (std::strcmp(argv[i], "-o") == 0 || std::strcmp(argv[i], "--output") == 0) {
             if (i + 1 < argc) {
                 output_path = argv[++i];
@@ -90,27 +125,38 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // Validate required arguments
+    if (unit_a_file.empty() || unit_b_file.empty()) {
+        std::cerr << "Error: Both -a and -b unit files are required\n\n";
+        print_usage(argv[0]);
+        return 1;
+    }
+
     // Initialize faction rules
     initialize_faction_rules();
 
     std::cout << "=== Battle Simulator Game Export ===\n\n";
     std::cout << "Seed: " << seed << "\n\n";
 
-    // Create sample units for testing
-    // TODO: Add support for loading units from files
-    std::string unit_a_def = R"(
-Assault Walker [1] Q4+ D2+ | 350pts | Devout, Fear(2), Fearless, Piercing Assault, Regeneration, Tough(9)
-Stomp (A3, AP(1)), Heavy Claw (A4, AP(1), Rending), Light Chainsaw (A1, AP(2), Deadly(3)), Heavy Fist (A4, AP(4))
-)";
+    // Read unit files
+    std::string unit_a_def = read_file(unit_a_file);
+    if (unit_a_def.empty()) {
+        std::cerr << "Error: Could not read unit A file: " << unit_a_file << "\n";
+        return 1;
+    }
 
-    std::string unit_b_def = R"(
-Battle Sisters [5] Q4+ D4+ | 100pts | Devout
-5x CCWs (A5), 5x 24" Rifles (A5)
-)";
+    std::string unit_b_def = read_file(unit_b_file);
+    if (unit_b_def.empty()) {
+        std::cerr << "Error: Could not read unit B file: " << unit_b_file << "\n";
+        return 1;
+    }
+
+    std::cout << "Unit A file: " << unit_a_file << "\n";
+    std::cout << "Unit B file: " << unit_b_file << "\n\n";
 
     // Parse units
-    auto result_a = UnitParser::parse_string(unit_a_def, "Blessed Sisters");
-    auto result_b = UnitParser::parse_string(unit_b_def, "Blessed Sisters");
+    auto result_a = UnitParser::parse_string(unit_a_def, "Unknown");
+    auto result_b = UnitParser::parse_string(unit_b_def, "Unknown");
 
     if (result_a.units.empty() || result_b.units.empty()) {
         std::cerr << "Error: Failed to parse units\n";
