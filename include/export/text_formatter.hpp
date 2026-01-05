@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <map>
 
 namespace battle {
 namespace export_data {
