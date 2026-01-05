@@ -306,9 +306,47 @@ private:
             combat_.check_morale(defender, true, defender_wounds, attacker_wounds);
         }
 
-        // Check if melee is over
-        if (attacker.is_out_of_action() || defender.is_out_of_action()) {
+        // Consolidation moves (after morale resolution)
+        bool attacker_destroyed = attacker.is_out_of_action();
+        bool defender_destroyed = defender.is_out_of_action();
+
+        if (attacker_destroyed || defender_destroyed) {
+            // One unit destroyed/routed - survivor may move up to 3"
             state_.in_melee = false;
+
+            if (attacker_destroyed && !defender_destroyed) {
+                // Defender survives - move up to 3" toward objective (center)
+                i8& survivor_pos = is_unit_a ? state_.pos_b : state_.pos_a;
+                if (survivor_pos > 0) {
+                    survivor_pos = std::max(static_cast<i8>(0), static_cast<i8>(survivor_pos - 3));
+                } else if (survivor_pos < 0) {
+                    survivor_pos = std::min(static_cast<i8>(0), static_cast<i8>(survivor_pos + 3));
+                }
+            } else if (defender_destroyed && !attacker_destroyed) {
+                // Attacker survives - move up to 3" toward objective (center)
+                i8& survivor_pos = is_unit_a ? state_.pos_a : state_.pos_b;
+                if (survivor_pos > 0) {
+                    survivor_pos = std::max(static_cast<i8>(0), static_cast<i8>(survivor_pos - 3));
+                } else if (survivor_pos < 0) {
+                    survivor_pos = std::min(static_cast<i8>(0), static_cast<i8>(survivor_pos + 3));
+                }
+            }
+            // Both destroyed - no consolidation needed
+        } else {
+            // Both units survive - charging unit must move back 1" to separate
+            if (is_charging) {
+                i8& charger_pos = is_unit_a ? state_.pos_a : state_.pos_b;
+                i8& defender_pos = is_unit_a ? state_.pos_b : state_.pos_a;
+
+                // Move charger back 1" away from defender
+                if (charger_pos < defender_pos) {
+                    charger_pos -= 1;  // Charger is on left, move further left
+                } else {
+                    charger_pos += 1;  // Charger is on right, move further right
+                }
+                state_.in_melee = false;
+            }
+            // If not charging (e.g., fighting in ongoing melee), units stay engaged
         }
     }
 };
