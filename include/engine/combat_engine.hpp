@@ -48,14 +48,16 @@ public:
             const Weapon& w = attacker.get_weapon(i);
             if (!w.is_ranged() || w.range < static_cast<u8>(distance)) continue;
 
-            u32 attacks = w.attacks;
+            // Calculate total attacks: min(weapon_count, alive_models) * attacks_per_model
+            u8 models_with_weapon = std::min(w.count, models_shooting);
+            u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
             if (attacks == 0) continue;
 
             // Log weapon attack start
             if (logger_) {
                 std::string rules_str = get_weapon_rules_str(w);
                 logger_->on_weapon_attack_start(w.name.c_str(), false, w.range, w.attacks, w.ap, rules_str.c_str());
-                logger_->on_attack_count(models_shooting, static_cast<u8>(attacks), attacks);
+                logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
             }
 
             // Roll to hit
@@ -276,14 +278,16 @@ public:
             const Weapon& w = attacker.get_weapon(i);
             if (!w.is_melee()) continue;
 
-            u32 attacks = w.attacks;
+            // Calculate total attacks: min(weapon_count, alive_models) * attacks_per_model
+            u8 models_with_weapon = std::min(w.count, models_attacking);
+            u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
             if (attacks == 0) continue;
 
             // Log weapon attack start
             if (logger_) {
                 std::string rules_str = get_weapon_rules_str(w);
                 logger_->on_weapon_attack_start(w.name.c_str(), true, 0, w.attacks, w.ap, rules_str.c_str());
-                logger_->on_attack_count(models_attacking, static_cast<u8>(attacks), attacks);
+                logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
             }
 
             // Roll to hit
@@ -386,7 +390,9 @@ public:
             // Roll defense
             bool poison = w.has_rule(RuleId::Poison);
             bool has_bane = w.has_rule(RuleId::Bane);
-            bool reroll_def_sixes = poison || has_bane;
+            // Bane in Melee: unit rule that gives all melee attacks Bane effect
+            bool has_bane_in_melee = attacker.has_rule(RuleId::BaneInMelee);
+            bool reroll_def_sixes = poison || has_bane || has_bane_in_melee;
 
             // Shield Wall: +1 to Defense rolls in melee (easier to save)
             u8 effective_defense = defender.defense();
@@ -432,8 +438,8 @@ public:
             // Deadly: handled separately in apply_wounds_deadly
             u8 deadly_value = w.get_rule_value(RuleId::Deadly);
 
-            // Determine if regeneration is bypassed (Bane, Rending, or Unstoppable)
-            bool bypass_regen = has_bane || has_rending || w.has_rule(RuleId::Unstoppable);
+            // Determine if regeneration is bypassed (Bane, Bane in Melee, Rending, or Unstoppable)
+            bool bypass_regen = has_bane || has_bane_in_melee || has_rending || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds
             u8 weapon_models_killed = 0;
@@ -477,7 +483,12 @@ public:
 
         // Regeneration check
         if (!bypass_regeneration && unit.has_rule(RuleId::Regeneration)) {
+            u32 original_wounds = wounds;
             wounds = dice_.roll_regeneration(wounds, 5);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Regeneration", "blocked_wounds", blocked);
+            }
         }
 
         result.wounds_dealt = static_cast<u16>(wounds);
@@ -516,7 +527,12 @@ public:
 
         // Regeneration check (before multiplying for Deadly)
         if (!bypass_regeneration && unit.has_rule(RuleId::Regeneration)) {
+            u32 original_wounds = wounds;
             wounds = dice_.roll_regeneration(wounds, 5);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Regeneration", "blocked_wounds", blocked);
+            }
         }
 
         // Each wound is multiplied by deadly_value but doesn't carry over
@@ -596,6 +612,20 @@ public:
 
             if (logger_) {
                 logger_->on_fearless_roll(fearless_roll, 4, fearless_passed);
+            }
+        }
+
+        // Hold the Line: reroll failed morale test using quality
+        u8 hold_line_roll = 0;
+        bool hold_line_passed = false;
+        if (!passed && unit.has_rule(RuleId::HoldTheLine)) {
+            hold_line_roll = dice_.roll_d6();
+            hold_line_passed = hold_line_roll >= unit.quality();
+            passed = hold_line_passed;
+
+            if (logger_) {
+                // Reuse fearless roll logging - similar mechanic
+                logger_->on_fearless_roll(hold_line_roll, unit.quality(), hold_line_passed);
             }
         }
 

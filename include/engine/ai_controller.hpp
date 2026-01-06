@@ -57,9 +57,10 @@ private:
         const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
         i8 dist = state.distance_between();
         u8 move_speed = state.get_move_speed(*unit);
+        u8 charge_dist = state.get_charge_distance(*unit);
 
-        // Can we charge?
-        if (dist <= CHARGE_DISTANCE) {
+        // Can we charge? (Fast units can charge from farther)
+        if (dist <= charge_dist) {
             return ActionType::Charge;
         }
 
@@ -111,11 +112,12 @@ private:
         i8 my_pos = is_unit_a ? state.pos_a : state.pos_b;
         i8 dist = state.distance_between();
         u8 move_speed = state.get_move_speed(*unit);
+        u8 charge_dist = state.get_charge_distance(*unit);
 
         bool controls = is_unit_a ? state.unit_a_controls_objective() : state.unit_b_controls_objective();
 
-        // Can we charge?
-        if (dist <= CHARGE_DISTANCE) {
+        // Can we charge? (Fast units can charge from farther)
+        if (dist <= charge_dist) {
             return ActionType::Charge;
         }
 
