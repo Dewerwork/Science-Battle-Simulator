@@ -1,0 +1,49 @@
+Notes: 
+The account total is showing the attack count from the weapon profile and not the weapon profile times the number of times that weapon was taken by the unit. 
+
+It also shows       Weapon: piercing claws (A1 AP1 Deadly(3)) 9 models x 1 attacks = 1 total. It shouldn't be using 9 models either, it should be using the number of weapons of this type which is 2. So the
+correct version of this would be 2 weapons x 1 attacks = 2 total.
+
+
+Unit A:
+Hive Lord [FID:26070237] [BKT:C054329A] [1] Q3+ D2+ | 540pts | Ambush, Fear(2), Fearless, Flying, Hero, Hive Bond, Increased Shooting Range, Regeneration, Tough(12)
+piercing spike (A1, AP(2), Deadly(3)), razor whip (A3, Bane, Precise), stomp (A4, AP(1)), 36" acid cannon (A1, AP(2), Deadly(6), Unstoppable)
+
+Unit B:
+Assault Grunts [FID:26070237] [BKT:BE5FB6EE] [10] Q5+ D5+ | 220pts | Bane in Melee, Fast, Hive Bond, Strider
+2x piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2)
+
+--- UNIT B ACTIVATION ---
+    AI Decision: CHARGE (melee_ai_in_charge_range)
+      Position: -6", Distance to enemy: 0"
+    Movement (charge): -6" -> -6" (0" moved)
+    Melee State: ENGAGED (charge_into_contact)
+    MELEE: Assault Grunts vs Hive Lord (CHARGING)
+      Weapon: piercing claws (A1 AP1 Deadly(3))
+        9 models x 1 attacks = 1 total
+        Hit rolls (need 5+): [5] = 1 hits
+        Defense rolls (need 3+): [6] = 1 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+      Weapon: razor claws (A2 AP0)
+        9 models x 2 attacks = 2 total
+        Hit rolls (need 5+): [1,1] = 0 hits
+        Defense rolls (need 2+): [] = 0 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+      Weapon: piercing spike (A1 AP2 Deadly(3))
+        1 models x 1 attacks = 1 total
+        Hit rolls (need 3+): [5] = 1 hits
+        Defense rolls (need 6+): [2] = 0 saves, 1 wounds
+        Result: 1 wounds, 1 models killed
+      Weapon: razor whip (A3 AP0 Bane)
+        1 models x 3 attacks = 3 total
+        Hit rolls (need 3+): [5,5,1] = 2 hits
+        Defense rolls (need 5+): [1,1] = 0 saves, 2 wounds (poison/bane)
+        Result: 2 wounds, 2 models killed
+      Weapon: stomp (A4 AP1)
+        1 models x 4 attacks = 4 total
+        Hit rolls (need 3+): [5,4,6,5] = 4 hits (1 sixes)
+        Defense rolls (need 6+): [1,4,2,5] = 0 saves, 4 wounds
+        Result: 4 wounds, 4 models killed
+    Melee Result: Attacker dealt 0 wounds, Defender dealt 7 wounds
+    Movement (separation): -6" -> -5" (1" moved)
+    Melee State: NOT ENGAGED (charger_separated)
