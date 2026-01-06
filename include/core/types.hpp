@@ -166,6 +166,8 @@ enum class RuleId : u8 {
     MeleeEvasion,   // Melee Evasion - -1 to be hit in melee
     MeleeShrouding, // Melee Shrouding - -1 to be hit in melee (like Stealth)
     RangedShrouding,// Ranged Shrouding - -1 to be hit when shooting at this unit
+    BaneInMelee,    // Bane in Melee - All melee attacks have Bane (bypass regen, reroll def 6s)
+    HoldTheLine,    // Hold the Line - Reroll failed morale tests
 
     COUNT // Number of rules
 };

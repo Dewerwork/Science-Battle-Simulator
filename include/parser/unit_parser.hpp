@@ -216,6 +216,10 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"meleeshrouding", RuleId::MeleeShrouding},
         {"ranged shrouding", RuleId::RangedShrouding},
         {"rangedshrouding", RuleId::RangedShrouding},
+        {"bane in melee", RuleId::BaneInMelee},
+        {"baneinmelee", RuleId::BaneInMelee},
+        {"hold the line", RuleId::HoldTheLine},
+        {"holdtheline", RuleId::HoldTheLine},
     };
     return map;
 }
@@ -290,12 +294,13 @@ inline std::optional<Weapon> UnitParser::parse_weapon(std::string_view weapon_st
     std::string_view remaining = trimmed;
 
     // Check for count prefix: "2x WeaponName" or "5x WeaponName"
-    u8 count = 1;
+    // Count represents how many models have this weapon
+    u8 weapon_count = 1;
     std::regex count_re(R"(^(\d+)x\s+)");
     std::string remaining_str(remaining);
     std::smatch count_match;
     if (std::regex_search(remaining_str, count_match, count_re)) {
-        count = static_cast<u8>(std::stoi(count_match[1].str()));
+        weapon_count = static_cast<u8>(std::stoi(count_match[1].str()));
         remaining = remaining.substr(count_match[0].length());
     }
 
@@ -357,6 +362,9 @@ inline std::optional<Weapon> UnitParser::parse_weapon(std::string_view weapon_st
             weapon.add_rule(rule->id, rule->value);
         }
     }
+
+    // Set the weapon count (how many models have this weapon)
+    weapon.count = weapon_count;
 
     return weapon;
 }

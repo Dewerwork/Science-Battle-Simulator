@@ -14,10 +14,11 @@ struct alignas(32) Weapon {
     Name name;                                              // 65 bytes -> padded
     std::array<CompactRule, MAX_RULES_PER_ENTITY> rules{};  // 32 bytes
     RuleMask rule_mask = 0; // Bitset for O(1) has_rule() lookup
-    u8 attacks = 1;     // A value (number of attack dice)
+    u8 attacks = 1;     // A value (number of attack dice per model)
     u8 range   = 0;     // Range in inches (0 = melee)
     u8 ap      = 0;     // Armor Piercing value
     u8 rule_count = 0;  // Number of active rules
+    u8 count   = 1;     // Number of models with this weapon (e.g., "2x weapon" = 2)
 
     // Constructors
     Weapon() = default;

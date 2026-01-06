@@ -18,7 +18,8 @@ constexpr u8 STANDARD_MOVE = 6;
 constexpr u8 FAST_MOVE = 9;
 constexpr u8 SLOW_MOVE = 4;
 constexpr u8 RUSH_MULTIPLIER = 2;      // Rush = 2x movement
-constexpr u8 CHARGE_DISTANCE = 12;
+constexpr u8 CHARGE_DISTANCE = 12;     // Standard charge distance
+constexpr u8 FAST_CHARGE_DISTANCE = 15; // Fast units can charge from farther (9" move + 6" charge)
 
 // ==============================================================================
 // Action Types
@@ -177,9 +178,15 @@ struct GameState {
         return STANDARD_MOVE;
     }
 
+    u8 get_charge_distance(const Unit& unit) const {
+        if (unit.has_rule(RuleId::Fast)) return FAST_CHARGE_DISTANCE;
+        return CHARGE_DISTANCE;
+    }
+
     bool can_charge(bool is_unit_a) const {
         if (in_melee) return false;
-        return distance_between() <= CHARGE_DISTANCE;
+        const Unit* unit = is_unit_a ? unit_a_ptr : unit_b_ptr;
+        return distance_between() <= get_charge_distance(*unit);
     }
 
     bool can_shoot(bool is_unit_a) const {
