@@ -177,9 +177,28 @@ struct GameState {
         return STANDARD_MOVE;
     }
 
+    // Calculate effective charge distance based on unit rules
+    // Charge distance equals rush distance (move_speed * 2) plus any bonuses
+    u8 get_charge_distance(const Unit& unit) const {
+        u8 base = get_move_speed(unit) * RUSH_MULTIPLIER;
+
+        // RapidCharge adds +4" to charge range
+        if (unit.has_rule(RuleId::RapidCharge)) {
+            base += 4;
+        }
+
+        // Agile adds +2" to charge range
+        if (unit.has_rule(RuleId::Agile)) {
+            base += 2;
+        }
+
+        return base;
+    }
+
     bool can_charge(bool is_unit_a) const {
         if (in_melee) return false;
-        return distance_between() <= CHARGE_DISTANCE;
+        const Unit* unit = is_unit_a ? unit_a_ptr : unit_b_ptr;
+        return distance_between() <= get_charge_distance(*unit);
     }
 
     bool can_shoot(bool is_unit_a) const {

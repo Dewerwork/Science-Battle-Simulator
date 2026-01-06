@@ -58,8 +58,8 @@ private:
         i8 dist = state.distance_between();
         u8 move_speed = state.get_move_speed(*unit);
 
-        // Can we charge?
-        if (dist <= CHARGE_DISTANCE) {
+        // Can we charge? (accounts for Fast, Slow, RapidCharge, Agile)
+        if (dist <= state.get_charge_distance(*unit)) {
             return ActionType::Charge;
         }
 
@@ -114,8 +114,8 @@ private:
 
         bool controls = is_unit_a ? state.unit_a_controls_objective() : state.unit_b_controls_objective();
 
-        // Can we charge?
-        if (dist <= CHARGE_DISTANCE) {
+        // Can we charge? (accounts for Fast, Slow, RapidCharge, Agile)
+        if (dist <= state.get_charge_distance(*unit)) {
             return ActionType::Charge;
         }
 

@@ -349,7 +349,7 @@ private:
         } else {
             switch (unit->ai_type) {
                 case AIType::Melee:
-                    if (state_.distance_between() <= CHARGE_DISTANCE) {
+                    if (state_.distance_between() <= state_.get_charge_distance(*unit)) {
                         reasoning = "Melee AI: In charge range - Charge!";
                     } else {
                         reasoning = "Melee AI: Out of charge range - Rush toward enemy";
@@ -363,7 +363,7 @@ private:
                     }
                     break;
                 case AIType::Hybrid:
-                    if (state_.distance_between() <= CHARGE_DISTANCE) {
+                    if (state_.distance_between() <= state_.get_charge_distance(*unit)) {
                         reasoning = "Hybrid AI: In charge range - Charge!";
                     } else if (unit->max_range >= static_cast<u8>(state_.distance_between())) {
                         reasoning = "Hybrid AI: In shooting range - Advance and shoot";
