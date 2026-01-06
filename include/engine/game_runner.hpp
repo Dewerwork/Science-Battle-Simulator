@@ -174,6 +174,13 @@ private:
         UnitView enemy = state_.view(!is_unit_a);
         i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
 
+        // Skip destroyed or routed units entirely (still mark as activated for round progression)
+        if (unit.is_out_of_action()) {
+            if (is_unit_a) state_.unit_a_activated = true;
+            else state_.unit_b_activated = true;
+            return;
+        }
+
         if (logger_) {
             logger_->on_activation_start(is_unit_a, state_);
         }
@@ -541,14 +548,14 @@ private:
             // Both units survive - charging unit must move back 1" to separate
             if (is_charging) {
                 i8& charger_pos = is_unit_a ? state_.pos_a : state_.pos_b;
-                i8& defender_pos = is_unit_a ? state_.pos_b : state_.pos_a;
                 i8 from_pos = charger_pos;
 
-                // Move charger back 1" away from defender
-                if (charger_pos < defender_pos) {
-                    charger_pos -= 1;  // Charger is on left, move further left
+                // Move charger back 1" toward their starting side
+                // Unit A starts on negative side, Unit B starts on positive side
+                if (is_unit_a) {
+                    charger_pos -= 1;  // Unit A moves back toward negative side (left)
                 } else {
-                    charger_pos += 1;  // Charger is on right, move further right
+                    charger_pos += 1;  // Unit B moves back toward positive side (right)
                 }
                 state_.in_melee = false;
 

@@ -18,7 +18,8 @@ constexpr u8 STANDARD_MOVE = 6;
 constexpr u8 FAST_MOVE = 8;       // Fast: +2" movement
 constexpr u8 SLOW_MOVE = 4;
 constexpr u8 RUSH_MULTIPLIER = 2;      // Rush = 2x movement
-constexpr u8 CHARGE_DISTANCE = 12;
+constexpr u8 CHARGE_DISTANCE = 12;     // Standard charge distance
+constexpr u8 FAST_CHARGE_DISTANCE = 15; // Fast units can charge from farther (9" move + 6" charge)
 
 // ==============================================================================
 // Action Types

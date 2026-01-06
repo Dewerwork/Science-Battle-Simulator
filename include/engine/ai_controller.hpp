@@ -57,6 +57,7 @@ private:
         const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
         i8 dist = state.distance_between();
         u8 move_speed = state.get_move_speed(*unit);
+        u8 charge_dist = state.get_charge_distance(*unit);
 
         // Can we charge? (accounts for Fast, Slow, RapidCharge, Agile)
         if (dist <= state.get_charge_distance(*unit)) {
@@ -111,6 +112,7 @@ private:
         i8 my_pos = is_unit_a ? state.pos_a : state.pos_b;
         i8 dist = state.distance_between();
         u8 move_speed = state.get_move_speed(*unit);
+        u8 charge_dist = state.get_charge_distance(*unit);
 
         bool controls = is_unit_a ? state.unit_a_controls_objective() : state.unit_b_controls_objective();
 
