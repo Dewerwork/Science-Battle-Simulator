@@ -1,0 +1,334 @@
+================================================================================
+MATCH START
+================================================================================
+Seed: 12345
+Unit A: Hive Lord (Testing sim units) - 1 models
+Unit B: Plague Lord (Testing sim units) - 1 models
+
+--------------------------------------------------------------------------------
+GAME 1
+--------------------------------------------------------------------------------
+Game Start: Unit A at -12", Unit B at 12"
+Distance between units: 24"
+
+
+=== ROUND 1 ===
+  Initiative roll: 5 - Unit A goes first (random_roll)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: ADVANCE (hybrid_ai_shooting)
+      Position: -12", Distance to enemy: 24"
+    Movement (advance): -12" -> -6" (6" moved)
+    SHOOTING: Hive Lord -> Plague Lord at 18" with 1 models
+      Weapon: acid cannon (A1 AP2 Deadly(6),Unstoppable)
+        1 models x 1 attacks = 1 total
+        Hit rolls (need 3+): [4] = 1 hits
+        Defense rolls (need 5+): [2] = 0 saves, 1 wounds
+        Result: 1 wounds, 1 models killed
+    Shooting Result: 3 wounds, 1 models killed - DESTROYED
+    MORALE CHECK: Plague Lord (half_strength)
+      Roll: 5 vs 3+ = PASS
+    Morale Result: passed
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 12", Distance to enemy: 18"
+  Objective Check: No control (no_unit_in_range)
+=== END ROUND 1 ===
+
+=== ROUND 2 ===
+  Initiative: Unit B goes first (alternating)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 12", Distance to enemy: 18"
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: RUSH (enemy_destroyed_advance_to_objective)
+      Position: -6", Distance to enemy: 18"
+    Movement (rush): -6" -> 6" (12" moved)
+  Objective Check: No control (no_unit_in_range)
+=== END ROUND 2 ===
+
+=== ROUND 3 ===
+  Initiative: Unit A goes first (alternating)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: RUSH (enemy_destroyed_advance_to_objective)
+      Position: 6", Distance to enemy: 6"
+    Movement (rush): 6" -> 12" (6" moved)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 12", Distance to enemy: 0"
+  Objective Check: No control (no_unit_in_range)
+=== END ROUND 3 ===
+
+=== ROUND 4 ===
+  Initiative: Unit B goes first (alternating)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 12", Distance to enemy: 0"
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: RUSH (enemy_destroyed_advance_to_objective)
+      Position: 12", Distance to enemy: 0"
+    Movement (rush): 12" -> 12" (0" moved)
+  Objective Check: No control (no_unit_in_range)
+=== END ROUND 4 ===
+
+Game End:
+  Rounds played: 4
+  Winner: Draw
+  Unit A wounds dealt: 3, models killed: 1
+  Unit B wounds dealt: 0, models killed: 0
+
+--------------------------------------------------------------------------------
+GAME 2 (positions swapped)
+--------------------------------------------------------------------------------
+Game Start: Unit A at -12", Unit B at 12"
+Distance between units: 24"
+
+
+=== ROUND 1 ===
+  Initiative roll: 6 - Unit A goes first (random_roll)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: RUSH (melee_ai_closing_distance)
+      Position: -12", Distance to enemy: 24"
+    Movement (rush): -12" -> 0" (12" moved)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: CHARGE (hybrid_ai_charge_preferred)
+      Position: 12", Distance to enemy: 12"
+    Movement (charge): 12" -> 0" (12" moved)
+    Melee State: ENGAGED (charge_into_contact)
+    MELEE: Hive Lord vs Plague Lord (CHARGING)
+      Weapon: piercing spike (A1 AP2 Deadly(3))
+        1 models x 1 attacks = 1 total
+        Hit rolls (need 3+): [1] = 0 hits
+        Defense rolls (need 5+): [] = 0 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+      Weapon: razor whip (A3 AP0 Bane)
+        1 models x 3 attacks = 3 total
+        Hit rolls (need 3+): [1,5,2] = 1 hits
+        Defense rolls (need 3+): [5] = 1 saves, 0 wounds (poison/bane)
+        Result: 0 wounds, 0 models killed
+      Weapon: stomp (A4 AP1)
+        1 models x 4 attacks = 4 total
+        Hit rolls (need 3+): [5,1,1,1] = 1 hits
+        Defense rolls (need 4+): [5] = 1 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+      Weapon: Flamer Pistol (A1 AP0 Blast(3),Reliable)
+        1 models x 1 attacks = 1 total
+        Reliable: quality_becomes_2+
+        Hit rolls (need 2+): [4] = 1 hits
+        Blast: multiplied_hits
+        Defense rolls (need 2+): [6] = 1 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+      Weapon: Plague Sword (A2 AP1 Bane)
+        1 models x 2 attacks = 2 total
+        Hit rolls (need 3+): [5,1] = 1 hits
+        Defense rolls (need 3+): [4] = 1 saves, 0 wounds (poison/bane)
+        Result: 0 wounds, 0 models killed
+    Melee Result: Attacker dealt 0 wounds, Defender dealt 0 wounds
+    Movement (separation): 0" -> 1" (1" moved)
+    Melee State: NOT ENGAGED (charger_separated)
+  Objective Check: No control (contested)
+=== END ROUND 1 ===
+
+=== ROUND 2 ===
+  Initiative: Unit B goes first (alternating)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: CHARGE (hybrid_ai_charge_preferred)
+      Position: 1", Distance to enemy: 1"
+    Movement (charge): 1" -> 0" (1" moved)
+    Melee State: ENGAGED (charge_into_contact)
+    MELEE: Hive Lord vs Plague Lord (CHARGING)
+      Weapon: piercing spike (A1 AP2 Deadly(3))
+        1 models x 1 attacks = 1 total
+        Hit rolls (need 3+): [2] = 0 hits
+        Defense rolls (need 5+): [] = 0 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+      Weapon: razor whip (A3 AP0 Bane)
+        1 models x 3 attacks = 3 total
+        Hit rolls (need 3+): [5,2,4] = 2 hits
+        Defense rolls (need 3+): [3,6,1] = 1 saves, 1 wounds (poison/bane)
+        Result: 1 wounds, 0 models killed
+      Weapon: stomp (A4 AP1)
+        1 models x 4 attacks = 4 total
+        Hit rolls (need 3+): [3,4,6,3] = 4 hits (1 sixes)
+        Defense rolls (need 4+): [4,1,3,3] = 1 saves, 3 wounds
+        Result: 3 wounds, 1 models killed
+    Melee Result: Attacker dealt 4 wounds, Defender dealt 0 wounds
+    Melee State: NOT ENGAGED (unit_destroyed_or_routed)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 0", Distance to enemy: 0"
+  Objective Check: Unit B controls
+=== END ROUND 2 ===
+
+=== ROUND 3 ===
+  Initiative: Unit A goes first (alternating)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 0", Distance to enemy: 0"
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: HOLD (enemy_destroyed_advance_to_objective)
+      Position: 0", Distance to enemy: 0"
+  Objective Check: Unit B controls
+=== END ROUND 3 ===
+
+=== ROUND 4 ===
+  Initiative: Unit B goes first (alternating)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: HOLD (enemy_destroyed_advance_to_objective)
+      Position: 0", Distance to enemy: 0"
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 0", Distance to enemy: 0"
+  Objective Check: Unit B controls
+=== END ROUND 4 ===
+
+Game End:
+  Rounds played: 4
+  Winner: Unit B
+  Unit A wounds dealt: 0, models killed: 0
+  Unit B wounds dealt: 4, models killed: 1
+
+--------------------------------------------------------------------------------
+GAME 3
+--------------------------------------------------------------------------------
+Game Start: Unit A at -12", Unit B at 12"
+Distance between units: 24"
+
+
+=== ROUND 1 ===
+  Initiative roll: 1 - Unit B goes first (random_roll)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: RUSH (melee_ai_closing_distance)
+      Position: 12", Distance to enemy: 24"
+    Movement (rush): 12" -> 0" (12" moved)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: CHARGE (hybrid_ai_charge_preferred)
+      Position: -12", Distance to enemy: 12"
+    Movement (charge): -12" -> 0" (12" moved)
+    Melee State: ENGAGED (charge_into_contact)
+    MELEE: Hive Lord vs Plague Lord (CHARGING)
+      Weapon: piercing spike (A1 AP2 Deadly(3))
+        1 models x 1 attacks = 1 total
+        Hit rolls (need 3+): [2] = 0 hits
+        Defense rolls (need 5+): [] = 0 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+      Weapon: razor whip (A3 AP0 Bane)
+        1 models x 3 attacks = 3 total
+        Hit rolls (need 3+): [3,3,3] = 3 hits
+        Defense rolls (need 3+): [3,6,3,5] = 3 saves, 0 wounds (poison/bane)
+        Result: 0 wounds, 0 models killed
+      Weapon: stomp (A4 AP1)
+        1 models x 4 attacks = 4 total
+        Hit rolls (need 3+): [4,3,5,4] = 4 hits
+        Defense rolls (need 4+): [5,2,4,5] = 3 saves, 1 wounds
+        Result: 1 wounds, 0 models killed
+      Weapon: Flamer Pistol (A1 AP0 Blast(3),Reliable)
+        1 models x 1 attacks = 1 total
+        Reliable: quality_becomes_2+
+        Hit rolls (need 2+): [3] = 1 hits
+        Blast: multiplied_hits
+        Defense rolls (need 2+): [2] = 1 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+      Weapon: Plague Sword (A2 AP1 Bane)
+        1 models x 2 attacks = 2 total
+        Hit rolls (need 3+): [2,6] = 1 hits (1 sixes)
+        Defense rolls (need 3+): [3] = 1 saves, 0 wounds (poison/bane)
+        Result: 0 wounds, 0 models killed
+    Melee Result: Attacker dealt 1 wounds, Defender dealt 0 wounds
+    MORALE CHECK: Plague Lord (lost_melee)
+      Roll: 1 vs 3+ = FAIL
+    Morale Result: shaken_from_melee
+    Unit B status: Normal -> Shaken (shaken_from_melee)
+    Movement (separation): 0" -> 1" (1" moved)
+    Melee State: NOT ENGAGED (charger_separated)
+  Objective Check: Unit A controls
+=== END ROUND 1 ===
+
+=== ROUND 2 ===
+  Initiative: Unit B goes first (alternating)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: RALLY (shaken_must_rally)
+      Position: 0", Distance to enemy: -1"
+    Unit B status: Shaken -> Normal (rallied)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: CHARGE (hybrid_ai_charge_preferred)
+      Position: 1", Distance to enemy: -1"
+    Movement (charge): 1" -> 0" (1" moved)
+    Melee State: ENGAGED (charge_into_contact)
+    MELEE: Hive Lord vs Plague Lord (CHARGING)
+      Weapon: piercing spike (A1 AP2 Deadly(3))
+        1 models x 1 attacks = 1 total
+        Hit rolls (need 3+): [5] = 1 hits
+        Defense rolls (need 5+): [1] = 0 saves, 1 wounds
+        Result: 1 wounds, 1 models killed
+      Weapon: razor whip (A3 AP0 Bane)
+        1 models x 3 attacks = 3 total
+        Hit rolls (need 3+): [3,1,5] = 2 hits
+        Defense rolls (need 3+): [5,1] = 1 saves, 1 wounds (poison/bane)
+        Result: 1 wounds, 0 models killed
+      Weapon: stomp (A4 AP1)
+        1 models x 4 attacks = 4 total
+        Hit rolls (need 3+): [2,5,2,5] = 2 hits
+        Defense rolls (need 4+): [4,6] = 2 saves, 0 wounds
+        Result: 0 wounds, 0 models killed
+    Melee Result: Attacker dealt 3 wounds, Defender dealt 0 wounds
+    Melee State: NOT ENGAGED (unit_destroyed_or_routed)
+  Objective Check: Unit A controls
+=== END ROUND 2 ===
+
+=== ROUND 3 ===
+  Initiative: Unit A goes first (alternating)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: HOLD (enemy_destroyed_advance_to_objective)
+      Position: 0", Distance to enemy: 0"
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 0", Distance to enemy: 0"
+  Objective Check: Unit A controls
+=== END ROUND 3 ===
+
+=== ROUND 4 ===
+  Initiative: Unit B goes first (alternating)
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: IDLE (unit_destroyed_or_routed)
+      Position: 0", Distance to enemy: 0"
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: HOLD (enemy_destroyed_advance_to_objective)
+      Position: 0", Distance to enemy: 0"
+  Objective Check: Unit A controls
+=== END ROUND 4 ===
+
+Game End:
+  Rounds played: 4
+  Winner: Unit A
+  Unit A wounds dealt: 4, models killed: 1
+  Unit B wounds dealt: 0, models killed: 0
+
+================================================================================
+MATCH END
+================================================================================
+Games: Unit A won 2, Unit B won 0
+Overall Winner: Unit A
