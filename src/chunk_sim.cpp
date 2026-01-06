@@ -23,10 +23,13 @@
 #include "simulation/matchup_sample.hpp"
 #include "simulation/showcase_replay.hpp"
 #include "core/faction_rules.hpp"
+#include "engine/game_runner.hpp"
+#include "export/text_match_logger.hpp"
 #include <iostream>
 #include <iomanip>
 #include <chrono>
 #include <filesystem>
+#include <fstream>
 #include <cstdlib>
 
 // Platform-specific includes for hostname and process ID
@@ -81,7 +84,8 @@ void print_main_usage(const char* prog) {
     std::cout << "  plan      Generate a chunk manifest for simulation planning\n";
     std::cout << "  run       Process a chunk (specific or next available)\n";
     std::cout << "  status    Show progress of a chunked simulation\n";
-    std::cout << "  merge     Combine chunk results into final output\n\n";
+    std::cout << "  merge     Combine chunk results into final output\n";
+    std::cout << "  debug     Run a single match with detailed logging for debugging\n\n";
     std::cout << "Use '" << prog << " <command> -h' for command-specific help.\n";
 }
 
@@ -1063,6 +1067,126 @@ int cmd_merge(int argc, char* argv[]) {
 }
 
 // ==============================================================================
+// DEBUG Command - Run single match with detailed logging
+// ==============================================================================
+
+void print_debug_usage(const char* prog) {
+    std::cout << "Debug Command - Run Single Match with Detailed Logging\n\n";
+    std::cout << "Usage: " << prog << " debug <units_file> --unit-a <id> --unit-b <id> [options]\n\n";
+    std::cout << "Options:\n";
+    std::cout << "  --unit-a <id>   Unit A ID (required)\n";
+    std::cout << "  --unit-b <id>   Unit B ID (required)\n";
+    std::cout << "  --seed <num>    Random seed for reproducibility (default: random)\n";
+    std::cout << "  -o <file>       Output file (default: stdout)\n";
+    std::cout << "  -h, --help      Show this help\n\n";
+    std::cout << "Example:\n";
+    std::cout << "  " << prog << " debug units.txt --unit-a 123 --unit-b 456 --seed 12345\n";
+}
+
+int cmd_debug(int argc, char* argv[]) {
+    if (argc < 3) {
+        print_debug_usage(argv[0]);
+        return 1;
+    }
+
+    // Parse arguments
+    std::string units_file;
+    u32 unit_a_id = 0;
+    u32 unit_b_id = 0;
+    u64 seed = 0;
+    std::string output_file;
+    bool have_unit_a = false;
+    bool have_unit_b = false;
+
+    for (int i = 2; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "-h" || arg == "--help") {
+            print_debug_usage(argv[0]);
+            return 0;
+        } else if (arg == "--unit-a" && i + 1 < argc) {
+            unit_a_id = static_cast<u32>(std::stoul(argv[++i]));
+            have_unit_a = true;
+        } else if (arg == "--unit-b" && i + 1 < argc) {
+            unit_b_id = static_cast<u32>(std::stoul(argv[++i]));
+            have_unit_b = true;
+        } else if (arg == "--seed" && i + 1 < argc) {
+            seed = std::stoull(argv[++i]);
+        } else if (arg == "-o" && i + 1 < argc) {
+            output_file = argv[++i];
+        } else if (units_file.empty() && arg[0] != '-') {
+            units_file = arg;
+        } else {
+            std::cerr << "Unknown option or missing argument: " << arg << "\n";
+            return 1;
+        }
+    }
+
+    if (units_file.empty()) {
+        std::cerr << "Error: units file required\n";
+        print_debug_usage(argv[0]);
+        return 1;
+    }
+
+    if (!have_unit_a || !have_unit_b) {
+        std::cerr << "Error: --unit-a and --unit-b are required\n";
+        print_debug_usage(argv[0]);
+        return 1;
+    }
+
+    // Load units
+    auto parse_result = UnitParser::parse_file(units_file);
+    if (parse_result.units.empty()) {
+        std::cerr << "Failed to parse units file: " << units_file << "\n";
+        return 1;
+    }
+    auto& units = parse_result.units;
+
+    // Find units
+    const Unit* unit_a = nullptr;
+    const Unit* unit_b = nullptr;
+    for (const auto& u : units) {
+        if (u.unit_id == unit_a_id) unit_a = &u;
+        if (u.unit_id == unit_b_id) unit_b = &u;
+    }
+
+    if (!unit_a) {
+        std::cerr << "Error: Unit A with ID " << unit_a_id << " not found\n";
+        return 1;
+    }
+    if (!unit_b) {
+        std::cerr << "Error: Unit B with ID " << unit_b_id << " not found\n";
+        return 1;
+    }
+
+    // Generate seed if not provided
+    if (seed == 0) {
+        seed = static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    }
+
+    // Setup output stream
+    std::ofstream file_out;
+    std::ostream* out = &std::cout;
+    if (!output_file.empty()) {
+        file_out.open(output_file);
+        if (!file_out) {
+            std::cerr << "Error: cannot open output file: " << output_file << "\n";
+            return 1;
+        }
+        out = &file_out;
+    }
+
+    // Create logger and runner
+    TextMatchLogger logger(*out);
+    DiceRoller dice(seed);
+    GameRunner runner(dice, &logger);
+
+    // Run the match
+    MatchResult result = runner.run_match(*unit_a, *unit_b);
+
+    return 0;
+}
+
+// ==============================================================================
 // Main Entry Point
 // ==============================================================================
 
@@ -1082,6 +1206,8 @@ int main(int argc, char* argv[]) {
         return cmd_status(argc, argv);
     } else if (command == "merge") {
         return cmd_merge(argc, argv);
+    } else if (command == "debug") {
+        return cmd_debug(argc, argv);
     } else if (command == "-h" || command == "--help") {
         print_main_usage(argv[0]);
         return 0;

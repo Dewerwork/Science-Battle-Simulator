@@ -3,8 +3,10 @@
 #include "core/types.hpp"
 #include "core/unit.hpp"
 #include "engine/dice.hpp"
+#include "engine/match_logger.hpp"
 #include "simulation/sim_state.hpp"
 #include <algorithm>
+#include <string>
 
 namespace battle {
 
@@ -17,7 +19,8 @@ struct CombatResult;
 
 class CombatEngine {
 public:
-    explicit CombatEngine(DiceRoller& dice) : dice_(dice) {}
+    explicit CombatEngine(DiceRoller& dice, MatchLogger* logger = nullptr)
+        : dice_(dice), logger_(logger) {}
 
     // Resolve shooting attack
     CombatResult resolve_shooting(UnitView attacker, UnitView defender, i8 distance, bool moved) {
@@ -25,6 +28,7 @@ public:
 
         // Collect all ranged weapons in range
         u32 total_attacks = 0;
+        u8 models_shooting = attacker.alive_count();
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
             if (w.is_ranged() && w.range >= static_cast<u8>(distance)) {
@@ -34,6 +38,11 @@ public:
 
         if (total_attacks == 0) return result;
 
+        if (logger_) {
+            logger_->on_shooting_start(true, attacker.unit->name.c_str(),
+                                       defender.unit->name.c_str(), distance, models_shooting);
+        }
+
         // Process each weapon
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
@@ -42,47 +51,80 @@ public:
             u32 attacks = w.attacks;
             if (attacks == 0) continue;
 
+            // Log weapon attack start
+            if (logger_) {
+                std::string rules_str = get_weapon_rules_str(w);
+                logger_->on_weapon_attack_start(w.name.c_str(), false, w.range, w.attacks, w.ap, rules_str.c_str());
+                logger_->on_attack_count(models_shooting, static_cast<u8>(attacks), attacks);
+            }
+
             // Roll to hit
-            u8 quality = attacker.quality();
+            u8 base_quality = attacker.quality();
+            u8 quality = base_quality;
             i8 hit_modifier = 0;
 
             // Reliable: Quality becomes 2+
             if (w.has_rule(RuleId::Reliable)) {
                 quality = 2;
+                if (logger_) logger_->on_hit_modifier("Reliable", 0, "quality_becomes_2+");
             }
 
             // Stealth: -1 to hit from >9"
             if (defender.has_rule(RuleId::Stealth) && distance > 9) {
                 hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("Stealth", -1, "target_beyond_9\"");
             }
+
+            // Enable roll recording for logging
+            if (logger_) dice_.enable_roll_recording(true);
 
             auto hit_result = dice_.roll_quality_test(attacks, quality, hit_modifier);
             u32 hits = hit_result.hits;
             u32 sixes = hit_result.sixes;
 
+            // Log hit rolls
+            if (logger_) {
+                std::vector<u8> hit_rolls = dice_.take_recorded_rolls();
+                i8 effective = static_cast<i8>(quality) - hit_modifier;
+                effective = std::max(i8(2), std::min(i8(6), effective));
+                logger_->on_hit_rolls(base_quality, hit_modifier, static_cast<u8>(effective), hit_rolls, hits, sixes);
+            }
+
             // Rending: 6s to hit get AP(+4) - track separately
             bool has_rending = w.has_rule(RuleId::Rending);
             u32 rending_hits = has_rending ? sixes : 0;
             u32 normal_hits = hits - rending_hits;
+            u32 bonus_hits = 0;
 
             // Relentless: extra hits on 6s when shooting >9" (no movement restriction per rules)
             if (attacker.has_rule(RuleId::Relentless) && distance > 9) {
+                bonus_hits += sixes;
                 hits += sixes;
+                if (logger_) logger_->on_rule_triggered("Relentless", "extra_hits_on_6s", sixes);
             }
 
             // Surge: extra hits on 6s to hit
             if (w.has_rule(RuleId::Surge)) {
+                bonus_hits += sixes;
                 hits += sixes;
+                if (logger_) logger_->on_rule_triggered("Surge", "extra_hits_on_6s", sixes);
             }
 
             // Blast: multiply hits by X, where X is capped at target model count
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
                 u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
+                u32 old_hits = hits;
                 hits *= multiplier;
                 // Rending hits also multiply with Blast
                 rending_hits *= multiplier;
                 normal_hits = hits - rending_hits;
+                if (logger_) logger_->on_rule_triggered("Blast", "multiplied_hits", hits - old_hits);
+            }
+
+            // Log hits after modifiers
+            if (logger_) {
+                logger_->on_hits_after_modifiers(normal_hits, rending_hits, hits);
             }
 
             // Roll defense for normal hits
@@ -91,14 +133,39 @@ public:
             bool has_bane = w.has_rule(RuleId::Bane);
             // Bane: reroll defense 6s (like Poison)
             bool reroll_def_sixes = poison || has_bane;
+
+            if (logger_) dice_.enable_roll_recording(true);
             u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), ap, 0, reroll_def_sixes);
+
+            // Log defense rolls for normal hits
+            if (logger_) {
+                std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                i8 effective = static_cast<i8>(defender.defense()) + static_cast<i8>(ap);
+                effective = std::max(i8(2), std::min(i8(6), effective));
+                u32 saves = normal_hits - wounds_from_normal;
+                logger_->on_defense_rolls(defender.defense(), ap, static_cast<u8>(effective), reroll_def_sixes,
+                                          def_rolls, saves, wounds_from_normal, 0, {}, 0);
+            }
 
             // Roll defense for rending hits (AP+4) - Rending adds AP(4) to base
             u32 wounds_from_rending = 0;
             if (rending_hits > 0) {
                 u8 rending_ap = ap + 4;  // Rending adds +4 AP to base
+                if (logger_) dice_.enable_roll_recording(true);
                 wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), rending_ap, 0, reroll_def_sixes);
+
+                if (logger_) {
+                    std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
+                    i8 effective = static_cast<i8>(defender.defense()) + static_cast<i8>(rending_ap);
+                    effective = std::max(i8(2), std::min(i8(6), effective));
+                    u32 saves = rending_hits - wounds_from_rending;
+                    logger_->on_defense_rolls_rending(defender.defense(), rending_ap, static_cast<u8>(effective),
+                                                      rend_rolls, saves, wounds_from_rending);
+                }
             }
+
+            // Disable roll recording
+            if (logger_) dice_.enable_roll_recording(false);
 
             u32 total_wounds = wounds_from_normal + wounds_from_rending;
 
@@ -109,6 +176,7 @@ public:
             bool bypass_regen = has_bane || has_rending || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds to defender
+            u8 weapon_models_killed = 0;
             if (total_wounds > 0) {
                 WoundResult wound_result;
                 if (deadly_value > 1) {
@@ -119,12 +187,21 @@ public:
                 }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
+                weapon_models_killed = wound_result.models_killed;
+            }
+
+            if (logger_) {
+                logger_->on_weapon_attack_end(w.name.c_str(), total_wounds, weapon_models_killed);
             }
         }
 
         result.target_destroyed = defender.is_destroyed();
         result.target_shaken = defender.is_shaken();
         result.target_routed = defender.is_routed();
+
+        if (logger_) {
+            logger_->on_shooting_end(true, result.wounds_dealt, result.models_killed, result.target_destroyed);
+        }
 
         return result;
     }
@@ -136,32 +213,65 @@ public:
 
         // Impact: separate roll hitting on 2+ when charging (before normal attacks)
         if (is_charging && !attacker.is_fatigued()) {
-            u8 impact = attacker.get_rule_value(RuleId::Impact);
+            u8 base_impact = attacker.get_rule_value(RuleId::Impact);
+            u8 impact = base_impact;
             // Counter reduces Impact by 1 per model with Counter
             if (impact > counter_models) {
                 impact -= counter_models;
             } else {
                 impact = 0;
             }
+
+            if (logger_ && base_impact > 0) {
+                logger_->on_impact_start(true, base_impact, counter_models, impact);
+            }
+
             if (impact > 0) {
+                if (logger_) dice_.enable_roll_recording(true);
                 u32 impact_hits = dice_.roll_impact(impact);
+
+                if (logger_) {
+                    std::vector<u8> impact_rolls = dice_.take_recorded_rolls();
+                    logger_->on_impact_rolls(impact_rolls, 2, impact_hits);
+                }
+
                 if (impact_hits > 0) {
                     // Impact hits use base defense (no AP)
                     u8 effective_defense = defender.defense();
                     if (defender.has_rule(RuleId::ShieldWall)) {
                         effective_defense = std::max(u8(2), static_cast<u8>(effective_defense - 1));
                     }
+
+                    if (logger_) dice_.enable_roll_recording(true);
                     u32 impact_wounds = dice_.roll_defense_test(impact_hits, effective_defense, 0, 0, false);
+
+                    if (logger_) {
+                        std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                        u32 saves = impact_hits - impact_wounds;
+                        logger_->on_impact_defense(def_rolls, defender.defense(), effective_defense, saves, impact_wounds);
+                    }
+
                     if (impact_wounds > 0) {
                         auto wound_result = apply_wounds(defender, impact_wounds, false);
                         result.wounds_dealt += wound_result.wounds_dealt;
                         result.models_killed += wound_result.models_killed;
+
+                        if (logger_) {
+                            logger_->on_impact_end(wound_result.wounds_dealt, wound_result.models_killed);
+                        }
+                    } else if (logger_) {
+                        logger_->on_impact_end(0, 0);
                     }
+                } else if (logger_) {
+                    logger_->on_impact_end(0, 0);
                 }
             }
+
+            if (logger_) dice_.enable_roll_recording(false);
         }
 
         // Collect all melee weapons
+        u8 models_attacking = attacker.alive_count();
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
             if (!w.is_melee()) continue;
@@ -169,18 +279,28 @@ public:
             u32 attacks = w.attacks;
             if (attacks == 0) continue;
 
+            // Log weapon attack start
+            if (logger_) {
+                std::string rules_str = get_weapon_rules_str(w);
+                logger_->on_weapon_attack_start(w.name.c_str(), true, 0, w.attacks, w.ap, rules_str.c_str());
+                logger_->on_attack_count(models_attacking, static_cast<u8>(attacks), attacks);
+            }
+
             // Roll to hit
-            u8 quality = attacker.quality();
+            u8 base_quality = attacker.quality();
+            u8 quality = base_quality;
             i8 hit_modifier = 0;
 
             // Reliable: Quality becomes 2+
             if (w.has_rule(RuleId::Reliable)) {
                 quality = 2;
+                if (logger_) logger_->on_hit_modifier("Reliable", 0, "quality_becomes_2+");
             }
 
             // Thrust: +1 to hit when charging
             if (is_charging && w.has_rule(RuleId::Thrust)) {
                 hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Thrust", +1, "charging_bonus");
             }
 
             // Shaken/Fatigued: Only hit on 6s (unmodified)
@@ -188,11 +308,23 @@ public:
             if (only_sixes) {
                 quality = 6;
                 hit_modifier = 0;  // No modifiers when fatigued
+                if (logger_) logger_->on_hit_modifier("Fatigued/Shaken", 0, "only_hit_on_6s");
             }
+
+            // Enable roll recording for logging
+            if (logger_) dice_.enable_roll_recording(true);
 
             auto hit_result = dice_.roll_quality_test(attacks, quality, hit_modifier);
             u32 hits = hit_result.hits;
             u32 sixes = hit_result.sixes;
+
+            // Log hit rolls
+            if (logger_) {
+                std::vector<u8> hit_rolls = dice_.take_recorded_rolls();
+                i8 effective = static_cast<i8>(quality) - hit_modifier;
+                effective = std::max(i8(2), std::min(i8(6), effective));
+                logger_->on_hit_rolls(base_quality, hit_modifier, static_cast<u8>(effective), hit_rolls, hits, sixes);
+            }
 
             // Rending: 6s to hit get AP(+4)
             bool has_rending = w.has_rule(RuleId::Rending);
@@ -203,12 +335,14 @@ public:
             if (is_charging && attacker.has_rule(RuleId::Furious)) {
                 hits += sixes;
                 normal_hits = hits - rending_hits;
+                if (logger_) logger_->on_rule_triggered("Furious", "extra_hits_on_6s_when_charging", sixes);
             }
 
             // Surge: extra hits on 6s to hit
             if (w.has_rule(RuleId::Surge)) {
                 hits += sixes;
                 normal_hits = hits - rending_hits;
+                if (logger_) logger_->on_rule_triggered("Surge", "extra_hits_on_6s", sixes);
             }
 
             // Calculate AP
@@ -217,25 +351,36 @@ public:
             // Lance: +2 AP when charging
             if (is_charging && w.has_rule(RuleId::Lance)) {
                 ap += 2;
+                if (logger_) logger_->on_rule_triggered("Lance", "ap_+2_when_charging", 2);
             }
 
             // Thrust: AP(+1) when charging
             if (is_charging && w.has_rule(RuleId::Thrust)) {
                 ap += 1;
+                if (logger_) logger_->on_rule_triggered("Thrust", "ap_+1_when_charging", 1);
             }
 
             // Piercing Assault: AP(1) on melee when charging
             if (is_charging && attacker.has_rule(RuleId::PiercingAssault)) {
+                u8 old_ap = ap;
                 ap = std::max(ap, u8(1));
+                if (logger_ && ap > old_ap) logger_->on_rule_triggered("PiercingAssault", "minimum_ap_1", 1);
             }
 
             // Blast: multiply hits by X, where X is capped at target model count
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
                 u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
+                u32 old_hits = hits;
                 hits *= multiplier;
                 rending_hits *= multiplier;
                 normal_hits = hits - rending_hits;
+                if (logger_) logger_->on_rule_triggered("Blast", "multiplied_hits", hits - old_hits);
+            }
+
+            // Log hits after modifiers
+            if (logger_) {
+                logger_->on_hits_after_modifiers(normal_hits, rending_hits, hits);
             }
 
             // Roll defense
@@ -247,14 +392,40 @@ public:
             u8 effective_defense = defender.defense();
             if (defender.has_rule(RuleId::ShieldWall)) {
                 effective_defense = std::max(u8(2), static_cast<u8>(effective_defense - 1));
+                if (logger_) logger_->on_defense_modifier("ShieldWall", -1, "easier_saves_in_melee");
             }
 
+            if (logger_) dice_.enable_roll_recording(true);
             u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, ap, 0, reroll_def_sixes);
+
+            // Log defense rolls for normal hits
+            if (logger_) {
+                std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                i8 effective = static_cast<i8>(effective_defense) + static_cast<i8>(ap);
+                effective = std::max(i8(2), std::min(i8(6), effective));
+                u32 saves = normal_hits - wounds_from_normal;
+                logger_->on_defense_rolls(defender.defense(), ap, static_cast<u8>(effective), reroll_def_sixes,
+                                          def_rolls, saves, wounds_from_normal, 0, {}, 0);
+            }
+
             u32 wounds_from_rending = 0;
             if (rending_hits > 0) {
                 u8 rending_ap = ap + 4;  // Rending adds +4 AP to base
+                if (logger_) dice_.enable_roll_recording(true);
                 wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+
+                if (logger_) {
+                    std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
+                    i8 effective = static_cast<i8>(effective_defense) + static_cast<i8>(rending_ap);
+                    effective = std::max(i8(2), std::min(i8(6), effective));
+                    u32 saves = rending_hits - wounds_from_rending;
+                    logger_->on_defense_rolls_rending(defender.defense(), rending_ap, static_cast<u8>(effective),
+                                                      rend_rolls, saves, wounds_from_rending);
+                }
             }
+
+            // Disable roll recording
+            if (logger_) dice_.enable_roll_recording(false);
 
             u32 total_wounds = wounds_from_normal + wounds_from_rending;
 
@@ -265,6 +436,7 @@ public:
             bool bypass_regen = has_bane || has_rending || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds
+            u8 weapon_models_killed = 0;
             if (total_wounds > 0) {
                 WoundResult wound_result;
                 if (deadly_value > 1) {
@@ -274,6 +446,11 @@ public:
                 }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
+                weapon_models_killed = wound_result.models_killed;
+            }
+
+            if (logger_) {
+                logger_->on_weapon_attack_end(w.name.c_str(), total_wounds, weapon_models_killed);
             }
         }
 
@@ -373,45 +550,87 @@ public:
 
     // Morale check
     // is_from_melee: true if this check is from losing melee combat
-    bool check_morale(UnitView unit, bool is_from_melee = false, u32 melee_wounds_taken = 0, u32 melee_wounds_dealt = 0) {
+    // is_unit_a: for logging purposes
+    bool check_morale(UnitView unit, bool is_from_melee = false, u32 melee_wounds_taken = 0, u32 melee_wounds_dealt = 0, bool is_unit_a = true) {
         // Check if morale test is needed
         bool needs_test = false;
+        const char* trigger_reason = "";
 
         // At half strength (wounds or models)
         if (unit.is_at_half_strength() && !unit.is_shaken() && !unit.is_routed()) {
             needs_test = true;
+            trigger_reason = "half_strength";
         }
 
         // Lost melee (dealt fewer wounds)
         if (is_from_melee && melee_wounds_taken > melee_wounds_dealt) {
             needs_test = true;
+            trigger_reason = "lost_melee";
         }
 
         if (!needs_test) return true;  // Passed (no test needed)
+
+        UnitStatus old_status = unit.state->status;
+
+        if (logger_) {
+            logger_->on_morale_check_start(is_unit_a, unit.unit->name.c_str(), trigger_reason,
+                                           unit.alive_count(), unit.unit->model_count,
+                                           static_cast<u16>(melee_wounds_taken), static_cast<u16>(melee_wounds_dealt));
+        }
 
         // Roll morale test
         u8 roll = dice_.roll_d6();
         bool passed = roll >= unit.quality();
 
-        // Fearless: reroll failed test, pass on 4+
-        if (!passed && unit.has_rule(RuleId::Fearless)) {
-            roll = dice_.roll_d6();
-            passed = roll >= 4;
+        if (logger_) {
+            logger_->on_morale_roll(roll, unit.quality(), passed);
         }
 
-        if (passed) return true;
+        // Fearless: reroll failed test, pass on 4+
+        u8 fearless_roll = 0;
+        bool fearless_passed = false;
+        if (!passed && unit.has_rule(RuleId::Fearless)) {
+            fearless_roll = dice_.roll_d6();
+            fearless_passed = fearless_roll >= 4;
+            passed = fearless_passed;
+
+            if (logger_) {
+                logger_->on_fearless_roll(fearless_roll, 4, fearless_passed);
+            }
+        }
+
+        if (passed) {
+            if (logger_) {
+                logger_->on_morale_check_end(true, old_status, old_status, "passed");
+            }
+            return true;
+        }
 
         // Failed morale - different outcomes for melee vs shooting
+        UnitStatus new_status = old_status;
+        const char* result_desc = "";
+
         if (is_from_melee) {
             // Melee morale: Rout if at half strength, Shaken otherwise
             if (unit.is_at_half_strength()) {
                 unit.rout();
+                new_status = UnitStatus::Routed;
+                result_desc = "routed_at_half_strength";
             } else {
                 unit.become_shaken();
+                new_status = UnitStatus::Shaken;
+                result_desc = "shaken_from_melee";
             }
         } else {
             // General morale (from shooting): Always Shaken, never immediate Rout
             unit.become_shaken();
+            new_status = UnitStatus::Shaken;
+            result_desc = "shaken_from_shooting";
+        }
+
+        if (logger_) {
+            logger_->on_morale_check_end(false, old_status, new_status, result_desc);
+            logger_->on_status_changed(is_unit_a, old_status, new_status, result_desc);
         }
 
         return false;
@@ -419,6 +638,28 @@ public:
 
 private:
     DiceRoller& dice_;
+    MatchLogger* logger_;
+
+    // Helper to build weapon rules string
+    std::string get_weapon_rules_str(const Weapon& w) {
+        std::string rules;
+        if (w.has_rule(RuleId::Rending)) rules += "Rending,";
+        if (w.has_rule(RuleId::Deadly)) {
+            rules += "Deadly(" + std::to_string(w.get_rule_value(RuleId::Deadly)) + "),";
+        }
+        if (w.has_rule(RuleId::Blast)) {
+            rules += "Blast(" + std::to_string(w.get_rule_value(RuleId::Blast)) + "),";
+        }
+        if (w.has_rule(RuleId::Poison)) rules += "Poison,";
+        if (w.has_rule(RuleId::Bane)) rules += "Bane,";
+        if (w.has_rule(RuleId::Reliable)) rules += "Reliable,";
+        if (w.has_rule(RuleId::Surge)) rules += "Surge,";
+        if (w.has_rule(RuleId::Lance)) rules += "Lance,";
+        if (w.has_rule(RuleId::Thrust)) rules += "Thrust,";
+        if (w.has_rule(RuleId::Unstoppable)) rules += "Unstoppable,";
+        if (!rules.empty()) rules.pop_back(); // Remove trailing comma
+        return rules;
+    }
 };
 
 } // namespace battle
