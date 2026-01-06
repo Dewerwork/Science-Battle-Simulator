@@ -15,7 +15,7 @@ constexpr i8 STARTING_DISTANCE = 12;   // Units start 12" from center (24" apart
 constexpr i8 OBJECTIVE_CONTROL_RANGE = 3;  // Must be within 3" to control
 constexpr u8 MAX_ROUNDS = 4;
 constexpr u8 STANDARD_MOVE = 6;
-constexpr u8 FAST_MOVE = 9;
+constexpr u8 FAST_MOVE = 8;       // Fast: +2" movement
 constexpr u8 SLOW_MOVE = 4;
 constexpr u8 RUSH_MULTIPLIER = 2;      // Rush = 2x movement
 constexpr u8 CHARGE_DISTANCE = 12;
@@ -178,9 +178,18 @@ struct GameState {
     }
 
     // Calculate effective charge distance based on unit rules
-    // Charge distance equals rush distance (move_speed * 2) plus any bonuses
     u8 get_charge_distance(const Unit& unit) const {
-        u8 base = get_move_speed(unit) * RUSH_MULTIPLIER;
+        u8 base = CHARGE_DISTANCE;  // Base 12"
+
+        // Fast adds +4" to charge range
+        if (unit.has_rule(RuleId::Fast)) {
+            base += 4;
+        }
+
+        // Slow reduces charge range by 4"
+        if (unit.has_rule(RuleId::Slow)) {
+            base -= 4;
+        }
 
         // RapidCharge adds +4" to charge range
         if (unit.has_rule(RuleId::RapidCharge)) {
