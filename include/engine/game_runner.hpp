@@ -262,7 +262,7 @@ private:
         if (gs.in_melee) return "locked_in_melee";
 
         i8 dist = gs.distance_between();
-        bool can_charge = dist <= CHARGE_DISTANCE;
+        bool can_charge = dist <= gs.get_charge_distance(*unit.unit);
 
         switch (unit.unit->ai_type) {
             case AIType::Melee:
