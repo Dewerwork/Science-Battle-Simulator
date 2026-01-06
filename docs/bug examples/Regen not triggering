@@ -1,0 +1,42 @@
+--------------------------------------------------------------------------------
+GAME 1
+--------------------------------------------------------------------------------
+Game Start: Unit A at -12", Unit B at 12"
+Distance between units: 24"
+
+
+=== ROUND 1 ===
+  Initiative roll: 5 - Unit A goes first (random_roll)
+
+  --- UNIT A ACTIVATION ---
+    AI Decision: ADVANCE (hybrid_ai_shooting)
+      Position: -12", Distance to enemy: 24"
+    Movement (advance): -12" -> -6" (6" moved)
+    SHOOTING: Hive Lord -> Hive Lord at 18" with 1 models
+      Weapon: acid cannon (A1 AP2 Deadly(6),Unstoppable)
+        1 models x 1 attacks = 1 total
+        Hit rolls (need 3+): [4] = 1 hits
+        Defense rolls (need 4+): [2] = 0 saves, 1 wounds
+        Result: 1 wounds, 0 models killed
+    Shooting Result: 6 wounds, 0 models killed
+    MORALE CHECK: Hive Lord (half_strength)
+      Roll: 5 vs 3+ = PASS
+    Morale Result: passed
+
+  --- UNIT B ACTIVATION ---
+    AI Decision: ADVANCE (hybrid_ai_shooting)
+      Position: 12", Distance to enemy: 18"
+    Movement (advance): 12" -> 6" (6" moved)
+    SHOOTING: Hive Lord -> Hive Lord at 12" with 1 models
+      Weapon: acid cannon (A1 AP2 Deadly(6),Unstoppable)
+        1 models x 1 attacks = 1 total
+        Hit rolls (need 3+): [6] = 1 hits (1 sixes)
+        Defense rolls (need 4+): [1] = 0 saves, 1 wounds
+        Result: 1 wounds, 0 models killed
+    Shooting Result: 6 wounds, 0 models killed
+    MORALE CHECK: Hive Lord (half_strength)
+      Roll: 1 vs 3+ = FAIL
+      Fearless reroll: 5 vs 4+ = PASS
+    Morale Result: passed
+  Objective Check: No control (no_unit_in_range)
+=== END ROUND 1 ===
