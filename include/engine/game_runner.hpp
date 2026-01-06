@@ -6,6 +6,7 @@
 #include "engine/game_state.hpp"
 #include "engine/combat_engine.hpp"
 #include "engine/ai_controller.hpp"
+#include "engine/match_logger.hpp"
 #include <algorithm>
 
 namespace battle {
@@ -16,19 +17,29 @@ namespace battle {
 
 class GameRunner {
 public:
-    explicit GameRunner(DiceRoller& dice)
-        : dice_(dice), combat_(dice) {}
+    explicit GameRunner(DiceRoller& dice, MatchLogger* logger = nullptr)
+        : dice_(dice), combat_(dice, logger), logger_(logger) {}
 
     // Run a single game between two units
     GameResult run_game(const Unit& unit_a, const Unit& unit_b) {
         state_.init(unit_a, unit_b);
+
+        if (logger_) {
+            logger_->on_game_start(unit_a, unit_b, state_.pos_a, state_.pos_b);
+        }
 
         // Run up to MAX_ROUNDS
         while (!state_.is_game_over() && state_.current_round <= MAX_ROUNDS) {
             run_round();
         }
 
-        return GameResult::determine(state_);
+        GameResult result = GameResult::determine(state_);
+
+        if (logger_) {
+            logger_->on_game_end(result, state_);
+        }
+
+        return result;
     }
 
     // Run a best-of-3 match
@@ -37,10 +48,20 @@ public:
         result.unit_a_id = unit_a.unit_id;
         result.unit_b_id = unit_b.unit_id;
 
+        if (logger_) {
+            logger_->on_match_start(unit_a, unit_b, dice_.get_seed());
+        }
+
         for (int game = 0; game < 3; ++game) {
             // Alternate starting positions each game
+            bool positions_swapped = (game % 2 == 1);
+
+            if (logger_) {
+                logger_->on_match_game_start(static_cast<u8>(game + 1), positions_swapped);
+            }
+
             GameResult game_result;
-            if (game % 2 == 0) {
+            if (!positions_swapped) {
                 game_result = run_game(unit_a, unit_b);
             } else {
                 // Swap positions for game 2
@@ -66,23 +87,43 @@ public:
         }
 
         result.determine_winner();
+
+        if (logger_) {
+            logger_->on_match_end(result);
+        }
+
         return result;
     }
 
 private:
     DiceRoller& dice_;
     CombatEngine combat_;
+    MatchLogger* logger_;
     GameState state_;  // Reusable game state
 
     void run_round() {
+        if (logger_) {
+            logger_->on_round_start(state_.current_round, state_);
+        }
+
         // Determine activation order (random for round 1, alternating after)
         bool a_goes_first;
+        u8 initiative_roll = 0;
+        const char* initiative_reason;
+
         if (state_.current_round == 1) {
-            a_goes_first = (dice_.roll_d6() >= 4);
+            initiative_roll = dice_.roll_d6();
+            a_goes_first = (initiative_roll >= 4);
+            initiative_reason = "random_roll";
         } else {
             // Loser of initiative last round goes first
             // For simplicity, alternate based on round number
             a_goes_first = (state_.current_round % 2 == 1);
+            initiative_reason = "alternating";
+        }
+
+        if (logger_) {
+            logger_->on_initiative(state_.current_round, initiative_roll, a_goes_first, initiative_reason);
         }
 
         // First activation
@@ -94,20 +135,79 @@ private:
             activate_unit(true);
         }
 
-        // End of round
+        // End of round - check objective control
+        bool a_in_range = std::abs(state_.pos_a) <= OBJECTIVE_CONTROL_RANGE;
+        bool b_in_range = std::abs(state_.pos_b) <= OBJECTIVE_CONTROL_RANGE;
+        bool a_shaken = state_.state_a.is_shaken();
+        bool b_shaken = state_.state_b.is_shaken();
+        bool a_ooa = state_.state_a.is_out_of_action();
+        bool b_ooa = state_.state_b.is_out_of_action();
+
         state_.update_objective_control();
+
+        bool a_controls = state_.unit_a_controls_objective();
+        bool b_controls = state_.unit_b_controls_objective();
+
+        const char* control_reason = "none";
+        if (a_controls && !b_controls) control_reason = "unit_a_controls";
+        else if (b_controls && !a_controls) control_reason = "unit_b_controls";
+        else if (a_in_range && b_in_range && !a_shaken && !b_shaken) control_reason = "contested";
+        else if (!a_in_range && !b_in_range) control_reason = "no_unit_in_range";
+
+        if (logger_) {
+            logger_->on_objective_control_check(
+                state_.pos_a, state_.pos_b,
+                a_in_range, b_in_range,
+                a_shaken, b_shaken,
+                a_ooa, b_ooa,
+                a_controls, b_controls,
+                control_reason);
+
+            logger_->on_round_end(state_.current_round, state_);
+        }
+
         state_.next_round();
     }
 
     void activate_unit(bool is_unit_a) {
         UnitView unit = state_.view(is_unit_a);
+        UnitView enemy = state_.view(!is_unit_a);
         i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
+
+        if (logger_) {
+            logger_->on_activation_start(is_unit_a, state_);
+        }
 
         if (is_unit_a) state_.unit_a_activated = true;
         else state_.unit_b_activated = true;
 
         // Get AI decision
         ActionType action = AIController::decide_action(state_, is_unit_a);
+
+        // Log AI decision with context
+        if (logger_) {
+            i8 dist_to_enemy = state_.distance_between();
+            i8 dist_to_objective = std::abs(my_pos);
+            bool controls = is_unit_a ? state_.unit_a_controls_objective() : state_.unit_b_controls_objective();
+
+            const char* reasoning = get_ai_reasoning(action, state_, is_unit_a);
+
+            logger_->on_ai_decision(
+                is_unit_a,
+                unit.unit->ai_type,
+                action,
+                my_pos,
+                dist_to_enemy,
+                dist_to_objective,
+                controls,
+                state_.in_melee,
+                unit.is_shaken(),
+                unit.is_fatigued(),
+                enemy.is_out_of_action(),
+                unit.max_range(),
+                state_.get_move_speed(*unit.unit),
+                reasoning);
+        }
 
         // Execute action
         switch (action) {
@@ -128,6 +228,9 @@ private:
                 break;
 
             case ActionType::Rally:
+                if (logger_) {
+                    logger_->on_status_changed(is_unit_a, UnitStatus::Shaken, UnitStatus::Normal, "rallied");
+                }
                 unit.rally();
                 break;
 
@@ -135,6 +238,38 @@ private:
             default:
                 // Do nothing
                 break;
+        }
+
+        if (logger_) {
+            logger_->on_activation_end(is_unit_a, state_);
+        }
+    }
+
+    const char* get_ai_reasoning(ActionType action, const GameState& gs, bool is_unit_a) {
+        UnitView unit = const_cast<GameState&>(gs).view(is_unit_a);
+        UnitView enemy = const_cast<GameState&>(gs).view(!is_unit_a);
+
+        if (unit.is_out_of_action()) return "unit_destroyed_or_routed";
+        if (unit.is_shaken() && action == ActionType::Rally) return "shaken_must_rally";
+        if (enemy.is_out_of_action()) return "enemy_destroyed_advance_to_objective";
+        if (gs.in_melee) return "locked_in_melee";
+
+        i8 dist = gs.distance_between();
+        bool can_charge = dist <= CHARGE_DISTANCE;
+
+        switch (unit.unit->ai_type) {
+            case AIType::Melee:
+                if (can_charge) return "melee_ai_in_charge_range";
+                return "melee_ai_closing_distance";
+            case AIType::Shooting:
+                if (unit.max_range() >= static_cast<u8>(dist)) return "shooting_ai_in_range_hold";
+                return "shooting_ai_advancing_to_range";
+            case AIType::Hybrid:
+                if (can_charge) return "hybrid_ai_charge_preferred";
+                if (unit.max_range() >= static_cast<u8>(dist)) return "hybrid_ai_shooting";
+                return "hybrid_ai_closing_distance";
+            default:
+                return "default_behavior";
         }
     }
 
@@ -155,7 +290,7 @@ private:
                 // Check morale for defender if took wounds (not just kills)
                 // Morale test when unit is at half strength after taking wounds
                 if (result.wounds_dealt > 0) {
-                    combat_.check_morale(enemy, false);  // false = not from melee
+                    combat_.check_morale(enemy, false, 0, 0, !is_unit_a);  // false = not from melee
                 }
             }
         }
@@ -172,11 +307,17 @@ private:
         }
 
         // Move toward center/enemy
+        i8 from_pos = my_pos;
         u8 move_speed = state_.get_move_speed(*unit.unit);
         if (is_unit_a) {
             my_pos = std::min(static_cast<i8>(my_pos + move_speed), state_.pos_b);
         } else {
             my_pos = std::max(static_cast<i8>(my_pos - move_speed), state_.pos_a);
+        }
+
+        if (logger_) {
+            logger_->on_movement(is_unit_a, "advance", from_pos, my_pos,
+                                 static_cast<i8>(std::abs(my_pos - from_pos)), "advancing_toward_enemy");
         }
 
         // Shoot if possible
@@ -187,7 +328,7 @@ private:
 
             // Check morale for defender if took wounds
             if (result.wounds_dealt > 0) {
-                combat_.check_morale(enemy, false);  // false = not from melee
+                combat_.check_morale(enemy, false, 0, 0, !is_unit_a);  // false = not from melee
             }
         }
     }
@@ -203,11 +344,17 @@ private:
         }
 
         // Rush (double move, no shooting)
+        i8 from_pos = my_pos;
         u8 move_speed = state_.get_move_speed(*unit.unit) * RUSH_MULTIPLIER;
         if (is_unit_a) {
             my_pos = std::min(static_cast<i8>(my_pos + move_speed), enemy_pos);
         } else {
             my_pos = std::max(static_cast<i8>(my_pos - move_speed), state_.pos_a);
+        }
+
+        if (logger_) {
+            logger_->on_movement(is_unit_a, "rush", from_pos, my_pos,
+                                 static_cast<i8>(std::abs(my_pos - from_pos)), "rushing_toward_enemy");
         }
     }
 
@@ -218,13 +365,23 @@ private:
         i8& enemy_pos = is_unit_a ? state_.pos_b : state_.pos_a;
 
         // Move into contact
+        i8 from_pos = my_pos;
         if (is_unit_a) {
             my_pos = enemy_pos;
         } else {
             my_pos = state_.pos_a;
         }
 
+        if (logger_) {
+            logger_->on_movement(is_unit_a, "charge", from_pos, my_pos,
+                                 static_cast<i8>(std::abs(my_pos - from_pos)), "charging_into_melee");
+        }
+
         state_.in_melee = true;
+
+        if (logger_) {
+            logger_->on_melee_state_changed(true, "charge_into_contact");
+        }
 
         // Resolve charge (attacker strikes first)
         execute_melee_round(is_unit_a, true);
@@ -236,7 +393,15 @@ private:
 
         if (attacker.is_out_of_action() || defender.is_out_of_action()) {
             state_.in_melee = false;
+            if (logger_) {
+                logger_->on_melee_state_changed(false, "unit_out_of_action");
+            }
             return;
+        }
+
+        if (logger_) {
+            logger_->on_melee_start(is_unit_a, attacker.unit->name.c_str(),
+                                    defender.unit->name.c_str(), is_charging, attacker.is_fatigued());
         }
 
         // Count models with Counter rule in defender (for Impact reduction)
@@ -249,6 +414,11 @@ private:
         // Counter: defender strikes first when charged (and not shaken)
         bool defender_strikes_first = is_charging && defender.has_rule(RuleId::Counter) && !defender.is_shaken();
 
+        if (logger_) {
+            const char* strike_reason = defender_strikes_first ? "counter_rule_active" : "normal_strike_order";
+            logger_->on_melee_strike_order(defender_strikes_first, strike_reason);
+        }
+
         u16 attacker_wounds = 0;
         u16 defender_wounds = 0;
 
@@ -260,6 +430,9 @@ private:
 
             // Mark defender as fatigued after striking
             defender.set_fatigued(true);
+            if (logger_) {
+                logger_->on_fatigue_changed(!is_unit_a, true, "struck_in_melee");
+            }
 
             if (!attacker.is_out_of_action()) {
                 // Attacker strikes back (pass counter_models for Impact reduction)
@@ -269,6 +442,9 @@ private:
 
                 // Mark attacker as fatigued after striking
                 attacker.set_fatigued(true);
+                if (logger_) {
+                    logger_->on_fatigue_changed(is_unit_a, true, "struck_in_melee");
+                }
             }
         } else {
             // Normal order: attacker first (pass counter_models for Impact reduction)
@@ -278,6 +454,9 @@ private:
 
             // Mark attacker as fatigued after striking
             attacker.set_fatigued(true);
+            if (logger_) {
+                logger_->on_fatigue_changed(is_unit_a, true, "struck_in_melee");
+            }
 
             // Defender may strike back if not destroyed
             // Shaken units CAN strike back, but count as fatigued (only hit on 6s)
@@ -285,6 +464,9 @@ private:
                 // Shaken units strike back counting as fatigued
                 if (defender.is_shaken()) {
                     defender.set_fatigued(true);
+                    if (logger_) {
+                        logger_->on_fatigue_changed(!is_unit_a, true, "shaken_unit_strikes_back");
+                    }
                 }
                 CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
                 state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
@@ -292,7 +474,15 @@ private:
 
                 // Mark defender as fatigued after striking
                 defender.set_fatigued(true);
+                if (logger_) {
+                    logger_->on_fatigue_changed(!is_unit_a, true, "struck_in_melee");
+                }
             }
+        }
+
+        if (logger_) {
+            logger_->on_melee_end(is_unit_a, defender_wounds, attacker_wounds,
+                                  attacker.is_out_of_action(), defender.is_out_of_action());
         }
 
         // Apply Fear(X) to wound totals for morale comparison
@@ -301,9 +491,9 @@ private:
 
         // Morale checks for melee loser (compare effective wounds with Fear)
         if (defender_effective_wounds > attacker_effective_wounds && !attacker.is_out_of_action()) {
-            combat_.check_morale(attacker, true, attacker_wounds, defender_wounds);
+            combat_.check_morale(attacker, true, attacker_wounds, defender_wounds, is_unit_a);
         } else if (attacker_effective_wounds > defender_effective_wounds && !defender.is_out_of_action()) {
-            combat_.check_morale(defender, true, defender_wounds, attacker_wounds);
+            combat_.check_morale(defender, true, defender_wounds, attacker_wounds, !is_unit_a);
         }
 
         // Consolidation moves (after morale resolution)
@@ -313,22 +503,37 @@ private:
         if (attacker_destroyed || defender_destroyed) {
             // One unit destroyed/routed - survivor may move up to 3"
             state_.in_melee = false;
+            if (logger_) {
+                logger_->on_melee_state_changed(false, "unit_destroyed_or_routed");
+            }
 
             if (attacker_destroyed && !defender_destroyed) {
                 // Defender survives - move up to 3" toward objective (center)
                 i8& survivor_pos = is_unit_a ? state_.pos_b : state_.pos_a;
+                i8 from_pos = survivor_pos;
                 if (survivor_pos > 0) {
                     survivor_pos = std::max(static_cast<i8>(0), static_cast<i8>(survivor_pos - 3));
                 } else if (survivor_pos < 0) {
                     survivor_pos = std::min(static_cast<i8>(0), static_cast<i8>(survivor_pos + 3));
                 }
+                if (logger_ && from_pos != survivor_pos) {
+                    logger_->on_movement(!is_unit_a, "consolidation", from_pos, survivor_pos,
+                                         static_cast<i8>(std::abs(survivor_pos - from_pos)),
+                                         "consolidating_toward_objective");
+                }
             } else if (defender_destroyed && !attacker_destroyed) {
                 // Attacker survives - move up to 3" toward objective (center)
                 i8& survivor_pos = is_unit_a ? state_.pos_a : state_.pos_b;
+                i8 from_pos = survivor_pos;
                 if (survivor_pos > 0) {
                     survivor_pos = std::max(static_cast<i8>(0), static_cast<i8>(survivor_pos - 3));
                 } else if (survivor_pos < 0) {
                     survivor_pos = std::min(static_cast<i8>(0), static_cast<i8>(survivor_pos + 3));
+                }
+                if (logger_ && from_pos != survivor_pos) {
+                    logger_->on_movement(is_unit_a, "consolidation", from_pos, survivor_pos,
+                                         static_cast<i8>(std::abs(survivor_pos - from_pos)),
+                                         "consolidating_toward_objective");
                 }
             }
             // Both destroyed - no consolidation needed
@@ -337,6 +542,7 @@ private:
             if (is_charging) {
                 i8& charger_pos = is_unit_a ? state_.pos_a : state_.pos_b;
                 i8& defender_pos = is_unit_a ? state_.pos_b : state_.pos_a;
+                i8 from_pos = charger_pos;
 
                 // Move charger back 1" away from defender
                 if (charger_pos < defender_pos) {
@@ -345,6 +551,12 @@ private:
                     charger_pos += 1;  // Charger is on right, move further right
                 }
                 state_.in_melee = false;
+
+                if (logger_) {
+                    logger_->on_movement(is_unit_a, "separation", from_pos, charger_pos, 1,
+                                         "charger_separating_after_melee");
+                    logger_->on_melee_state_changed(false, "charger_separated");
+                }
             }
             // If not charging (e.g., fighting in ongoing melee), units stay engaged
         }

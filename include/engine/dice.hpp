@@ -2,6 +2,7 @@
 
 #include "core/types.hpp"
 #include <array>
+#include <vector>
 #include <thread>
 #include <functional>
 #include <algorithm>
@@ -22,16 +23,51 @@ public:
             // Use a good default seed based on compile-time and runtime entropy
             seed = 0x853c49e6748fea9bULL;
         }
+        seed_ = seed;
         init_state(seed);
     }
 
     // Seed the generator
-    void seed(u64 s) { init_state(s); }
+    void seed(u64 s) { seed_ = s; init_state(s); }
+
+    // Get the seed used for this roller (for reproducibility)
+    u64 get_seed() const { return seed_; }
+
+    // =========================================================================
+    // Roll Recording (for debug mode)
+    // When enabled, individual dice values are stored for logging
+    // =========================================================================
+
+    void enable_roll_recording(bool enable) {
+        record_rolls_ = enable;
+        if (enable) {
+            recorded_rolls_.clear();
+            recorded_rolls_.reserve(256);
+        }
+    }
+
+    bool is_recording() const { return record_rolls_; }
+
+    // Get and clear recorded rolls
+    std::vector<u8> take_recorded_rolls() {
+        std::vector<u8> result = std::move(recorded_rolls_);
+        recorded_rolls_.clear();
+        return result;
+    }
+
+    // Peek at recorded rolls without clearing
+    const std::vector<u8>& peek_recorded_rolls() const {
+        return recorded_rolls_;
+    }
 
     // Roll a single D6 (1-6) using fast Lemire reduction
     u8 roll_d6() {
         // (byte * 6) >> 8 gives uniform 0-5, +1 for 1-6
-        return static_cast<u8>(((next() & 0xFF) * 6) >> 8) + 1;
+        u8 result = static_cast<u8>(((next() & 0xFF) * 6) >> 8) + 1;
+        if (record_rolls_) [[unlikely]] {
+            recorded_rolls_.push_back(result);
+        }
+        return result;
     }
 
     // Roll multiple D6 into an array
@@ -45,6 +81,15 @@ public:
     // Roll and count successes against a target (optimized hot path)
     u32 roll_d6_target(u32 count, u8 target) {
         if (count == 0) return 0;
+
+        // Recording path: use roll_d6() to capture each die
+        if (record_rolls_) [[unlikely]] {
+            u32 successes = 0;
+            for (u32 i = 0; i < count; ++i) {
+                successes += (roll_d6() >= target);
+            }
+            return successes;
+        }
 
         u32 successes = 0;
 
@@ -89,6 +134,18 @@ public:
         i8 effective = static_cast<i8>(quality) - modifier;
         effective = std::max(i8(2), std::min(i8(6), effective));
         u8 eff_target = static_cast<u8>(effective);
+
+        // Recording path: use roll_d6() to capture each die
+        if (record_rolls_) [[unlikely]] {
+            u32 hits = 0;
+            u32 sixes = 0;
+            for (u32 i = 0; i < attacks; ++i) {
+                u8 die = roll_d6();
+                hits += (die >= eff_target);
+                sixes += (die == 6);
+            }
+            return {hits, sixes};
+        }
 
         u32 hits = 0;
         u32 sixes = 0;
@@ -135,6 +192,25 @@ public:
         i8 effective = static_cast<i8>(defense) + static_cast<i8>(ap) - modifier;
         effective = std::max(i8(2), std::min(i8(6), effective));
         u8 eff_target = static_cast<u8>(effective);
+
+        // Recording path: use roll_d6() to capture each die
+        if (record_rolls_) [[unlikely]] {
+            u32 saves = 0;
+            u32 sixes_to_reroll = 0;
+            for (u32 i = 0; i < hits; ++i) {
+                u8 die = roll_d6();
+                if (reroll_sixes && die == 6) {
+                    sixes_to_reroll++;
+                } else {
+                    saves += (die >= eff_target);
+                }
+            }
+            // Reroll sixes (these also get recorded via roll_d6)
+            for (u32 i = 0; i < sixes_to_reroll; ++i) {
+                saves += (roll_d6() >= eff_target);
+            }
+            return hits - saves;
+        }
 
         u32 saves = 0;
         u32 remaining = hits;
@@ -235,6 +311,9 @@ public:
 
 private:
     std::array<u64, 4> state;
+    u64 seed_ = 0;
+    bool record_rolls_ = false;
+    std::vector<u8> recorded_rolls_;
 
     void init_state(u64 seed) {
         // Use splitmix64 to initialize state from seed
