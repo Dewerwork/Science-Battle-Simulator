@@ -1,0 +1,19 @@
+Note: the reaper  cannon has the Slam special rule. It ignores cover and results of 1 on unmodified rolls to block hits deal 1 extra wound. 
+In this example below the defending unit rolled two ones and saved four of the six hits. This should have turned into four total wounds, but it only shows two wounds. This means it is using the normal wound calculations rather than
+the Slam special rule.
+
+
+--- UNIT A ACTIVATION ---
+    AI Decision: ADVANCE (shooting_ai_in_range_hold)
+      Position: -12", Distance to enemy: 24"
+    Movement (advance): -12" -> -6" (6" moved)
+    SHOOTING: Chosen Plague Brothers -> Chosen Plague Champion at 18" with 3 models
+      Weapon: reaper cannon (A4 AP0)
+        3 models x 4 attacks = 12 total
+        Hit rolls (need 3+): [4,2,5,6,1,1,5,2,5,5,1,1] = 6 hits (1 sixes)
+        Defense rolls (need 3+): [1,5,4,6,5,1] = 4 saves, 2 wounds
+        Result: 2 wounds, 0 models killed
+    Shooting Result: 2 wounds, 0 models killed
+    MORALE CHECK: Chosen Plague Champion (half_strength)
+      Roll: 4 vs 3+ = PASS
+    Morale Result: passed

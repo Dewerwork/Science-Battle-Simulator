@@ -220,6 +220,60 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"baneinmelee", RuleId::BaneInMelee},
         {"hold the line", RuleId::HoldTheLine},
         {"holdtheline", RuleId::HoldTheLine},
+
+        // Type 1 Auras - Map to their underlying rules
+        // These auras simply grant another rule, so we treat them as the underlying rule
+        {"furious aura", RuleId::Furious},
+        {"furiousaura", RuleId::Furious},
+        {"shielded aura", RuleId::Shielded},
+        {"shieldedaura", RuleId::Shielded},
+        {"regeneration aura", RuleId::Regeneration},
+        {"regenerationaura", RuleId::Regeneration},
+        {"relentless aura", RuleId::Relentless},
+        {"relentlessaura", RuleId::Relentless},
+        {"scout aura", RuleId::Scout},
+        {"scoutaura", RuleId::Scout},
+        {"stealth aura", RuleId::Stealth},
+        {"stealthaura", RuleId::Stealth},
+        {"counter-attack aura", RuleId::Counter},
+        {"counterattack aura", RuleId::Counter},
+        {"counter attack aura", RuleId::Counter},
+        {"fearless aura", RuleId::Fearless},
+        {"fearlessaura", RuleId::Fearless},
+        {"ambush aura", RuleId::Ambush},
+        {"ambushaura", RuleId::Ambush},
+        {"strider aura", RuleId::Strider},
+        {"strideraura", RuleId::Strider},
+
+        // Bane auras (melee and shooting variants)
+        {"bane in melee aura", RuleId::Bane},
+        {"baneinmeleeaura", RuleId::Bane},
+        {"bane when shooting aura", RuleId::Bane},
+        {"banewhenshootingaura", RuleId::Bane},
+
+        // Rending auras (melee and shooting variants)
+        {"rending in melee aura", RuleId::Rending},
+        {"rendinginmeleeaura", RuleId::Rending},
+        {"rending when shooting aura", RuleId::Rending},
+        {"rendingwhenshootingaura", RuleId::Rending},
+
+        // Buff variants (same effect as auras)
+        {"stealth buff", RuleId::Stealth},
+        {"stealthbuff", RuleId::Stealth},
+        {"regeneration buff", RuleId::Regeneration},
+        {"regenerationbuff", RuleId::Regeneration},
+        {"bane in melee buff", RuleId::Bane},
+        {"baneinmeleebuff", RuleId::Bane},
+
+        // Mark variants (same effect as auras)
+        {"relentless mark", RuleId::Relentless},
+        {"relentlessmark", RuleId::Relentless},
+        {"rending in melee mark", RuleId::Rending},
+        {"rendinginmeleemark", RuleId::Rending},
+        {"furious mark", RuleId::Furious},
+        {"furiousmark", RuleId::Furious},
+        {"bane mark", RuleId::Bane},
+        {"banemark", RuleId::Bane},
     };
     return map;
 }
