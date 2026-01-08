@@ -358,6 +358,7 @@ public:
                 }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
+                result.self_destruct_hits += wound_result.self_destruct_hits;
                 weapon_models_killed = wound_result.models_killed;
             }
 
