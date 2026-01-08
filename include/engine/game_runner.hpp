@@ -433,11 +433,15 @@ private:
         u16 attacker_wounds = 0;
         u16 defender_wounds = 0;
 
+        u32 self_destruct_hits_to_attacker = 0;
+        u32 self_destruct_hits_to_defender = 0;
+
         if (defender_strikes_first) {
             // Defender with Counter strikes first
             CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
             state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
             attacker_wounds = def_result.wounds_dealt;
+            self_destruct_hits_to_defender += def_result.self_destruct_hits;
 
             // Mark defender as fatigued after striking
             defender.set_fatigued(true);
@@ -450,6 +454,7 @@ private:
                 CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging, counter_models);
                 state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
                 defender_wounds = atk_result.wounds_dealt;
+                self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
 
                 // Mark attacker as fatigued after striking
                 attacker.set_fatigued(true);
@@ -462,6 +467,7 @@ private:
             CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging, counter_models);
             state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
             defender_wounds = atk_result.wounds_dealt;
+            self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
 
             // Mark attacker as fatigued after striking
             attacker.set_fatigued(true);
@@ -482,12 +488,39 @@ private:
                 CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
                 state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
                 attacker_wounds = def_result.wounds_dealt;
+                self_destruct_hits_to_defender += def_result.self_destruct_hits;
 
                 // Mark defender as fatigued after striking
                 defender.set_fatigued(true);
                 if (logger_) {
                     logger_->on_fatigue_changed(!is_unit_a, true, "struck_in_melee");
                 }
+            }
+        }
+
+        // Apply SelfDestruct hits (defender models that died deal hits to attacker, and vice versa)
+        if (self_destruct_hits_to_attacker > 0 && !attacker.is_out_of_action()) {
+            if (logger_) logger_->on_rule_triggered("SelfDestruct", "applying_hits_to_attacker", self_destruct_hits_to_attacker);
+            // SelfDestruct hits roll against quality (hit on 2+)
+            u32 destruct_wounds = dice_.roll_d6_target(self_destruct_hits_to_attacker, 2);
+            // Roll defense for the wounds
+            destruct_wounds = dice_.roll_defense_test(destruct_wounds, attacker.defense(), 0, 0, false);
+            if (destruct_wounds > 0) {
+                auto wound_result = combat_.apply_wounds(attacker, destruct_wounds, true);  // bypass regen
+                attacker_wounds += wound_result.wounds_dealt;
+                state_.stats.record_wounds(is_unit_a, wound_result.wounds_dealt, wound_result.models_killed);
+            }
+        }
+        if (self_destruct_hits_to_defender > 0 && !defender.is_out_of_action()) {
+            if (logger_) logger_->on_rule_triggered("SelfDestruct", "applying_hits_to_defender", self_destruct_hits_to_defender);
+            // SelfDestruct hits roll against quality (hit on 2+)
+            u32 destruct_wounds = dice_.roll_d6_target(self_destruct_hits_to_defender, 2);
+            // Roll defense for the wounds
+            destruct_wounds = dice_.roll_defense_test(destruct_wounds, defender.defense(), 0, 0, false);
+            if (destruct_wounds > 0) {
+                auto wound_result = combat_.apply_wounds(defender, destruct_wounds, true);  // bypass regen
+                defender_wounds += wound_result.wounds_dealt;
+                state_.stats.record_wounds(!is_unit_a, wound_result.wounds_dealt, wound_result.models_killed);
             }
         }
 

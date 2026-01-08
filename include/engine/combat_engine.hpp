@@ -705,6 +705,7 @@ public:
                 }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
+                result.self_destruct_hits += wound_result.self_destruct_hits;
                 weapon_models_killed = wound_result.models_killed;
             }
 
@@ -724,6 +725,7 @@ public:
     struct WoundResult {
         u16 wounds_dealt = 0;
         u8 models_killed = 0;
+        u32 self_destruct_hits = 0;  // Hits to return from SelfDestruct models
     };
 
     WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false) {
@@ -768,6 +770,12 @@ public:
             for (u8 w = 0; w < wounds_applied; ++w) {
                 if (unit.apply_wound_to_model(model_idx)) {
                     result.models_killed++;
+                    // SelfDestruct: when model dies, queue hits for attacker
+                    if (unit.has_rule(RuleId::SelfDestruct)) {
+                        u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                        result.self_destruct_hits += destruct_value;
+                        if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                    }
                     break;  // Model died, move to next
                 }
             }
@@ -827,6 +835,12 @@ public:
             for (u8 d = 0; d < wounds_to_apply; ++d) {
                 if (unit.apply_wound_to_model(model_idx)) {
                     result.models_killed++;
+                    // SelfDestruct: when model dies, queue hits for attacker
+                    if (unit.has_rule(RuleId::SelfDestruct)) {
+                        u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                        result.self_destruct_hits += destruct_value;
+                        if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                    }
                     order_idx++;  // Move to next model for next wound
                     break;
                 }
