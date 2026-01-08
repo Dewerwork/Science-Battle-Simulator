@@ -23,6 +23,11 @@ def load_special_rules(csv_path: str) -> list[str]:
     """
     Load special rule names from the CSV file.
 
+    Handles various CSV formats:
+    - With header 'rule_name', 'Rule Name', or similar
+    - Single column CSV (just rule names)
+    - Always reads from the first column
+
     Args:
         csv_path: Path to the CSV file containing special rules
 
@@ -31,11 +36,38 @@ def load_special_rules(csv_path: str) -> list[str]:
     """
     rules = []
     with open(csv_path, 'r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            rule_name = row.get('rule_name', '').strip()
-            if rule_name:
-                rules.append(rule_name)
+        # Try to detect if there's a header
+        first_line = f.readline().strip()
+        f.seek(0)  # Reset to beginning
+
+        # Check if first line looks like a header
+        first_lower = first_line.lower()
+        has_header = any(h in first_lower for h in ['rule', 'name', 'special'])
+
+        if has_header:
+            reader = csv.DictReader(f)
+            # Try various possible column names
+            for row in reader:
+                rule_name = None
+                # Try different possible header names
+                for key in ['rule_name', 'Rule Name', 'Rule_Name', 'rulename',
+                            'RuleName', 'name', 'Name', 'rule', 'Rule']:
+                    if key in row:
+                        rule_name = row[key].strip()
+                        break
+                # If no known header found, use first column
+                if rule_name is None and row:
+                    first_key = list(row.keys())[0]
+                    rule_name = row[first_key].strip()
+                if rule_name:
+                    rules.append(rule_name)
+        else:
+            # No header - just read first column directly
+            reader = csv.reader(f)
+            for row in reader:
+                if row and row[0].strip():
+                    rules.append(row[0].strip())
+
     return rules
 
 
@@ -183,7 +215,13 @@ def main():
     print(f"Total rules:     {len(results)}")
     print(f"Rules matched:   {matched_count}")
     print(f"Rules unmatched: {unmatched_count}")
-    print(f"Match rate:      {matched_count/len(results)*100:.1f}%")
+    if len(results) > 0:
+        print(f"Match rate:      {matched_count/len(results)*100:.1f}%")
+    else:
+        print("Match rate:      N/A (no rules loaded)")
+        print("\nERROR: No rules were loaded from the CSV file.")
+        print("Please check that the CSV file has rule names in the first column.")
+        return 1
 
     # Write output
     write_results_csv(results, str(output_path))
