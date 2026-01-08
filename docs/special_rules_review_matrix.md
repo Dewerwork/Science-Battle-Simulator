@@ -46,12 +46,12 @@ This document provides a comprehensive matrix for reviewing how special rules sh
 | **Deadly(X)** | | | | Y | Y | | | | | | Y | | | Multiply wounds | After wound calc | X | Enemy | ✅ |
 | **Lance** | | | Y | | Y | | | | | Y | | | | +2 AP | When charging | +2 | Weapon | ✅ |
 | **Poison** | | | | Y | Y | | | | | Y | | | | Reroll defense 6s | On defense roll | - | Enemy | ✅ |
-| **Precise** | | | | Y | Y | | | | Y | | | | | +1 to hit | Always | +1 | Weapon | ✅ |
+| **Precise** | | | | Y | Y | | | | Y | | | | | +1 to hit | Always | +1 | Weapon | ❌ |
 | **Reliable** | | | | Y | Y | | | | Y | | | | | Quality becomes 2+ | Always | 2+ | Weapon | ✅ |
-| **Rending** | | | | Y | Y | | | | Y | Y | | | | AP(4) | On unmodified 6 to hit | AP4 | Enemy | ⚠️ |
+| **Rending** | | | | Y | Y | | | | Y | Y | | | | AP(4) | On unmodified 6 to hit | AP4 | Enemy | ✅ |
 | **Bane** | | | | Y | Y | | | | | | | | Y | Bypass regeneration | On wound | - | Enemy | ✅ |
-| **Impact(X)** | | | Y | | Y | | | | Y | | | | | X extra attacks | On charge only | X | Self | ⚠️ |
-| **Indirect** | | | | Y | | | | | | Y | | | | Ignore cover | Always | -1 cover | Enemy | ⚠️ |
+| **Impact(X)** | | | Y | | Y | | | | Y | | | | | X extra attacks | On charge only | X | Self | ✅ |
+| **Indirect** | | | | Y | | | | | | Y | | | | Ignore cover | Always | -1 cover | Enemy | ❌ |
 | **Sniper** | | | | Y | | | | Y | | | | | | Pick target model | When declaring | - | Enemy | ❌ |
 | **Lock-On** | | | | Y | Y | | | | Y | | | | | +1 to hit vs vehicles | vs Vehicle keyword | +1 | Self | ❌ |
 | **Purge** | | | | Y | Y | | | | Y | | | | | +1 to hit vs Tough(3+) | vs Tough(3+) | +1 | Self | ❌ |
@@ -65,13 +65,13 @@ This document provides a comprehensive matrix for reviewing how special rules sh
 | Rule | DEP | MOV | CHG | SHT | MEL | MOR | RND | ATK | HIT | DEF | WND | ALC | RGN | Grants | Condition | Value | Target | IMP |
 |------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|--------|-----------|-------|--------|-----|
 | **Furious** | | | Y | | Y | | | | | | Y | | | +Sixes as extra hits | When charging | +6s | Self | ✅ |
-| **PredatorFighter** | | | | | Y | | | | Y | | | | | 6s generate more attacks | On melee 6s | Recursive | Self | ✅ |
-| **Relentless** | | | | Y | | | | | Y | | | | | 6s = extra hits | Shooting >9" | +6s | Self | ⚠️ |
-| **GoodShot** | | | | Y | | | | | Y | | | | | +1 to hit | Shooting only | +1 | Self | ✅ |
-| **BadShot** | | | | Y | | | | | Y | | | | | -1 to hit | Shooting only | -1 | Self | ✅ |
-| **Surge** | | | | Y | Y | | | | Y | | | | | 6s to hit = +1 hit | On 6 to hit | +1 | Self | ❌ |
-| **Thrust** | | | Y | | Y | | | | Y | Y | | | | +1 hit, +1 AP | When charging | +1/+1 | Self | ❌ |
-| **VersatileAttack** | | | | Y | Y | | | Y | Y | Y | | | | Choose: AP+1 or +1 hit | Before attack | +1 | Self | ✅ |
+| **PredatorFighter** | | | | | Y | | | | Y | | | | | 6s generate more attacks | On melee 6s | Recursive | Self | ❌ |
+| **Relentless** | | | | Y | | | | | Y | | | | | 6s = extra hits | Shooting >9" | +6s | Self | ✅ |
+| **GoodShot** | | | | Y | | | | | Y | | | | | +1 to hit | Shooting only | +1 | Self | ❌ |
+| **BadShot** | | | | Y | | | | | Y | | | | | -1 to hit | Shooting only | -1 | Self | ❌ |
+| **Surge** | | | | Y | Y | | | | Y | | | | | 6s to hit = +1 hit | On 6 to hit | +1 | Self | ✅ |
+| **Thrust** | | | Y | | Y | | | | Y | Y | | | | +1 hit, +1 AP | When charging | +1/+1 | Self | ✅ |
+| **VersatileAttack** | | | | Y | Y | | | Y | Y | Y | | | | Choose: AP+1 or +1 hit | Before attack | +1 | Self | ❌ |
 | **PointBlankSurge** | | | | Y | | | | | Y | | | | | 6s at 0-9" = extra hit | Shooting 0-9" | +1 | Self | ❌ |
 
 ---
@@ -82,13 +82,13 @@ This document provides a comprehensive matrix for reviewing how special rules sh
 |------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|--------|-----------|-------|--------|-----|
 | **Tough(X)** | | | | Y | Y | | | | | | | Y | | X wounds to kill | Model property | X | Self | ✅ |
 | **Regeneration** | | | | Y | Y | | | | | | | | Y | 5+ ignore wound | On each wound | 5+ | Self | ✅ |
-| **Shielded** | | | | Y | Y | | | | | Y | | | | +1 Defense | vs non-spell | +1 | Self | ✅ |
+| **Shielded** | | | | Y | Y | | | | | Y | | | | +1 Defense | vs non-spell | +1 | Self | ❌ |
 | **ShieldWall** | | | | | Y | | | | | Y | | | | +1 Defense | In melee only | +1 | Self | ✅ |
-| **Stealth** | | | | Y | | | | | | Y | | | | -1 to be hit | From >12" away | -1 enemy | Self | ❌ |
-| **MeleeEvasion** | | | | | Y | | | | | Y | | | | +1 Defense | In melee only | +1 | Self | ✅ |
-| **MeleeShrouding** | | | | | Y | | | | | Y | | | | +1 Defense | In melee only | +1 | Self | ✅ |
-| **RangedShrouding** | | | | Y | | | | | | Y | | | | +1 Defense | When shot | +1 | Self | ✅ |
-| **Resistance** | | | | Y | Y | | | | | | | | Y | 6+ ignore wound (2+ vs spell) | After wound | 6+/2+ | Self | ✅ |
+| **Stealth** | | | | Y | | | | | | Y | | | | -1 to be hit | From >9" away | -1 enemy | Self | ✅ |
+| **MeleeEvasion** | | | | | Y | | | | | Y | | | | +1 Defense | In melee only | +1 | Self | ❌ |
+| **MeleeShrouding** | | | | | Y | | | | | Y | | | | +1 Defense | In melee only | +1 | Self | ❌ |
+| **RangedShrouding** | | | | Y | | | | | | Y | | | | +1 Defense | When shot | +1 | Self | ❌ |
+| **Resistance** | | | | Y | Y | | | | | | | | Y | 6+ ignore wound (2+ vs spell) | After wound | 6+/2+ | Self | ❌ |
 | **Protected** | | | | Y | Y | | | | | Y | | | | 6+ reduce AP by 1 | Before defense roll | 6+ | Self | ❌ |
 
 ---
@@ -97,8 +97,8 @@ This document provides a comprehensive matrix for reviewing how special rules sh
 
 | Rule | DEP | MOV | CHG | SHT | MEL | MOR | RND | ATK | HIT | DEF | WND | ALC | RGN | Grants | Condition | Value | Target | IMP |
 |------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|--------|-----------|-------|--------|-----|
-| **Rupture** | | | | Y | Y | | | | | | Y | | Y | +1 wound per 6, ignore regen | On 6s to hit | +1 | Enemy | ✅ |
-| **Shred** | | | | Y | Y | | | | | | Y | | | +1 wound per 1 to defend | On 1s to defend | +1 | Enemy | ✅ |
+| **Rupture** | | | | Y | Y | | | | | | Y | | Y | +1 wound per 6, ignore regen | On 6s to hit | +1 | Enemy | ❌ |
+| **Shred** | | | | Y | Y | | | | | | Y | | | +1 wound per 1 to defend | On 1s to defend | +1 | Enemy | ❌ |
 
 ---
 
@@ -116,8 +116,8 @@ This document provides a comprehensive matrix for reviewing how special rules sh
 | Rule | DEP | MOV | CHG | SHT | MEL | MOR | RND | ATK | HIT | DEF | WND | ALC | RGN | Grants | Condition | Value | Target | IMP |
 |------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|--------|-----------|-------|--------|-----|
 | **Bane** | | | | Y | Y | | | | | | | | Y | No regeneration | On wounds dealt | - | Enemy | ✅ |
-| **Rupture** | | | | Y | Y | | | | | | Y | | Y | No regeneration | On wounds dealt | - | Enemy | ✅ |
-| **Unstoppable** | | | | Y | Y | | | | | | | | Y | Ignores enemy regen | On wounds dealt | - | Enemy | ⚠️ |
+| **Rupture** | | | | Y | Y | | | | | | Y | | Y | No regeneration | On wounds dealt | - | Enemy | ❌ |
+| **Unstoppable** | | | | Y | Y | | | | | | | | Y | Ignores enemy regen | On wounds dealt | - | Enemy | ✅ |
 
 ---
 
@@ -126,10 +126,10 @@ This document provides a comprehensive matrix for reviewing how special rules sh
 | Rule | DEP | MOV | CHG | SHT | MEL | MOR | RND | ATK | HIT | DEF | WND | ALC | RGN | Grants | Condition | Value | Target | IMP |
 |------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|--------|-----------|-------|--------|-----|
 | **Fearless** | | | | | | Y | | | | | | | | Reroll failed morale | On morale failure | Reroll | Self | ✅ |
-| **MoraleBoost** | | | | | | Y | | | | | | | | +1 to morale tests | Always | +1 | Self | ✅ |
-| **NoRetreat** | | | | | | Y | | | | | | | | Take wounds instead of Shaken | On morale failure | wounds | Self | ✅ |
-| **Battleborn** | | | | | | | Y | | | | | | | 4+ to rally from Shaken | Round start | 4+ | Self | ✅ |
-| **Fear(X)** | | | | | Y | Y | | | | | | | | Count as +X wounds | In melee morale | +X | Self | ❌ |
+| **MoraleBoost** | | | | | | Y | | | | | | | | +1 to morale tests | Always | +1 | Self | ❌ |
+| **NoRetreat** | | | | | | Y | | | | | | | | Take wounds instead of Shaken | On morale failure | wounds | Self | ❌ |
+| **Battleborn** | | | | | | | Y | | | | | | | 4+ to rally from Shaken | Round start | 4+ | Self | ❌ |
+| **Fear(X)** | | | | | Y | Y | | | | | | | | Count as +X wounds | In melee morale | +X | Self | ✅ |
 
 ---
 
@@ -137,7 +137,7 @@ This document provides a comprehensive matrix for reviewing how special rules sh
 
 | Rule | DEP | MOV | CHG | SHT | MEL | MOR | RND | ATK | HIT | DEF | WND | ALC | RGN | Grants | Condition | Value | Target | IMP |
 |------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|--------|-----------|-------|--------|-----|
-| **Counter** | | | | | Y | | | Y | | | | | | Strike first when charged | When receiving charge | First | Self | ❌ |
+| **Counter** | | | | | Y | | | Y | | | | | | Strike first when charged | When receiving charge | First | Self | ✅ |
 | **HitAndRun** | | | | | Y | | Y | | | | | | | Retreat after combat | End of melee | - | Self | ❌ |
 | **SelfDestruct** | | | | | Y | | | | | | | Y | | Deal X hits when killed | On model death | X | Enemy | ❌ |
 
@@ -275,19 +275,25 @@ For each rule, verify:
 
 ## NOTES FOR REVIEW
 
-### Rules needing clarification:
-1. **Rending** - Currently tracked but not fully applied. Need to confirm: Does AP(4) replace existing AP or add to it?
-2. **Impact(X)** - Handled in CombatEngine but not CombatResolver. Needs consolidation.
-3. **Stealth** - Distance-based. How to handle in simplified scenarios?
-4. **Counter** - Strike order change. Need to implement initiative system.
+### Verified Working Rules (as of 2026-01-08):
+1. **Rending** - Adds +4 AP to base weapon AP on 6s to hit (combat_engine.hpp:155, 419)
+2. **Impact(X)** - Extra attacks on charge, hitting on 2+. Counter reduces Impact (combat_engine.hpp:218-273)
+3. **Stealth** - Implemented at >9" distance, applies -1 to hit (combat_engine.hpp:75-77)
+4. **Counter** - Defender strikes first when charged and not shaken (game_runner.hpp:416-422)
+5. **Fear(X)** - Adds to effective wounds in melee morale comparison (game_runner.hpp:496-497)
+
+### Rules NOT implemented (marked ❌):
+- **Rupture, Shred** - Wound modifier rules not in code
+- **MoraleBoost, NoRetreat, Battleborn** - Morale modifiers not in code
+- **GoodShot, BadShot, Precise** - Enum exists but not applied in combat
+- **Shielded, MeleeEvasion, MeleeShrouding, RangedShrouding, Resistance** - Defense modifiers not in code
+- **VersatileAttack, PredatorFighter** - Attack modifiers not in code
 
 ### Rules with complex interactions:
-1. **Poison + Rending** - Poison rerolls 6s, but Rending triggers on 6s. Which resolves first?
-2. **Deadly + Rupture** - Both multiply wounds. Order of operations?
-3. **Bane + Regeneration + Resistance** - Multiple bypass/save layers.
+1. **Poison + Rending** - Rending triggers on unmodified 6s before Poison rerolls
+2. **Deadly** - Applied after wound calculation, doesn't carry over between models
 
-### Rules not simulated (no movement system):
-- Scout, Ambush, Fast, Slow, Agile, Flying, Strider, RapidCharge
-- Stealth (distance-based)
+### Rules not simulated (no movement/deployment system):
+- Scout, Ambush, Fast, Slow, Agile, Flying, Strider, RapidCharge (movement rules exist for Fast/Slow in game_state.hpp)
 - HitAndRun (retreat mechanics)
 
