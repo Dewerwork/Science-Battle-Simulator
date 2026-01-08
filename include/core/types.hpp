@@ -170,8 +170,8 @@ enum class RuleId : u8 {
     HoldTheLine,    // Hold the Line - Reroll failed morale tests
 
     // Additional faction rules (Group 2 auras)
-    UnpredictableFighter, // Unpredictable Fighter - +1 to hit in melee
-    Teleport,       // Teleport - Can teleport instead of normal move
+    UnpredictableFighter, // Unpredictable Fighter - In melee, roll 1d6: 1-3=AP(+1), 4-6=+1 to hit
+    Teleport,       // Teleport - Once per activation, place model within 6" before attacking
 
     COUNT // Number of rules
 };
