@@ -274,6 +274,32 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"furiousmark", RuleId::Furious},
         {"bane mark", RuleId::Bane},
         {"banemark", RuleId::Bane},
+
+        // Type 2 Auras - Map to existing RuleIds
+        // These auras have empty effects in faction_rules.cpp but should grant the underlying rule
+        {"fast aura", RuleId::Fast},
+        {"fastaura", RuleId::Fast},
+        {"melee shrouding aura", RuleId::MeleeShrouding},
+        {"meleeshroudingaura", RuleId::MeleeShrouding},
+        {"ranged shrouding aura", RuleId::RangedShrouding},
+        {"rangedshroudingaura", RuleId::RangedShrouding},
+        {"melee evasion aura", RuleId::MeleeEvasion},
+        {"meleeevasionaura", RuleId::MeleeEvasion},
+        {"resistance aura", RuleId::Resistance},
+        {"resistanceaura", RuleId::Resistance},
+        {"hit & run shooter aura", RuleId::HitAndRun},
+        {"hit and run shooter aura", RuleId::HitAndRun},
+        {"hitandrunshooteraura", RuleId::HitAndRun},
+        {"rapid charge aura", RuleId::RapidCharge},
+        {"rapidchargeaura", RuleId::RapidCharge},
+        {"piercing assault aura", RuleId::PiercingAssault},
+        {"piercingassaultaura", RuleId::PiercingAssault},
+        {"shred in melee aura", RuleId::Shred},
+        {"shredinmeleeaura", RuleId::Shred},
+        {"shred when shooting aura", RuleId::Shred},
+        {"shredwhenshootingaura", RuleId::Shred},
+        {"devout boost aura", RuleId::Devout},
+        {"devoutboostaura", RuleId::Devout},
     };
     return map;
 }
