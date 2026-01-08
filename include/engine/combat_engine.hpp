@@ -139,6 +139,13 @@ public:
             // Rending: 6s to hit get AP(+4) - track separately
             bool has_rending = w.has_rule(RuleId::Rending);
             u32 rending_hits = has_rending ? sixes : 0;
+
+            // Rupture: 6s to hit deal +1 wound per wound and bypass regen
+            // Note: Rupture and Rending can stack - 6s get both AP+4 AND +1 wound
+            bool has_rupture = w.has_rule(RuleId::Rupture);
+            u32 rupture_hits = has_rupture ? sixes : 0;
+
+            // If both Rending and Rupture, the 6s go to rending (AP+4) and also get rupture bonus
             u32 normal_hits = hits - rending_hits;
             u32 bonus_hits = 0;
 
@@ -169,8 +176,9 @@ public:
                 u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
                 u32 old_hits = hits;
                 hits *= multiplier;
-                // Rending hits also multiply with Blast
+                // Rending and Rupture hits also multiply with Blast
                 rending_hits *= multiplier;
+                rupture_hits *= multiplier;
                 normal_hits = hits - rending_hits;
                 if (logger_) logger_->on_rule_triggered("Blast", "multiplied_hits", hits - old_hits);
             }
@@ -211,8 +219,22 @@ public:
             }
             u8 final_ap = (ap > protected_ap_reduction) ? (ap - protected_ap_reduction) : 0;
 
+            // Shred: track 1s on defense rolls for bonus wounds
+            bool has_shred = w.has_rule(RuleId::Shred);
+            u32 shred_bonus_wounds = 0;
+
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+            u32 wounds_from_normal = 0;
+            if (has_shred && normal_hits > 0) {
+                auto def_result = dice_.roll_defense_test_with_ones(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+                wounds_from_normal = def_result.wounds;
+                shred_bonus_wounds += def_result.ones;
+                if (def_result.ones > 0 && logger_) {
+                    logger_->on_rule_triggered("Shred", "bonus_wounds_from_1s", def_result.ones);
+                }
+            } else {
+                wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+            }
 
             // Log defense rolls for normal hits
             if (logger_) {
@@ -229,7 +251,16 @@ public:
             if (rending_hits > 0) {
                 u8 rending_ap = final_ap + 4;  // Rending adds +4 AP to (potentially reduced) base
                 if (logger_) dice_.enable_roll_recording(true);
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                if (has_shred) {
+                    auto def_result = dice_.roll_defense_test_with_ones(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                    wounds_from_rending = def_result.wounds;
+                    shred_bonus_wounds += def_result.ones;
+                    if (def_result.ones > 0 && logger_) {
+                        logger_->on_rule_triggered("Shred", "bonus_wounds_from_1s_rending", def_result.ones);
+                    }
+                } else {
+                    wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                }
 
                 if (logger_) {
                     std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
@@ -244,13 +275,41 @@ public:
             // Disable roll recording
             if (logger_) dice_.enable_roll_recording(false);
 
-            u32 total_wounds = wounds_from_normal + wounds_from_rending;
+            u32 total_wounds = wounds_from_normal + wounds_from_rending + shred_bonus_wounds;
+
+            // Rupture: wounds from 6s to hit deal +1 wound each (double the wounds)
+            // If weapon has Rending, the 6s went through rending path, so double wounds_from_rending
+            // If weapon has Rupture without Rending, we need to estimate rupture wounds from normal
+            u32 rupture_bonus_wounds = 0;
+            if (has_rupture) {
+                if (has_rending) {
+                    // With Rending, all 6s went to rending_hits, so double those wounds
+                    rupture_bonus_wounds = wounds_from_rending;
+                    if (logger_ && rupture_bonus_wounds > 0) {
+                        logger_->on_rule_triggered("Rupture", "bonus_wounds_from_6s", rupture_bonus_wounds);
+                    }
+                } else {
+                    // Without Rending, rupture_hits were part of normal_hits
+                    // We need to estimate based on the proportion of rupture_hits to normal_hits
+                    if (normal_hits > 0 && rupture_hits > 0) {
+                        // Calculate proportion of 6s in normal hits and apply to wounds
+                        // This is an approximation - rupture wounds = wounds * (rupture_hits / normal_hits)
+                        u32 estimated_rupture_wounds = (wounds_from_normal * rupture_hits + normal_hits - 1) / normal_hits;
+                        estimated_rupture_wounds = std::min(estimated_rupture_wounds, wounds_from_normal);
+                        rupture_bonus_wounds = estimated_rupture_wounds;
+                        if (logger_ && rupture_bonus_wounds > 0) {
+                            logger_->on_rule_triggered("Rupture", "bonus_wounds_from_6s", rupture_bonus_wounds);
+                        }
+                    }
+                }
+                total_wounds += rupture_bonus_wounds;
+            }
 
             // Deadly: handled separately in apply_wounds_deadly
             u8 deadly_value = w.get_rule_value(RuleId::Deadly);
 
-            // Determine if regeneration is bypassed (Bane, Rending, or Unstoppable)
-            bool bypass_regen = has_bane || has_rending || w.has_rule(RuleId::Unstoppable);
+            // Determine if regeneration is bypassed (Bane, Rending, Rupture, Shred, or Unstoppable)
+            bool bypass_regen = has_bane || has_rending || has_rupture || has_shred || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds to defender
             u8 weapon_models_killed = 0;
@@ -446,6 +505,11 @@ public:
             // Rending: 6s to hit get AP(+4)
             bool has_rending = w.has_rule(RuleId::Rending);
             u32 rending_hits = has_rending ? sixes : 0;
+
+            // Rupture: 6s to hit deal +1 wound per wound and bypass regen
+            bool has_rupture = w.has_rule(RuleId::Rupture);
+            u32 rupture_hits = has_rupture ? sixes : 0;
+
             u32 normal_hits = hits - rending_hits;
 
             // Furious: extra hits on 6s when charging (bonus hits don't get Rending)
@@ -509,6 +573,7 @@ public:
                 u32 old_hits = hits;
                 hits *= multiplier;
                 rending_hits *= multiplier;
+                rupture_hits *= multiplier;
                 normal_hits = hits - rending_hits;
                 if (logger_) logger_->on_rule_triggered("Blast", "multiplied_hits", hits - old_hits);
             }
@@ -543,8 +608,22 @@ public:
             }
             u8 final_ap = (ap > protected_ap_reduction) ? (ap - protected_ap_reduction) : 0;
 
+            // Shred: track 1s on defense rolls for bonus wounds
+            bool has_shred = w.has_rule(RuleId::Shred);
+            u32 shred_bonus_wounds = 0;
+
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+            u32 wounds_from_normal = 0;
+            if (has_shred && normal_hits > 0) {
+                auto def_result = dice_.roll_defense_test_with_ones(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+                wounds_from_normal = def_result.wounds;
+                shred_bonus_wounds += def_result.ones;
+                if (def_result.ones > 0 && logger_) {
+                    logger_->on_rule_triggered("Shred", "bonus_wounds_from_1s", def_result.ones);
+                }
+            } else {
+                wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+            }
 
             // Log defense rolls for normal hits
             if (logger_) {
@@ -560,7 +639,16 @@ public:
             if (rending_hits > 0) {
                 u8 rending_ap = final_ap + 4;  // Rending adds +4 AP to (potentially reduced) base
                 if (logger_) dice_.enable_roll_recording(true);
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                if (has_shred) {
+                    auto def_result = dice_.roll_defense_test_with_ones(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                    wounds_from_rending = def_result.wounds;
+                    shred_bonus_wounds += def_result.ones;
+                    if (def_result.ones > 0 && logger_) {
+                        logger_->on_rule_triggered("Shred", "bonus_wounds_from_1s_rending", def_result.ones);
+                    }
+                } else {
+                    wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                }
 
                 if (logger_) {
                     std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
@@ -575,13 +663,36 @@ public:
             // Disable roll recording
             if (logger_) dice_.enable_roll_recording(false);
 
-            u32 total_wounds = wounds_from_normal + wounds_from_rending;
+            u32 total_wounds = wounds_from_normal + wounds_from_rending + shred_bonus_wounds;
+
+            // Rupture: wounds from 6s to hit deal +1 wound each (double the wounds)
+            u32 rupture_bonus_wounds = 0;
+            if (has_rupture) {
+                if (has_rending) {
+                    // With Rending, all 6s went to rending_hits, so double those wounds
+                    rupture_bonus_wounds = wounds_from_rending;
+                    if (logger_ && rupture_bonus_wounds > 0) {
+                        logger_->on_rule_triggered("Rupture", "bonus_wounds_from_6s", rupture_bonus_wounds);
+                    }
+                } else {
+                    // Without Rending, rupture_hits were part of normal_hits
+                    if (normal_hits > 0 && rupture_hits > 0) {
+                        u32 estimated_rupture_wounds = (wounds_from_normal * rupture_hits + normal_hits - 1) / normal_hits;
+                        estimated_rupture_wounds = std::min(estimated_rupture_wounds, wounds_from_normal);
+                        rupture_bonus_wounds = estimated_rupture_wounds;
+                        if (logger_ && rupture_bonus_wounds > 0) {
+                            logger_->on_rule_triggered("Rupture", "bonus_wounds_from_6s", rupture_bonus_wounds);
+                        }
+                    }
+                }
+                total_wounds += rupture_bonus_wounds;
+            }
 
             // Deadly: handled separately in apply_wounds_deadly
             u8 deadly_value = w.get_rule_value(RuleId::Deadly);
 
-            // Determine if regeneration is bypassed (Bane, Bane in Melee, Rending, or Unstoppable)
-            bool bypass_regen = has_bane || has_bane_in_melee || has_rending || w.has_rule(RuleId::Unstoppable);
+            // Determine if regeneration is bypassed (Bane, Bane in Melee, Rending, Rupture, Shred, or Unstoppable)
+            bool bypass_regen = has_bane || has_bane_in_melee || has_rending || has_rupture || has_shred || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds
             u8 weapon_models_killed = 0;

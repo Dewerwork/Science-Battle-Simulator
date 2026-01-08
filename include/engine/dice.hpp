@@ -127,6 +127,12 @@ public:
         u32 sixes;
     };
 
+    // Defense test result (for Shred tracking)
+    struct DefenseResult {
+        u32 wounds;     // Failed saves
+        u32 ones;       // Unmodified 1s rolled (for Shred)
+    };
+
     QualityResult roll_quality_test(u32 attacks, u8 quality, i8 modifier = 0) {
         if (attacks == 0) return {0, 0};
 
@@ -277,6 +283,107 @@ public:
         }
 
         return hits - saves; // Failed saves = wounds
+    }
+
+    // Roll defense test with ones tracking (for Shred)
+    // Returns wounds (failed saves) and count of unmodified 1s
+    DefenseResult roll_defense_test_with_ones(u32 hits, u8 defense, u8 ap, i8 modifier = 0, bool reroll_sixes = false) {
+        if (hits == 0) return {0, 0};
+
+        // AP increases the target number needed
+        i8 effective = static_cast<i8>(defense) + static_cast<i8>(ap) - modifier;
+        effective = std::max(i8(2), std::min(i8(6), effective));
+        u8 eff_target = static_cast<u8>(effective);
+
+        u32 saves = 0;
+        u32 ones = 0;
+        u32 remaining = hits;
+
+        // Recording path
+        if (record_rolls_) [[unlikely]] {
+            u32 sixes_to_reroll = 0;
+            for (u32 i = 0; i < hits; ++i) {
+                u8 die = roll_d6();
+                ones += (die == 1);
+                if (reroll_sixes && die == 6) {
+                    sixes_to_reroll++;
+                } else {
+                    saves += (die >= eff_target);
+                }
+            }
+            // Reroll sixes (these also get recorded)
+            for (u32 i = 0; i < sixes_to_reroll; ++i) {
+                u8 die = roll_d6();
+                ones += (die == 1);
+                saves += (die >= eff_target);
+            }
+            return {hits - saves, ones};
+        }
+
+        // Fast path: no poison rerolls
+        if (!reroll_sixes) {
+            while (remaining >= 8) {
+                u64 r = next();
+                u8 d0 = static_cast<u8>((((r      ) & 0xFF) * 6) >> 8) + 1;
+                u8 d1 = static_cast<u8>((((r >>  8) & 0xFF) * 6) >> 8) + 1;
+                u8 d2 = static_cast<u8>((((r >> 16) & 0xFF) * 6) >> 8) + 1;
+                u8 d3 = static_cast<u8>((((r >> 24) & 0xFF) * 6) >> 8) + 1;
+                u8 d4 = static_cast<u8>((((r >> 32) & 0xFF) * 6) >> 8) + 1;
+                u8 d5 = static_cast<u8>((((r >> 40) & 0xFF) * 6) >> 8) + 1;
+                u8 d6 = static_cast<u8>((((r >> 48) & 0xFF) * 6) >> 8) + 1;
+                u8 d7 = static_cast<u8>((((r >> 56) & 0xFF) * 6) >> 8) + 1;
+                saves += (d0 >= eff_target) + (d1 >= eff_target) + (d2 >= eff_target) + (d3 >= eff_target)
+                       + (d4 >= eff_target) + (d5 >= eff_target) + (d6 >= eff_target) + (d7 >= eff_target);
+                ones += (d0 == 1) + (d1 == 1) + (d2 == 1) + (d3 == 1)
+                      + (d4 == 1) + (d5 == 1) + (d6 == 1) + (d7 == 1);
+                remaining -= 8;
+            }
+            while (remaining-- > 0) {
+                u64 r = next();
+                u8 die = static_cast<u8>(((r & 0xFF) * 6) >> 8) + 1;
+                saves += (die >= eff_target);
+                ones += (die == 1);
+            }
+        } else {
+            // Poison path with reroll tracking
+            u32 sixes_to_reroll = 0;
+            while (remaining >= 8) {
+                u64 r = next();
+                u8 d0 = static_cast<u8>((((r      ) & 0xFF) * 6) >> 8) + 1;
+                u8 d1 = static_cast<u8>((((r >>  8) & 0xFF) * 6) >> 8) + 1;
+                u8 d2 = static_cast<u8>((((r >> 16) & 0xFF) * 6) >> 8) + 1;
+                u8 d3 = static_cast<u8>((((r >> 24) & 0xFF) * 6) >> 8) + 1;
+                u8 d4 = static_cast<u8>((((r >> 32) & 0xFF) * 6) >> 8) + 1;
+                u8 d5 = static_cast<u8>((((r >> 40) & 0xFF) * 6) >> 8) + 1;
+                u8 d6 = static_cast<u8>((((r >> 48) & 0xFF) * 6) >> 8) + 1;
+                u8 d7 = static_cast<u8>((((r >> 56) & 0xFF) * 6) >> 8) + 1;
+                sixes_to_reroll += (d0 == 6) + (d1 == 6) + (d2 == 6) + (d3 == 6)
+                                 + (d4 == 6) + (d5 == 6) + (d6 == 6) + (d7 == 6);
+                saves += (d0 >= eff_target && d0 != 6) + (d1 >= eff_target && d1 != 6)
+                       + (d2 >= eff_target && d2 != 6) + (d3 >= eff_target && d3 != 6)
+                       + (d4 >= eff_target && d4 != 6) + (d5 >= eff_target && d5 != 6)
+                       + (d6 >= eff_target && d6 != 6) + (d7 >= eff_target && d7 != 6);
+                ones += (d0 == 1) + (d1 == 1) + (d2 == 1) + (d3 == 1)
+                      + (d4 == 1) + (d5 == 1) + (d6 == 1) + (d7 == 1);
+                remaining -= 8;
+            }
+            while (remaining-- > 0) {
+                u64 r = next();
+                u8 die = static_cast<u8>(((r & 0xFF) * 6) >> 8) + 1;
+                sixes_to_reroll += (die == 6);
+                saves += (die >= eff_target && die != 6);
+                ones += (die == 1);
+            }
+            // Reroll sixes - count ones from rerolls too
+            for (u32 i = 0; i < sixes_to_reroll; ++i) {
+                u64 r = next();
+                u8 die = static_cast<u8>(((r & 0xFF) * 6) >> 8) + 1;
+                saves += (die >= eff_target);
+                ones += (die == 1);
+            }
+        }
+
+        return {hits - saves, ones};
     }
 
     // Roll regeneration (default 5+)
