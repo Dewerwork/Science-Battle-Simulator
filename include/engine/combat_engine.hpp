@@ -77,6 +77,30 @@ public:
                 if (logger_) logger_->on_hit_modifier("Stealth", -1, "target_beyond_9\"");
             }
 
+            // RangedShrouding: -1 to be hit when shot
+            if (defender.has_rule(RuleId::RangedShrouding)) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("RangedShrouding", -1, "harder_to_hit_at_range");
+            }
+
+            // Precise: +1 to hit (weapon rule)
+            if (w.has_rule(RuleId::Precise)) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Precise", +1, "weapon_accuracy");
+            }
+
+            // GoodShot: +1 to hit when shooting (unit rule)
+            if (attacker.has_rule(RuleId::GoodShot)) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("GoodShot", +1, "skilled_shooter");
+            }
+
+            // BadShot: -1 to hit when shooting (unit rule)
+            if (attacker.has_rule(RuleId::BadShot)) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("BadShot", -1, "poor_shooter");
+            }
+
             // Enable roll recording for logging
             if (logger_) dice_.enable_roll_recording(true);
 
@@ -112,6 +136,13 @@ public:
                 if (logger_) logger_->on_rule_triggered("Surge", "extra_hits_on_6s", sixes);
             }
 
+            // PointBlankSurge: extra hits on 6s at 0-9" range
+            if (attacker.has_rule(RuleId::PointBlankSurge) && distance <= 9) {
+                bonus_hits += sixes;
+                hits += sixes;
+                if (logger_) logger_->on_rule_triggered("PointBlankSurge", "extra_hits_on_6s_at_close_range", sixes);
+            }
+
             // Blast: multiply hits by X, where X is capped at target model count
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
@@ -136,29 +167,49 @@ public:
             // Bane: reroll defense 6s (like Poison)
             bool reroll_def_sixes = poison || has_bane;
 
+            // Calculate effective defense with modifiers
+            u8 effective_defense = defender.defense();
+
+            // Shielded: +1 to Defense vs non-spell attacks (easier saves)
+            if (defender.has_rule(RuleId::Shielded)) {
+                effective_defense = std::max(u8(2), static_cast<u8>(effective_defense - 1));
+                if (logger_) logger_->on_defense_modifier("Shielded", -1, "easier_saves_vs_shooting");
+            }
+
+            // Protected: 6+ to reduce AP by 1 (roll for each hit)
+            u8 protected_ap_reduction = 0;
+            if (defender.has_rule(RuleId::Protected) && ap > 0 && normal_hits > 0) {
+                u32 protected_successes = dice_.roll_regeneration(normal_hits, 6);  // Uses same 6+ logic
+                if (protected_successes > 0) {
+                    protected_ap_reduction = 1;
+                    if (logger_) logger_->on_rule_triggered("Protected", "reduced_ap_by_1", protected_successes);
+                }
+            }
+            u8 final_ap = (ap > protected_ap_reduction) ? (ap - protected_ap_reduction) : 0;
+
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), ap, 0, reroll_def_sixes);
+            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
 
             // Log defense rolls for normal hits
             if (logger_) {
                 std::vector<u8> def_rolls = dice_.take_recorded_rolls();
-                i8 effective = static_cast<i8>(defender.defense()) + static_cast<i8>(ap);
+                i8 effective = static_cast<i8>(effective_defense) + static_cast<i8>(final_ap);
                 effective = std::max(i8(2), std::min(i8(6), effective));
                 u32 saves = normal_hits - wounds_from_normal;
-                logger_->on_defense_rolls(defender.defense(), ap, static_cast<u8>(effective), reroll_def_sixes,
+                logger_->on_defense_rolls(effective_defense, final_ap, static_cast<u8>(effective), reroll_def_sixes,
                                           def_rolls, saves, wounds_from_normal, 0, {}, 0);
             }
 
             // Roll defense for rending hits (AP+4) - Rending adds AP(4) to base
             u32 wounds_from_rending = 0;
             if (rending_hits > 0) {
-                u8 rending_ap = ap + 4;  // Rending adds +4 AP to base
+                u8 rending_ap = final_ap + 4;  // Rending adds +4 AP to (potentially reduced) base
                 if (logger_) dice_.enable_roll_recording(true);
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), rending_ap, 0, reroll_def_sixes);
+                wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
 
                 if (logger_) {
                     std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
-                    i8 effective = static_cast<i8>(defender.defense()) + static_cast<i8>(rending_ap);
+                    i8 effective = static_cast<i8>(effective_defense) + static_cast<i8>(rending_ap);
                     effective = std::max(i8(2), std::min(i8(6), effective));
                     u32 saves = rending_hits - wounds_from_rending;
                     logger_->on_defense_rolls_rending(defender.defense(), rending_ap, static_cast<u8>(effective),
@@ -307,6 +358,24 @@ public:
                 if (logger_) logger_->on_hit_modifier("Thrust", +1, "charging_bonus");
             }
 
+            // Precise: +1 to hit (weapon rule)
+            if (w.has_rule(RuleId::Precise)) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Precise", +1, "weapon_accuracy");
+            }
+
+            // MeleeEvasion: -1 to be hit in melee (defender rule)
+            if (defender.has_rule(RuleId::MeleeEvasion)) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("MeleeEvasion", -1, "evasive_target");
+            }
+
+            // MeleeShrouding: -1 to be hit in melee (defender rule)
+            if (defender.has_rule(RuleId::MeleeShrouding)) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("MeleeShrouding", -1, "shrouded_target");
+            }
+
             // Shaken/Fatigued: Only hit on 6s (unmodified)
             bool only_sixes = attacker.is_shaken() || attacker.is_fatigued();
             if (only_sixes) {
@@ -340,6 +409,21 @@ public:
                 hits += sixes;
                 normal_hits = hits - rending_hits;
                 if (logger_) logger_->on_rule_triggered("Furious", "extra_hits_on_6s_when_charging", sixes);
+            }
+
+            // PredatorFighter: 6s generate extra attacks (recursive in melee)
+            if (attacker.has_rule(RuleId::PredatorFighter) && sixes > 0) {
+                u32 total_bonus = 0;
+                u32 current_sixes = sixes;
+                // Recursive: roll for each 6, new 6s generate more attacks
+                while (current_sixes > 0) {
+                    auto bonus_result = dice_.roll_quality_test(current_sixes, quality, hit_modifier);
+                    total_bonus += bonus_result.hits;
+                    current_sixes = bonus_result.sixes;  // Continue if we rolled more 6s
+                }
+                hits += total_bonus;
+                normal_hits = hits - rending_hits;
+                if (logger_) logger_->on_rule_triggered("PredatorFighter", "recursive_extra_attacks", total_bonus);
             }
 
             // Surge: extra hits on 6s to hit
@@ -401,22 +485,33 @@ public:
                 if (logger_) logger_->on_defense_modifier("ShieldWall", -1, "easier_saves_in_melee");
             }
 
+            // Protected: 6+ to reduce AP by 1 (roll for each hit)
+            u8 protected_ap_reduction = 0;
+            if (defender.has_rule(RuleId::Protected) && ap > 0 && normal_hits > 0) {
+                u32 protected_successes = dice_.roll_regeneration(normal_hits, 6);
+                if (protected_successes > 0) {
+                    protected_ap_reduction = 1;
+                    if (logger_) logger_->on_rule_triggered("Protected", "reduced_ap_by_1", protected_successes);
+                }
+            }
+            u8 final_ap = (ap > protected_ap_reduction) ? (ap - protected_ap_reduction) : 0;
+
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, ap, 0, reroll_def_sixes);
+            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
 
             // Log defense rolls for normal hits
             if (logger_) {
                 std::vector<u8> def_rolls = dice_.take_recorded_rolls();
-                i8 effective = static_cast<i8>(effective_defense) + static_cast<i8>(ap);
+                i8 effective = static_cast<i8>(effective_defense) + static_cast<i8>(final_ap);
                 effective = std::max(i8(2), std::min(i8(6), effective));
                 u32 saves = normal_hits - wounds_from_normal;
-                logger_->on_defense_rolls(defender.defense(), ap, static_cast<u8>(effective), reroll_def_sixes,
+                logger_->on_defense_rolls(effective_defense, final_ap, static_cast<u8>(effective), reroll_def_sixes,
                                           def_rolls, saves, wounds_from_normal, 0, {}, 0);
             }
 
             u32 wounds_from_rending = 0;
             if (rending_hits > 0) {
-                u8 rending_ap = ap + 4;  // Rending adds +4 AP to base
+                u8 rending_ap = final_ap + 4;  // Rending adds +4 AP to (potentially reduced) base
                 if (logger_) dice_.enable_roll_recording(true);
                 wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
 
@@ -491,6 +586,16 @@ public:
             }
         }
 
+        // Resistance: 6+ to ignore each wound (after regeneration)
+        if (unit.has_rule(RuleId::Resistance) && wounds > 0) {
+            u32 original_wounds = wounds;
+            wounds = dice_.roll_regeneration(wounds, 6);  // Uses same mechanic as regen
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Resistance", "resisted_wounds", blocked);
+            }
+        }
+
         result.wounds_dealt = static_cast<u16>(wounds);
 
         // Apply wounds in order
@@ -532,6 +637,16 @@ public:
             if (logger_) {
                 u32 blocked = original_wounds - wounds;
                 logger_->on_rule_triggered("Regeneration", "blocked_wounds", blocked);
+            }
+        }
+
+        // Resistance: 6+ to ignore each wound (after regeneration)
+        if (unit.has_rule(RuleId::Resistance) && wounds > 0) {
+            u32 original_wounds = wounds;
+            wounds = dice_.roll_regeneration(wounds, 6);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Resistance", "resisted_wounds", blocked);
             }
         }
 
@@ -596,10 +711,18 @@ public:
 
         // Roll morale test
         u8 roll = dice_.roll_d6();
-        bool passed = roll >= unit.quality();
+        u8 target = unit.quality();
+
+        // MoraleBoost: +1 to morale tests (easier to pass)
+        if (unit.has_rule(RuleId::MoraleBoost)) {
+            roll += 1;
+            if (logger_) logger_->on_rule_triggered("MoraleBoost", "morale_bonus", 1);
+        }
+
+        bool passed = roll >= target;
 
         if (logger_) {
-            logger_->on_morale_roll(roll, unit.quality(), passed);
+            logger_->on_morale_roll(roll, target, passed);
         }
 
         // Fearless: reroll failed test, pass on 4+
@@ -640,7 +763,25 @@ public:
         UnitStatus new_status = old_status;
         const char* result_desc = "";
 
-        if (is_from_melee) {
+        // NoRetreat: Take wounds instead of becoming Shaken
+        if (unit.has_rule(RuleId::NoRetreat)) {
+            // Roll d3 wounds (1-3)
+            u8 wounds_taken = (dice_.roll_d6() + 1) / 2;  // Maps 1-6 to 1-3
+            if (logger_) logger_->on_rule_triggered("NoRetreat", "wounds_instead_of_shaken", wounds_taken);
+
+            // Apply wounds
+            for (u8 w = 0; w < wounds_taken && !unit.is_destroyed(); ++w) {
+                // Find first alive model and apply wound
+                for (u8 m = 0; m < unit.unit->model_count; ++m) {
+                    if (unit.model_is_alive(m)) {
+                        unit.apply_wound_to_model(m);
+                        break;
+                    }
+                }
+            }
+            result_desc = "no_retreat_wounds_taken";
+            // Don't change status - unit stays Normal
+        } else if (is_from_melee) {
             // Melee morale: Rout if at half strength, Shaken otherwise
             if (unit.is_at_half_strength()) {
                 unit.rout();
