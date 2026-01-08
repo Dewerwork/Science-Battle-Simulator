@@ -65,6 +65,19 @@ public:
             u8 quality = base_quality;
             i8 hit_modifier = 0;
 
+            // VersatileAttack: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
+            u8 versatile_ap_bonus = 0;
+            if (w.has_rule(RuleId::VersatileAttack)) {
+                u8 versatile_roll = dice_.roll_d6();
+                if (versatile_roll <= 3) {
+                    versatile_ap_bonus = 1;
+                    if (logger_) logger_->on_rule_triggered("VersatileAttack", "rolled_ap+1", versatile_roll);
+                } else {
+                    hit_modifier += 1;
+                    if (logger_) logger_->on_hit_modifier("VersatileAttack", +1, "rolled_+1_hit");
+                }
+            }
+
             // Reliable: Quality becomes 2+
             if (w.has_rule(RuleId::Reliable)) {
                 quality = 2;
@@ -99,6 +112,13 @@ public:
             if (attacker.has_rule(RuleId::BadShot)) {
                 hit_modifier -= 1;
                 if (logger_) logger_->on_hit_modifier("BadShot", -1, "poor_shooter");
+            }
+
+            // Purge: +1 to hit vs Tough(3+)
+            u8 defender_tough = defender.get_rule_value(RuleId::Tough);
+            if (w.has_rule(RuleId::Purge) && defender_tough >= 3) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Purge", +1, "targeting_tough_3+");
             }
 
             // Enable roll recording for logging
@@ -162,6 +182,10 @@ public:
 
             // Roll defense for normal hits
             u8 ap = w.ap;
+
+            // VersatileAttack AP bonus (if rolled earlier)
+            ap += versatile_ap_bonus;
+
             bool poison = w.has_rule(RuleId::Poison);
             bool has_bane = w.has_rule(RuleId::Bane);
             // Bane: reroll defense 6s (like Poison)
@@ -346,6 +370,19 @@ public:
             u8 quality = base_quality;
             i8 hit_modifier = 0;
 
+            // VersatileAttack: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
+            u8 versatile_ap_bonus = 0;
+            if (w.has_rule(RuleId::VersatileAttack)) {
+                u8 versatile_roll = dice_.roll_d6();
+                if (versatile_roll <= 3) {
+                    versatile_ap_bonus = 1;
+                    if (logger_) logger_->on_rule_triggered("VersatileAttack", "rolled_ap+1", versatile_roll);
+                } else {
+                    hit_modifier += 1;
+                    if (logger_) logger_->on_hit_modifier("VersatileAttack", +1, "rolled_+1_hit");
+                }
+            }
+
             // Reliable: Quality becomes 2+
             if (w.has_rule(RuleId::Reliable)) {
                 quality = 2;
@@ -374,6 +411,13 @@ public:
             if (defender.has_rule(RuleId::MeleeShrouding)) {
                 hit_modifier -= 1;
                 if (logger_) logger_->on_hit_modifier("MeleeShrouding", -1, "shrouded_target");
+            }
+
+            // Purge: +1 to hit vs Tough(3+)
+            u8 defender_tough = defender.get_rule_value(RuleId::Tough);
+            if (w.has_rule(RuleId::Purge) && defender_tough >= 3) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Purge", +1, "targeting_tough_3+");
             }
 
             // Shaken/Fatigued: Only hit on 6s (unmodified)
@@ -435,6 +479,9 @@ public:
 
             // Calculate AP
             u8 ap = w.ap;
+
+            // VersatileAttack AP bonus (if rolled earlier)
+            ap += versatile_ap_bonus;
 
             // Lance: +2 AP when charging
             if (is_charging && w.has_rule(RuleId::Lance)) {
