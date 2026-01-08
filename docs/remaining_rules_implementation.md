@@ -1,6 +1,13 @@
 # Remaining Special Rules Implementation Guide
 
-This document details the 18 special rules that are defined in the `RuleId` enum but not yet implemented in the combat engine. Each rule is categorized by the systems or changes required for implementation.
+This document details the 15 special rules that are defined in the `RuleId` enum but not yet implemented in the combat engine. Each rule is categorized by the systems or changes required for implementation.
+
+**Recently Implemented:**
+- ✅ Purge - +1 to hit vs Tough(3+)
+- ✅ VersatileAttack - Dice roll chooses AP+1 or +1 hit
+
+**Removed (no faction data):**
+- ❌ Lock-On - No units in current data use this rule
 
 ---
 
@@ -8,10 +15,9 @@ This document details the 18 special rules that are defined in the `RuleId` enum
 
 | Category | Rules | Complexity |
 |----------|-------|------------|
-| **Simple Hit Modifiers** | Lock-On, Purge | Low |
 | **Wound Tracking** | Rupture, Shred | Medium |
 | **Targeting** | Sniper, Takedown | Medium |
-| **Weapon State** | Limited, Linked, VersatileAttack | Medium |
+| **Weapon State** | Limited, Linked | Medium |
 | **Post-Combat** | HitAndRun, SelfDestruct | Medium |
 | **Deployment** | Scout, Ambush | High (new system) |
 | **Terrain** | Flying, Strider, Indirect | High (new system) |
@@ -19,51 +25,7 @@ This document details the 18 special rules that are defined in the `RuleId` enum
 
 ---
 
-## Category 1: Simple Hit Modifiers (Low Complexity)
-
-These can be implemented immediately with minor code additions.
-
-### Lock-On
-**Description**: +1 to hit against targets with the Vehicle keyword
-
-**Requirements**:
-- Add `Vehicle` keyword/flag to Unit struct
-- Check in `resolve_shooting()` and `resolve_melee()` hit modifier section
-
-**Implementation**:
-```cpp
-// In combat_engine.hpp, after other hit modifiers:
-if (w.has_rule(RuleId::Lock_On) && defender.has_keyword(Keyword::Vehicle)) {
-    hit_modifier += 1;
-    if (logger_) logger_->on_hit_modifier("Lock-On", +1, "targeting_vehicle");
-}
-```
-
-**Blocked by**: Need to add `Keyword` enum and `has_keyword()` method to Unit
-
----
-
-### Purge
-**Description**: +1 to hit against targets with Tough(3) or higher
-
-**Requirements**:
-- Check defender's Tough rule value in hit modifier section
-
-**Implementation**:
-```cpp
-// In combat_engine.hpp, after other hit modifiers:
-u8 defender_tough = defender.get_rule_value(RuleId::Tough);
-if (w.has_rule(RuleId::Purge) && defender_tough >= 3) {
-    hit_modifier += 1;
-    if (logger_) logger_->on_hit_modifier("Purge", +1, "targeting_tough_3+");
-}
-```
-
-**Blocked by**: Nothing - can implement now
-
----
-
-## Category 2: Wound Tracking Rules (Medium Complexity)
+## Category 1: Wound Tracking Rules (Medium Complexity)
 
 These require tracking specific die roll results through the combat resolution.
 
@@ -123,7 +85,7 @@ if (w.has_rule(RuleId::Shred)) {
 
 ---
 
-## Category 3: Targeting Rules (Medium Complexity)
+## Category 2: Targeting Rules (Medium Complexity)
 
 These affect wound allocation rather than combat resolution.
 
@@ -166,7 +128,7 @@ WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regen,
 
 ---
 
-## Category 4: Weapon State Rules (Medium Complexity)
+## Category 3: Weapon State Rules (Medium Complexity)
 
 These require tracking weapon/attack state across activations.
 
@@ -236,7 +198,7 @@ VersatileChoice choose_versatile(UnitView attacker, UnitView defender) {
 
 ---
 
-## Category 5: Post-Combat Rules (Medium Complexity)
+## Category 4: Post-Combat Rules (Medium Complexity)
 
 These trigger after combat resolution.
 
@@ -290,7 +252,7 @@ if (unit.has_rule(RuleId::SelfDestruct)) {
 
 ---
 
-## Category 6: Deployment Rules (High Complexity - New System Required)
+## Category 5: Deployment Rules (High Complexity - New System Required)
 
 These require a deployment phase that doesn't currently exist.
 
@@ -318,7 +280,7 @@ These require a deployment phase that doesn't currently exist.
 
 ---
 
-## Category 7: Terrain Rules (High Complexity - New System Required)
+## Category 6: Terrain Rules (High Complexity - New System Required)
 
 These require terrain/cover mechanics.
 
@@ -360,7 +322,7 @@ These require terrain/cover mechanics.
 
 ---
 
-## Category 8: Magic Rules (High Complexity - New System Required)
+## Category 7: Magic Rules (High Complexity - New System Required)
 
 These require a spell/psychic phase.
 
@@ -393,26 +355,21 @@ These require a spell/psychic phase.
 
 Based on complexity and impact:
 
-### Phase 1 (Quick Wins)
-1. **Purge** - Simple conditional hit modifier
-2. **Lock-On** - Simple conditional hit modifier (needs Keyword enum)
-3. **VersatileAttack** - Pre-attack choice
+### Phase 1 (Combat Enhancements)
+1. **Rupture** - Wound tracking refactor
+2. **Shred** - Defense roll tracking
+3. **Sniper/Takedown** - Wound allocation override
+4. **Limited** - Weapon state tracking
 
-### Phase 2 (Combat Enhancements)
-4. **Rupture** - Wound tracking refactor
-5. **Shred** - Defense roll tracking
-6. **Sniper/Takedown** - Wound allocation override
-7. **Limited** - Weapon state tracking
+### Phase 2 (Post-Combat)
+5. **SelfDestruct** - On-death effects
+6. **HitAndRun** - Post-melee movement
 
-### Phase 3 (Post-Combat)
-8. **SelfDestruct** - On-death effects
-9. **HitAndRun** - Post-melee movement
-
-### Phase 4 (New Systems)
-10. **Indirect/Flying/Strider** - Terrain system
-11. **Scout/Ambush** - Deployment system
-12. **Casting/Devout** - Magic system
-13. **Linked** - Weapon pairing
+### Phase 3 (New Systems)
+7. **Indirect/Flying/Strider** - Terrain system
+8. **Scout/Ambush** - Deployment system
+9. **Casting/Devout** - Magic system
+10. **Linked** - Weapon pairing
 
 ---
 
@@ -420,11 +377,11 @@ Based on complexity and impact:
 
 | File | Rules Affected |
 |------|----------------|
-| `combat_engine.hpp` | Purge, Lock-On, Rupture, Shred, Sniper, Takedown, VersatileAttack, Limited, SelfDestruct |
+| `combat_engine.hpp` | Rupture, Shred, Sniper, Takedown, Limited, SelfDestruct |
 | `dice.hpp` | Shred (return 1s count) |
 | `game_runner.hpp` | HitAndRun |
 | `sim_state.hpp` | Limited (weapon usage tracking) |
-| `types.hpp` | Lock-On (Keyword enum), Linked (weapon pairing) |
+| `types.hpp` | Linked (weapon pairing) |
 | `game_state.hpp` | Flying, Strider, Scout, Ambush (if terrain/deployment added) |
 | NEW: `spell_system.hpp` | Casting, Devout |
 | NEW: `terrain.hpp` | Indirect, Flying, Strider |
