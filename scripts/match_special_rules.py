@@ -8,7 +8,6 @@ the first match for each rule, and outputs results to a CSV file.
 """
 
 import csv
-import re
 from pathlib import Path
 
 # =============================================================================
@@ -90,48 +89,13 @@ def load_unit_text(text_path: str) -> str:
     return content.decode('utf-8', errors='replace')
 
 
-def find_rule_match(rule_name: str, unit_text: str) -> dict:
-    """
-    Search for a rule in the unit text and return match information.
-
-    Stops at the first match found.
-
-    Args:
-        rule_name: The special rule name to search for
-        unit_text: The full text content to search in
-
-    Returns:
-        Dictionary with 'found' (bool), 'line_number' (int or None),
-        and 'context' (str or None - snippet of matching line)
-    """
-    # Escape special regex characters in rule name for safe matching
-    escaped_rule = re.escape(rule_name)
-
-    # Search line by line to get line number
-    lines = unit_text.splitlines()
-    for line_num, line in enumerate(lines, start=1):
-        # Case-insensitive search for the rule name
-        if re.search(escaped_rule, line, re.IGNORECASE):
-            # Truncate context if too long
-            context = line.strip()
-            if len(context) > 100:
-                context = context[:97] + '...'
-            return {
-                'found': True,
-                'line_number': line_num,
-                'context': context
-            }
-
-    return {
-        'found': False,
-        'line_number': None,
-        'context': None
-    }
-
-
 def match_all_rules(rules: list[str], unit_text: str) -> list[dict]:
     """
-    Match all rules against the unit text.
+    Match all rules against the unit text using optimized single-pass algorithm.
+
+    Instead of searching the entire file for each rule (O(rules × lines)),
+    this iterates through lines once and checks all unmatched rules per line.
+    Uses simple case-insensitive string matching for speed.
 
     Args:
         rules: List of rule names to search for
@@ -140,16 +104,57 @@ def match_all_rules(rules: list[str], unit_text: str) -> list[dict]:
     Returns:
         List of result dictionaries for each rule
     """
-    results = []
-    for rule in rules:
-        match_info = find_rule_match(rule, unit_text)
-        results.append({
-            'rule_name': rule,
-            'has_match': match_info['found'],
-            'first_match_line': match_info['line_number'],
-            'context': match_info['context']
-        })
-    return results
+    # Initialize results for all rules
+    results = {rule: {
+        'rule_name': rule,
+        'has_match': False,
+        'first_match_line': None,
+        'context': None
+    } for rule in rules}
+
+    # Create lookup with lowercase rule names for case-insensitive matching
+    # Maps lowercase rule name -> original rule name
+    unmatched_rules = {rule.lower(): rule for rule in rules}
+
+    # Single pass through the file
+    lines = unit_text.splitlines()
+    total_lines = len(lines)
+
+    for line_num, line in enumerate(lines, start=1):
+        if not unmatched_rules:
+            # All rules matched, stop early
+            break
+
+        line_lower = line.lower()
+
+        # Check each unmatched rule against this line
+        matched_this_line = []
+        for rule_lower, rule_original in unmatched_rules.items():
+            if rule_lower in line_lower:
+                # Found a match
+                context = line.strip()
+                if len(context) > 100:
+                    context = context[:97] + '...'
+
+                results[rule_original] = {
+                    'rule_name': rule_original,
+                    'has_match': True,
+                    'first_match_line': line_num,
+                    'context': context
+                }
+                matched_this_line.append(rule_lower)
+
+        # Remove matched rules from unmatched set
+        for rule_lower in matched_this_line:
+            del unmatched_rules[rule_lower]
+
+        # Progress indicator for large files
+        if line_num % 500000 == 0:
+            print(f"  Processed {line_num:,}/{total_lines:,} lines, "
+                  f"{len(rules) - len(unmatched_rules)}/{len(rules)} rules matched...")
+
+    # Return results in original order
+    return [results[rule] for rule in rules]
 
 
 def write_results_csv(results: list[dict], output_path: str):
