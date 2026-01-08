@@ -41,6 +41,7 @@ enum class ActionType : u8 {
 struct CombatResult {
     u16 wounds_dealt = 0;
     u8 models_killed = 0;
+    u32 self_destruct_hits = 0;  // Hits to return to attacker from SelfDestruct
     bool target_destroyed = false;
     bool target_shaken = false;
     bool target_routed = false;

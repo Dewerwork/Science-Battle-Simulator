@@ -433,11 +433,15 @@ private:
         u16 attacker_wounds = 0;
         u16 defender_wounds = 0;
 
+        u32 self_destruct_hits_to_attacker = 0;
+        u32 self_destruct_hits_to_defender = 0;
+
         if (defender_strikes_first) {
             // Defender with Counter strikes first
             CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
             state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
             attacker_wounds = def_result.wounds_dealt;
+            self_destruct_hits_to_defender += def_result.self_destruct_hits;
 
             // Mark defender as fatigued after striking
             defender.set_fatigued(true);
@@ -450,6 +454,7 @@ private:
                 CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging, counter_models);
                 state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
                 defender_wounds = atk_result.wounds_dealt;
+                self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
 
                 // Mark attacker as fatigued after striking
                 attacker.set_fatigued(true);
@@ -462,6 +467,7 @@ private:
             CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging, counter_models);
             state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
             defender_wounds = atk_result.wounds_dealt;
+            self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
 
             // Mark attacker as fatigued after striking
             attacker.set_fatigued(true);
@@ -482,12 +488,39 @@ private:
                 CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
                 state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
                 attacker_wounds = def_result.wounds_dealt;
+                self_destruct_hits_to_defender += def_result.self_destruct_hits;
 
                 // Mark defender as fatigued after striking
                 defender.set_fatigued(true);
                 if (logger_) {
                     logger_->on_fatigue_changed(!is_unit_a, true, "struck_in_melee");
                 }
+            }
+        }
+
+        // Apply SelfDestruct hits (defender models that died deal hits to attacker, and vice versa)
+        if (self_destruct_hits_to_attacker > 0 && !attacker.is_out_of_action()) {
+            if (logger_) logger_->on_rule_triggered("SelfDestruct", "applying_hits_to_attacker", self_destruct_hits_to_attacker);
+            // SelfDestruct hits roll against quality (hit on 2+)
+            u32 destruct_wounds = dice_.roll_d6_target(self_destruct_hits_to_attacker, 2);
+            // Roll defense for the wounds
+            destruct_wounds = dice_.roll_defense_test(destruct_wounds, attacker.defense(), 0, 0, false);
+            if (destruct_wounds > 0) {
+                auto wound_result = combat_.apply_wounds(attacker, destruct_wounds, true);  // bypass regen
+                attacker_wounds += wound_result.wounds_dealt;
+                state_.stats.record_wounds(is_unit_a, wound_result.wounds_dealt, wound_result.models_killed);
+            }
+        }
+        if (self_destruct_hits_to_defender > 0 && !defender.is_out_of_action()) {
+            if (logger_) logger_->on_rule_triggered("SelfDestruct", "applying_hits_to_defender", self_destruct_hits_to_defender);
+            // SelfDestruct hits roll against quality (hit on 2+)
+            u32 destruct_wounds = dice_.roll_d6_target(self_destruct_hits_to_defender, 2);
+            // Roll defense for the wounds
+            destruct_wounds = dice_.roll_defense_test(destruct_wounds, defender.defense(), 0, 0, false);
+            if (destruct_wounds > 0) {
+                auto wound_result = combat_.apply_wounds(defender, destruct_wounds, true);  // bypass regen
+                defender_wounds += wound_result.wounds_dealt;
+                state_.stats.record_wounds(!is_unit_a, wound_result.wounds_dealt, wound_result.models_killed);
             }
         }
 
@@ -568,8 +601,55 @@ private:
                                          "charger_separating_after_melee");
                     logger_->on_melee_state_changed(false, "charger_separated");
                 }
+            } else {
+                // HitAndRun: if either unit has this rule and is still in melee,
+                // they can disengage and move away their full move distance
+                bool attacker_has_hit_and_run = attacker.has_rule(RuleId::HitAndRun);
+                bool defender_has_hit_and_run = defender.has_rule(RuleId::HitAndRun);
+
+                if (attacker_has_hit_and_run && !attacker.is_out_of_action()) {
+                    // Attacker disengages using HitAndRun
+                    i8& pos = is_unit_a ? state_.pos_a : state_.pos_b;
+                    i8 from_pos = pos;
+                    u8 move_dist = state_.get_move_speed(*attacker.unit);
+
+                    // Move away from defender (toward their starting side)
+                    if (is_unit_a) {
+                        pos = static_cast<i8>(pos - move_dist);  // Unit A moves back toward negative
+                    } else {
+                        pos = static_cast<i8>(pos + move_dist);  // Unit B moves back toward positive
+                    }
+
+                    state_.in_melee = false;
+                    if (logger_) {
+                        logger_->on_rule_triggered("HitAndRun", "disengaging", move_dist);
+                        logger_->on_movement(is_unit_a, "hit_and_run", from_pos, pos,
+                                             static_cast<i8>(move_dist), "hit_and_run_disengage");
+                        logger_->on_melee_state_changed(false, "hit_and_run");
+                    }
+                } else if (defender_has_hit_and_run && !defender.is_out_of_action()) {
+                    // Defender disengages using HitAndRun
+                    i8& pos = is_unit_a ? state_.pos_b : state_.pos_a;
+                    i8 from_pos = pos;
+                    u8 move_dist = state_.get_move_speed(*defender.unit);
+
+                    // Move away from attacker (toward their starting side)
+                    if (!is_unit_a) {
+                        pos = static_cast<i8>(pos - move_dist);  // Unit A moves back toward negative
+                    } else {
+                        pos = static_cast<i8>(pos + move_dist);  // Unit B moves back toward positive
+                    }
+
+                    state_.in_melee = false;
+                    if (logger_) {
+                        logger_->on_rule_triggered("HitAndRun", "disengaging", move_dist);
+                        logger_->on_movement(!is_unit_a, "hit_and_run", from_pos, pos,
+                                             static_cast<i8>(move_dist), "hit_and_run_disengage");
+                        logger_->on_melee_state_changed(false, "hit_and_run");
+                    }
+                }
+                // If neither has HitAndRun and not charging, units stay engaged
             }
-            // If not charging (e.g., fighting in ongoing melee), units stay engaged
         }
     }
 

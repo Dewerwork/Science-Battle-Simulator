@@ -48,6 +48,16 @@ public:
             const Weapon& w = attacker.get_weapon(i);
             if (!w.is_ranged() || w.range < static_cast<u8>(distance)) continue;
 
+            // Limited: skip if already used this game
+            if (w.has_rule(RuleId::Limited)) {
+                if (attacker.is_limited_weapon_used(i)) {
+                    if (logger_) logger_->on_rule_triggered("Limited", "weapon_already_used", i);
+                    continue;
+                }
+                attacker.mark_limited_weapon_used(i);
+                if (logger_) logger_->on_rule_triggered("Limited", "using_one_time_weapon", i);
+            }
+
             // Calculate total attacks: min(weapon_count, alive_models) * attacks_per_model
             u8 models_with_weapon = std::min(w.count, models_shooting);
             u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
@@ -139,6 +149,13 @@ public:
             // Rending: 6s to hit get AP(+4) - track separately
             bool has_rending = w.has_rule(RuleId::Rending);
             u32 rending_hits = has_rending ? sixes : 0;
+
+            // Rupture: 6s to hit deal +1 wound per wound and bypass regen
+            // Note: Rupture and Rending can stack - 6s get both AP+4 AND +1 wound
+            bool has_rupture = w.has_rule(RuleId::Rupture);
+            u32 rupture_hits = has_rupture ? sixes : 0;
+
+            // If both Rending and Rupture, the 6s go to rending (AP+4) and also get rupture bonus
             u32 normal_hits = hits - rending_hits;
             u32 bonus_hits = 0;
 
@@ -163,14 +180,39 @@ public:
                 if (logger_) logger_->on_rule_triggered("PointBlankSurge", "extra_hits_on_6s_at_close_range", sixes);
             }
 
+            // Takedown: treats target as single model (Blast capped at 1)
+            bool has_takedown = w.has_rule(RuleId::Takedown);
+            i8 takedown_target_idx = -1;  // -1 = normal allocation
+            if (has_takedown) {
+                // AI picks most valuable target (hero > wounded tough > first alive)
+                for (u8 m = 0; m < defender.model_count(); ++m) {
+                    if (defender.model_is_alive(m)) {
+                        const Model& model = defender.get_model(m);
+                        if (model.is_hero) {
+                            takedown_target_idx = m;
+                            break;  // Heroes are highest priority
+                        }
+                        if (takedown_target_idx < 0 || defender.model_wounds_taken(m) > 0) {
+                            takedown_target_idx = m;  // Wounded models or first alive
+                        }
+                    }
+                }
+                if (logger_ && takedown_target_idx >= 0) {
+                    logger_->on_rule_triggered("Takedown", "targeting_specific_model", takedown_target_idx);
+                }
+            }
+
             // Blast: multiply hits by X, where X is capped at target model count
+            // Takedown: Blast is capped at 1 (treating target as single model)
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
-                u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
+                u8 max_multiplier = has_takedown ? u8(1) : static_cast<u8>(defender.alive_count());
+                u8 multiplier = std::min(blast_value, max_multiplier);
                 u32 old_hits = hits;
                 hits *= multiplier;
-                // Rending hits also multiply with Blast
+                // Rending and Rupture hits also multiply with Blast
                 rending_hits *= multiplier;
+                rupture_hits *= multiplier;
                 normal_hits = hits - rending_hits;
                 if (logger_) logger_->on_rule_triggered("Blast", "multiplied_hits", hits - old_hits);
             }
@@ -211,8 +253,22 @@ public:
             }
             u8 final_ap = (ap > protected_ap_reduction) ? (ap - protected_ap_reduction) : 0;
 
+            // Shred: track 1s on defense rolls for bonus wounds
+            bool has_shred = w.has_rule(RuleId::Shred);
+            u32 shred_bonus_wounds = 0;
+
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+            u32 wounds_from_normal = 0;
+            if (has_shred && normal_hits > 0) {
+                auto def_result = dice_.roll_defense_test_with_ones(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+                wounds_from_normal = def_result.wounds;
+                shred_bonus_wounds += def_result.ones;
+                if (def_result.ones > 0 && logger_) {
+                    logger_->on_rule_triggered("Shred", "bonus_wounds_from_1s", def_result.ones);
+                }
+            } else {
+                wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+            }
 
             // Log defense rolls for normal hits
             if (logger_) {
@@ -229,7 +285,16 @@ public:
             if (rending_hits > 0) {
                 u8 rending_ap = final_ap + 4;  // Rending adds +4 AP to (potentially reduced) base
                 if (logger_) dice_.enable_roll_recording(true);
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                if (has_shred) {
+                    auto def_result = dice_.roll_defense_test_with_ones(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                    wounds_from_rending = def_result.wounds;
+                    shred_bonus_wounds += def_result.ones;
+                    if (def_result.ones > 0 && logger_) {
+                        logger_->on_rule_triggered("Shred", "bonus_wounds_from_1s_rending", def_result.ones);
+                    }
+                } else {
+                    wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                }
 
                 if (logger_) {
                     std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
@@ -244,13 +309,41 @@ public:
             // Disable roll recording
             if (logger_) dice_.enable_roll_recording(false);
 
-            u32 total_wounds = wounds_from_normal + wounds_from_rending;
+            u32 total_wounds = wounds_from_normal + wounds_from_rending + shred_bonus_wounds;
+
+            // Rupture: wounds from 6s to hit deal +1 wound each (double the wounds)
+            // If weapon has Rending, the 6s went through rending path, so double wounds_from_rending
+            // If weapon has Rupture without Rending, we need to estimate rupture wounds from normal
+            u32 rupture_bonus_wounds = 0;
+            if (has_rupture) {
+                if (has_rending) {
+                    // With Rending, all 6s went to rending_hits, so double those wounds
+                    rupture_bonus_wounds = wounds_from_rending;
+                    if (logger_ && rupture_bonus_wounds > 0) {
+                        logger_->on_rule_triggered("Rupture", "bonus_wounds_from_6s", rupture_bonus_wounds);
+                    }
+                } else {
+                    // Without Rending, rupture_hits were part of normal_hits
+                    // We need to estimate based on the proportion of rupture_hits to normal_hits
+                    if (normal_hits > 0 && rupture_hits > 0) {
+                        // Calculate proportion of 6s in normal hits and apply to wounds
+                        // This is an approximation - rupture wounds = wounds * (rupture_hits / normal_hits)
+                        u32 estimated_rupture_wounds = (wounds_from_normal * rupture_hits + normal_hits - 1) / normal_hits;
+                        estimated_rupture_wounds = std::min(estimated_rupture_wounds, wounds_from_normal);
+                        rupture_bonus_wounds = estimated_rupture_wounds;
+                        if (logger_ && rupture_bonus_wounds > 0) {
+                            logger_->on_rule_triggered("Rupture", "bonus_wounds_from_6s", rupture_bonus_wounds);
+                        }
+                    }
+                }
+                total_wounds += rupture_bonus_wounds;
+            }
 
             // Deadly: handled separately in apply_wounds_deadly
             u8 deadly_value = w.get_rule_value(RuleId::Deadly);
 
-            // Determine if regeneration is bypassed (Bane, Rending, or Unstoppable)
-            bool bypass_regen = has_bane || has_rending || w.has_rule(RuleId::Unstoppable);
+            // Determine if regeneration is bypassed (Bane, Rending, Rupture, Shred, or Unstoppable)
+            bool bypass_regen = has_bane || has_rending || has_rupture || has_shred || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds to defender
             u8 weapon_models_killed = 0;
@@ -258,9 +351,10 @@ public:
                 WoundResult wound_result;
                 if (deadly_value > 1) {
                     // Deadly wounds don't carry over - apply per-wound with multiplier
+                    // Note: Takedown not compatible with Deadly (would be redundant)
                     wound_result = apply_wounds_deadly(defender, total_wounds, deadly_value, bypass_regen);
                 } else {
-                    wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                    wound_result = apply_wounds(defender, total_wounds, bypass_regen, takedown_target_idx);
                 }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
@@ -352,6 +446,16 @@ public:
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
             if (!w.is_melee()) continue;
+
+            // Limited: skip if already used this game
+            if (w.has_rule(RuleId::Limited)) {
+                if (attacker.is_limited_weapon_used(i)) {
+                    if (logger_) logger_->on_rule_triggered("Limited", "weapon_already_used", i);
+                    continue;
+                }
+                attacker.mark_limited_weapon_used(i);
+                if (logger_) logger_->on_rule_triggered("Limited", "using_one_time_weapon", i);
+            }
 
             // Calculate total attacks: min(weapon_count, alive_models) * attacks_per_model
             u8 models_with_weapon = std::min(w.count, models_attacking);
@@ -446,6 +550,11 @@ public:
             // Rending: 6s to hit get AP(+4)
             bool has_rending = w.has_rule(RuleId::Rending);
             u32 rending_hits = has_rending ? sixes : 0;
+
+            // Rupture: 6s to hit deal +1 wound per wound and bypass regen
+            bool has_rupture = w.has_rule(RuleId::Rupture);
+            u32 rupture_hits = has_rupture ? sixes : 0;
+
             u32 normal_hits = hits - rending_hits;
 
             // Furious: extra hits on 6s when charging (bonus hits don't get Rending)
@@ -502,13 +611,38 @@ public:
                 if (logger_ && ap > old_ap) logger_->on_rule_triggered("PiercingAssault", "minimum_ap_1", 1);
             }
 
+            // Takedown: treats target as single model (Blast capped at 1)
+            bool has_takedown = w.has_rule(RuleId::Takedown);
+            i8 takedown_target_idx = -1;  // -1 = normal allocation
+            if (has_takedown) {
+                // AI picks most valuable target (hero > wounded tough > first alive)
+                for (u8 m = 0; m < defender.model_count(); ++m) {
+                    if (defender.model_is_alive(m)) {
+                        const Model& model = defender.get_model(m);
+                        if (model.is_hero) {
+                            takedown_target_idx = m;
+                            break;  // Heroes are highest priority
+                        }
+                        if (takedown_target_idx < 0 || defender.model_wounds_taken(m) > 0) {
+                            takedown_target_idx = m;  // Wounded models or first alive
+                        }
+                    }
+                }
+                if (logger_ && takedown_target_idx >= 0) {
+                    logger_->on_rule_triggered("Takedown", "targeting_specific_model", takedown_target_idx);
+                }
+            }
+
             // Blast: multiply hits by X, where X is capped at target model count
+            // Takedown: Blast is capped at 1 (treating target as single model)
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
-                u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
+                u8 max_multiplier = has_takedown ? u8(1) : static_cast<u8>(defender.alive_count());
+                u8 multiplier = std::min(blast_value, max_multiplier);
                 u32 old_hits = hits;
                 hits *= multiplier;
                 rending_hits *= multiplier;
+                rupture_hits *= multiplier;
                 normal_hits = hits - rending_hits;
                 if (logger_) logger_->on_rule_triggered("Blast", "multiplied_hits", hits - old_hits);
             }
@@ -543,8 +677,22 @@ public:
             }
             u8 final_ap = (ap > protected_ap_reduction) ? (ap - protected_ap_reduction) : 0;
 
+            // Shred: track 1s on defense rolls for bonus wounds
+            bool has_shred = w.has_rule(RuleId::Shred);
+            u32 shred_bonus_wounds = 0;
+
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+            u32 wounds_from_normal = 0;
+            if (has_shred && normal_hits > 0) {
+                auto def_result = dice_.roll_defense_test_with_ones(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+                wounds_from_normal = def_result.wounds;
+                shred_bonus_wounds += def_result.ones;
+                if (def_result.ones > 0 && logger_) {
+                    logger_->on_rule_triggered("Shred", "bonus_wounds_from_1s", def_result.ones);
+                }
+            } else {
+                wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, final_ap, 0, reroll_def_sixes);
+            }
 
             // Log defense rolls for normal hits
             if (logger_) {
@@ -560,7 +708,16 @@ public:
             if (rending_hits > 0) {
                 u8 rending_ap = final_ap + 4;  // Rending adds +4 AP to (potentially reduced) base
                 if (logger_) dice_.enable_roll_recording(true);
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                if (has_shred) {
+                    auto def_result = dice_.roll_defense_test_with_ones(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                    wounds_from_rending = def_result.wounds;
+                    shred_bonus_wounds += def_result.ones;
+                    if (def_result.ones > 0 && logger_) {
+                        logger_->on_rule_triggered("Shred", "bonus_wounds_from_1s_rending", def_result.ones);
+                    }
+                } else {
+                    wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, reroll_def_sixes);
+                }
 
                 if (logger_) {
                     std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
@@ -575,25 +732,50 @@ public:
             // Disable roll recording
             if (logger_) dice_.enable_roll_recording(false);
 
-            u32 total_wounds = wounds_from_normal + wounds_from_rending;
+            u32 total_wounds = wounds_from_normal + wounds_from_rending + shred_bonus_wounds;
+
+            // Rupture: wounds from 6s to hit deal +1 wound each (double the wounds)
+            u32 rupture_bonus_wounds = 0;
+            if (has_rupture) {
+                if (has_rending) {
+                    // With Rending, all 6s went to rending_hits, so double those wounds
+                    rupture_bonus_wounds = wounds_from_rending;
+                    if (logger_ && rupture_bonus_wounds > 0) {
+                        logger_->on_rule_triggered("Rupture", "bonus_wounds_from_6s", rupture_bonus_wounds);
+                    }
+                } else {
+                    // Without Rending, rupture_hits were part of normal_hits
+                    if (normal_hits > 0 && rupture_hits > 0) {
+                        u32 estimated_rupture_wounds = (wounds_from_normal * rupture_hits + normal_hits - 1) / normal_hits;
+                        estimated_rupture_wounds = std::min(estimated_rupture_wounds, wounds_from_normal);
+                        rupture_bonus_wounds = estimated_rupture_wounds;
+                        if (logger_ && rupture_bonus_wounds > 0) {
+                            logger_->on_rule_triggered("Rupture", "bonus_wounds_from_6s", rupture_bonus_wounds);
+                        }
+                    }
+                }
+                total_wounds += rupture_bonus_wounds;
+            }
 
             // Deadly: handled separately in apply_wounds_deadly
             u8 deadly_value = w.get_rule_value(RuleId::Deadly);
 
-            // Determine if regeneration is bypassed (Bane, Bane in Melee, Rending, or Unstoppable)
-            bool bypass_regen = has_bane || has_bane_in_melee || has_rending || w.has_rule(RuleId::Unstoppable);
+            // Determine if regeneration is bypassed (Bane, Bane in Melee, Rending, Rupture, Shred, or Unstoppable)
+            bool bypass_regen = has_bane || has_bane_in_melee || has_rending || has_rupture || has_shred || w.has_rule(RuleId::Unstoppable);
 
             // Apply wounds
             u8 weapon_models_killed = 0;
             if (total_wounds > 0) {
                 WoundResult wound_result;
                 if (deadly_value > 1) {
+                    // Note: Takedown not compatible with Deadly (would be redundant)
                     wound_result = apply_wounds_deadly(defender, total_wounds, deadly_value, bypass_regen);
                 } else {
-                    wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                    wound_result = apply_wounds(defender, total_wounds, bypass_regen, takedown_target_idx);
                 }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
+                result.self_destruct_hits += wound_result.self_destruct_hits;
                 weapon_models_killed = wound_result.models_killed;
             }
 
@@ -613,15 +795,12 @@ public:
     struct WoundResult {
         u16 wounds_dealt = 0;
         u8 models_killed = 0;
+        u32 self_destruct_hits = 0;  // Hits to return from SelfDestruct models
     };
 
-    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false) {
+    // takedown_target: -1 = normal allocation, >= 0 = specific model index (Takedown rule)
+    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false, i8 takedown_target = -1) {
         WoundResult result;
-
-        // Get wound allocation order
-        std::array<u8, MAX_MODELS_PER_UNIT> order;
-        u8 order_count = 0;
-        unit.get_wound_allocation_order(order, order_count);
 
         // Regeneration check
         if (!bypass_regeneration && unit.has_rule(RuleId::Regeneration)) {
@@ -645,8 +824,37 @@ public:
 
         result.wounds_dealt = static_cast<u16>(wounds);
 
-        // Apply wounds in order
+        // Takedown: apply wounds to specific target first
         u32 remaining_wounds = wounds;
+        if (takedown_target >= 0 && unit.model_is_alive(static_cast<u8>(takedown_target))) {
+            u8 model_idx = static_cast<u8>(takedown_target);
+            u8 wounds_to_kill = unit.model_remaining_wounds(model_idx);
+            u8 wounds_applied = static_cast<u8>(std::min(remaining_wounds, static_cast<u32>(wounds_to_kill)));
+
+            for (u8 w = 0; w < wounds_applied && remaining_wounds > 0; ++w) {
+                if (unit.apply_wound_to_model(model_idx)) {
+                    result.models_killed++;
+                    // SelfDestruct: when model dies, queue hits for attacker
+                    if (unit.has_rule(RuleId::SelfDestruct)) {
+                        u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                        result.self_destruct_hits += destruct_value;
+                        if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                    }
+                    break;  // Model died
+                }
+                remaining_wounds--;
+            }
+            // Note: With Takedown, excess wounds don't carry over to other models
+            // But we still track them as dealt for stats purposes
+            return result;
+        }
+
+        // Get wound allocation order (normal allocation)
+        std::array<u8, MAX_MODELS_PER_UNIT> order;
+        u8 order_count = 0;
+        unit.get_wound_allocation_order(order, order_count);
+
+        // Apply wounds in order
         for (u8 i = 0; i < order_count && remaining_wounds > 0; ++i) {
             u8 model_idx = order[i];
             if (!unit.model_is_alive(model_idx)) continue;
@@ -657,6 +865,12 @@ public:
             for (u8 w = 0; w < wounds_applied; ++w) {
                 if (unit.apply_wound_to_model(model_idx)) {
                     result.models_killed++;
+                    // SelfDestruct: when model dies, queue hits for attacker
+                    if (unit.has_rule(RuleId::SelfDestruct)) {
+                        u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                        result.self_destruct_hits += destruct_value;
+                        if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                    }
                     break;  // Model died, move to next
                 }
             }
@@ -716,6 +930,12 @@ public:
             for (u8 d = 0; d < wounds_to_apply; ++d) {
                 if (unit.apply_wound_to_model(model_idx)) {
                     result.models_killed++;
+                    // SelfDestruct: when model dies, queue hits for attacker
+                    if (unit.has_rule(RuleId::SelfDestruct)) {
+                        u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                        result.self_destruct_hits += destruct_value;
+                        if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                    }
                     order_idx++;  // Move to next model for next wound
                     break;
                 }

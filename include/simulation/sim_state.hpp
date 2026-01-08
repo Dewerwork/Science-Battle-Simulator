@@ -30,11 +30,13 @@ struct UnitSimState {
     UnitStatus status = UnitStatus::Normal;
     u8 alive_count = 0;
     bool is_fatigued = false;
+    u32 limited_weapons_used = 0;  // Bitmask of Limited weapons already used this game
 
     void init_from(const Unit& unit) {
         alive_count = unit.model_count;
         status = UnitStatus::Normal;
         is_fatigued = false;
+        limited_weapons_used = 0;
         for (u8 i = 0; i < unit.model_count; ++i) {
             models[i].wounds_taken = 0;
             models[i].state = ModelState::Healthy;
@@ -45,9 +47,20 @@ struct UnitSimState {
         alive_count = model_count;
         status = UnitStatus::Normal;
         is_fatigued = false;
+        limited_weapons_used = 0;
         for (u8 i = 0; i < model_count; ++i) {
             models[i].reset();
         }
+    }
+
+    // Check if a Limited weapon has been used
+    bool is_limited_weapon_used(u8 weapon_idx) const {
+        return (limited_weapons_used & (1u << weapon_idx)) != 0;
+    }
+
+    // Mark a Limited weapon as used
+    void mark_limited_weapon_used(u8 weapon_idx) {
+        limited_weapons_used |= (1u << weapon_idx);
     }
 
     // Apply wound to a specific model, returns true if model died
@@ -116,6 +129,10 @@ struct UnitView {
     void rally() { state->rally(); }
     void rout() { state->rout(); }
     void reset_round_state() { state->reset_round_state(); }
+
+    // Limited weapon tracking
+    bool is_limited_weapon_used(u8 weapon_idx) const { return state->is_limited_weapon_used(weapon_idx); }
+    void mark_limited_weapon_used(u8 weapon_idx) { state->mark_limited_weapon_used(weapon_idx); }
 
     // Model access
     const Model& get_model(u8 idx) const { return unit->models[idx]; }
