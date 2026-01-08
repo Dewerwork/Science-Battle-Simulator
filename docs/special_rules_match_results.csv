@@ -1,470 +1,506 @@
-rule_name,has_match,first_match_line,context
-Advanced Sight (1),False,,
-Agile,False,,
-Ambush Aura,False,,
-Ambush Beacon,False,,
-Ambush Re-Deployment,False,,
-Ammo Boost (1),False,,
-Animate Spirit (1),False,,
-Armor Rune  (2),False,,
-Art of Pain (2),False,,
-Asphyxiating Fog (1),False,,
-Aura of Peace (1),False,,
-Aura of Pestilence (1),False,,
-Bad Omen (2),False,,
-Bad Shot,False,,
-Bane in Melee Aura,False,,
-Bane in Melee Buff,False,,
-Bane Mark,False,,
-Bane when Shooting Aura,False,,
-Banishing Sigil (2),False,,
-Bash,True,20,"Rapid Blessed Flamer (12"", A2, Blast(3), Reliable, Purge), Bash (A0), Light Flail (A1, Blast(3)),..."
-Battle Rune  (1),False,,
-Battleborn,False,,
-Beautiful Pain (1),False,,
-Bio-Displacer (3),False,,
-Bio-Horror (1),False,,
-Blades of Discord (1),False,,
-Blessed Ammo (2),False,,
-Blessed Virus (2),False,,
-Blessing of Souls (3),False,,
-Blissful Dance (2),False,,
-Blood Dome (3),False,,
-Blood Sight (1),False,,
-Blood Trauma (1),False,,
-Blood Wound (1),False,,
-Bloodborn,False,,
-Boom! (2),False,,
-Bounding,False,,
-Bounding Aura,False,,
-Brain Burst (3),False,,
-Brain Infestation (2),False,,
-Break,True,30155,"Boulderbreaker (A4, AP(2), Quake)"
-Breaking Rune  (1),False,,
-Breath Attack,False,,
-Breath of Change (2),False,,
-Brutal Fighter,False,,
-Brutal Massacre (2),False,,
-Burn the Heretic (1),False,,
-Burst of Rage (2),False,,
-Butcher,False,,
-Calculated Foresight (2),False,,
-Caster Group,True,38548,"Acolytes [3] Q4+ D4+ | 150pts | Caster Group, Highborn"
-Casting Buff,False,,
-Casting Debuff,False,,
-Celestial Roar (3),False,,
-Cerebral Trauma (1),False,,
-Change Boon (3),False,,
-Changebound,False,,
-Changebound Boost,False,,
-Changebound Boost Aura,False,,
-Clan Warrior,True,34132,"Artillery Titan [1] Q3+ D2+ | 820pts | Clan Warrior, Fear(3), Fearless, Tough(18)"
-Clan Warrior Boost Aura,False,,
-Cleaving Rune  (3),False,,
-Combat Ecstasy (1),False,,
-Coordinate,False,,
-Coordinated Aggression (3),False,,
-Corrode Weapons (3),False,,
-Counter-Attack,False,,
-Counter-Attack Aura,False,,
-Courage Aura,False,,
-Courage Buff,False,,
-Crack,True,38549,"2x Energy Swords (A4, AP(1), Rending), Energy Spear (A2, AP(4)), 3x 12"" Shard Pistols (A3, Crack)"
-Crackling Bolt (3),False,,
-Creator of Illusions (1),False,,
-Crossing Attack,False,,
-Crossing Barrage,False,,
-Crossing Strike,False,,
-Crush,False,,
-Crushing Force (3),False,,
-Cursed Stride (1),False,,
-Cyborg Assault (1),False,,
-Dangerous Terrain Debuff,False,,
-Dark Assault (2),False,,
-Dark Dome (3),False,,
-Dark Sight (1),False,,
-Dark Trauma (1),False,,
-Dark Wound (1),False,,
-Darkborn,False,,
-Deadly Surge (2),False,,
-Death Bolt (1),False,,
-Deathstrike,False,,
-Deceleration Rune  (3),False,,
-Decimate,True,22961,"Bash (A4, AP(1)), 2x 12"" Suit-Flamers (A2, Blast(3), Reliable), 2x 18"" Suit-Bursts (A2, Rending),..."
-Deep Hypnosis (2),False,,
-Deep Meditation (3),False,,
-Defense Debuff,False,,
-Defensive Growth Aura,False,,
-Delayed Action,False,,
-Demolish,False,,
-Destructive,False,,
-Destructive Frenzy,False,,
-Devastating Frenzy,False,,
-Devastating Strike (3),False,,
-Devout,True,1,"APC [1] Q4+ D2+ | 170pts | Devout, Impact(3), Tough(6)"
-Devout Boost,True,7120,"Support Sisters [3] Q4+ D4+ | 180pts | Devout, Devout Boost"
-Devout Boost Aura,False,,
-Difficult Terrain Debuff,False,,
-Disintegrate,False,,
-Doom Strike (2),False,,
-Dragon Breath (3),False,,
-Dread Strike (2),False,,
-Elder Protection (1),False,,
-Electric Tempest (1),False,,
-Elemental Seeker (1),False,,
-Enhance Serum (3),False,,
-Entrenched Buff,False,,
-Eternal Flame (2),False,,
-Eternal Guidance (3),False,,
-Evasive,True,25486,"Tide Titan [1] Q4+ D2+ | 490pts | Evasive, Fear(3), Targeting Visor, Tough(18)"
-Evasive Aura,False,,
-Expel Threat (3),False,,
-Extended Buff Range,False,,
-Fade in the Dark (3),False,,
-Fanatic,True,289,"Biker Fanatics [3] Q5+ D5+ | 220pts | Devout, Fearless, Piercing Assault, Tough(3)"
-Fast Aura,False,,
-Fatal Sorrow (3),False,,
-Fateful Guidance (2),False,,
-Fatigue Debuff,False,,
-Fearless Aura,False,,
-Feral Strike (3),False,,
-Ferocious,False,,
-Ferocious Boost,False,,
-Ferocious Boost Aura,False,,
-Fiery Protection (2),False,,
-Flame Bots (2),False,,
-Flame of Destruction (1),False,,
-Focused Defender (2),False,,
-Focused Shock (1),False,,
-Fortified,True,7141,"Support Walker [1] Q4+ D2+ | 420pts | Devout, Devout Boost, Fear(2), Fearless, Fortified, Regener..."
-Fortified Aura,False,,
-Fortified Growth,False,,
-Fracture,True,39947,"30"" Pintle-Machinegun (A2, AP(1)), 36"" Twin Light HE Autocannon (A4, AP(1), Fracture)"
-Fragment,True,33587,"2x CCWs (A4), 12"" Master Fragment Pistol (A2, Fragment)"
-Furious Aura,False,,
-Furious Mark,False,,
-Gauss Bots (3),False,,
-Godly Thunder (2),False,,
-Good Shot,True,23644,"Grunt Leader [1] Q5+ D4+ | 40pts | Good Shot, Targeting Visor, Tough(3)"
-Grounded Precision Aura,False,,
-Grounded Reinforcement Aura,False,,
-Grounded Stealth,False,,
-Guarded Buff,False,,
-Guardian,True,8116,"Anti-Grav Battle Tank [1] Q3+ D2+ | 540pts | Fearless, Guardian, Impact(6), Strider, Tough(12)"
-Guardian Boost,False,,
-Guardian Boost Aura,False,,
-Guardian Protection (3),False,,
-Guerrilla,False,,
-Guerrilla Boost Aura,False,,
-Harassing,False,,
-Harassing Boost Aura,False,,
-Havoc Boon (3),False,,
-Havoc Fog (3),False,,
-Havoc Terror (2),False,,
-Havoc Trauma (1),False,,
-Havocbound,False,,
-Havocbound Boost Aura,False,,
-Hazardous,False,,
-Head Bang (3),False,,
-Headtaker Strike (3),False,,
-Heavenly Lance (2),False,,
-Heavy Impact,False,,
-Hidden Spirits (2),False,,
-Highborn,True,38548,"Acolytes [3] Q4+ D4+ | 150pts | Caster Group, Highborn"
-Highborn Boost Aura,False,,
-Hit & Run,False,,
-Hit & Run Fighter,False,,
-Hit & Run Fighter Aura,False,,
-Hit & Run Shooter,False,,
-Hit & Run Shooter Aura,False,,
-Hive Bond,False,,
-Hive Bond Boost Aura,False,,
-Hive Shriek (3),False,,
-Hold the Line,True,39946,"Armored Truck [1] Q4+ D2+ | 205pts | Hold the Line, Impact(3), Strider, Tough(6)"
-Hold the Line Boost Aura,False,,
-Holistic Suffering (3),False,,
-Holy Rage (2),False,,
-Honor Code,False,,
-Ignores Cover Aura,False,,
-Ignores Cover when Shooting Aura,False,,
-Impale,False,,
-Increased Shooting Range,False,,
-Increased Shooting Range Aura,False,,
-Increased Shooting Range Buff,False,,
-Increased Shooting Range Mark,False,,
-Indirect Mark,False,,
-Indirect when Shooting Aura,False,,
-Infected,False,,
-Infected Boost Aura,False,,
-Infiltrate,False,,
-Infiltrate Aura,False,,
-Infuse Bloodthirst (2),False,,
-Inquisitorial Agent,False,,
-Insidious Protection (1),False,,
-Inspiring Bots (2),False,,
-Instinctive,False,,
-Jaguar Blaze (3),False,,
-Killing Blow (1),False,,
-Knight Dome (3),False,,
-Knight Sight (1),False,,
-Knight Trauma (1),False,,
-Knight Wound (1),False,,
-Knightborn,False,,
-Lacerate,True,25553,"3x 12"" Medusa's Gaze (A12, AP(3)), Barb Dagger (A1, Lacerate)"
-Light Fragments (2),False,,
-Lightning Fog (2),False,,
-Litanies of War (3),False,,
-Lust Boon (3),False,,
-Lustbound,False,,
-Lustbound Boost,False,,
-Lustbound Boost Aura,False,,
-Machine-Fog,False,,
-Machine-Fog Boost Aura,False,,
-Martial Prowess,True,25552,Court Henchmen [3] Q3+ D4+ | 245pts | Martial Prowess
-Melee Evasion,True,27571,True Witches [3] Q3+ D5+ | 95pts | Melee Evasion
-Melee Evasion Aura,False,,
-Melee Shrouding,False,,
-Melee Shrouding Aura,False,,
-Melee Slayer,True,26956,Nightmares [5] Q3+ D4+ | 155pts | Melee Slayer
-Melee Slayer Aura,False,,
-Mend,False,,
-Mending Bots (3),False,,
-Mind Breaker (1),False,,
-Mind Control,False,,
-Mind Corruption (1),False,,
-Mind Gash (3),False,,
-Mind Shaper (2),False,,
-Mind Vortex (2),False,,
-Mind Wound (1),False,,
-Mischievous,True,35716,"Artillery Gun [1] Q5+ D3+ | 105pts | Artillery, Mischievous, Tough(3)"
-Mischievous Boost Aura,False,,
-Mob Frenzy (2),False,,
-Mobile Artillery,True,45409,"Support Vehicle [1] Q4+ D2+ | 285pts | Hold the Line, Impact(3), Mobile Artillery, Tough(6)"
-Morale Debuff,False,,
-Mutating Inferno (2),False,,
-No Retreat,False,,
-No Retreat Aura,False,,
-No Retreat Buff,False,,
-Overpowering Lash (3),False,,
-Overwhelming Strike (1),False,,
-Path of War (2),False,,
-Piercing Assault,True,16,"Assault Walker [1] Q4+ D2+ | 290pts | Devout, Fear(2), Fearless, Piercing Assault, Regeneration, ..."
-Piercing Assault Aura,False,,
-Piercing Bots (1),False,,
-Piercing Fighter Aura,False,,
-Piercing Growth,False,,
-Piercing Hunter Aura,False,,
-Piercing Pulse (3),False,,
-Piercing Shooter Aura,False,,
-Piercing Shooting Debuff,False,,
-Piercing Shooting Mark,False,,
-Piercing Spotter,False,,
-Piercing Tag,False,,
-Piercing Target,False,,
-Piranha Curse (2),False,,
-Plague Boon (3),False,,
-Plague Malediction (2),False,,
-Plaguebound,False,,
-Plaguebound Boost,False,,
-Plaguebound Boost Aura,False,,
-Point-Blank Piercing Aura,False,,
-Point-Blank Surge,True,6886,"Pistoleer Sisters [5] Q4+ D4+ | 175pts | Devout, Point-Blank Surge"
-Pow! (3),False,,
-Power Beam (1),False,,
-Power Bolt (3),False,,
-Power Field (3),False,,
-Power Maw (1),False,,
-Power Surge (3),False,,
-Precise,False,,
-Precision Attacks Buff,False,,
-Precision Charge Aura,False,,
-Precision Debuff,False,,
-Precision Fighter Aura,False,,
-Precision Fighter Buff,False,,
-Precision Fighting Mark,False,,
-Precision Growth,False,,
-Precision Shooter Aura,False,,
-Precision Shooter Buff,False,,
-Precision Shooting Mark,False,,
-Precision Spotter,False,,
-Precision Tag,False,,
-Precision Target,False,,
-Predator Fighter,False,,
-Primal,False,,
-Primal Boost Buff,False,,
-Protected,False,,
-Protection Feat,False,,
-Protective Dome (3),False,,
-Psy-Adrenaline (1),False,,
-Psy-Destruction (2),False,,
-Psy-Hunter (1),False,,
-Psy-Injected Courage (1),False,,
-Psychic Blast (2),False,,
-Psychic Onslaught (2),False,,
-Psychic Stabilization (2),False,,
-Psychic Terror (3),False,,
-Psychic Vomit (2),False,,
-Puncture,True,34145,"5x Tasers (A5), 4x 18"" Laser Guns (A4, Puncture), 24"" Heavy Laser Gun (A1, Deadly(3), Puncture)"
-Purge,True,14,"5x Energy Swords (A10, AP(1), Rending), 6"" Blessed Flamer Pistol (A1, Blast(3), Purge, Reliable),..."
-Purge the Impure (3),False,,
-Quake,True,27833,"36"" Rail M-Cannon (A1, AP(2), Deadly(6), Quake)"
-Quake when Shooting,False,,
-Quick Readjustment,False,,
-Quick Shot Aura,False,,
-Quick Shot Mark,False,,
-Quill Blast (2),False,,
-Raiding Drugs (2),False,,
-Ranged Shrouding Aura,False,,
-Ranged Slayer Aura,False,,
-Rapid Advance Aura,False,,
-Rapid Advance Buff,False,,
-Rapid Ambush,False,,
-Rapid Blink,True,33586,"Fool Champion [1] Q5+ D5+ | 50pts | Evasive, Furious, Rapid Blink, Tough(3)"
-Rapid Blink Boost Aura,False,,
-Rapid Charge,False,,
-Rapid Charge Aura,False,,
-Rapid Mutation (3),False,,
-Rapid Putrefaction (1),False,,
-Rapid Rush Aura,False,,
-Ravage,False,,
-Re-Deployment,False,,
-Re-Position Artillery,False,,
-Reanimation Aura,False,,
-Reap,False,,
-Regeneration Aura,False,,
-Regeneration Buff,False,,
-Regenerative Strength,False,,
-Reinforced,False,,
-Reinforcement,False,,
-Relentless Aura,False,,
-Relentless Mark,False,,
-Rending in Melee Aura,False,,
-Rending in Melee Mark,False,,
-Rending when Shooting Aura,False,,
-Repel Ambushers,True,34156,"Commander Xao [1] Q3+ D4+ | 100pts | Clan Warrior, Repel Ambushers, Tough(3), Unique"
-Resistance,False,,
-Resistance Aura,False,,
-Retaliate,True,38545,"Waskatsin [1] Q4+ D3+ | 200pts | Dangerous Terrain Debu, Mischievous, Retaliate(1), Tough(6), Unique"
-Righteous Fury (2),False,,
-Righteous Wrath (1),False,,
-Rot Wave (3),False,,
-Ruinous Frenzy,False,,
-Rupture,False,,
-Scout Aura,False,,
-Scrapper,True,27014,"3x CCWs (A3), 2x 12"" Scrapper (A2, Blast(3), Reliable), 18"" Plas-Blaster (A2, AP(4))"
-Scrapper Boost Aura,False,,
-Scratch,False,,
-Scurry,False,,
-Scurry Boost Aura,False,,
-Searing Admonition (3),False,,
-Searing Burst (2),False,,
-Searing Shrapnel (2),False,,
-Self-Destruct,False,,
-Self-Repair,False,,
-Self-Repair Boost Buff,False,,
-Serpent Comet (1),False,,
-Shadow Dance (2),False,,
-Shatter,True,26960,"Void Bombs (A1, AP(3), Deadly(3), Strafing), 30"" Void Cannon (A1, AP(3), Deadly(3)), 36"" Shatter ..."
-Shattering Curse (3),False,,
-Shield Breaker (3),False,,
-Shielded,True,1858,"Celestial High Sister [1] Q3+ D4+ | 175pts | Devout, Shielded, Tough(3)"
-Shielded Aura,False,,
-Shifting Form (1),False,,
-Shock Speed (3),False,,
-Shred,True,296,"3x CCWs (A6), Energy Lance (A2, AP(1), Thrust), 9"" Shred Pistol (A2, Rending), 3x 12"" Heavy Pisto..."
-Shred in Melee Aura,False,,
-Shred Mark,False,,
-Shred when Shooting Aura,False,,
-Shroud Field (3),False,,
-Shrouding Incense (2),False,,
-Skewer,True,35723,"Crew (A3), 24"" Heavy Bolt-Smasher Cannon (A2, AP(4), Skewer)"
-Sky Blaze (1),False,,
-Slam,False,,
-Slash,False,,
-Slayer Mark,False,,
-Smash,True,35723,"Crew (A3), 24"" Heavy Bolt-Smasher Cannon (A2, AP(4), Skewer)"
-Smiting Rune  (2),False,,
-Snake Bite (1),False,,
-Soul Spear (1),False,,
-Spawn,False,,
-Speed Buff,False,,
-Speed Debuff,False,,
-Speed Feat Aura,False,,
-Spell Accumulator,False,,
-Spell Conduit,False,,
-Spirit Power (1),False,,
-Spirit Resolve (2),False,,
-Split,False,,
-Spread Plague (2),False,,
-Steadfast,False,,
-Steadfast Aura,False,,
-Steadfast Buff,False,,
-Stealth Aura,False,,
-Stealth Buff,False,,
-Storm of Change,False,,
-Storm of Lust,False,,
-Storm of Plague,False,,
-Storm of Power (3),False,,
-Storm of War,False,,
-Strafing,True,25214,"Pulse Bombs (A2, AP(1), Blast(3), Strafing), 30"" Missile Pod (A2, Decimate, Unstoppable), 30"" Ion..."
-Strider Aura,False,,
-Sturdy,True,27787,"APC [1] Q4+ D2+ | 215pts | Impact(3), Sturdy, Tough(6)"
-Sturdy Boost Aura,False,,
-Surge,True,6886,"Pistoleer Sisters [5] Q4+ D4+ | 175pts | Devout, Point-Blank Surge"
-Surprise Attack,False,,
-Surprise Piercing Shot,False,,
-Swift,False,,
-Swift Aura,False,,
-Swift Buff,False,,
-System Takeover (2),False,,
-Takedown Strike,False,,
-Targeting Visor,True,22957,"Battle Suit Elite [1] Q4+ D3+ | 150pts | Targeting Visor, Tough(6)"
-Targeting Visor Boost Aura,False,,
-Tear,True,8117,"30"" Twin Bolt Cannon (A6, AP(1)), 36"" Twin Accelerator (A6, Tear)"
-Tech-Sickness (2),False,,
-Teleport,False,,
-Teleport Aura,False,,
-Terrifying Fury (1),False,,
-Terror Seeker (3),False,,
-The Founder's Curse (1),False,,
-Thrash,False,,
-Thrust in Melee Aura,False,,
-Thunderous Mist (1),False,,
-Total Seizure (2),False,,
-Toxin Mist (1),False,,
-Triangulation Bots (1),False,,
-Unpredictable,True,37711,"Freaks [10] Q5+ D6+ | 140pts | Mischievous, Unpredictable Fighter"
-Unpredictable Fighter,True,37711,"Freaks [10] Q5+ D6+ | 140pts | Mischievous, Unpredictable Fighter"
-Unpredictable Fighter Aura,False,,
-Unpredictable Fighter Mark,False,,
-Unpredictable Shooter,False,,
-Unpredictable Shooter Aura,False,,
-Unstoppable in Melee Aura,False,,
-Unstoppable Shooting Mark,False,,
-Unstoppable when Shooting Aura,False,,
-Unwieldy Debuff,False,,
-Veil of Madness (3),False,,
-Vengeance,False,,
-Versatile Attack,True,15982,"Veteran Custodian Brothers [3] Q3+ D2+ | 345pts | Fearless, Guardian, Tough(3), Versatile Attack"
-Versatile Defense Aura,False,,
-Versatile Reach Aura,False,,
-Violent Onslaught (1),False,,
-Volatile Infection (3),False,,
-War Boon (3),False,,
-Warbound,False,,
-Warbound Boost,False,,
-Warbound Boost Aura,False,,
-Watch Dome (3),False,,
-Watch Sight (1),False,,
-Watch Trauma (1),False,,
-Watch Wound (1),False,,
-Watchborn,False,,
-Wave of Discord (2),False,,
-Weapon Booster (1),False,,
-Wolf Dome (3),False,,
-Wolf Sight (1),False,,
-Wolf Trauma (1),False,,
-Wolf Wound (1),False,,
-Wolfborn,False,,
-Wreck,False,,
-Zap! (1),False,,
+rule_name,has_match,first_match_line,context,Is a spell
+AP,TRUE,2,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Blast,TRUE,2,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Deadly,TRUE,2,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Lance,TRUE,879314,"5x shock lances (A1, AP(4))",n
+Poison,TRUE,773291,"3x toxin claws (A1, Bane), 3x 12"" poison spurts (A1, Bane, Blast(3))",n
+Precise,TRUE,248222,"ccw (A2), 24"" master precision rifle (A2, Precise)",n
+Reliable,TRUE,2,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Rending,TRUE,2,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Bane,TRUE,2,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Impact,TRUE,218017,"Plague APC [FID:06997C8C] [BKT:F19E5325] [1] Q3+ D2+ | 280pts | Dangerous Terrain Debuff, Fast, I...",n
+Indirect,TRUE,246857,"24"" demolition cannon (A1, AP(4), Blast(6), Indirect), 30"" twin entropy gun (A2, AP(2), Deadly(3))",n
+Sniper,TRUE,232157,"ccw (A2), 30"" champion sniper rifle (A2, AP(1), Reliable, Takedown)",n
+Lock-On,FALSE,,,0
+Purge,TRUE,1081700,"5x energy swords (A2, AP(1), Rending), 4x 12"" heavy pistols (A1, AP(1)), 6"" blessed flamer pistol...",n
+Limited,TRUE,209714,"ccw (A2), dual energy claws (A4, Rending), 12"" flamer-mod (A1, Blast(3), Limited, Reliable)",n
+Regeneration,TRUE,232105,"Plague Crab Walker [FID:06997C8C] [BKT:61E41B52] [1] Q3+ D2+ | 695pts | Fear(3), Plaguebound, Reg...",n
+Tough,TRUE,209665,"Chosen Plague Champion [FID:06997C8C] [BKT:80E0959A] [1] Q3+ D3+ | 110pts | Ambush, Flying, Hero,...",n
+Protected,TRUE,245416,"Plague Drone [FID:06997C8C] [BKT:3211E278] [1] Q3+ D2+ | 220pts | Fast, Impact(3), Plaguebound, P...",n
+Stealth,TRUE,248164,"Knight Elimination Brothers [FID:126FC147] [BKT:40835B8B] [3] Q4+ D4+ | 260pts | Fearless, Knight...",n
+Shield Wall,FALSE,,,0
+Shielded,TRUE,250372,"Knight Grave Destroyers [FID:126FC147] [BKT:8E0C5CBD] [3] Q3+ D3+ | 400pts | Ambush, Courage Aura...",n
+Resistance,TRUE,210358,"Chosen Plague Champion [FID:06997C8C] [BKT:2587A984] [1] Q3+ D3+ | 120pts | Ambush, Flying, Hero,...",n
+Fearless,TRUE,247048,"Plague Zombies [FID:06997C8C] [BKT:8D348F77] [10] Q5+ D6+ | 95pts | Fearless, Plaguebound, Slow",n
+Morale Boost,FALSE,,,0
+No Retreat,TRUE,395827,"Annihilator Lord [FID:12CCD353] [BKT:27212100] [1] Q3+ D3+ | 215pts | Ambush, Hero, No Retreat Au...",n
+Battleborn,TRUE,7260499,"APC [FID:CFC18F10] [BKT:09C78E40] [1] Q3+ D2+ | 295pts | Battleborn, Fast, Fearless, Impact(3), S...",n
+Fear,TRUE,232105,"Plague Crab Walker [FID:06997C8C] [BKT:61E41B52] [1] Q3+ D2+ | 695pts | Fear(3), Plaguebound, Reg...",n
+Furious,TRUE,211744,"Chosen Plague Champion [FID:06997C8C] [BKT:87539E0F] [1] Q3+ D3+ | 110pts | Ambush, Flying, Furio...",n
+Relentless,TRUE,232348,"Plague Cultist Champion [FID:06997C8C] [BKT:F3C3B2C3] [1] Q5+ D5+ | 65pts | Hero, Plaguebound, Re...",n
+Surge,TRUE,401303,"24"" atom-scourge (A9, AP(4)), 24"" flux sphere array (A9, AP(1), Surge)",n
+Thrust,TRUE,783188,"razor-flail crew (A2, Surge, Thrust), toxin claws (A2, Bane)",n
+Predator Fighter,TRUE,409165,"Druzhak [FID:26070237] [BKT:26AFDFFB] [1] Q4+ D4+ | 115pts | Hero, Hive Bond, Predator Fighter, T...",n
+Good Shot,TRUE,783286,"Artillery Gun [FID:30692FBB] [BKT:0FD677DC] [1] Q5+ D3+ | 205pts | Artillery, Good Shot, Mischiev...",n
+Bad Shot,TRUE,6689866,"Hover Bikers [FID:968D6C84] [BKT:63C25964] [3] Q4+ D5+ | 260pts | Bad Shot, Crossing Barrage(1), ...",n
+Versatile Attack,TRUE,1,"Chosen Plague Brothers [FID:06997C8C] [BKT:A6002835] [3] Q3+ D3+ | 300pts | Plaguebound, Versatil...",n
+Point-Blank Surge,TRUE,1139392,"Pistoleer Sisters [FID:4AF9C84B] [BKT:6AB37F57] [5] Q4+ D4+ | 175pts | Ambush, Devout, Flying, Po...",n
+Piercing Assault,TRUE,395830,"Annihilator Lord [FID:12CCD353] [BKT:10B9B96F] [1] Q3+ D3+ | 230pts | Ambush, Hero, Piercing Assa...",n
+Rupture,TRUE,405488,"piercing claws (A1, AP(2), Deadly(3)), serrated claws (A3, AP(4)), slashing claws (A3, AP(1), Ren...",n
+Shred,TRUE,80,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Smash,TRUE,404624,"piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), smashing claws (A1, Blast(3))",n
+Hero,TRUE,209665,"Chosen Plague Champion [FID:06997C8C] [BKT:80E0959A] [1] Q3+ D3+ | 110pts | Ambush, Flying, Hero,...",n
+Takedown,TRUE,232157,"ccw (A2), 30"" champion sniper rifle (A2, AP(1), Reliable, Takedown)",n
+Counter,TRUE,774145,"Ascended Harbinger of Lust [FID:2FD07986] [BKT:D8D8B0A5] [1] Q3+ D2+ | 385pts | Ambush, Counter-A...",n
+Hit & Run,TRUE,774229,"Ascended Harbinger of Lust [FID:2FD07986] [BKT:B7E3C7F2] [1] Q3+ D2+ | 375pts | Ambush, Fear(2), ...",n
+Self-Destruct,TRUE,767824,"Massive Spores [FID:26070237] [BKT:50BB11AF] [3] Q6+ D6+ | 145pts | No Retreat, Self-Destruct(6),...",n
+Scout,TRUE,209665,"Chosen Plague Champion [FID:06997C8C] [BKT:80E0959A] [1] Q3+ D3+ | 110pts | Ambush, Flying, Hero,...",n
+Ambush,TRUE,209665,"Chosen Plague Champion [FID:06997C8C] [BKT:80E0959A] [1] Q3+ D3+ | 110pts | Ambush, Flying, Hero,...",n
+Fast,TRUE,217981,Greater Plague Mutated [FID:06997C8C] [BKT:3A623FFC] [3] Q3+ D4+ | 265pts | Dangerous Terrain Deb...,n
+Slow,TRUE,247048,"Plague Zombies [FID:06997C8C] [BKT:8D348F77] [10] Q5+ D6+ | 95pts | Fearless, Plaguebound, Slow",n
+Agile,TRUE,404617,"Assault Grunts [FID:26070237] [BKT:2D5110F2] [10] Q5+ D5+ | 175pts | Agile, Fast, Hive Bond, Strider",n
+Flying,TRUE,209665,"Chosen Plague Champion [FID:06997C8C] [BKT:80E0959A] [1] Q3+ D3+ | 110pts | Ambush, Flying, Hero,...",n
+Strider,TRUE,218017,"Plague APC [FID:06997C8C] [BKT:F19E5325] [1] Q3+ D2+ | 280pts | Dangerous Terrain Debuff, Fast, I...",n
+Rapid Charge,TRUE,409201,"Grunt Veteran [FID:26070237] [BKT:AB5EEE76] [1] Q5+ D5+ | 50pts | Agile, Ambush, Flying, Hero, Hi...",n
+Melee Evasion,TRUE,783436,"Boss Champ [FID:30692FBB] [BKT:F11C4CA0] [1] Q4+ D5+ | 65pts | Ambush, Flying, Hero, Melee Evasio...",n
+Melee Shrouding,TRUE,285964,"Knight Prime Master [FID:126FC147] [BKT:4C760D87] [1] Q3+ D3+ | 195pts | Fearless, Hero, Knightbo...",n
+Ranged Shrouding,TRUE,3223978,"Jetpack Brothers [FID:5CAEEE40] [BKT:0CE1F0B8] [3] Q3+ D2+ | 445pts | Ambush, Fearless, Flying, G...",n
+Unstoppable,TRUE,50,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Casting,TRUE,401422,"Great Monolith [FID:12CCD353] [BKT:073879D9] [1] Q3+ D2+ | 785pts | Caster(3), Casting Buff, Fear...",n
+Devout,TRUE,1081687,"APC [FID:4AF9C84B] [BKT:CA69ED59] [1] Q4+ D2+ | 230pts | Casting Debuff, Devout, Fast, Impact(3),...",n
+Advanced Sight,FALSE,,,y
+Ambush Aura,TRUE,401539,"Robot Lord [FID:12CCD353] [BKT:1168FEF3] [1] Q3+ D3+ | 85pts | Ambush, Ambush Aura, Flying, Hero,...",n
+Ambush Beacon,TRUE,879259,"Ankylosaurus [FID:40F5F8EB] [BKT:592B2190] [1] Q4+ D2+ | 625pts | Ambush Beacon, Bane Mark, Fear(...",n
+Ambush Re-Deployment,TRUE,6101779,"Jesters [FID:798E6E5D] [BKT:9832A0F8] [5] Q3+ D5+ | 300pts | Ambush Re-Deployment, Evasive, Furio...",n
+Ammo Boost,FALSE,,,y
+Animate Spirit,FALSE,,,y
+Armor Rune,FALSE,,,y
+Art of Pain,FALSE,,,y
+Asphyxiating Fog,FALSE,,,y
+Aura of Peace,FALSE,,,y
+Aura of Pestilence,FALSE,,,y
+Bad Omen,FALSE,,,y
+Bane Mark,TRUE,879259,"Ankylosaurus [FID:40F5F8EB] [BKT:592B2190] [1] Q4+ D2+ | 625pts | Ambush Beacon, Bane Mark, Fear(...",n
+Bane in Melee Aura,TRUE,248188,"Knight Elite Raider [FID:126FC147] [BKT:350F429D] [1] Q4+ D4+ | 95pts | Ambush, Bane in Melee Aur...",n
+Bane in Melee Buff,TRUE,3288898,"Company Leader [FID:5D3C5446] [BKT:C64EFDB4] [1] Q4+ D5+ | 95pts | Bane in Melee Buff, Fast, Hero...",n
+Bane when Shooting Aura,TRUE,248308,"Knight Elite Raider [FID:126FC147] [BKT:F54CE7CA] [1] Q4+ D4+ | 105pts | Ambush, Bane when Shooti...",n
+Banishing Sigil,FALSE,,,y
+Bash,TRUE,288908,"3x bashes (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), 12"" heavy pistols (A1, ...",n
+Battle Rune,FALSE,,,y
+Beautiful Pain,FALSE,,,y
+Bio-Displacer,FALSE,,,y
+Bio-Horror,FALSE,,,y
+Blades of Discord,FALSE,,,y
+Blessed Ammo,FALSE,,,y
+Blessed Virus,FALSE,,,y
+Blessing of Souls,FALSE,,,y
+Blissful Dance,FALSE,,,y
+Blood Dome,FALSE,,,y
+Blood Sight,FALSE,,,y
+Blood Trauma,FALSE,,,y
+Blood Wound,FALSE,,,y
+Bloodborn,TRUE,2996893,"Blood Aggro Brothers [FID:52F64AE5] [BKT:64F0A522] [3] Q3+ D3+ | 490pts | Bloodborn, Fearless, Re...",n
+Boom!,FALSE,,,y
+Bounding,TRUE,210367,"Chosen Plague Champion [FID:06997C8C] [BKT:B0202465] [1] Q3+ D3+ | 140pts | Ambush, Bounding Aura...",n
+Bounding Aura,TRUE,210367,"Chosen Plague Champion [FID:06997C8C] [BKT:B0202465] [1] Q3+ D3+ | 140pts | Ambush, Bounding Aura...",n
+Brain Burst,FALSE,,,y
+Brain Infestation,FALSE,,,y
+Break,TRUE,867899,"great blood sword (A6, Break), great flame axe (A6, AP(1), Rending), stomp (A4, AP(1))",n
+Breaking Rune,FALSE,,,y
+Breath Attack,TRUE,404797,"Carnivo-Rex [FID:26070237] [BKT:C13F77EB] [1] Q4+ D2+ | 460pts | Breath Attack, Fear(2), Fearless...",n
+Breath of Change,FALSE,,,y
+Brutal Fighter,TRUE,7654171,"Warfare Ministry Assassin [FID:F942A026] [BKT:B6E09808] [1] Q2+ D2+ | 235pts | Brutal Fighter, Ev...",n
+Brutal Massacre,FALSE,,,y
+Burn the Heretic,FALSE,,,y
+Burst of Rage,FALSE,,,y
+Butcher,TRUE,6673283,"great infected sword (A6, Butcher), great plague gauntlet (A6, AP(3), Bane), stomp (A4, AP(1))",n
+Calculated Foresight,FALSE,,,y
+Caster Group,TRUE,773218,"Synapse Beasts [FID:26070237] [BKT:9D4DA50A] [3] Q4+ D4+ | 200pts | Caster Group, Hive Bond, Resi...",n
+Casting Buff,TRUE,401422,"Great Monolith [FID:12CCD353] [BKT:073879D9] [1] Q3+ D2+ | 785pts | Caster(3), Casting Buff, Fear...",n
+Casting Debuff,TRUE,858127,"Ascended Harbinger of Change [FID:36064B09] [BKT:96E6EC76] [1] Q3+ D2+ | 410pts | Ambush, Casting...",n
+Celestial Roar,FALSE,,,y
+Cerebral Trauma,FALSE,,,y
+Change Boon,FALSE,,,y
+Changebound,TRUE,858127,"Ascended Harbinger of Change [FID:36064B09] [BKT:96E6EC76] [1] Q3+ D2+ | 410pts | Ambush, Casting...",n
+Changebound Boost,TRUE,858463,"Ascended Harbinger of Change [FID:36064B09] [BKT:86A1D6E4] [1] Q3+ D2+ | 425pts | Ambush, Changeb...",n
+Changebound Boost Aura,TRUE,860095,"Champion of Change [FID:36064B09] [BKT:F5C21D7E] [1] Q4+ D4+ | 170pts | Ambush Aura, Changebound,...",n
+Clan Warrior,TRUE,1145884,"Artillery Titan [FID:4E816365] [BKT:6A6829D2] [1] Q3+ D2+ | 915pts | Clan Warrior, Fear(3), Fearl...",n
+Clan Warrior Boost Aura,TRUE,1147936,"Dynasty Leader [FID:4E816365] [BKT:79516334] [1] Q3+ D4+ | 145pts | Ambush, Clan Warrior, Clan Wa...",n
+Cleaving Rune,FALSE,,,y
+Combat Ecstasy,FALSE,,,y
+Coordinate,TRUE,3292858,"Company Leader [FID:5D3C5446] [BKT:13A4408E] [1] Q4+ D5+ | 120pts | Coordinate, Fast, Hero, Hold ...",n
+Coordinated Aggression,FALSE,,,y
+Corrode Weapons,FALSE,,,y
+Counter-Attack,TRUE,774145,"Ascended Harbinger of Lust [FID:2FD07986] [BKT:D8D8B0A5] [1] Q3+ D2+ | 385pts | Ambush, Counter-A...",n
+Counter-Attack Aura,TRUE,778423,"Harbinger of Lust [FID:2FD07986] [BKT:2D52CD90] [1] Q3+ D3+ | 220pts | Ambush Aura, Counter-Attac...",n
+Courage Aura,TRUE,247111,"Knight Assault Prime Brothers [FID:126FC147] [BKT:58313F64] [5] Q3+ D3+ | 320pts | Ambush, Courag...",n
+Courage Buff,TRUE,1139632,"Procession Altar [FID:4AF9C84B] [BKT:E7226629] [1] Q4+ D2+ | 395pts | Casting Debuff, Courage Buf...",n
+Crack,TRUE,288884,"turret crew (A3), 24"" twin crack cannon (A6, AP(1), Indirect, Rending)",n
+Crackling Bolt,FALSE,,,y
+Creator of Illusions,FALSE,,,y
+Crossing Attack,TRUE,7065175,"Elven Noble [FID:BE80C62F] [BKT:F5861AF0] [1] Q3+ D4+ | 95pts | Ambush, Crossing Attack(1), Flyin...",n
+Crossing Barrage,TRUE,6689866,"Hover Bikers [FID:968D6C84] [BKT:63C25964] [3] Q4+ D5+ | 260pts | Bad Shot, Crossing Barrage(1), ...",n
+Crossing Strike,TRUE,886624,"Pterodactyl Riders [FID:40F5F8EB] [BKT:D8DF71DD] [3] Q5+ D5+ | 190pts | Ambush, Crossing Strike(1...",n
+Crush,TRUE,401423,"crushing legs (A6, AP(2)), stomp (A6, AP(2)), 18"" monolith beam (A3, AP(3), Deadly(6))",n
+Crushing Force,FALSE,,,y
+Cursed Stride,FALSE,,,y
+Cyborg Assault,FALSE,,,y
+Dangerous Terrain Debuff,TRUE,217981,Greater Plague Mutated [FID:06997C8C] [BKT:3A623FFC] [3] Q3+ D4+ | 265pts | Dangerous Terrain Deb...,n
+Dark Assault,TRUE,5693479,"Dark Assault Brothers [FID:640B87B9] [BKT:8B238AC0] [5] Q3+ D3+ | 350pts | Ambush, Courage Aura, ...",y
+Dark Dome,FALSE,,,y
+Dark Sight,FALSE,,,y
+Dark Trauma,FALSE,,,y
+Dark Wound,FALSE,,,y
+Darkborn,TRUE,5693455,"Dark APC [FID:640B87B9] [BKT:02C58A61] [1] Q3+ D2+ | 300pts | Darkborn, Fast, Fearless, Impact(3)...",n
+Deadly Surge,FALSE,,,y
+Death Bolt,FALSE,,,y
+Deathstrike,TRUE,7438180,"Boomers [FID:E1E77FAF] [BKT:69558941] [3] Q4+ D4+ | 200pts | Deathstrike(3), Infected, Precision ...",n
+Deceleration Rune,FALSE,,,y
+Decimate,TRUE,888941,"bash (A4, AP(1)), 2x 12"" suit-flamers (A1, Blast(3), Reliable), 18"" burst (A2, Rending), 2x 18"" r...",n
+Deep Hypnosis,FALSE,,,y
+Deep Meditation,FALSE,,,y
+Defense Debuff,TRUE,6087457,"Artillery Gun [FID:701035C7] [BKT:33EBF4E3] [1] Q4+ D3+ | 165pts | Artillery, Defense Debuff, Tou...",n
+Defensive Growth Aura,TRUE,7645693,"Possessed Henchmen [FID:F942A026] [BKT:89710ED2] [3] Q3+ D5+ | 165pts | Defensive Growth Aura, In...",n
+Delayed Action,TRUE,2865760,"Duke Titan [FID:4F34EDC3] [BKT:C745F715] [1] Q3+ D2+ | 1470pts | Caster(3), Changebound, Delayed ...",n
+Demolish,TRUE,247499,"stomp (A5, AP(2)), 12"" chest-fuser (A1, AP(4), Deadly(3)), 12"" heavy flamer (A1, AP(1), Blast(3),...",n
+Destructive,TRUE,395963,"ccws (A2), combat staff (A3, AP(1)), doom scythe (A1, AP(2), Deadly(3)), hyper sword (A3, AP(1), ...",n
+Destructive Frenzy,TRUE,870418,"Beast Riders [FID:373C5DC1] [BKT:B4F45B23] [3] Q4+ D3+ | 225pts | Banner, Destructive Frenzy, Fas...",n
+Devastating Frenzy,TRUE,7208908,"Berserker Veteran [FID:CD802E72] [BKT:8D2AD220] [1] Q4+ D5+ | 105pts | Devastating Frenzy, Fearle...",n
+Devastating Strike,FALSE,,,y
+Devout Boost,TRUE,1084936,"Celestial High Sister [FID:4AF9C84B] [BKT:FC434739] [1] Q3+ D4+ | 110pts | Ambush, Devout, Devout...",n
+Devout Boost Aura,TRUE,1084936,"Celestial High Sister [FID:4AF9C84B] [BKT:FC434739] [1] Q3+ D4+ | 110pts | Ambush, Devout, Devout...",n
+Difficult Terrain Debuff,TRUE,6673282,"Ascended Harbinger of Plague [FID:942ACDB6] [BKT:5795B282] [1] Q3+ D2+ | 405pts | Ambush, Difficu...",n
+Disintegrate,TRUE,879263,"mace tail (A4, AP(2)), stomp (A4, AP(1)), 24"" twin beam cannon (A2, AP(2), Deadly(6), Disintegrate)",n
+Doom Strike,FALSE,,,y
+Dragon Breath,FALSE,,,y
+Dread Strike,FALSE,,,y
+Elder Protection,FALSE,,,y
+Electric Tempest,FALSE,,,y
+Elemental Seeker,FALSE,,,y
+Enhance Serum,FALSE,,,y
+Entrenched Buff,TRUE,3294298,"Company Leader [FID:5D3C5446] [BKT:009A90BA] [1] Q4+ D5+ | 90pts | Entrenched Buff, Fast, Hero, H...",n
+Eternal Flame,FALSE,,,y
+Eternal Guidance,FALSE,,,y
+Evasive,TRUE,879283,"Chameleons [FID:40F5F8EB] [BKT:88389E1D] [5] Q5+ D5+ | 190pts | Ambush Beacon, Bane Mark, Evasive...",n
+Evasive Aura,TRUE,6096745,"Infiltrators [FID:701035C7] [BKT:046A40BF] [5] Q4+ D5+ | 205pts | Defense Debuff, Evasive Aura, S...",n
+Expel Threat,FALSE,,,y
+Extended Buff Range,TRUE,3287848,"Attack Vehicle [FID:5D3C5446] [BKT:18817DCD] [1] Q4+ D2+ | 275pts | Extended Buff Range, Fast, Ho...",n
+Fade in the Dark,FALSE,,,y
+Fanatic,TRUE,1082341,"Biker Fanatics [FID:4AF9C84B] [BKT:940EA78D] [3] Q5+ D5+ | 220pts | Devout, Fast, Fearless, Pierc...",n
+Fast Aura,TRUE,1123771,"Fanatic Superior [FID:4AF9C84B] [BKT:5D6BFE39] [1] Q5+ D5+ | 70pts | Devout, Fast Aura, Fearless,...",n
+Fatal Sorrow,FALSE,,,y
+Fateful Guidance,FALSE,,,y
+Fatigue Debuff,TRUE,867898,"Ascended Harbinger of War [FID:373C5DC1] [BKT:DE0A3E66] [1] Q3+ D2+ | 395pts | Ambush, Fatigue De...",n
+Fearless Aura,TRUE,860203,"Champion of Change [FID:36064B09] [BKT:BAF788A0] [1] Q4+ D4+ | 165pts | Ambush Aura, Changebound,...",n
+Feral Strike,FALSE,,,y
+Ferocious,TRUE,6682654,"Assault Buggy [FID:968D6C84] [BKT:9577F41E] [1] Q4+ D2+ | 270pts | Fast, Ferocious, Impact(3), Sp...",n
+Ferocious Boost,TRUE,6689353,"Berserker Leader [FID:968D6C84] [BKT:E8469846] [1] Q4+ D6+ | 165pts | Ferocious, Ferocious Boost ...",n
+Ferocious Boost Aura,TRUE,6689353,"Berserker Leader [FID:968D6C84] [BKT:E8469846] [1] Q4+ D6+ | 165pts | Ferocious, Ferocious Boost ...",n
+Fiery Protection,FALSE,,,y
+Flame Bots,FALSE,,,y
+Flame of Destruction,FALSE,,,y
+Focused Defender,FALSE,,,y
+Focused Shock,FALSE,,,y
+Fortified,TRUE,879259,"Ankylosaurus [FID:40F5F8EB] [BKT:592B2190] [1] Q4+ D2+ | 625pts | Ambush Beacon, Bane Mark, Fear(...",n
+Fortified Aura,TRUE,1084945,"Celestial High Sister [FID:4AF9C84B] [BKT:3C6DCC73] [1] Q3+ D4+ | 175pts | Ambush, Devout, Flying...",n
+Fortified Growth,TRUE,6674962,"Champion of Plague [FID:942ACDB6] [BKT:474779AE] [1] Q4+ D4+ | 165pts | Ambush Aura, Fortified Gr...",n
+Fracture,TRUE,773240,"stomp (A5, AP(2)), 18"" acid spike launcher (A2, AP(2), Deadly(3), Unstoppable), 30"" fracture cann...",n
+Fragment,TRUE,6101714,"2x ccws (A2), 12"" master fragment pistol (A2, Fragment)",n
+Furious Aura,TRUE,211744,"Chosen Plague Champion [FID:06997C8C] [BKT:87539E0F] [1] Q3+ D3+ | 110pts | Ambush, Flying, Furio...",n
+Furious Mark,TRUE,7083841,"Chelonians [FID:C8D650B3] [BKT:405536AA] [3] Q3+ D3+ | 240pts | Furious Mark, Guerrilla, Slow, To...",n
+Gauss Bots,FALSE,,,y
+Godly Thunder,FALSE,,,y
+Grounded Precision Aura,TRUE,6112117,"Acolytes [FID:79EA7B6E] [BKT:B9EC8151] [5] Q4+ D5+ | 150pts | Fanatic, Grounded Precision Aura, S...",n
+Grounded Reinforcement Aura,TRUE,6118546,"Supreme Leader [FID:79EA7B6E] [BKT:AC8738B1] [1] Q3+ D4+ | 115pts | Ambush, Bounding, Fanatic, Fa...",n
+Grounded Stealth,TRUE,7437700,"Sect Infiltrators [FID:DF541FF9] [BKT:7B2A9242] [5] Q3+ D4+ | 530pts | Grounded Stealth, Machine-...",n
+Guarded Buff,TRUE,1139632,"Procession Altar [FID:4AF9C84B] [BKT:E7226629] [1] Q4+ D2+ | 395pts | Casting Debuff, Courage Buf...",n
+Guardian,TRUE,401446,"Guardians [FID:12CCD353] [BKT:F1D1D86E] [5] Q3+ D3+ | 310pts | Ambush, Flying, Self-Repair, Slow,...",n
+Guardian Boost,TRUE,3236398,"Master Custodian [FID:5CAEEE40] [BKT:BA24420E] [1] Q3+ D2+ | 360pts | Fearless, Guardian, Guardia...",n
+Guardian Boost Aura,TRUE,3236398,"Master Custodian [FID:5CAEEE40] [BKT:BA24420E] [1] Q3+ D2+ | 360pts | Fearless, Guardian, Guardia...",n
+Guardian Protection,FALSE,,,y
+Guerrilla,TRUE,7083337,"Assault Vehicle [FID:C8D650B3] [BKT:46BF6BFD] [1] Q4+ D2+ | 190pts | Courage Buff, Fast, Fortifie...",n
+Guerrilla Boost Aura,TRUE,7116175,"Rebel Leader [FID:C8D650B3] [BKT:69263C3A] [1] Q4+ D5+ | 115pts | Ambush, Counter-Attack, Guerril...",n
+Harassing,TRUE,819511,"Blood Hounds [FID:3418A122] [BKT:3CD8EAFF] [5] Q4+ D5+ | 140pts | Fast, Harassing, Scout",n
+Harassing Boost Aura,TRUE,821338,"Dark Lord [FID:3418A122] [BKT:686789B2] [1] Q3+ D4+ | 155pts | Harassing, Harassing Boost Aura, H...",n
+Havoc Boon,FALSE,,,y
+Havoc Fog,FALSE,,,y
+Havoc Terror,FALSE,,,y
+Havoc Trauma,FALSE,,,y
+Havocbound,TRUE,2951680,"Chosen Havoc Brothers [FID:4FD97B97] [BKT:F21D6410] [3] Q3+ D3+ | 310pts | Havocbound, Versatile ...",n
+Havocbound Boost Aura,TRUE,2983630,"Chosen Havoc Champion [FID:4FD97B97] [BKT:FD50D405] [1] Q3+ D3+ | 155pts | Ambush, Flying, Havocb...",n
+Hazardous,TRUE,6087458,"crew (A3), 30"" heavy plas-burst cannon (A2, Blast(3), Hazardous)",n
+Head Bang,FALSE,,,y
+Headtaker Strike,FALSE,,,y
+Heavenly Lance,FALSE,,,y
+Heavy Impact,TRUE,880330,"Gecko Champion [FID:40F5F8EB] [BKT:B59D1EB2] [1] Q5+ D5+ | 150pts | Ambush, Fast, Flying, Heavy I...",n
+Hidden Spirits,FALSE,,,y
+Highborn,TRUE,7051429,"Acolytes [FID:BE80C62F] [BKT:A8FD7304] [3] Q4+ D4+ | 450pts | Caster Group, Highborn",n
+Highborn Boost Aura,TRUE,7079935,"Elven Noble [FID:BE80C62F] [BKT:CC4A481C] [1] Q3+ D4+ | 125pts | Hero, Highborn, Highborn Boost A...",n
+Hit & Run Fighter,TRUE,774229,"Ascended Harbinger of Lust [FID:2FD07986] [BKT:B7E3C7F2] [1] Q3+ D2+ | 375pts | Ambush, Fear(2), ...",n
+Hit & Run Fighter Aura,TRUE,776077,"Champion of Lust [FID:2FD07986] [BKT:F03BA6D0] [1] Q4+ D4+ | 215pts | Ambush Aura, Armor(3), Fast...",n
+Hit & Run Shooter,TRUE,3228838,"Master Custodian [FID:5CAEEE40] [BKT:250FF0D4] [1] Q3+ D2+ | 220pts | Ambush, Fearless, Flying, G...",n
+Hit & Run Shooter Aura,TRUE,3228838,"Master Custodian [FID:5CAEEE40] [BKT:250FF0D4] [1] Q3+ D2+ | 220pts | Ambush, Fearless, Flying, G...",n
+Hive Bond,TRUE,404593,"Artillery Heavy Beast [FID:26070237] [BKT:FFBBE7DF] [1] Q4+ D2+ | 785pts | Fear(3), Fearless, Hiv...",n
+Hive Bond Boost Aura,TRUE,767959,"Prime Warrior [FID:26070237] [BKT:1A91722B] [1] Q4+ D4+ | 135pts | Ambush, Flying, Hero, Hive Bon...",n
+Hive Shriek,FALSE,,,y
+Hold the Line,TRUE,3287752,"Armored Truck [FID:5D3C5446] [BKT:2FE8006A] [1] Q4+ D2+ | 275pts | Fast, Hold the Line, Impact(3)...",n
+Hold the Line Boost Aura,TRUE,3550225,"Veterans [FID:5D3C5446] [BKT:A5005E01] [5] Q4+ D5+ | 340pts | Extended Buff Range, Hold the Line,...",n
+Holistic Suffering,FALSE,,,y
+Holy Rage,FALSE,,,y
+Honor Code,TRUE,2865760,"Duke Titan [FID:4F34EDC3] [BKT:C745F715] [1] Q3+ D2+ | 1470pts | Caster(3), Changebound, Delayed ...",n
+Ignores Cover Aura,TRUE,1145995,"Dynasty Leader [FID:4E816365] [BKT:645B00F8] [1] Q3+ D4+ | 140pts | Ambush, Clan Warrior, Fearles...",n
+Ignores Cover when Shooting Aura,TRUE,7242976,Dwarf Warriors [FID:CD802E72] [BKT:C656E02E] [5] Q4+ D4+ | 155pts | Ignores Cover when Shooting A...,n
+Impale,TRUE,6682718,"18"" rapid harpoon rockets (A2, AP(4), Impale), 30"" heavy cannon (A2, AP(2), Blast(3)), 30"" heavy ...",n
+Increased Shooting Range,TRUE,409171,"Grunt Veteran [FID:26070237] [BKT:2A07CC2C] [1] Q5+ D5+ | 75pts | Agile, Ambush, Flying, Hero, Hi...",n
+Increased Shooting Range Aura,TRUE,409171,"Grunt Veteran [FID:26070237] [BKT:2A07CC2C] [1] Q5+ D5+ | 75pts | Agile, Ambush, Flying, Hero, Hi...",n
+Increased Shooting Range Buff,TRUE,6112555,"Attack Vehicle [FID:79EA7B6E] [BKT:7FCCB8E8] [1] Q4+ D2+ | 220pts | Fanatic, Fast, Impact(3), Inc...",n
+Increased Shooting Range Mark,TRUE,1145938,"Dragon Speeder [FID:4E816365] [BKT:C9CDDCDF] [1] Q4+ D2+ | 220pts | Clan Warrior, Fast, Impact(3)...",n
+Indirect Mark,TRUE,401227,"Annihilators [FID:12CCD353] [BKT:7A599611] [3] Q3+ D3+ | 395pts | Ambush, Indirect Mark, Self-Rep...",n
+Indirect when Shooting Aura,TRUE,859951,"Champion of Change [FID:36064B09] [BKT:835FFFCD] [1] Q4+ D4+ | 175pts | Ambush Aura, Changebound,...",n
+Infected,TRUE,6673283,"great infected sword (A6, Butcher), great plague gauntlet (A6, AP(3), Bane), stomp (A4, AP(1))",n
+Infected Boost Aura,TRUE,7438300,"Great Hunter [FID:E1E77FAF] [BKT:B5D802AB] [1] Q3+ D4+ | 125pts | Ambush, Hero, Infected, Infecte...",n
+Infiltrate,TRUE,401368,"Flesh-Eaters [FID:12CCD353] [BKT:5A67BED5] [5] Q3+ D4+ | 130pts | Fear(1), Infiltrate, Self-Repai...",n
+Infiltrate Aura,TRUE,7246525,"Hadrund oth Irnwuld [FID:CD802E72] [BKT:95D7D85B] [1] Q3+ D3+ | 115pts | Fearless, Fortified, Her...",n
+Infuse Bloodthirst,FALSE,,,y
+Inquisitorial Agent,TRUE,7618396,"Acolyte Henchmen [FID:F942A026] [BKT:9496E98C] [3] Q5+ D5+ | 100pts | Fearless, Inquisitorial Age...",n
+Insidious Protection,FALSE,,,y
+Inspiring Bots,FALSE,,,y
+Instinctive,TRUE,807151,"Commandos [FID:30692FBB] [BKT:43364965] [5] Q5+ D6+ | 330pts | Good Shot, Instinctive, Mischievou...",n
+Jaguar Blaze,FALSE,,,y
+Killing Blow,FALSE,,,y
+Knight Dome,FALSE,,,y
+Knight Sight,FALSE,,,y
+Knight Trauma,FALSE,,,y
+Knight Wound,FALSE,,,y
+Knightborn,TRUE,247051,"Knight Aggro Brothers [FID:126FC147] [BKT:06BF0E10] [3] Q3+ D3+ | 475pts | Fearless, Knightborn, ...",n
+Lacerate,TRUE,819530,"barb dagger (A1, Lacerate), courtesan's swords (A4, Bane), ghoulish claws (A4, Rending), 12"" medu...",n
+Light Fragments,FALSE,,,y
+Lightning Fog,FALSE,,,y
+Litanies of War,FALSE,,,y
+Lust Boon,FALSE,,,y
+Lustbound,TRUE,774061,"Ascended Harbinger of Lust [FID:2FD07986] [BKT:2E302FEE] [1] Q3+ D2+ | 385pts | Ambush, Fear(2), ...",n
+Lustbound Boost,TRUE,774061,"Ascended Harbinger of Lust [FID:2FD07986] [BKT:2E302FEE] [1] Q3+ D2+ | 385pts | Ambush, Fear(2), ...",n
+Lustbound Boost Aura,TRUE,778405,"Harbinger of Lust [FID:2FD07986] [BKT:1D093C62] [1] Q3+ D3+ | 220pts | Ambush Aura, Fear(1), Flyi...",n
+Machine-Fog,TRUE,7427206,"Arch Fighter [FID:DF541FF9] [BKT:DC37C45C] [1] Q3+ D2+ | 310pts | Aircraft, Machine-Fog, Tough(6)...",n
+Machine-Fog Boost Aura,TRUE,7437514,"High Priest [FID:DF541FF9] [BKT:8549EBCA] [1] Q3+ D3+ | 155pts | Hero, Machine-Fog, Machine-Fog B...",n
+Martial Prowess,TRUE,819529,"Court Henchmen [FID:3418A122] [BKT:BE4EC227] [3] Q3+ D4+ | 180pts | Harassing, Martial Prowess",n
+Melee Evasion Aura,TRUE,783436,"Boss Champ [FID:30692FBB] [BKT:F11C4CA0] [1] Q4+ D5+ | 65pts | Ambush, Flying, Hero, Melee Evasio...",n
+Melee Shrouding Aura,TRUE,285964,"Knight Prime Master [FID:126FC147] [BKT:4C760D87] [1] Q3+ D3+ | 195pts | Fearless, Hero, Knightbo...",n
+Melee Slayer,TRUE,260002,"Knight Grave Prime Master [FID:126FC147] [BKT:D32475E3] [1] Q3+ D3+ | 170pts | Fearless, Hero, Kn...",n
+Melee Slayer Aura,TRUE,6118540,"Supreme Leader [FID:79EA7B6E] [BKT:5DC50D8A] [1] Q3+ D4+ | 145pts | Ambush, Bounding, Fanatic, Fa...",n
+Mend,TRUE,211051,"Chosen Plague Champion [FID:06997C8C] [BKT:5A498FBC] [1] Q3+ D3+ | 130pts | Ambush, Flying, Hero,...",n
+Mending Bots,FALSE,,,y
+Mind Breaker,FALSE,,,y
+Mind Control,TRUE,783199,"Sacred Mirror [FID:2FD07986] [BKT:1D7C7559] [1] Q4+ D4+ | 285pts | Caster(3), Lustbound, Mind Con...",n
+Mind Corruption,FALSE,,,y
+Mind Gash,FALSE,,,y
+Mind Shaper,FALSE,,,y
+Mind Vortex,FALSE,,,y
+Mind Wound,FALSE,,,0
+Mischievous,TRUE,783286,"Artillery Gun [FID:30692FBB] [BKT:0FD677DC] [1] Q5+ D3+ | 205pts | Artillery, Good Shot, Mischiev...",n
+Mischievous Boost Aura,TRUE,783766,"Boss Champ [FID:30692FBB] [BKT:3374643D] [1] Q4+ D5+ | 90pts | Ambush, Flying, Hero, Mischievous,...",n
+Mob Frenzy,FALSE,,,y
+Mobile Artillery,TRUE,404413,"Support Platform [FID:12CCD353] [BKT:A9C1D614] [1] Q3+ D2+ | 300pts | Impact(3), Indirect Mark, M...",n
+Morale Debuff,TRUE,3288736,"Colonel Rixxon [FID:5D3C5446] [BKT:44FD7683] [1] Q4+ D5+ | 45pts | Hero, Hold the Line, Morale De...",n
+Mutating Inferno,FALSE,,,y
+No Retreat Aura,TRUE,395827,"Annihilator Lord [FID:12CCD353] [BKT:27212100] [1] Q3+ D3+ | 215pts | Ambush, Hero, No Retreat Au...",n
+No Retreat Buff,TRUE,3295018,"Company Leader [FID:5D3C5446] [BKT:84CEEEA7] [1] Q4+ D5+ | 100pts | Fast, Hero, Hold the Line, Im...",n
+Overpowering Lash,FALSE,,,y
+Overwhelming Strike,FALSE,,,y
+Path of War,FALSE,,,y
+Piercing Assault Aura,TRUE,395830,"Annihilator Lord [FID:12CCD353] [BKT:10B9B96F] [1] Q3+ D3+ | 230pts | Ambush, Hero, Piercing Assa...",n
+Piercing Bots,FALSE,,,y
+Piercing Fighter Aura,TRUE,870826,"Blood Warriors [FID:373C5DC1] [BKT:F50C2B90] [5] Q4+ D4+ | 140pts | Banner, Destructive Frenzy, M...",n
+Piercing Growth,TRUE,404662,"Assault Grunts [FID:26070237] [BKT:2FB2F1CB] [10] Q5+ D5+ | 375pts | Fast, Hive Bond, Piercing Gr...",n
+Piercing Hunter Aura,TRUE,819718,"Dark Lord [FID:3418A122] [BKT:6D20E30C] [1] Q3+ D4+ | 115pts | Ambush, Flying, Harassing, Hero, P...",n
+Piercing Pulse,FALSE,,,y
+Piercing Shooter Aura,TRUE,871684,"Champion of War [FID:373C5DC1] [BKT:CDDD1429] [1] Q4+ D4+ | 195pts | Ambush Aura, Destructive Fre...",n
+Piercing Shooting Debuff,TRUE,7427218,"Breacher Cyborgs [FID:DF541FF9] [BKT:389FF5B4] [3] Q4+ D3+ | 320pts | Machine-Fog, Piercing Shoot...",n
+Piercing Shooting Mark,TRUE,783286,"Artillery Gun [FID:30692FBB] [BKT:0FD677DC] [1] Q5+ D3+ | 205pts | Artillery, Good Shot, Mischiev...",n
+Piercing Spotter,TRUE,7082455,"Gliders [FID:BE80C62F] [BKT:16315CD7] [5] Q3+ D4+ | 280pts | Ambush, Crossing Attack(1), Flying, ...",n
+Piercing Tag,TRUE,7115065,"Jeep [FID:C8D650B3] [BKT:1E46A20F] [1] Q4+ D2+ | 270pts | Courage Buff, Fast, Fortified, Furious ...",n
+Piercing Target,TRUE,3223612,"Great Sister [FID:5CAEEE40] [BKT:AD9F61C4] [1] Q4+ D4+ | 110pts | Guardian, Hero, Piercing Target...",n
+Piranha Curse,FALSE,,,y
+Plague Boon,FALSE,,,y
+Plague Malediction,FALSE,,,y
+Plaguebound,TRUE,1,"Chosen Plague Brothers [FID:06997C8C] [BKT:A6002835] [3] Q3+ D3+ | 300pts | Plaguebound, Versatil...",n
+Plaguebound Boost,TRUE,214516,"Chosen Plague Champion [FID:06997C8C] [BKT:D4535D80] [1] Q3+ D3+ | 190pts | Hero, Plaguebound, Pl...",n
+Plaguebound Boost Aura,TRUE,214516,"Chosen Plague Champion [FID:06997C8C] [BKT:D4535D80] [1] Q3+ D3+ | 190pts | Hero, Plaguebound, Pl...",n
+Point-Blank Piercing Aura,TRUE,1088176,"Celestial High Sister [FID:4AF9C84B] [BKT:513384B1] [1] Q3+ D4+ | 100pts | Devout, Hero, Point-Bl...",n
+Pow!,FALSE,,,y
+Power Beam,FALSE,,,y
+Power Bolt,FALSE,,,y
+Power Field,FALSE,,,y
+Power Maw,FALSE,,,y
+Power Surge,FALSE,,,y
+Precision Attacks Buff,TRUE,6681892,"Plague Harvester [FID:942ACDB6] [BKT:C72565F0] [1] Q4+ D4+ | 115pts | Caster(1), Fortified Growth...",n
+Precision Charge Aura,TRUE,6789985,"Rurthdeg [FID:968D6C84] [BKT:BFBA8509] [1] Q4+ D5+ | 65pts | Bad Shot, Ferocious, Hero, Precision...",n
+Precision Debuff,TRUE,7438138,"Abomination [FID:E1E77FAF] [BKT:9E59AB21] [1] Q3+ D2+ | 355pts | Fear(2), Infected, Precision Deb...",n
+Precision Fighter Aura,TRUE,799171,"Champ [FID:30692FBB] [BKT:35D53694] [1] Q5+ D6+ | 55pts | Ambush, Flying, Good Shot, Hero, Mischi...",n
+Precision Fighter Buff,TRUE,1139632,"Procession Altar [FID:4AF9C84B] [BKT:E7226629] [1] Q4+ D2+ | 395pts | Casting Debuff, Courage Buf...",n
+Precision Fighting Mark,TRUE,851998,"Engine of Suffering [FID:3418A122] [BKT:CA392D0C] [1] Q4+ D2+ | 195pts | Fear(1), Fearless, Haras...",n
+Precision Growth,TRUE,7438270,"Crazed Ravens [FID:E1E77FAF] [BKT:DB5B38C1] [3] Q5+ D5+ | 105pts | Flying, Infected, Precision Gr...",n
+Precision Shooter Aura,TRUE,6088165,"Clan Handler [FID:701035C7] [BKT:D9887B7C] [1] Q5+ D5+ | 75pts | Hero, Precision Shooter Aura, Sc...",n
+Precision Shooter Buff,TRUE,3293578,"Company Leader [FID:5D3C5446] [BKT:8AD1476F] [1] Q4+ D5+ | 100pts | Fast, Hero, Hold the Line, Im...",n
+Precision Shooting Mark,TRUE,6112549,"Attack Vehicle [FID:79EA7B6E] [BKT:06388C18] [1] Q4+ D2+ | 220pts | Fanatic, Fast, Impact(3), Pre...",n
+Precision Spotter,TRUE,888940,"Battle Suit Elite [FID:43D77BF7] [BKT:8CD1CF8F] [1] Q4+ D3+ | 300pts | Ambush, Flying, Hero, Prec...",n
+Precision Tag,TRUE,7441285,"Elite Veteran [FID:EB511507] [BKT:60E44885] [1] Q4+ D4+ | 140pts | Ambush, Crossing Attack(1), Fl...",n
+Precision Target,TRUE,880330,"Gecko Champion [FID:40F5F8EB] [BKT:B59D1EB2] [1] Q5+ D5+ | 150pts | Ambush, Fast, Flying, Heavy I...",n
+Primal,TRUE,879259,"Ankylosaurus [FID:40F5F8EB] [BKT:592B2190] [1] Q4+ D2+ | 625pts | Ambush Beacon, Bane Mark, Fear(...",n
+Primal Boost Buff,TRUE,879334,"Dread Titan [FID:40F5F8EB] [BKT:0A9D8AD1] [1] Q3+ D2+ | 1105pts | Fear(4), Fearless, Impact(6), P...",n
+Protection Feat,TRUE,879346,"Frog-Mage [FID:40F5F8EB] [BKT:906FB7CF] [1] Q3+ D3+ | 265pts | Caster(3), Fear(1), Fearless, Fort...",n
+Protective Dome,FALSE,,,0
+Psy-Adrenaline,FALSE,,,y
+Psy-Destruction,FALSE,,,y
+Psy-Hunter,FALSE,,,y
+Psy-Injected Courage,FALSE,,,y
+Psychic Blast,FALSE,,,y
+Psychic Onslaught,FALSE,,,y
+Psychic Stabilization,FALSE,,,y
+Psychic Terror,FALSE,,,y
+Psychic Vomit,FALSE,,,y
+Puncture,TRUE,1145897,"5x tasers (A1), 4x 18"" laser guns (A1, Puncture), 24"" heavy laser gun (A1, Deadly(3), Puncture)",n
+Purge the Impure,FALSE,,,y
+Quake,TRUE,6114242,"24"" heavy quake cannon (A2, Blast(3), Rending), 30"" heavy machinegun (A3, AP(1))",n
+Quake when Shooting,TRUE,7259809,"Sniper Team [FID:CD802E72] [BKT:A85826B4] [3] Q4+ D5+ | 165pts | Quake when Shooting, Scout, Slow...",n
+Quick Readjustment,TRUE,6101248,"Saboteurs [FID:701035C7] [BKT:581B7389] [5] Q5+ D5+ | 285pts | Quick Readjustment, Reinforcement,...",n
+Quick Shot Aura,TRUE,788716,"Boss Champ [FID:30692FBB] [BKT:2E573AFB] [1] Q4+ D5+ | 145pts | Hero, Mischievous, Quick Shot Aur...",n
+Quick Shot Mark,TRUE,774313,"Ascended Harbinger of Lust [FID:2FD07986] [BKT:4A72477B] [1] Q3+ D2+ | 400pts | Ambush, Fear(2), ...",n
+Quill Blast,FALSE,,,y
+Raiding Drugs,FALSE,,,y
+Ranged Shrouding Aura,TRUE,3223978,"Jetpack Brothers [FID:5CAEEE40] [BKT:0CE1F0B8] [3] Q3+ D2+ | 445pts | Ambush, Fearless, Flying, G...",n
+Ranged Slayer Aura,TRUE,888940,"Battle Suit Elite [FID:43D77BF7] [BKT:8CD1CF8F] [1] Q4+ D3+ | 300pts | Ambush, Flying, Hero, Prec...",n
+Rapid Advance Aura,TRUE,1145902,"Captain Lyao [FID:4E816365] [BKT:5340F6CC] [1] Q3+ D4+ | 100pts | Clan Warrior, Hero, Rapid Advan...",n
+Rapid Advance Buff,TRUE,3295198,"Company Leader [FID:5D3C5446] [BKT:EFFDFEBE] [1] Q4+ D5+ | 85pts | Fast, Hero, Hold the Line, Imp...",n
+Rapid Ambush,TRUE,5730409,"Dark Destroyers [FID:640B87B9] [BKT:E9C22134] [3] Q3+ D3+ | 405pts | Courage Aura, Darkborn, Fear...",n
+Rapid Blink,TRUE,6101713,"Fool Champion [FID:798E6E5D] [BKT:9E2E1F76] [1] Q5+ D5+ | 65pts | Evasive, Furious, Hero, Rapid B...",n
+Rapid Blink Boost Aura,TRUE,6106711,"Master Jester [FID:798E6E5D] [BKT:F30900F5] [1] Q3+ D5+ | 145pts | Ambush, Ambush Re-Deployment, ...",n
+Rapid Charge Aura,TRUE,409201,"Grunt Veteran [FID:26070237] [BKT:AB5EEE76] [1] Q5+ D5+ | 50pts | Agile, Ambush, Flying, Hero, Hi...",n
+Rapid Mutation,FALSE,,,y
+Rapid Putrefaction,FALSE,,,y
+Rapid Rush Aura,TRUE,248428,"Knight Elite Raider [FID:126FC147] [BKT:03708617] [1] Q4+ D4+ | 80pts | Ambush, Fearless, Furious...",n
+Ravage,TRUE,258652,Knight Grave Prime Master [FID:126FC147] [BKT:10342376] [1] Q3+ D3+ | 180pts | Bane when Shooting...,n
+Re-Deployment,TRUE,248548,"Knight Elite Raider [FID:126FC147] [BKT:3B0626B2] [1] Q4+ D4+ | 110pts | Ambush, Fearless, Furiou...",n
+Re-Position Artillery,TRUE,286444,"Knight Prime Master [FID:126FC147] [BKT:AD4DFF8D] [1] Q3+ D3+ | 200pts | Fearless, Hero, Knightbo...",n
+Reanimation Aura,TRUE,401749,"Robot Lord [FID:12CCD353] [BKT:6D1F968C] [1] Q3+ D3+ | 95pts | Ambush, Flying, Hero, Reanimation ...",n
+Reap,TRUE,77,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Regeneration Aura,TRUE,247156,"Knight Assault Prime Brothers [FID:126FC147] [BKT:47F188B6] [5] Q3+ D3+ | 345pts | Ambush, Fearle...",n
+Regeneration Buff,TRUE,854056,"Leech Engine [FID:3418A122] [BKT:A44B84F5] [1] Q4+ D2+ | 275pts | Fear(1), Fearless, Harassing, P...",n
+Regenerative Strength,TRUE,851998,"Engine of Suffering [FID:3418A122] [BKT:CA392D0C] [1] Q4+ D2+ | 195pts | Fear(1), Fearless, Haras...",n
+Reinforced,TRUE,247051,"Knight Aggro Brothers [FID:126FC147] [BKT:06BF0E10] [3] Q3+ D3+ | 475pts | Fearless, Knightborn, ...",n
+Reinforcement,TRUE,6095389,"Elite Operators [FID:701035C7] [BKT:1EB5DF90] [5] Q4+ D4+ | 385pts | Fearless, Reinforcement, Scurry",n
+Relentless Aura,TRUE,232348,"Plague Cultist Champion [FID:06997C8C] [BKT:F3C3B2C3] [1] Q5+ D5+ | 65pts | Hero, Plaguebound, Re...",n
+Relentless Mark,TRUE,3287752,"Armored Truck [FID:5D3C5446] [BKT:2FE8006A] [1] Q4+ D2+ | 275pts | Fast, Hold the Line, Impact(3)...",n
+Rending in Melee Aura,TRUE,6674962,"Champion of Plague [FID:942ACDB6] [BKT:474779AE] [1] Q4+ D4+ | 165pts | Ambush Aura, Fortified Gr...",n
+Rending in Melee Mark,TRUE,6682825,"Beast Titan [FID:968D6C84] [BKT:6749A4DA] [1] Q4+ D2+ | 1075pts | Caster(2), Ferocious, Impact(5)...",n
+Rending when Shooting Aura,TRUE,879382,"Frog-Mage [FID:40F5F8EB] [BKT:069AF5F7] [1] Q3+ D3+ | 290pts | Caster(3), Fear(1), Fearless, Fort...",n
+Repel Ambushers,TRUE,402589,"Robot Lord [FID:12CCD353] [BKT:B90C3FE3] [1] Q3+ D3+ | 85pts | Hero, Reanimation Aura, Repel Ambu...",n
+Resistance Aura,TRUE,210358,"Chosen Plague Champion [FID:06997C8C] [BKT:2587A984] [1] Q3+ D3+ | 120pts | Ambush, Flying, Hero,...",n
+Retaliate,TRUE,259102,Knight Grave Prime Master [FID:126FC147] [BKT:0EFA533B] [1] Q3+ D3+ | 175pts | Bane in Melee Aura...,n
+Righteous Fury,FALSE,,,0
+Righteous Wrath,FALSE,,,y
+Rot Wave,FALSE,,,y
+Ruinous Frenzy,TRUE,819598,"Dark Lord [FID:3418A122] [BKT:D34C2A23] [1] Q3+ D4+ | 85pts | Ambush, Flying, Harassing, Hero, Me...",n
+Scout Aura,TRUE,209665,"Chosen Plague Champion [FID:06997C8C] [BKT:80E0959A] [1] Q3+ D3+ | 110pts | Ambush, Flying, Hero,...",n
+Scrapper,TRUE,854252,"3x ccws (A1), energy sword (A2, AP(1), Rending), 12"" scrapper (A1, Blast(3), Reliable), 12"" sgt. ...",n
+Scrapper Boost Aura,TRUE,7441345,"Elite Veteran [FID:EB511507] [BKT:D702E1FF] [1] Q4+ D4+ | 140pts | Ambush, Crossing Attack(1), Fl...",n
+Scratch,TRUE,7441142,"3x ccws (A1), 2x 24"" hunting rifle (A1, Reliable, Scratch, Takedown), 30"" heavy machineguns (A3, ...",n
+Scurry,TRUE,6087505,"Burrower Tank [FID:701035C7] [BKT:F04E6DEB] [1] Q4+ D2+ | 455pts | Ambush, Defense Debuff, Fast, ...",n
+Scurry Boost Aura,TRUE,6087949,"Clan Handler [FID:701035C7] [BKT:7451CFCD] [1] Q5+ D5+ | 55pts | Hero, Scout, Scurry, Scurry Boos...",n
+Searing Admonition,FALSE,,,y
+Searing Burst,FALSE,,,y
+Searing Shrapnel,FALSE,,,y
+Self-Destruct,TRUE,767824,"Massive Spores [FID:26070237] [BKT:50BB11AF] [3] Q6+ D6+ | 145pts | No Retreat, Self-Destruct(6),...",n
+Self-Repair,TRUE,395827,"Annihilator Lord [FID:12CCD353] [BKT:27212100] [1] Q3+ D3+ | 215pts | Ambush, Hero, No Retreat Au...",n
+Self-Repair Boost Buff,TRUE,401374,"Forge Spider [FID:12CCD353] [BKT:639409AB] [1] Q4+ D3+ | 285pts | Ambush, Self-Repair, Self-Repai...",n
+Serpent Comet,FALSE,,,y
+Shadow Dance,FALSE,,,y
+Shatter,TRUE,774065,"great perfect sword (A6, Shatter), stomp (A4, AP(1)), 12"" great arm-crossbow (A8, Surge)",n
+Shattering Curse,FALSE,,,y
+Shield Breaker,FALSE,,,y
+Shielded Aura,TRUE,409216,"Grunt Veteran [FID:26070237] [BKT:2F69961C] [1] Q5+ D5+ | 55pts | Agile, Ambush, Flying, Hero, Hi...",n
+Shifting Form,FALSE,,,y
+Shock Speed,FALSE,,,y
+Shred Mark,TRUE,3192406,"Custodian Assault Walker [FID:5CAEEE40] [BKT:79D1A6D6] [1] Q3+ D2+ | 480pts | Fear(2), Fearless, ...",n
+Shred in Melee Aura,TRUE,1084126,"Celestial High Sister [FID:4AF9C84B] [BKT:D6683601] [1] Q3+ D4+ | 115pts | Ambush, Devout, Flying...",n
+Shred when Shooting Aura,TRUE,2444473,"Watch Captain Brother [FID:4E8C4EA1] [BKT:EB48B0EE] [1] Q3+ D3+ | 140pts | Ambush, Fearless, Flyi...",n
+Shroud Field,FALSE,,,y
+Shrouding Incense,FALSE,,,y
+Skewer,TRUE,412388,"piercing spike (A1, AP(2), Deadly(3)), razor claws (A2), razor whip (A2, Bane, Precise), serrated...",n
+Sky Blaze,FALSE,,,y
+Slam,TRUE,77,"3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy sword (A2, AP(1), ...",n
+Slash,TRUE,404621,"piercing claws (A1, AP(1), Deadly(3)), 8x razor claws (A2), slashing claws (A2, AP(1), Rending)",n
+Slayer Mark,TRUE,6101731,"Heavy Jetbike [FID:798E6E5D] [BKT:33DF5168] [1] Q3+ D2+ | 325pts | Evasive, Fast, Furious, Impact...",n
+Smiting Rune,FALSE,,,y
+Snake Bite,FALSE,,,y
+Soul Spear,FALSE,,,y
+Spawn,TRUE,401374,"Forge Spider [FID:12CCD353] [BKT:639409AB] [1] Q4+ D3+ | 285pts | Ambush, Self-Repair, Self-Repai...",n
+Speed Buff,TRUE,6112561,"Attack Vehicle [FID:79EA7B6E] [BKT:EBECE021] [1] Q4+ D2+ | 205pts | Fanatic, Fast, Impact(3), Spe...",n
+Speed Debuff,TRUE,7208782,"APC [FID:CD802E72] [BKT:54094976] [1] Q4+ D2+ | 245pts | Fast, Impact(3), Speed Debuff, Sturdy, T...",n
+Speed Feat Aura,TRUE,6797368,"Ultra Veterans [FID:968D6C84] [BKT:31495064] [3] Q3+ D4+ | 315pts | Bad Shot, Ferocious, Rending ...",n
+Spell Accumulator,TRUE,859807,"Champion of Change [FID:36064B09] [BKT:6E8C88E9] [1] Q4+ D4+ | 155pts | Ambush Aura, Changebound,...",n
+Spell Conduit,TRUE,769345,"Psycho-Grunts [FID:26070237] [BKT:87BE69EF] [10] Q5+ D5+ | 170pts | Agile, Hive Bond, Resistance,...",n
+Spirit Power,FALSE,,,y
+Spirit Resolve,FALSE,,,y
+Split,TRUE,861973,"Change Horrors [FID:36064B09] [BKT:2CB30622] [5] Q4+ D4+ | 215pts | Banner, Changebound, Musician...",n
+Spread Plague,FALSE,,,y
+Steadfast,TRUE,218029,"Plague Bikers [FID:06997C8C] [BKT:F684832B] [3] Q3+ D3+ | 310pts | Fast, Plaguebound, Steadfast B...",n
+Steadfast Aura,TRUE,3202630,"Custodian Brothers [FID:5CAEEE40] [BKT:6A2915A5] [3] Q3+ D2+ | 355pts | Fearless, Guardian, Stead...",n
+Steadfast Buff,TRUE,218029,"Plague Bikers [FID:06997C8C] [BKT:F684832B] [3] Q3+ D3+ | 310pts | Fast, Plaguebound, Steadfast B...",n
+Stealth Aura,TRUE,401359,"Echo-3G01 [FID:12CCD353] [BKT:46CFFD56] [1] Q3+ D3+ | 85pts | Caster(1), Hero, Self-Repair, Slow,...",n
+Stealth Buff,TRUE,410371,"Hive Burrower [FID:26070237] [BKT:A6842354] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hiv...",n
+Storm of Change,TRUE,859051,"Avatar of Change [FID:36064B09] [BKT:03C8D19A] [1] Q2+ D2+ | 880pts | Ambush, Changebound, Fear(3...",n
+Storm of Lust,TRUE,775321,"Avatar of Lust [FID:2FD07986] [BKT:CEAA2943] [1] Q2+ D2+ | 805pts | Ambush, Fear(3), Fearless, He...",n
+Storm of Plague,TRUE,6674206,"Avatar of Plague [FID:942ACDB6] [BKT:D9633B78] [1] Q2+ D2+ | 855pts | Ambush, Fear(3), Fearless, ...",n
+Storm of Power,FALSE,,,y
+Storm of War,TRUE,869746,"Avatar of War [FID:373C5DC1] [BKT:998470E9] [1] Q2+ D2+ | 835pts | Ambush, Fear(3), Fearless, Fly...",n
+Strafing,TRUE,769409,"spore bombs (A1, Blast(6), Shred, Strafing), 12"" caustic cannon (A2, Blast(3), Reliable)",n
+Strider Aura,TRUE,782605,"Lust Warriors [FID:2FD07986] [BKT:3341279E] [5] Q4+ D4+ | 165pts | Banner, Lustbound, Musician, R...",n
+Sturdy,TRUE,7208782,"APC [FID:CD802E72] [BKT:54094976] [1] Q4+ D2+ | 245pts | Fast, Impact(3), Speed Debuff, Sturdy, T...",n
+Sturdy Boost Aura,FALSE,,,0
+Surprise Attack,TRUE,410371,"Hive Burrower [FID:26070237] [BKT:A6842354] [1] Q4+ D2+ | 575pts | Ambush, Fear(3), Fearless, Hiv...",n
+Surprise Piercing Shot,TRUE,404389,"Snipers [FID:12CCD353] [BKT:F2F06F93] [3] Q4+ D4+ | 245pts | Indirect Mark, Self-Repair, Slow, Su...",n
+Swift,TRUE,401446,"Guardians [FID:12CCD353] [BKT:F1D1D86E] [5] Q3+ D3+ | 310pts | Ambush, Flying, Self-Repair, Slow,...",n
+Swift Aura,TRUE,7208956,"Berserker Veteran [FID:CD802E72] [BKT:B25B4BF9] [1] Q4+ D5+ | 95pts | Devastating Frenzy, Fearles...",n
+Swift Buff,TRUE,404413,"Support Platform [FID:12CCD353] [BKT:A9C1D614] [1] Q3+ D2+ | 300pts | Impact(3), Indirect Mark, M...",n
+System Takeover,FALSE,,,y
+Takedown Strike,TRUE,770989,"Shadow Hunter [FID:26070237] [BKT:B902F5D9] [1] Q3+ D4+ | 170pts | Fear(1), Hive Bond, Infiltrate...",n
+Targeting Visor,TRUE,888940,"Battle Suit Elite [FID:43D77BF7] [BKT:8CD1CF8F] [1] Q4+ D3+ | 300pts | Ambush, Flying, Hero, Prec...",n
+Targeting Visor Boost Aura,TRUE,889345,"Battle Suit Elite [FID:43D77BF7] [BKT:CFAA25F0] [1] Q4+ D3+ | 275pts | Ambush, Flying, Hero, Prec...",n
+Tear,TRUE,3192386,"30"" twin bolt cannon (A6, AP(1)), 36"" twin accelerator (A6, Tear)",n
+Tech-Sickness,FALSE,,,y
+Teleport,TRUE,867895,"Swiftclaw [FID:36064B09] [BKT:6205302C] [1] Q4+ D4+ | 105pts | Changebound, Hero, Teleport Aura, ...",n
+Teleport Aura,TRUE,867895,"Swiftclaw [FID:36064B09] [BKT:6205302C] [1] Q4+ D4+ | 105pts | Changebound, Hero, Teleport Aura, ...",n
+Terrifying Fury,FALSE,,,y
+Terror Seeker,FALSE,,,y
+The Founder's Curse,FALSE,,,y
+Thrash,TRUE,7083353,"30"" light cluster cannon (A1, Precise, Thrash), 30"" pintle-machinegun (A2, AP(1))",n
+Thrust in Melee Aura,TRUE,7438282,"Great Hunter [FID:E1E77FAF] [BKT:B2350DAB] [1] Q3+ D4+ | 90pts | Ambush, Hero, Infected, Strider,...",n
+Thunderous Mist,FALSE,,,y
+Total Seizure,FALSE,,,y
+Toxin Mist,FALSE,,,y
+Triangulation Bots,FALSE,,,y
+Unpredictable,TRUE,217981,Greater Plague Mutated [FID:06997C8C] [BKT:3A623FFC] [3] Q3+ D4+ | 265pts | Dangerous Terrain Deb...,n
+Unpredictable Fighter,TRUE,217981,Greater Plague Mutated [FID:06997C8C] [BKT:3A623FFC] [3] Q3+ D4+ | 265pts | Dangerous Terrain Deb...,n
+Unpredictable Fighter Aura,TRUE,254152,"Knight Grave Prime Master [FID:126FC147] [BKT:DF91E25B] [1] Q3+ D3+ | 190pts | Ambush, Fearless, ...",n
+Unpredictable Fighter Mark,TRUE,412387,"Hive Guardians [FID:26070237] [BKT:2BEF0A7F] [3] Q3+ D3+ | 405pts | Hive Bond, Relentless, Tough(...",n
+Unpredictable Shooter,TRUE,6693550,"Orc Leader [FID:968D6C84] [BKT:90D84545] [1] Q4+ D5+ | 110pts | Ambush, Bad Shot, Ferocious, Flyi...",n
+Unpredictable Shooter Aura,TRUE,6693550,"Orc Leader [FID:968D6C84] [BKT:90D84545] [1] Q4+ D5+ | 110pts | Ambush, Bad Shot, Ferocious, Flyi...",n
+Unstoppable Shooting Mark,TRUE,247063,"Knight Anti-Grav APC [FID:126FC147] [BKT:53DDC908] [1] Q3+ D2+ | 410pts | Fast, Fearless, Impact(...",n
+Unstoppable in Melee Aura,TRUE,859807,"Champion of Change [FID:36064B09] [BKT:6E8C88E9] [1] Q4+ D4+ | 155pts | Ambush Aura, Changebound,...",n
+Unstoppable when Shooting Aura,TRUE,776257,"Champion of Lust [FID:2FD07986] [BKT:17C38354] [1] Q4+ D4+ | 245pts | Ambush Aura, Armor(3), Fast...",n
+Unwieldy Debuff,TRUE,7052071,"Elemental Avatar [FID:BE80C62F] [BKT:2C2EED60] [1] Q2+ D2+ | 935pts | Caster(4), Fear(3), Fearles...",n
+Veil of Madness,FALSE,,,y
+Vengeance,TRUE,248111,"5x ccws (A1), 30"" at-launcher (A1, AP(2), Unstoppable), 3x 30"" he-launchers (A2), 30"" vengeance a...",n
+Versatile Defense Aura,TRUE,1,"Chosen Plague Brothers [FID:06997C8C] [BKT:A6002835] [3] Q3+ D3+ | 300pts | Plaguebound, Versatil...",n
+Versatile Reach Aura,TRUE,328150,"Veteran Knight Prime Brothers [FID:126FC147] [BKT:37277A9A] [3] Q3+ D3+ | 235pts | Fearless, Knig...",n
+Violent Onslaught,FALSE,,,y
+Volatile Infection,FALSE,,,y
+War Boon,FALSE,,,y
+Warbound,TRUE,867898,"Ascended Harbinger of War [FID:373C5DC1] [BKT:DE0A3E66] [1] Q3+ D2+ | 395pts | Ambush, Fatigue De...",n
+Warbound Boost,TRUE,868318,"Ascended Harbinger of War [FID:373C5DC1] [BKT:916CDD35] [1] Q3+ D2+ | 375pts | Ambush, Fear(2), F...",n
+Warbound Boost Aura,TRUE,871504,"Champion of War [FID:373C5DC1] [BKT:DF1B9CC1] [1] Q4+ D4+ | 180pts | Ambush Aura, Destructive Fre...",n
+Watch Dome,FALSE,,,y
+Watch Sight,FALSE,,,y
+Watch Trauma,FALSE,,,y
+Watch Wound,FALSE,,,y
+Watchborn,TRUE,1270069,"Watch APC [FID:4E8C4EA1] [BKT:21A1A3FB] [1] Q3+ D2+ | 325pts | Fast, Fearless, Impact(3), Strider...",n
+Wave of Discord,FALSE,,,y
+Weapon Booster,FALSE,,,y
+Wolf Dome,FALSE,,,y
+Wolf Sight,FALSE,,,y
+Wolf Trauma,FALSE,,,y
+Wolf Wound,FALSE,,,y
+Wolfborn,TRUE,5900185,"Hunting Wolves [FID:67027A20] [BKT:2912ECA9] [5] Q4+ D4+ | 160pts | Fast, Regeneration, Strider, ...",n
+Wreck,TRUE,7427207,"bomb rack (A2, AP(1), Blast(3), Strafing), 30"" twin p-machinegun (A4, Wreck)",n
+Zap!,FALSE,,,y
