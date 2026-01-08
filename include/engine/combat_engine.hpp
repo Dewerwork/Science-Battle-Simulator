@@ -213,6 +213,22 @@ public:
     CombatResult resolve_melee(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models = 0) {
         CombatResult result;
 
+        // Unpredictable Fighter: Roll once at start of melee to determine effect
+        // 1-3 = AP(+1), 4-6 = +1 to hit
+        bool has_unpredictable = attacker.has_rule(RuleId::UnpredictableFighter);
+        bool unpredictable_ap_bonus = false;
+        bool unpredictable_hit_bonus = false;
+        if (has_unpredictable) {
+            u8 unpredictable_roll = dice_.roll_d6();
+            if (unpredictable_roll <= 3) {
+                unpredictable_ap_bonus = true;
+                if (logger_) logger_->on_rule_triggered("UnpredictableFighter", "rolled_1-3_ap_+1", unpredictable_roll);
+            } else {
+                unpredictable_hit_bonus = true;
+                if (logger_) logger_->on_rule_triggered("UnpredictableFighter", "rolled_4-6_hit_+1", unpredictable_roll);
+            }
+        }
+
         // Impact: separate roll hitting on 2+ when charging (before normal attacks)
         if (is_charging && !attacker.is_fatigued()) {
             u8 base_impact = attacker.get_rule_value(RuleId::Impact);
@@ -307,6 +323,12 @@ public:
                 if (logger_) logger_->on_hit_modifier("Thrust", +1, "charging_bonus");
             }
 
+            // Unpredictable Fighter: +1 to hit if rolled 4-6
+            if (unpredictable_hit_bonus) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("UnpredictableFighter", +1, "rolled_4-6");
+            }
+
             // Shaken/Fatigued: Only hit on 6s (unmodified)
             bool only_sixes = attacker.is_shaken() || attacker.is_fatigued();
             if (only_sixes) {
@@ -369,6 +391,12 @@ public:
                 u8 old_ap = ap;
                 ap = std::max(ap, u8(1));
                 if (logger_ && ap > old_ap) logger_->on_rule_triggered("PiercingAssault", "minimum_ap_1", 1);
+            }
+
+            // Unpredictable Fighter: AP(+1) if rolled 1-3
+            if (unpredictable_ap_bonus) {
+                ap += 1;
+                if (logger_) logger_->on_rule_triggered("UnpredictableFighter", "ap_+1_rolled_1-3", 1);
             }
 
             // Blast: multiply hits by X, where X is capped at target model count
