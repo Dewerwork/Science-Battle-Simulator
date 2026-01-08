@@ -169,6 +169,10 @@ enum class RuleId : u8 {
     BaneInMelee,    // Bane in Melee - All melee attacks have Bane (bypass regen, reroll def 6s)
     HoldTheLine,    // Hold the Line - Reroll failed morale tests
 
+    // Additional faction rules (Group 2 auras)
+    UnpredictableFighter, // Unpredictable Fighter - +1 to hit in melee
+    Teleport,       // Teleport - Can teleport instead of normal move
+
     COUNT // Number of rules
 };
 

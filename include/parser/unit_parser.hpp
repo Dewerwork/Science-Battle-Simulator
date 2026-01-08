@@ -300,6 +300,15 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"shredwhenshootingaura", RuleId::Shred},
         {"devout boost aura", RuleId::Devout},
         {"devoutboostaura", RuleId::Devout},
+
+        // Group 2 rules with new RuleIds
+        {"unpredictable fighter", RuleId::UnpredictableFighter},
+        {"unpredictablefighter", RuleId::UnpredictableFighter},
+        {"unpredictable fighter aura", RuleId::UnpredictableFighter},
+        {"unpredictablefighteraura", RuleId::UnpredictableFighter},
+        {"teleport", RuleId::Teleport},
+        {"teleport aura", RuleId::Teleport},
+        {"teleportaura", RuleId::Teleport},
     };
     return map;
 }
