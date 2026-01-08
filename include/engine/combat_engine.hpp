@@ -101,6 +101,13 @@ public:
                 if (logger_) logger_->on_hit_modifier("BadShot", -1, "poor_shooter");
             }
 
+            // Purge: +1 to hit vs Tough(3+)
+            u8 defender_tough = defender.get_rule_value(RuleId::Tough);
+            if (w.has_rule(RuleId::Purge) && defender_tough >= 3) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Purge", +1, "targeting_tough_3+");
+            }
+
             // Enable roll recording for logging
             if (logger_) dice_.enable_roll_recording(true);
 
@@ -374,6 +381,13 @@ public:
             if (defender.has_rule(RuleId::MeleeShrouding)) {
                 hit_modifier -= 1;
                 if (logger_) logger_->on_hit_modifier("MeleeShrouding", -1, "shrouded_target");
+            }
+
+            // Purge: +1 to hit vs Tough(3+)
+            u8 defender_tough = defender.get_rule_value(RuleId::Tough);
+            if (w.has_rule(RuleId::Purge) && defender_tough >= 3) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Purge", +1, "targeting_tough_3+");
             }
 
             // Shaken/Fatigued: Only hit on 6s (unmodified)
