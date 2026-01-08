@@ -67,7 +67,7 @@ public:
 
             // VersatileAttack: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
             u8 versatile_ap_bonus = 0;
-            if (w.has_rule(RuleId::VersatileAttack)) {
+            if (attacker.has_rule(RuleId::VersatileAttack)) {
                 u8 versatile_roll = dice_.roll_d6();
                 if (versatile_roll <= 3) {
                     versatile_ap_bonus = 1;
@@ -372,7 +372,7 @@ public:
 
             // VersatileAttack: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
             u8 versatile_ap_bonus = 0;
-            if (w.has_rule(RuleId::VersatileAttack)) {
+            if (attacker.has_rule(RuleId::VersatileAttack)) {
                 u8 versatile_roll = dice_.roll_d6();
                 if (versatile_roll <= 3) {
                     versatile_ap_bonus = 1;
