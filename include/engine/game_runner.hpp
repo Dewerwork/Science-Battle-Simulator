@@ -106,6 +106,10 @@ private:
             logger_->on_round_start(state_.current_round, state_);
         }
 
+        // Battleborn: 4+ to rally from Shaken at round start
+        check_battleborn(true);   // Unit A
+        check_battleborn(false);  // Unit B
+
         // Determine activation order (random for round 1, alternating after)
         bool a_goes_first;
         u8 initiative_roll = 0;
@@ -566,6 +570,28 @@ private:
                 }
             }
             // If not charging (e.g., fighting in ongoing melee), units stay engaged
+        }
+    }
+
+    // Battleborn: 4+ to rally from Shaken at round start
+    void check_battleborn(bool is_unit_a) {
+        UnitView unit = state_.view(is_unit_a);
+
+        if (!unit.is_shaken()) return;
+        if (!unit.has_rule(RuleId::Battleborn)) return;
+
+        u8 roll = dice_.roll_d6();
+        bool rallied = roll >= 4;
+
+        if (logger_) {
+            logger_->on_rule_triggered("Battleborn", "rally_attempt", roll);
+        }
+
+        if (rallied) {
+            unit.rally();
+            if (logger_) {
+                logger_->on_status_changed(is_unit_a, UnitStatus::Shaken, UnitStatus::Normal, "battleborn_rallied");
+            }
         }
     }
 };
