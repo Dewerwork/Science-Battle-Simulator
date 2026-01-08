@@ -157,19 +157,6 @@ target_include_directories(opr_pipeline PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(opr_pipeline PRIVATE battle_core Threads::Threads)
 target_compile_options(opr_pipeline PRIVATE ${COMMON_FLAGS})
 
-# Commented out until source files are implemented:
-# add_executable(test_dice tests/test_dice.cpp)
-# target_link_libraries(test_dice PRIVATE battle_engine)
-# add_test(NAME DiceTests COMMAND test_dice)
-
-# add_executable(test_combat tests/test_combat.cpp)
-# target_link_libraries(test_combat PRIVATE battle_engine)
-# add_test(NAME CombatTests COMMAND test_combat)
-
-# add_executable(test_scenarios tests/test_scenarios.cpp)
-# target_link_libraries(test_scenarios PRIVATE battle_simulation)
-# add_test(NAME ScenarioTests COMMAND test_scenarios)
-
 # ==============================================================================
 # Installation (enabled when battle_sim is ready)
 # ==============================================================================
