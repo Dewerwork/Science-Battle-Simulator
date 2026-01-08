@@ -48,6 +48,16 @@ public:
             const Weapon& w = attacker.get_weapon(i);
             if (!w.is_ranged() || w.range < static_cast<u8>(distance)) continue;
 
+            // Limited: skip if already used this game
+            if (w.has_rule(RuleId::Limited)) {
+                if (attacker.is_limited_weapon_used(i)) {
+                    if (logger_) logger_->on_rule_triggered("Limited", "weapon_already_used", i);
+                    continue;
+                }
+                attacker.mark_limited_weapon_used(i);
+                if (logger_) logger_->on_rule_triggered("Limited", "using_one_time_weapon", i);
+            }
+
             // Calculate total attacks: min(weapon_count, alive_models) * attacks_per_model
             u8 models_with_weapon = std::min(w.count, models_shooting);
             u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
@@ -170,10 +180,34 @@ public:
                 if (logger_) logger_->on_rule_triggered("PointBlankSurge", "extra_hits_on_6s_at_close_range", sixes);
             }
 
+            // Takedown: treats target as single model (Blast capped at 1)
+            bool has_takedown = w.has_rule(RuleId::Takedown);
+            i8 takedown_target_idx = -1;  // -1 = normal allocation
+            if (has_takedown) {
+                // AI picks most valuable target (hero > wounded tough > first alive)
+                for (u8 m = 0; m < defender.model_count(); ++m) {
+                    if (defender.model_is_alive(m)) {
+                        const Model& model = defender.get_model(m);
+                        if (model.is_hero) {
+                            takedown_target_idx = m;
+                            break;  // Heroes are highest priority
+                        }
+                        if (takedown_target_idx < 0 || defender.model_wounds_taken(m) > 0) {
+                            takedown_target_idx = m;  // Wounded models or first alive
+                        }
+                    }
+                }
+                if (logger_ && takedown_target_idx >= 0) {
+                    logger_->on_rule_triggered("Takedown", "targeting_specific_model", takedown_target_idx);
+                }
+            }
+
             // Blast: multiply hits by X, where X is capped at target model count
+            // Takedown: Blast is capped at 1 (treating target as single model)
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
-                u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
+                u8 max_multiplier = has_takedown ? u8(1) : static_cast<u8>(defender.alive_count());
+                u8 multiplier = std::min(blast_value, max_multiplier);
                 u32 old_hits = hits;
                 hits *= multiplier;
                 // Rending and Rupture hits also multiply with Blast
@@ -317,9 +351,10 @@ public:
                 WoundResult wound_result;
                 if (deadly_value > 1) {
                     // Deadly wounds don't carry over - apply per-wound with multiplier
+                    // Note: Takedown not compatible with Deadly (would be redundant)
                     wound_result = apply_wounds_deadly(defender, total_wounds, deadly_value, bypass_regen);
                 } else {
-                    wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                    wound_result = apply_wounds(defender, total_wounds, bypass_regen, takedown_target_idx);
                 }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
@@ -411,6 +446,16 @@ public:
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
             if (!w.is_melee()) continue;
+
+            // Limited: skip if already used this game
+            if (w.has_rule(RuleId::Limited)) {
+                if (attacker.is_limited_weapon_used(i)) {
+                    if (logger_) logger_->on_rule_triggered("Limited", "weapon_already_used", i);
+                    continue;
+                }
+                attacker.mark_limited_weapon_used(i);
+                if (logger_) logger_->on_rule_triggered("Limited", "using_one_time_weapon", i);
+            }
 
             // Calculate total attacks: min(weapon_count, alive_models) * attacks_per_model
             u8 models_with_weapon = std::min(w.count, models_attacking);
@@ -566,10 +611,34 @@ public:
                 if (logger_ && ap > old_ap) logger_->on_rule_triggered("PiercingAssault", "minimum_ap_1", 1);
             }
 
+            // Takedown: treats target as single model (Blast capped at 1)
+            bool has_takedown = w.has_rule(RuleId::Takedown);
+            i8 takedown_target_idx = -1;  // -1 = normal allocation
+            if (has_takedown) {
+                // AI picks most valuable target (hero > wounded tough > first alive)
+                for (u8 m = 0; m < defender.model_count(); ++m) {
+                    if (defender.model_is_alive(m)) {
+                        const Model& model = defender.get_model(m);
+                        if (model.is_hero) {
+                            takedown_target_idx = m;
+                            break;  // Heroes are highest priority
+                        }
+                        if (takedown_target_idx < 0 || defender.model_wounds_taken(m) > 0) {
+                            takedown_target_idx = m;  // Wounded models or first alive
+                        }
+                    }
+                }
+                if (logger_ && takedown_target_idx >= 0) {
+                    logger_->on_rule_triggered("Takedown", "targeting_specific_model", takedown_target_idx);
+                }
+            }
+
             // Blast: multiply hits by X, where X is capped at target model count
+            // Takedown: Blast is capped at 1 (treating target as single model)
             u8 blast_value = w.get_rule_value(RuleId::Blast);
             if (blast_value > 0) {
-                u8 multiplier = std::min(blast_value, static_cast<u8>(defender.alive_count()));
+                u8 max_multiplier = has_takedown ? u8(1) : static_cast<u8>(defender.alive_count());
+                u8 multiplier = std::min(blast_value, max_multiplier);
                 u32 old_hits = hits;
                 hits *= multiplier;
                 rending_hits *= multiplier;
@@ -699,9 +768,10 @@ public:
             if (total_wounds > 0) {
                 WoundResult wound_result;
                 if (deadly_value > 1) {
+                    // Note: Takedown not compatible with Deadly (would be redundant)
                     wound_result = apply_wounds_deadly(defender, total_wounds, deadly_value, bypass_regen);
                 } else {
-                    wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                    wound_result = apply_wounds(defender, total_wounds, bypass_regen, takedown_target_idx);
                 }
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
@@ -728,13 +798,9 @@ public:
         u32 self_destruct_hits = 0;  // Hits to return from SelfDestruct models
     };
 
-    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false) {
+    // takedown_target: -1 = normal allocation, >= 0 = specific model index (Takedown rule)
+    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false, i8 takedown_target = -1) {
         WoundResult result;
-
-        // Get wound allocation order
-        std::array<u8, MAX_MODELS_PER_UNIT> order;
-        u8 order_count = 0;
-        unit.get_wound_allocation_order(order, order_count);
 
         // Regeneration check
         if (!bypass_regeneration && unit.has_rule(RuleId::Regeneration)) {
@@ -758,8 +824,37 @@ public:
 
         result.wounds_dealt = static_cast<u16>(wounds);
 
-        // Apply wounds in order
+        // Takedown: apply wounds to specific target first
         u32 remaining_wounds = wounds;
+        if (takedown_target >= 0 && unit.model_is_alive(static_cast<u8>(takedown_target))) {
+            u8 model_idx = static_cast<u8>(takedown_target);
+            u8 wounds_to_kill = unit.model_remaining_wounds(model_idx);
+            u8 wounds_applied = static_cast<u8>(std::min(remaining_wounds, static_cast<u32>(wounds_to_kill)));
+
+            for (u8 w = 0; w < wounds_applied && remaining_wounds > 0; ++w) {
+                if (unit.apply_wound_to_model(model_idx)) {
+                    result.models_killed++;
+                    // SelfDestruct: when model dies, queue hits for attacker
+                    if (unit.has_rule(RuleId::SelfDestruct)) {
+                        u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                        result.self_destruct_hits += destruct_value;
+                        if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                    }
+                    break;  // Model died
+                }
+                remaining_wounds--;
+            }
+            // Note: With Takedown, excess wounds don't carry over to other models
+            // But we still track them as dealt for stats purposes
+            return result;
+        }
+
+        // Get wound allocation order (normal allocation)
+        std::array<u8, MAX_MODELS_PER_UNIT> order;
+        u8 order_count = 0;
+        unit.get_wound_allocation_order(order, order_count);
+
+        // Apply wounds in order
         for (u8 i = 0; i < order_count && remaining_wounds > 0; ++i) {
             u8 model_idx = order[i];
             if (!unit.model_is_alive(model_idx)) continue;

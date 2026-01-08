@@ -601,8 +601,55 @@ private:
                                          "charger_separating_after_melee");
                     logger_->on_melee_state_changed(false, "charger_separated");
                 }
+            } else {
+                // HitAndRun: if either unit has this rule and is still in melee,
+                // they can disengage and move away their full move distance
+                bool attacker_has_hit_and_run = attacker.has_rule(RuleId::HitAndRun);
+                bool defender_has_hit_and_run = defender.has_rule(RuleId::HitAndRun);
+
+                if (attacker_has_hit_and_run && !attacker.is_out_of_action()) {
+                    // Attacker disengages using HitAndRun
+                    i8& pos = is_unit_a ? state_.pos_a : state_.pos_b;
+                    i8 from_pos = pos;
+                    u8 move_dist = state_.get_move_speed(*attacker.unit);
+
+                    // Move away from defender (toward their starting side)
+                    if (is_unit_a) {
+                        pos = static_cast<i8>(pos - move_dist);  // Unit A moves back toward negative
+                    } else {
+                        pos = static_cast<i8>(pos + move_dist);  // Unit B moves back toward positive
+                    }
+
+                    state_.in_melee = false;
+                    if (logger_) {
+                        logger_->on_rule_triggered("HitAndRun", "disengaging", move_dist);
+                        logger_->on_movement(is_unit_a, "hit_and_run", from_pos, pos,
+                                             static_cast<i8>(move_dist), "hit_and_run_disengage");
+                        logger_->on_melee_state_changed(false, "hit_and_run");
+                    }
+                } else if (defender_has_hit_and_run && !defender.is_out_of_action()) {
+                    // Defender disengages using HitAndRun
+                    i8& pos = is_unit_a ? state_.pos_b : state_.pos_a;
+                    i8 from_pos = pos;
+                    u8 move_dist = state_.get_move_speed(*defender.unit);
+
+                    // Move away from attacker (toward their starting side)
+                    if (!is_unit_a) {
+                        pos = static_cast<i8>(pos - move_dist);  // Unit A moves back toward negative
+                    } else {
+                        pos = static_cast<i8>(pos + move_dist);  // Unit B moves back toward positive
+                    }
+
+                    state_.in_melee = false;
+                    if (logger_) {
+                        logger_->on_rule_triggered("HitAndRun", "disengaging", move_dist);
+                        logger_->on_movement(!is_unit_a, "hit_and_run", from_pos, pos,
+                                             static_cast<i8>(move_dist), "hit_and_run_disengage");
+                        logger_->on_melee_state_changed(false, "hit_and_run");
+                    }
+                }
+                // If neither has HitAndRun and not charging, units stay engaged
             }
-            // If not charging (e.g., fighting in ongoing melee), units stay engaged
         }
     }
 

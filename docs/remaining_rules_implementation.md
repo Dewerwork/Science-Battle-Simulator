@@ -1,13 +1,20 @@
 # Remaining Special Rules Implementation Guide
 
-This document details the 15 special rules that are defined in the `RuleId` enum but not yet implemented in the combat engine. Each rule is categorized by the systems or changes required for implementation.
+This document details the special rules that are defined in the `RuleId` enum but not yet implemented in the combat engine. Each rule is categorized by the systems or changes required for implementation.
 
 **Recently Implemented:**
 - ✅ Purge - +1 to hit vs Tough(3+)
 - ✅ VersatileAttack - Dice roll chooses AP+1 or +1 hit
+- ✅ Shred - Each unmodified 1 on defense = +1 wound, bypasses regen
+- ✅ Rupture - 6s to hit cause +1 wound per wound, bypasses regen
+- ✅ SelfDestruct - When model dies, deal X hits back to attacker
+- ✅ Limited - Weapon can only be used once per game
+- ✅ Takedown - Target specific model, Blast capped at 1, excess wounds don't carry over
+- ✅ HitAndRun - After melee, unit can disengage and move away full move distance
 
 **Removed (no faction data):**
 - ❌ Lock-On - No units in current data use this rule
+- ❌ Sniper - Removed from scope
 
 ---
 
