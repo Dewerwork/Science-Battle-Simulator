@@ -1,28 +1,25 @@
 #!/usr/bin/env python3
 """
 Generate an Excel review sheet with all chunk_sim special rules.
+Matches the format of docs/special_rules_review_matrix.md
 """
 
 from openpyxl import Workbook
-from openpyxl.styles import Font, Fill, PatternFill, Border, Side, Alignment
+from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
 from openpyxl.utils import get_column_letter
 
 def create_rules_sheet():
     wb = Workbook()
 
-    # =============================================
-    # SHEET 1: Core Special Rules Overview
-    # =============================================
-    ws1 = wb.active
-    ws1.title = "Core Rules Overview"
-
     # Define styles
-    header_font = Font(bold=True, color="FFFFFF", size=11)
+    header_font = Font(bold=True, color="FFFFFF", size=10)
     header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
-    category_fill = PatternFill(start_color="B4C6E7", end_color="B4C6E7", fill_type="solid")
+    category_font = Font(bold=True, size=11)
+    category_fill = PatternFill(start_color="D9E2F3", end_color="D9E2F3", fill_type="solid")
     implemented_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
     partial_fill = PatternFill(start_color="FFEB9C", end_color="FFEB9C", fill_type="solid")
     not_impl_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+    phase_yes_fill = PatternFill(start_color="BDD7EE", end_color="BDD7EE", fill_type="solid")
     thin_border = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -30,8 +27,19 @@ def create_rules_sheet():
         bottom=Side(style='thin')
     )
 
-    # Headers
-    headers = ["Rule Name", "Category", "Description/Effect", "Parameters", "Application Phase", "Implementation Status", "Source Location"]
+    # =============================================
+    # SHEET 1: Complete Rules Matrix
+    # =============================================
+    ws1 = wb.active
+    ws1.title = "Rules Matrix"
+
+    # Headers matching the markdown matrix
+    headers = [
+        "Rule", "DEP", "MOV", "CHG", "SHT", "MEL", "MOR", "RND",
+        "ATK", "HIT", "DEF", "WND", "ALC", "RGN",
+        "Grants", "Condition", "Value", "Target", "IMP"
+    ]
+
     for col, header in enumerate(headers, 1):
         cell = ws1.cell(row=1, column=col, value=header)
         cell.font = header_font
@@ -39,109 +47,157 @@ def create_rules_sheet():
         cell.border = thin_border
         cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
-    # Core Rules Data
+    # Rule data structured exactly like the matrix
+    # Format: [Rule, DEP, MOV, CHG, SHT, MEL, MOR, RND, ATK, HIT, DEF, WND, ALC, RGN, Grants, Condition, Value, Target, IMP, Category]
     rules_data = [
         # WEAPON RULES
-        ["AP (Armor Piercing)", "Weapon", "Reduces enemy defense by AP value", "Numeric (1-4)", "All attack phases", "✅ Implemented", "types.hpp:104"],
-        ["Blast(X)", "Weapon", "Multiply hits by X (capped by model count)", "Numeric (2-3)", "After hit roll", "✅ Implemented", "types.hpp:105"],
-        ["Deadly(X)", "Weapon", "Multiply wounds by X", "Numeric", "After wound calculation", "✅ Implemented", "types.hpp:106"],
-        ["Lance", "Weapon", "+2 AP on charge attacks", "+2 (fixed)", "Charge phase only", "✅ Implemented", "types.hpp:107"],
-        ["Poison", "Weapon", "Reroll defense 6s", "None", "Defense rolls", "✅ Implemented", "types.hpp:108"],
-        ["Precise", "Weapon", "+1 to hit", "+1 (fixed)", "All attack phases", "✅ Implemented", "types.hpp:109"],
-        ["Reliable", "Weapon", "Quality becomes 2+", "Quality threshold", "All attack phases", "✅ Implemented", "types.hpp:110"],
-        ["Rending", "Weapon", "Unmodified 6s to hit get AP(4)", "AP(4)", "Hit roll phase", "⚠️ Partial", "types.hpp:111"],
-        ["Bane", "Weapon", "Bypass regeneration, reroll defense 6s", "None", "Wound allocation", "✅ Implemented", "types.hpp:112"],
-        ["Impact(X)", "Weapon", "X extra attacks on charge", "Numeric", "Charge phase only", "⚠️ Partial", "types.hpp:113"],
-        ["Indirect", "Weapon", "Ignore cover", "None", "Shooting phase", "⚠️ Partial", "types.hpp:114"],
-        ["Sniper", "Weapon", "Pick target model", "None", "Target declaration", "❌ Not Implemented", "types.hpp:115"],
-        ["Lock_On", "Weapon", "+1 to hit vs vehicles", "+1 (conditional)", "Shooting phase", "❌ Not Implemented", "types.hpp:116"],
-        ["Purge", "Weapon", "+1 to hit vs Tough(3+)", "+1 (conditional)", "All attack phases", "❌ Not Implemented", "types.hpp:117"],
-        ["Surge", "Weapon", "6s to hit deal 1 extra hit", "+1 hit on 6s", "Hit roll phase", "❌ Not Implemented", "types.hpp:143"],
-        ["Thrust", "Weapon", "+1 to hit and AP(+1) when charging", "+1/+1", "Charge phase", "❌ Not Implemented", "types.hpp:144"],
-        ["Takedown", "Weapon", "Pick target model, resolve as unit of 1", "None", "Target declaration", "✅ Implemented", "types.hpp:145"],
-        ["Limited", "Weapon", "Weapon may only be used once per game", "Once per game", "Weapon usage", "❌ Not Implemented", "types.hpp:146"],
+        ["WEAPON RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["AP(X)", "", "", "", "Y", "Y", "", "", "", "", "Y", "", "", "", "Defense penalty", "Always on weapon attack", "X", "Enemy", "✅"],
+        ["Blast(X)", "", "", "", "Y", "Y", "", "", "", "", "", "Y", "", "", "Multiply hits", "After hit roll", "X (capped)", "Enemy", "✅"],
+        ["Deadly(X)", "", "", "", "Y", "Y", "", "", "", "", "", "Y", "", "", "Multiply wounds", "After wound calc", "X", "Enemy", "✅"],
+        ["Lance", "", "", "Y", "", "Y", "", "", "", "", "Y", "", "", "", "+2 AP", "When charging", "+2", "Weapon", "✅"],
+        ["Poison", "", "", "", "Y", "Y", "", "", "", "", "Y", "", "", "", "Reroll defense 6s", "On defense roll", "-", "Enemy", "✅"],
+        ["Precise", "", "", "", "Y", "Y", "", "", "", "Y", "", "", "", "", "+1 to hit", "Always", "+1", "Weapon", "✅"],
+        ["Reliable", "", "", "", "Y", "Y", "", "", "", "Y", "", "", "", "", "Quality becomes 2+", "Always", "2+", "Weapon", "✅"],
+        ["Rending", "", "", "", "Y", "Y", "", "", "", "Y", "Y", "", "", "", "AP(4)", "On unmodified 6 to hit", "AP4", "Enemy", "⚠️"],
+        ["Bane", "", "", "", "Y", "Y", "", "", "", "", "", "", "", "Y", "Bypass regeneration", "On wound", "-", "Enemy", "✅"],
+        ["Impact(X)", "", "", "Y", "", "Y", "", "", "", "Y", "", "", "", "", "X extra attacks", "On charge only", "X", "Self", "⚠️"],
+        ["Indirect", "", "", "", "Y", "", "", "", "", "", "Y", "", "", "", "Ignore cover", "Always", "-1 cover", "Enemy", "⚠️"],
+        ["Sniper", "", "", "", "Y", "", "", "", "Y", "", "", "", "", "", "Pick target model", "When declaring", "-", "Enemy", "❌"],
+        ["Lock-On", "", "", "", "Y", "Y", "", "", "", "Y", "", "", "", "", "+1 to hit vs vehicles", "vs Vehicle keyword", "+1", "Self", "❌"],
+        ["Purge", "", "", "", "Y", "Y", "", "", "", "Y", "", "", "", "", "+1 to hit vs Tough(3+)", "vs Tough(3+)", "+1", "Self", "❌"],
+        ["Limited", "", "", "", "Y", "Y", "", "", "Y", "", "", "", "", "", "Use once per game", "First use only", "1", "Weapon", "❌"],
+        ["Linked", "", "", "", "Y", "Y", "", "", "", "Y", "", "", "", "", "Only usable with another weapon", "With paired weapon", "-", "Weapon", "❌"],
 
-        # DEFENSE RULES
-        ["Regeneration", "Defense", "5+ save to ignore wound", "5+ (fixed)", "Wound allocation", "✅ Implemented", "types.hpp:120"],
-        ["Tough(X)", "Defense", "X wounds to kill model", "Numeric (1-6)", "Wound allocation", "✅ Implemented", "types.hpp:121"],
-        ["Protected", "Defense", "6+ to reduce AP by 1", "6+ threshold", "Defense roll phase", "❌ Not Implemented", "types.hpp:122"],
-        ["Stealth", "Defense", "-1 to be hit from >12\" away", "-1 (range: 12\"+)", "Shooting phase", "❌ Not Implemented", "types.hpp:123"],
-        ["ShieldWall", "Defense", "+1 Defense in melee", "+1 (melee only)", "Melee phase", "✅ Implemented", "types.hpp:124"],
-        ["Shielded", "Defense", "+1 defense vs non-spell hits", "+1 (conditional)", "Defense rolls", "✅ Implemented", "types.hpp:149"],
-        ["Resistance", "Defense", "6+ ignore wounds (2+ vs spells)", "6+/2+ (conditional)", "Wound allocation", "✅ Implemented", "types.hpp:150"],
+        # ATTACK MODIFIER RULES
+        ["ATTACK MODIFIER RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Furious", "", "", "Y", "", "Y", "", "", "", "", "", "Y", "", "", "+Sixes as extra hits", "When charging", "+6s", "Self", "✅"],
+        ["PredatorFighter", "", "", "", "", "Y", "", "", "", "Y", "", "", "", "", "6s generate more attacks", "On melee 6s", "Recursive", "Self", "✅"],
+        ["Relentless", "", "", "", "Y", "", "", "", "", "Y", "", "", "", "", "6s = extra hits", "Shooting >9\"", "+6s", "Self", "⚠️"],
+        ["GoodShot", "", "", "", "Y", "", "", "", "", "Y", "", "", "", "", "+1 to hit", "Shooting only", "+1", "Self", "✅"],
+        ["BadShot", "", "", "", "Y", "", "", "", "", "Y", "", "", "", "", "-1 to hit", "Shooting only", "-1", "Self", "✅"],
+        ["Surge", "", "", "", "Y", "Y", "", "", "", "Y", "", "", "", "", "6s to hit = +1 hit", "On 6 to hit", "+1", "Self", "❌"],
+        ["Thrust", "", "", "Y", "", "Y", "", "", "", "Y", "Y", "", "", "", "+1 hit, +1 AP", "When charging", "+1/+1", "Self", "❌"],
+        ["VersatileAttack", "", "", "", "Y", "Y", "", "", "Y", "Y", "Y", "", "", "", "Choose: AP+1 or +1 hit", "Before attack", "+1", "Self", "✅"],
+        ["PointBlankSurge", "", "", "", "Y", "", "", "", "", "Y", "", "", "", "", "6s at 0-9\" = extra hit", "Shooting 0-9\"", "+1", "Self", "❌"],
 
-        # UNIT BEHAVIOR RULES
-        ["Fearless", "Unit Behavior", "Reroll failed morale tests", "None", "Morale phase", "✅ Implemented", "types.hpp:127"],
-        ["Furious", "Unit Behavior", "Extra hits on 6s when charging", "6s = extra hits", "Melee charge phase", "✅ Implemented", "types.hpp:128"],
-        ["Hero", "Unit Behavior", "Takes wounds last", "None", "Wound allocation", "✅ Implemented", "types.hpp:129"],
-        ["Relentless", "Unit Behavior", "Extra hits on 6s shooting >9\"", "6s trigger extra hits", "Shooting phase", "⚠️ Partial", "types.hpp:130"],
-        ["Fear(X)", "Unit Behavior", "Counts as +X wounds in melee for morale", "Numeric (1-4)", "Morale phase", "✅ Implemented", "types.hpp:131"],
-        ["Counter", "Unit Behavior", "Strikes first when charged", "None", "Melee phase", "✅ Implemented", "types.hpp:132"],
-        ["Fast", "Movement", "9\" move instead of 6\"", "9\" movement", "Movement phase", "✅ Implemented", "types.hpp:133"],
-        ["Flying", "Movement", "Can fly over terrain/units", "None", "Movement phase", "✅ Implemented", "types.hpp:134"],
-        ["Strider", "Movement", "Ignore difficult terrain", "None", "Movement phase", "✅ Implemented", "types.hpp:135"],
-        ["Scout", "Deployment", "Deploy 12\" ahead", "12\" deployment", "Deployment phase", "✅ Implemented", "types.hpp:136"],
-        ["Ambush", "Deployment", "Can deploy >9\" from enemy", "9\" range", "Deployment phase", "✅ Implemented", "types.hpp:137"],
-        ["Devout", "Unit Behavior", "Faction-specific rule bonus", "Varies by faction", "All phases", "✅ Implemented", "types.hpp:138"],
-        ["PiercingAssault", "Weapon", "AP(1) on melee in charge", "AP(1)", "Charge phase", "✅ Implemented", "types.hpp:139"],
-        ["Unstoppable", "Defense", "Ignore regen and negative modifiers", "None", "Defense resolution", "✅ Implemented", "types.hpp:140"],
-        ["Casting", "Special", "Can cast X spells", "Numeric (1-3)", "Spell casting phase", "✅ Implemented", "types.hpp:141"],
-        ["Slow", "Movement", "4\" move instead of 6\"", "4\" movement", "Movement phase", "✅ Implemented", "types.hpp:142"],
+        # DEFENSE MODIFIER RULES
+        ["DEFENSE MODIFIER RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Tough(X)", "", "", "", "Y", "Y", "", "", "", "", "", "", "Y", "", "X wounds to kill", "Model property", "X", "Self", "✅"],
+        ["Regeneration", "", "", "", "Y", "Y", "", "", "", "", "", "", "", "Y", "5+ ignore wound", "On each wound", "5+", "Self", "✅"],
+        ["Shielded", "", "", "", "Y", "Y", "", "", "", "", "Y", "", "", "", "+1 Defense", "vs non-spell", "+1", "Self", "✅"],
+        ["ShieldWall", "", "", "", "", "Y", "", "", "", "", "Y", "", "", "", "+1 Defense", "In melee only", "+1", "Self", "✅"],
+        ["Stealth", "", "", "", "Y", "", "", "", "", "", "Y", "", "", "", "-1 to be hit", "From >12\" away", "-1 enemy", "Self", "❌"],
+        ["MeleeEvasion", "", "", "", "", "Y", "", "", "", "", "Y", "", "", "", "+1 Defense", "In melee only", "+1", "Self", "✅"],
+        ["MeleeShrouding", "", "", "", "", "Y", "", "", "", "", "Y", "", "", "", "+1 Defense", "In melee only", "+1", "Self", "✅"],
+        ["RangedShrouding", "", "", "", "Y", "", "", "", "", "", "Y", "", "", "", "+1 Defense", "When shot", "+1", "Self", "✅"],
+        ["Resistance", "", "", "", "Y", "Y", "", "", "", "", "", "", "", "Y", "6+ ignore wound (2+ vs spell)", "After wound", "6+/2+", "Self", "✅"],
+        ["Protected", "", "", "", "Y", "Y", "", "", "", "", "Y", "", "", "", "6+ reduce AP by 1", "Before defense roll", "6+", "Self", "❌"],
 
-        # FACTION-SPECIFIC RULES
-        ["NoRetreat", "Faction", "Can't be shaken/routed, take wounds instead", "None", "Morale/routing phase", "✅ Implemented", "types.hpp:151"],
-        ["MoraleBoost", "Faction", "+1 to morale test rolls", "+1", "Morale phase", "✅ Implemented", "types.hpp:152"],
-        ["Rupture", "Faction", "Ignore regen, extra wound on unmodified 6 to hit", "+1 wound per 6", "Hit roll phase", "✅ Implemented", "types.hpp:153"],
-        ["Agile", "Movement", "+1\" advance, +2\" rush/charge", "+1\"/+2\"", "Movement phase", "✅ Implemented", "types.hpp:154"],
-        ["HitAndRun", "Faction", "Can retreat after fighting", "None", "Melee resolution", "✅ Implemented", "types.hpp:155"],
-        ["PointBlankSurge", "Weapon", "6s to hit deal extra hit at short range (0-9\")", "+1 hit at 0-9\"", "Shooting phase", "❌ Not Implemented", "types.hpp:156"],
-        ["Shred", "Weapon", "Extra wound on unmodified 1 to block", "+1 wound", "Defense roll phase", "✅ Implemented", "types.hpp:157"],
-        ["Smash", "Weapon", "Ignore regen, +Blast(3) vs Defense 5+/6+", "Blast(3)", "Wound phase", "✅ Implemented", "types.hpp:158"],
-        ["Battleborn", "Faction", "4+ to stop being Shaken at round start", "4+ threshold", "Round start/morale", "✅ Implemented", "types.hpp:159"],
-        ["PredatorFighter", "Faction", "6s in melee generate extra attacks", "Recursive extra attacks", "Melee phase", "✅ Implemented", "types.hpp:160"],
-        ["RapidCharge", "Movement", "+4\" charge move", "+4\" movement", "Charge phase", "✅ Implemented", "types.hpp:161"],
-        ["SelfDestruct", "Faction", "Deal X hits to attacker when killed in melee", "X hits", "Model death/melee", "✅ Implemented", "types.hpp:162"],
-        ["VersatileAttack", "Weapon", "Choose AP+1 or +1 to hit each activation", "+1 (conditional)", "Attack declaration", "✅ Implemented", "types.hpp:163"],
-        ["GoodShot", "Weapon", "+1 to hit when shooting", "+1 (shooting only)", "Shooting phase", "✅ Implemented", "types.hpp:164"],
-        ["BadShot", "Weapon", "-1 to hit when shooting", "-1 (shooting only)", "Shooting phase", "✅ Implemented", "types.hpp:165"],
-        ["MeleeEvasion", "Defense", "-1 to be hit in melee", "-1 (melee only)", "Melee phase", "✅ Implemented", "types.hpp:166"],
-        ["MeleeShrouding", "Defense", "-1 to be hit in melee", "-1 (melee only)", "Melee phase", "✅ Implemented", "types.hpp:167"],
-        ["RangedShrouding", "Defense", "-1 to be hit when shooting at this unit", "-1 (shooting only)", "Shooting phase", "✅ Implemented", "types.hpp:168"],
-        ["BaneInMelee", "Weapon", "All melee attacks have Bane", "None", "Melee phase", "✅ Implemented", "types.hpp:169"],
-        ["HoldTheLine", "Faction", "Reroll failed morale tests", "None", "Morale phase", "✅ Implemented", "types.hpp:170"],
+        # WOUND MODIFIER RULES
+        ["WOUND MODIFIER RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Rupture", "", "", "", "Y", "Y", "", "", "", "", "", "Y", "", "Y", "+1 wound per 6, ignore regen", "On 6s to hit", "+1", "Enemy", "✅"],
+        ["Shred", "", "", "", "Y", "Y", "", "", "", "", "", "Y", "", "", "+1 wound per 1 to defend", "On 1s to defend", "+1", "Enemy", "✅"],
+        ["Smash", "", "", "", "Y", "Y", "", "", "", "", "", "Y", "", "Y", "Ignore regen, +Blast(3) vs Def 5+/6+", "vs Def 5+/6+", "Blast(3)", "Enemy", "✅"],
+
+        # WOUND ALLOCATION RULES
+        ["WOUND ALLOCATION RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Hero", "", "", "", "Y", "Y", "", "", "", "", "", "", "Y", "", "Takes wounds last", "Allocation order", "Last", "Self", "✅"],
+        ["Takedown", "", "", "", "Y", "Y", "", "", "Y", "", "", "", "Y", "", "Target single model", "Declaration", "1 model", "Enemy", "❌"],
+
+        # REGENERATION BYPASS RULES
+        ["REGENERATION BYPASS RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Bane (regen bypass)", "", "", "", "Y", "Y", "", "", "", "", "", "", "", "Y", "No regeneration", "On wounds dealt", "-", "Enemy", "✅"],
+        ["Rupture (regen bypass)", "", "", "", "Y", "Y", "", "", "", "", "", "Y", "", "Y", "No regeneration", "On wounds dealt", "-", "Enemy", "✅"],
+        ["Unstoppable", "", "", "", "Y", "Y", "", "", "", "", "", "", "", "Y", "Ignores enemy regen", "On wounds dealt", "-", "Enemy", "⚠️"],
+        ["BaneInMelee", "", "", "", "", "Y", "", "", "", "", "", "", "", "Y", "All melee attacks have Bane", "Melee only", "-", "Self", "✅"],
+
+        # MORALE RULES
+        ["MORALE RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Fearless", "", "", "", "", "", "Y", "", "", "", "", "", "", "", "Reroll failed morale", "On morale failure", "Reroll", "Self", "✅"],
+        ["MoraleBoost", "", "", "", "", "", "Y", "", "", "", "", "", "", "", "+1 to morale tests", "Always", "+1", "Self", "✅"],
+        ["NoRetreat", "", "", "", "", "", "Y", "", "", "", "", "", "", "", "Take wounds instead of Shaken", "On morale failure", "wounds", "Self", "✅"],
+        ["Battleborn", "", "", "", "", "", "", "Y", "", "", "", "", "", "", "4+ to rally from Shaken", "Round start", "4+", "Self", "✅"],
+        ["Fear(X)", "", "", "", "", "Y", "Y", "", "", "", "", "", "", "", "Count as +X wounds", "In melee morale", "+X", "Self", "❌"],
+        ["HoldTheLine", "", "", "", "", "", "Y", "", "", "", "", "", "", "", "Reroll failed morale", "On morale failure", "Reroll", "Self", "✅"],
+
+        # COMBAT ORDER RULES
+        ["COMBAT ORDER RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Counter", "", "", "", "", "Y", "", "", "Y", "", "", "", "", "", "Strike first when charged", "When receiving charge", "First", "Self", "❌"],
+        ["HitAndRun", "", "", "", "", "Y", "", "Y", "", "", "", "", "", "", "Retreat after combat", "End of melee", "-", "Self", "❌"],
+        ["SelfDestruct", "", "", "", "", "Y", "", "", "", "", "", "", "Y", "", "Deal X hits when killed", "On model death", "X", "Enemy", "❌"],
+
+        # MOVEMENT/DEPLOYMENT RULES
+        ["MOVEMENT/DEPLOYMENT RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Scout", "Y", "", "", "", "", "", "", "", "", "", "", "", "", "Deploy 12\" ahead", "Deployment", "+12\"", "Self", "❌"],
+        ["Ambush", "Y", "", "", "", "", "", "", "", "", "", "", "", "", "Deploy >9\" from enemy", "Deployment", "Reserve", "Self", "❌"],
+        ["Fast", "", "Y", "Y", "", "", "", "", "", "", "", "", "", "", "9\" move", "Movement", "9\"", "Self", "❌"],
+        ["Slow", "", "Y", "Y", "", "", "", "", "", "", "", "", "", "", "4\" move", "Movement", "4\"", "Self", "❌"],
+        ["Agile", "", "Y", "Y", "", "", "", "", "", "", "", "", "", "", "+1\" advance, +2\" rush/charge", "Movement", "+1/+2", "Self", "❌"],
+        ["Flying", "", "Y", "Y", "", "", "", "", "", "", "", "", "", "", "Ignore terrain/units", "Movement", "-", "Self", "❌"],
+        ["Strider", "", "Y", "Y", "", "", "", "", "", "", "", "", "", "", "Ignore difficult terrain", "Movement", "-", "Self", "❌"],
+        ["RapidCharge", "", "", "Y", "", "", "", "", "", "", "", "", "", "", "+4\" charge range", "Charge only", "+4\"", "Self", "❌"],
+
+        # MAGIC/SPECIAL RULES
+        ["MAGIC/SPECIAL RULES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "category"],
+        ["Casting(X)", "", "", "", "", "", "", "Y", "", "", "", "", "", "", "Cast X spells per round", "Casting phase", "X", "Self", "❌"],
+        ["Devout", "", "", "", "", "", "", "", "", "", "", "", "", "", "Faction rule", "Varies", "-", "Self", "❌"],
+        ["PiercingAssault", "", "", "Y", "", "Y", "", "", "", "", "Y", "", "", "", "AP(1) on melee charge", "When charging", "AP(1)", "Self", "✅"],
     ]
 
-    # Add data to sheet
-    for row_idx, row_data in enumerate(rules_data, 2):
-        for col_idx, value in enumerate(row_data, 1):
+    row_idx = 2
+    for row_data in rules_data:
+        is_category = len(row_data) > 19 and row_data[19] == "category"
+
+        if is_category:
+            # Category row - merge and style
+            cell = ws1.cell(row=row_idx, column=1, value=row_data[0])
+            cell.font = category_font
+            cell.fill = category_fill
+            cell.border = thin_border
+            ws1.merge_cells(start_row=row_idx, start_column=1, end_row=row_idx, end_column=19)
+            row_idx += 1
+            continue
+
+        for col_idx, value in enumerate(row_data[:19], 1):
             cell = ws1.cell(row=row_idx, column=col_idx, value=value)
             cell.border = thin_border
-            cell.alignment = Alignment(vertical='center', wrap_text=True)
+            cell.alignment = Alignment(horizontal='center' if col_idx <= 14 else 'left', vertical='center', wrap_text=True)
 
-            # Apply status coloring
-            if col_idx == 6:  # Implementation Status column
-                if "✅" in value:
+            # Phase columns (Y markers)
+            if col_idx >= 2 and col_idx <= 14 and value == "Y":
+                cell.fill = phase_yes_fill
+
+            # Implementation status column
+            if col_idx == 19:
+                if "✅" in str(value):
                     cell.fill = implemented_fill
-                elif "⚠️" in value:
+                elif "⚠️" in str(value):
                     cell.fill = partial_fill
-                elif "❌" in value:
+                elif "❌" in str(value):
                     cell.fill = not_impl_fill
 
+        row_idx += 1
+
     # Set column widths
-    ws1.column_dimensions['A'].width = 20
-    ws1.column_dimensions['B'].width = 15
-    ws1.column_dimensions['C'].width = 45
-    ws1.column_dimensions['D'].width = 20
-    ws1.column_dimensions['E'].width = 20
-    ws1.column_dimensions['F'].width = 20
-    ws1.column_dimensions['G'].width = 18
+    ws1.column_dimensions['A'].width = 18
+    for col in range(2, 15):
+        ws1.column_dimensions[get_column_letter(col)].width = 5
+    ws1.column_dimensions['O'].width = 30
+    ws1.column_dimensions['P'].width = 25
+    ws1.column_dimensions['Q'].width = 12
+    ws1.column_dimensions['R'].width = 10
+    ws1.column_dimensions['S'].width = 6
+
+    # Freeze first row
+    ws1.freeze_panes = 'A2'
 
     # =============================================
     # SHEET 2: Aura Rules
     # =============================================
     ws2 = wb.create_sheet("Aura Rules")
 
-    aura_headers = ["Aura Name", "Effect Granted", "Description", "Source Location"]
+    aura_headers = ["Aura Name", "Grants Rule", "Effect Description", "Trigger", "Target", "IMP"]
     for col, header in enumerate(aura_headers, 1):
         cell = ws2.cell(row=1, column=col, value=header)
         cell.font = header_font
@@ -150,15 +206,16 @@ def create_rules_sheet():
         cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
     aura_data = [
-        ["Furious Aura", "Furious", "Grants Furious rule - extra hits on 6s when charging", "unit_parser.hpp:225"],
-        ["Shielded Aura", "Shielded", "Grants +1 defense vs non-spell hits", "unit_parser.hpp:226"],
-        ["Regeneration Aura", "Regeneration", "Grants 5+ save to ignore wounds", "unit_parser.hpp:227"],
-        ["Relentless Aura", "Relentless", "Grants extra hits on 6s when shooting >9\"", "unit_parser.hpp:228"],
-        ["Scout Aura", "Scout", "Grants Scout deployment ability", "unit_parser.hpp:229"],
-        ["Stealth Aura", "Stealth", "Grants -1 to be hit from >12\" away", "unit_parser.hpp:230"],
-        ["Counter-Attack Aura", "Counter", "Grants strike first when charged", "unit_parser.hpp:231-233"],
-        ["Fearless Aura", "Fearless", "Grants reroll failed morale tests", "unit_parser.hpp:234"],
-        ["Ambush Aura", "Ambush", "Grants ability to deploy >9\" from enemy", "unit_parser.hpp:235"],
+        ["Furious Aura", "Furious", "Grants Furious - extra hits on 6s when charging", "Always", "Nearby units", "✅"],
+        ["Shielded Aura", "Shielded", "Grants +1 defense vs non-spell hits", "Always", "Nearby units", "✅"],
+        ["Regeneration Aura", "Regeneration", "Grants 5+ save to ignore wounds", "Always", "Nearby units", "✅"],
+        ["Relentless Aura", "Relentless", "Grants extra hits on 6s when shooting >9\"", "Always", "Nearby units", "⚠️"],
+        ["Scout Aura", "Scout", "Grants Scout deployment ability", "Deployment", "Nearby units", "❌"],
+        ["Stealth Aura", "Stealth", "Grants -1 to be hit from >12\" away", "Always", "Nearby units", "❌"],
+        ["Counter-Attack Aura", "Counter", "Grants strike first when charged", "When charged", "Nearby units", "❌"],
+        ["Fearless Aura", "Fearless", "Grants reroll failed morale tests", "Morale phase", "Nearby units", "✅"],
+        ["Ambush Aura", "Ambush", "Grants ability to deploy >9\" from enemy", "Deployment", "Nearby units", "❌"],
+        ["Psychic Blast", "Deals damage", "Deals 3 wounds with AP(1)", "When attacking", "Enemy unit", "✅"],
     ]
 
     for row_idx, row_data in enumerate(aura_data, 2):
@@ -166,18 +223,27 @@ def create_rules_sheet():
             cell = ws2.cell(row=row_idx, column=col_idx, value=value)
             cell.border = thin_border
             cell.alignment = Alignment(vertical='center', wrap_text=True)
+            if col_idx == 6:
+                if "✅" in value:
+                    cell.fill = implemented_fill
+                elif "⚠️" in value:
+                    cell.fill = partial_fill
+                elif "❌" in value:
+                    cell.fill = not_impl_fill
 
-    ws2.column_dimensions['A'].width = 22
-    ws2.column_dimensions['B'].width = 18
-    ws2.column_dimensions['C'].width = 50
-    ws2.column_dimensions['D'].width = 22
+    ws2.column_dimensions['A'].width = 20
+    ws2.column_dimensions['B'].width = 15
+    ws2.column_dimensions['C'].width = 45
+    ws2.column_dimensions['D'].width = 15
+    ws2.column_dimensions['E'].width = 15
+    ws2.column_dimensions['F'].width = 8
 
     # =============================================
     # SHEET 3: Faction Army Rules
     # =============================================
     ws3 = wb.create_sheet("Faction Army Rules")
 
-    faction_headers = ["Faction", "Rule Name", "Rule Type", "Effect Description", "Trigger Timing", "Source Lines"]
+    faction_headers = ["Faction", "Rule Name", "Rule Type", "Effect Description", "Trigger Timing"]
     for col, header in enumerate(faction_headers, 1):
         cell = ws3.cell(row=1, column=col, value=header)
         cell.font = header_font
@@ -186,46 +252,46 @@ def create_rules_sheet():
         cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
     faction_data = [
-        ["Alien Hives", "Hive Bond", "ArmyWide", "Grants MoraleBoost to all units", "Always", "79-123"],
-        ["Alien Hives", "Psychic Blast", "Aura", "Deals 3 wounds with AP(1)", "WhenAttacking", "79-123"],
-        ["Battle Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken at round start", "StartOfRound", "126-150"],
-        ["Battle Brothers", "Furious Aura", "Aura", "Grants Furious to nearby units", "Always", "126-150"],
-        ["Blessed Sisters", "Devout", "ArmyWide", "Grants Devout rule", "Always", "153-184"],
-        ["Blessed Sisters", "Furious Aura", "Aura", "Grants Furious to nearby units", "Always", "153-184"],
-        ["Blood Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "187-212"],
-        ["Blood Brothers", "Furious", "Special", "Extra hits on 6s when charging", "OnCharge", "187-212"],
-        ["Blood Prime Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "215-245"],
-        ["Blood Prime Brothers", "Agile", "Special", "+1\" advance, +2\" rush/charge", "Always", "215-245"],
-        ["Change Disciples", "Resistance", "ArmyWide", "6+ ignore wounds (2+ vs spells)", "WhenDefending", "248-272"],
-        ["Custodian Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "275-303"],
-        ["Custodian Brothers", "Shielded", "Special", "+1 defense vs non-spell hits", "WhenDefending", "275-303"],
-        ["DAO Union", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "306-333"],
-        ["DAO Union", "Good Shot", "Special", "+1 to hit when shooting", "WhenAttacking", "306-333"],
-        ["Dark Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "336-363"],
-        ["Dark Brothers", "Stealth", "Special", "-1 to be hit from >12\"", "WhenDefending", "336-363"],
-        ["Dark Elf Raiders", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always", "366-392"],
-        ["Dark Elf Raiders", "Hit and Run", "Special", "Can retreat after fighting", "Always", "366-392"],
-        ["Dark Prime Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "395-425"],
-        ["Dwarf Guilds", "Hold The Line", "ArmyWide", "Reroll failed morale tests", "Always", "428-457"],
-        ["Dwarf Guilds", "Shielded", "Special", "+1 defense vs non-spell hits", "WhenDefending", "428-457"],
-        ["Elven Jesters", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always", "460-481"],
-        ["Eternal Dynasty", "No Retreat", "ArmyWide", "Can't be shaken/routed", "Always", "484-518"],
-        ["Eternal Dynasty", "Regeneration", "Special", "5+ save to ignore wound", "WhenDefending", "484-518"],
-        ["Goblin Reclaimers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "521-547"],
-        ["Havoc Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "550-574"],
-        ["Havoc Brothers", "Furious", "Special", "Extra hits on 6s when charging", "OnCharge", "550-574"],
-        ["High Elf Fleets", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always", "577-605"],
-        ["High Elf Fleets", "Counter", "Special", "Strikes first when charged", "OnBeingCharged", "577-605"],
-        ["Human Defense Force", "Hold The Line", "ArmyWide", "Reroll failed morale tests", "Always", "608-635"],
-        ["Human Inquisition", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "638-679"],
-        ["Human Inquisition", "Devout", "Special", "Faction-specific rule bonus", "Always", "638-679"],
-        ["Infected Colonies", "Fearless", "ArmyWide", "Reroll failed morale tests", "Always", "682-702"],
-        ["Infected Colonies", "Regeneration", "Special", "5+ save to ignore wound", "WhenDefending", "682-702"],
-        ["Jackals", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always", "705-733"],
-        ["Jackals", "Hit and Run", "Special", "Can retreat after fighting", "Always", "705-733"],
-        ["Knight Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "736-763"],
-        ["Knight Prime Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound", "766-796"],
-        ["Lust Disciples", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always", "799+"],
+        ["Alien Hives", "Hive Bond (MoraleBoost)", "ArmyWide", "+1 to morale tests for all units", "Always"],
+        ["Alien Hives", "Psychic Blast", "Aura", "Deals 3 wounds with AP(1)", "WhenAttacking"],
+        ["Battle Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken at round start", "StartOfRound"],
+        ["Battle Brothers", "Furious Aura", "Aura", "Grants Furious to nearby units", "Always"],
+        ["Blessed Sisters", "Devout", "ArmyWide", "Faction-specific bonus", "Always"],
+        ["Blessed Sisters", "Furious Aura", "Aura", "Grants Furious to nearby units", "Always"],
+        ["Blood Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Blood Brothers", "Furious", "Special", "Extra hits on 6s when charging", "OnCharge"],
+        ["Blood Prime Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Blood Prime Brothers", "Agile", "Special", "+1\" advance, +2\" rush/charge", "Always"],
+        ["Change Disciples", "Resistance", "ArmyWide", "6+ ignore wounds (2+ vs spells)", "WhenDefending"],
+        ["Custodian Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Custodian Brothers", "Shielded", "Special", "+1 defense vs non-spell hits", "WhenDefending"],
+        ["DAO Union", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["DAO Union", "Good Shot", "Special", "+1 to hit when shooting", "WhenAttacking"],
+        ["Dark Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Dark Brothers", "Stealth", "Special", "-1 to be hit from >12\"", "WhenDefending"],
+        ["Dark Elf Raiders", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always"],
+        ["Dark Elf Raiders", "Hit and Run", "Special", "Can retreat after fighting", "EndOfMelee"],
+        ["Dark Prime Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Dwarf Guilds", "Hold The Line", "ArmyWide", "Reroll failed morale tests", "Always"],
+        ["Dwarf Guilds", "Shielded", "Special", "+1 defense vs non-spell hits", "WhenDefending"],
+        ["Elven Jesters", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always"],
+        ["Eternal Dynasty", "No Retreat", "ArmyWide", "Can't be shaken/routed, take wounds", "Always"],
+        ["Eternal Dynasty", "Regeneration", "Special", "5+ save to ignore wound", "WhenDefending"],
+        ["Goblin Reclaimers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Havoc Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Havoc Brothers", "Furious", "Special", "Extra hits on 6s when charging", "OnCharge"],
+        ["High Elf Fleets", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always"],
+        ["High Elf Fleets", "Counter", "Special", "Strikes first when charged", "OnBeingCharged"],
+        ["Human Defense Force", "Hold The Line", "ArmyWide", "Reroll failed morale tests", "Always"],
+        ["Human Inquisition", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Human Inquisition", "Devout", "Special", "Faction-specific bonus", "Always"],
+        ["Infected Colonies", "Fearless", "ArmyWide", "Reroll failed morale tests", "Always"],
+        ["Infected Colonies", "Regeneration", "Special", "5+ save to ignore wound", "WhenDefending"],
+        ["Jackals", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always"],
+        ["Jackals", "Hit and Run", "Special", "Can retreat after fighting", "EndOfMelee"],
+        ["Knight Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Knight Prime Brothers", "Battleborn", "ArmyWide", "4+ to stop being Shaken", "StartOfRound"],
+        ["Lust Disciples", "Agile", "ArmyWide", "+1\" advance, +2\" rush/charge", "Always"],
     ]
 
     for row_idx, row_data in enumerate(faction_data, 2):
@@ -235,66 +301,33 @@ def create_rules_sheet():
             cell.alignment = Alignment(vertical='center', wrap_text=True)
 
     ws3.column_dimensions['A'].width = 22
-    ws3.column_dimensions['B'].width = 18
+    ws3.column_dimensions['B'].width = 25
     ws3.column_dimensions['C'].width = 12
-    ws3.column_dimensions['D'].width = 40
+    ws3.column_dimensions['D'].width = 45
     ws3.column_dimensions['E'].width = 18
-    ws3.column_dimensions['F'].width = 15
 
     # =============================================
-    # SHEET 4: Rule Categories Summary
+    # SHEET 4: Implementation Status Summary
     # =============================================
-    ws4 = wb.create_sheet("Categories Summary")
+    ws4 = wb.create_sheet("Implementation Status")
 
-    cat_headers = ["Category", "Count", "Description", "Examples"]
-    for col, header in enumerate(cat_headers, 1):
+    # Count rules (excluding category rows)
+    impl_rules = [r for r in rules_data if len(r) <= 19 or r[19] != "category"]
+    implemented = [r[0] for r in impl_rules if len(r) > 18 and "✅" in str(r[18])]
+    partial = [r[0] for r in impl_rules if len(r) > 18 and "⚠️" in str(r[18])]
+    not_impl = [r[0] for r in impl_rules if len(r) > 18 and "❌" in str(r[18])]
+    total = len(implemented) + len(partial) + len(not_impl)
+
+    status_headers = ["Status", "Count", "Percentage", "Rules"]
+    for col, header in enumerate(status_headers, 1):
         cell = ws4.cell(row=1, column=col, value=header)
         cell.font = header_font
         cell.fill = header_fill
         cell.border = thin_border
         cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
-    cat_data = [
-        ["Weapon Rules", "18", "Rules that modify weapon attacks (hit rolls, wounds, AP)", "AP, Blast, Deadly, Lance, Poison, Rending"],
-        ["Defense Rules", "7", "Rules that modify defense and survival", "Regeneration, Tough, Stealth, ShieldWall, Shielded"],
-        ["Unit Behavior", "11", "Rules that affect unit actions and morale", "Fearless, Furious, Hero, Counter, Relentless"],
-        ["Movement", "6", "Rules that modify movement capabilities", "Fast, Slow, Flying, Strider, Agile, RapidCharge"],
-        ["Deployment", "2", "Rules that affect deployment", "Scout, Ambush"],
-        ["Faction-Specific", "14", "Rules unique to certain factions", "NoRetreat, Battleborn, PredatorFighter, HitAndRun"],
-        ["Aura Effects", "9", "Rules that grant effects to nearby units", "Furious Aura, Shielded Aura, Regeneration Aura"],
-    ]
-
-    for row_idx, row_data in enumerate(cat_data, 2):
-        for col_idx, value in enumerate(row_data, 1):
-            cell = ws4.cell(row=row_idx, column=col_idx, value=value)
-            cell.border = thin_border
-            cell.alignment = Alignment(vertical='center', wrap_text=True)
-
-    ws4.column_dimensions['A'].width = 18
-    ws4.column_dimensions['B'].width = 10
-    ws4.column_dimensions['C'].width = 50
-    ws4.column_dimensions['D'].width = 45
-
-    # =============================================
-    # SHEET 5: Implementation Status Summary
-    # =============================================
-    ws5 = wb.create_sheet("Implementation Status")
-
-    status_headers = ["Status", "Count", "Percentage", "Rules"]
-    for col, header in enumerate(status_headers, 1):
-        cell = ws5.cell(row=1, column=col, value=header)
-        cell.font = header_font
-        cell.fill = header_fill
-        cell.border = thin_border
-        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-
-    implemented = [r[0] for r in rules_data if "✅" in r[5]]
-    partial = [r[0] for r in rules_data if "⚠️" in r[5]]
-    not_impl = [r[0] for r in rules_data if "❌" in r[5]]
-    total = len(rules_data)
-
     status_data = [
-        ["✅ Fully Implemented", str(len(implemented)), f"{len(implemented)/total*100:.1f}%", ", ".join(implemented[:15]) + ("..." if len(implemented) > 15 else "")],
+        ["✅ Fully Implemented", str(len(implemented)), f"{len(implemented)/total*100:.1f}%", ", ".join(implemented)],
         ["⚠️ Partially Implemented", str(len(partial)), f"{len(partial)/total*100:.1f}%", ", ".join(partial)],
         ["❌ Not Implemented", str(len(not_impl)), f"{len(not_impl)/total*100:.1f}%", ", ".join(not_impl)],
         ["TOTAL", str(total), "100%", ""],
@@ -302,11 +335,9 @@ def create_rules_sheet():
 
     for row_idx, row_data in enumerate(status_data, 2):
         for col_idx, value in enumerate(row_data, 1):
-            cell = ws5.cell(row=row_idx, column=col_idx, value=value)
+            cell = ws4.cell(row=row_idx, column=col_idx, value=value)
             cell.border = thin_border
             cell.alignment = Alignment(vertical='center', wrap_text=True)
-
-            # Apply status coloring to first column
             if col_idx == 1:
                 if "✅" in value:
                     cell.fill = implemented_fill
@@ -315,51 +346,165 @@ def create_rules_sheet():
                 elif "❌" in value:
                     cell.fill = not_impl_fill
 
-    ws5.column_dimensions['A'].width = 25
-    ws5.column_dimensions['B'].width = 10
-    ws5.column_dimensions['C'].width = 12
-    ws5.column_dimensions['D'].width = 80
+    ws4.column_dimensions['A'].width = 25
+    ws4.column_dimensions['B'].width = 10
+    ws4.column_dimensions['C'].width = 12
+    ws4.column_dimensions['D'].width = 100
 
     # =============================================
-    # SHEET 6: Trigger Timings Reference
+    # SHEET 5: Combat Resolution Flow
     # =============================================
-    ws6 = wb.create_sheet("Trigger Timings")
+    ws5 = wb.create_sheet("Combat Resolution Flow")
 
-    timing_headers = ["Trigger Timing", "Description", "Example Rules"]
-    for col, header in enumerate(timing_headers, 1):
-        cell = ws6.cell(row=1, column=col, value=header)
-        cell.font = header_font
-        cell.fill = header_fill
-        cell.border = thin_border
-        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+    ws5.cell(row=1, column=1, value="COMBAT RESOLUTION FLOW").font = Font(bold=True, size=14)
+    ws5.merge_cells('A1:C1')
 
-    timing_data = [
-        ["Always", "Rule is always active", "Fast, Flying, Tough, Regeneration, Agile"],
-        ["OncePerGame", "Can only be used once per game", "Limited"],
-        ["OncePerActivation", "Can be used once per unit activation", "VersatileAttack"],
-        ["OnCharge", "Triggers when the unit charges", "Lance, Furious, Impact, PiercingAssault"],
-        ["OnBeingCharged", "Triggers when being charged by enemy", "Counter"],
-        ["StartOfRound", "Triggers at the start of each round", "Battleborn"],
-        ["WhenShaken", "Triggers when unit becomes shaken", "NoRetreat"],
-        ["WhenAttacking", "Triggers during attack resolution", "AP, Blast, Deadly, Precise, GoodShot, BadShot"],
-        ["WhenDefending", "Triggers when being attacked", "ShieldWall, Shielded, MeleeEvasion, RangedShrouding"],
-        ["OnModelKilled", "Triggers when a model is killed", "SelfDestruct"],
+    flow_data = [
+        ["", "", ""],
+        ["PHASE", "STEP", "RULES APPLIED"],
+        ["ROUND START", "", ""],
+        ["", "Battleborn check", "Battleborn (4+ to rally)"],
+        ["", "", ""],
+        ["ATTACK DECLARATION", "", ""],
+        ["", "VersatileAttack choice", "VersatileAttack (AP+1 or +1 hit)"],
+        ["", "Target selection", "Sniper, Takedown"],
+        ["", "Initiative swap", "Counter (swap initiative)"],
+        ["", "", ""],
+        ["HIT ROLL", "Quality Test", ""],
+        ["", "Base modifiers", "Reliable (2+), Precise (+1)"],
+        ["", "Shooting modifiers", "GoodShot (+1), BadShot (-1)"],
+        ["", "Conditional modifiers", "Lock-On (+1 vs vehicles), Purge (+1 vs Tough 3+)"],
+        ["", "Shaken penalty", "-1 to hit"],
+        ["", "Track 6s rolled", "For Furious, Rending, Rupture, etc."],
+        ["", "", ""],
+        ["HIT MODIFIERS", "", ""],
+        ["", "Charge bonuses", "Furious (+6s), Impact(X) (+X attacks)"],
+        ["", "Blast multiplier", "Blast(X) (multiply by min(X, models))"],
+        ["", "Shooting bonuses", "Relentless (+6s >9\"), Surge (+1 per 6)"],
+        ["", "Recursive attacks", "PredatorFighter (6s generate more)"],
+        ["", "", ""],
+        ["CALCULATE AP", "", ""],
+        ["", "Base AP", "From weapon"],
+        ["", "Charge bonuses", "Lance (+2), Thrust (+1), PiercingAssault (+1)"],
+        ["", "Hit-based", "Rending (AP4 on 6s)"],
+        ["", "Choice-based", "VersatileAttack (+1 if chosen)"],
+        ["", "Defender reduction", "Protected (6+ to reduce AP by 1)"],
+        ["", "", ""],
+        ["DEFENSE ROLL", "Save Test", ""],
+        ["", "Base Defense", "From model"],
+        ["", "Cover bonus", "+1"],
+        ["", "Defense bonuses", "Shielded (+1), ShieldWall (+1 melee)"],
+        ["", "Evasion bonuses", "MeleeEvasion (+1), MeleeShrouding (+1)"],
+        ["", "Ranged defense", "RangedShrouding (+1), Stealth (+1 >12\")"],
+        ["", "Ignore cover", "Indirect"],
+        ["", "Reroll defense", "Poison (reroll 6s)"],
+        ["", "Track 1s rolled", "For Shred"],
+        ["", "", ""],
+        ["WOUND CALCULATION", "", ""],
+        ["", "Base wounds", "Hits - Saves"],
+        ["", "Multipliers", "Deadly(X)"],
+        ["", "Bonus wounds", "Rupture (+1 per 6), Shred (+1 per 1)"],
+        ["", "Smash bonus", "+Blast(3) vs Def 5+/6+"],
+        ["", "", ""],
+        ["RESISTANCE", "", ""],
+        ["", "Resistance roll", "6+ to ignore (2+ vs spells)"],
+        ["", "", ""],
+        ["WOUND ALLOCATION", "", ""],
+        ["", "Order", "Non-tough → Tough (most wounded) → Heroes"],
+        ["", "Check thresholds", "Tough(X)"],
+        ["", "", ""],
+        ["REGENERATION", "", ""],
+        ["", "Regeneration roll", "5+ to ignore each wound"],
+        ["", "Bypass rules", "Bane, Rupture, Unstoppable, BaneInMelee"],
+        ["", "", ""],
+        ["MODEL DEATH", "", ""],
+        ["", "Death triggers", "SelfDestruct (deal X hits)"],
+        ["", "", ""],
+        ["MORALE CHECK", "", ""],
+        ["", "Base Morale", "From unit"],
+        ["", "Bonuses", "MoraleBoost (+1)"],
+        ["", "Fear modifier", "Fear(X) (count as +X wounds)"],
+        ["", "Reroll failures", "Fearless, HoldTheLine"],
+        ["", "Alternative", "NoRetreat (wounds instead of Shaken)"],
+        ["", "", ""],
+        ["ROUND END", "", ""],
+        ["", "Post-combat", "HitAndRun (retreat option)"],
     ]
 
-    for row_idx, row_data in enumerate(timing_data, 2):
+    for row_idx, row_data in enumerate(flow_data, 2):
+        for col_idx, value in enumerate(row_data, 1):
+            cell = ws5.cell(row=row_idx, column=col_idx, value=value)
+            cell.alignment = Alignment(vertical='center', wrap_text=True)
+            if col_idx == 1 and value and not value.startswith(" "):
+                cell.font = Font(bold=True)
+                cell.fill = category_fill
+
+    ws5.column_dimensions['A'].width = 22
+    ws5.column_dimensions['B'].width = 25
+    ws5.column_dimensions['C'].width = 50
+
+    # =============================================
+    # SHEET 6: Legend
+    # =============================================
+    ws6 = wb.create_sheet("Legend")
+
+    ws6.cell(row=1, column=1, value="LEGEND").font = Font(bold=True, size=14)
+
+    legend_data = [
+        ["", ""],
+        ["PHASE COLUMNS", ""],
+        ["DEP", "Deployment phase"],
+        ["MOV", "Movement phase"],
+        ["CHG", "Charge declaration/movement"],
+        ["SHT", "Shooting phase"],
+        ["MEL", "Melee phase"],
+        ["MOR", "Morale check"],
+        ["RND", "Round start/end"],
+        ["", ""],
+        ["SUB-STEP COLUMNS", ""],
+        ["ATK", "Attack declaration (choosing targets)"],
+        ["HIT", "Hit roll (Quality test)"],
+        ["DEF", "Defense roll (Save test)"],
+        ["WND", "Wound calculation/modification"],
+        ["ALC", "Wound allocation to models"],
+        ["RGN", "Regeneration rolls"],
+        ["", ""],
+        ["EFFECT COLUMNS", ""],
+        ["Grants", "What the rule provides (modifier, extra dice, etc.)"],
+        ["Condition", "When/how the effect triggers"],
+        ["Value", "Numeric value if applicable"],
+        ["Target", "Who is affected (Self, Enemy, Weapon)"],
+        ["", ""],
+        ["IMPLEMENTATION STATUS", ""],
+        ["✅", "Fully implemented in codebase"],
+        ["⚠️", "Partially implemented"],
+        ["❌", "Not implemented"],
+    ]
+
+    for row_idx, row_data in enumerate(legend_data, 2):
         for col_idx, value in enumerate(row_data, 1):
             cell = ws6.cell(row=row_idx, column=col_idx, value=value)
-            cell.border = thin_border
-            cell.alignment = Alignment(vertical='center', wrap_text=True)
+            cell.alignment = Alignment(vertical='center')
+            if col_idx == 1 and value and value.isupper():
+                cell.font = Font(bold=True)
+            if value == "✅":
+                cell.fill = implemented_fill
+            elif value == "⚠️":
+                cell.fill = partial_fill
+            elif value == "❌":
+                cell.fill = not_impl_fill
 
-    ws6.column_dimensions['A'].width = 22
-    ws6.column_dimensions['B'].width = 45
-    ws6.column_dimensions['C'].width = 50
+    ws6.column_dimensions['A'].width = 20
+    ws6.column_dimensions['B'].width = 50
 
     # Save workbook
     output_path = "/home/user/Science-Battle-Simulator/chunk_sim_rules_review.xlsx"
     wb.save(output_path)
     print(f"Excel file created: {output_path}")
+    print(f"Total rules: {total}")
+    print(f"  Implemented: {len(implemented)}")
+    print(f"  Partial: {len(partial)}")
+    print(f"  Not implemented: {len(not_impl)}")
     return output_path
 
 if __name__ == "__main__":
