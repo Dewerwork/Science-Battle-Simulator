@@ -8,6 +8,7 @@
 #include "engine/game_state.hpp"
 #include "engine/registry_combat_resolver.hpp"
 #include "engine/ai_controller.hpp"
+#include "engine/rule_aware_ai.hpp"
 #include "engine/match_logger.hpp"
 #include <algorithm>
 
@@ -218,8 +219,8 @@ private:
         if (is_unit_a) state_.unit_a_activated = true;
         else state_.unit_b_activated = true;
 
-        // Get AI decision
-        ActionType action = AIController::decide_action(state_, is_unit_a);
+        // Get AI decision using rule-aware AI
+        ActionType action = RuleAwareAI::decide_action(state_, is_unit_a);
 
         // Log AI decision with context
         if (logger_) {
