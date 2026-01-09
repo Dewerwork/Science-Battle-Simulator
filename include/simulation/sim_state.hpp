@@ -2,6 +2,7 @@
 
 #include "core/types.hpp"
 #include "core/unit.hpp"
+#include "core/modifiers.hpp"
 #include <array>
 
 namespace battle {
@@ -32,11 +33,15 @@ struct UnitSimState {
     bool is_fatigued = false;
     u32 limited_weapons_used = 0;  // Bitmask of Limited weapons already used this game
 
+    // Active modifiers from auras, buffs, faction rules
+    UnitModifiers modifiers;
+
     void init_from(const Unit& unit) {
         alive_count = unit.model_count;
         status = UnitStatus::Normal;
         is_fatigued = false;
         limited_weapons_used = 0;
+        modifiers.clear();
         for (u8 i = 0; i < unit.model_count; ++i) {
             models[i].wounds_taken = 0;
             models[i].state = ModelState::Healthy;
@@ -48,6 +53,7 @@ struct UnitSimState {
         status = UnitStatus::Normal;
         is_fatigued = false;
         limited_weapons_used = 0;
+        modifiers.clear();
         for (u8 i = 0; i < model_count; ++i) {
             models[i].reset();
         }
@@ -133,6 +139,30 @@ struct UnitView {
     // Limited weapon tracking
     bool is_limited_weapon_used(u8 weapon_idx) const { return state->is_limited_weapon_used(weapon_idx); }
     void mark_limited_weapon_used(u8 weapon_idx) { state->mark_limited_weapon_used(weapon_idx); }
+
+    // Modifier access
+    UnitModifiers& modifiers() { return state->modifiers; }
+    const UnitModifiers& modifiers() const { return state->modifiers; }
+
+    // Check if unit has a rule (including from modifiers)
+    bool has_rule_with_modifiers(RuleId id) const {
+        return unit->has_rule(id) || state->modifiers.has_rule(id);
+    }
+
+    // Get rule value (max of base and modifier)
+    u8 get_rule_value_with_modifiers(RuleId id) const {
+        u8 base_val = unit->get_rule_value(id);
+        u8 mod_val = state->modifiers.get_rule_value(id);
+        return std::max(base_val, mod_val);
+    }
+
+    // Get aggregated stat modifiers for current context
+    StatModifiers get_stat_modifiers(bool is_melee, bool is_charging,
+                                      bool is_being_charged, u8 distance) const {
+        return state->modifiers.get_stat_modifiers(
+            is_melee, is_charging, is_being_charged,
+            is_shaken(), false, distance);
+    }
 
     // Model access
     const Model& get_model(u8 idx) const { return unit->models[idx]; }
