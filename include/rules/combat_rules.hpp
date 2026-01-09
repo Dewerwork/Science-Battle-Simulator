@@ -131,6 +131,28 @@ extern const RuleEffectEntry Stealth_Effects;
 extern const RuleEffectEntry Relentless_Effects;
 extern const RuleEffectEntry Surge_Effects;
 extern const RuleEffectEntry Blast_Effects;
+extern const RuleEffectEntry GoodShot_Effects;
+extern const RuleEffectEntry BadShot_Effects;
+extern const RuleEffectEntry RangedShrouding_Effects;
+extern const RuleEffectEntry MeleeEvasion_Effects;
+extern const RuleEffectEntry MeleeShrouding_Effects;
+extern const RuleEffectEntry Purge_Effects;
+extern const RuleEffectEntry Thrust_Effects;
+extern const RuleEffectEntry PointBlankSurge_Effects;
+extern const RuleEffectEntry Furious_Effects;
+extern const RuleEffectEntry Rupture_Effects;
+
+// ==============================================================================
+// Cold Data Declarations
+// ==============================================================================
+
+extern const RuleColdData GoodShot_ColdData;
+extern const RuleColdData BadShot_ColdData;
+extern const RuleColdData RangedShrouding_ColdData;
+extern const RuleColdData MeleeEvasion_ColdData;
+extern const RuleColdData MeleeShrouding_ColdData;
+extern const RuleColdData Purge_ColdData;
+extern const RuleColdData Thrust_ColdData;
 
 // ==============================================================================
 // Registration Function
