@@ -424,6 +424,42 @@ public:
         // Fatigue is common, only log when notable
     }
 
+    // =========================================================================
+    // DEPLOYMENT RULES
+    // =========================================================================
+
+    void on_deployment_rule(bool is_unit_a, const char* rule_name, i8 old_position,
+                            i8 new_position, const char* reason) override {
+        out_ << ind() << "  [DEPLOYMENT] " << (is_unit_a ? "Unit A" : "Unit B") << ": "
+             << rule_name << " - " << (int)old_position << "\" -> " << (int)new_position
+             << "\" (" << reason << ")\n";
+    }
+
+    // =========================================================================
+    // MOVEMENT RULES
+    // =========================================================================
+
+    void on_movement_rule_applied(bool is_unit_a, const char* rule_name, i8 modifier,
+                                  const char* effect) override {
+        out_ << ind() << "  [MOVEMENT RULE] " << rule_name << ": ";
+        if (modifier != 0) {
+            out_ << (modifier > 0 ? "+" : "") << (int)modifier << "\" ";
+        }
+        out_ << "(" << effect << ")\n";
+    }
+
+    // =========================================================================
+    // END-ROUND RULES
+    // =========================================================================
+
+    void on_end_round_rule(bool is_unit_a, const char* rule_name, const char* effect,
+                           u32 value) override {
+        out_ << ind() << "[END-ROUND] " << (is_unit_a ? "Unit A" : "Unit B") << ": "
+             << rule_name << " - " << effect;
+        if (value > 0) out_ << " (" << value << ")";
+        out_ << "\n";
+    }
+
 private:
     std::ostream& out_;
     int indent_;
