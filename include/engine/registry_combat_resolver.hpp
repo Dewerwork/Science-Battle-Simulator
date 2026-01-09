@@ -68,6 +68,88 @@ struct HitMultiplicationResult {
 };
 
 // ==============================================================================
+// Combat Result - Final result of unified combat resolution (Phase 5)
+// ==============================================================================
+
+struct CombatResult {
+    // Hits
+    u32 attacks = 0;             // Total attacks made
+    u32 hits = 0;                // Total hits scored
+    u32 natural_sixes = 0;       // Natural 6s rolled (for bonus effects)
+    u32 rending_hits = 0;        // Hits with AP+4
+    u32 rupture_hits = 0;        // Hits that bypass regen
+
+    // Wounds
+    u32 wounds_dealt = 0;        // Wounds inflicted on defender
+    u32 models_killed = 0;       // Models removed from defender
+
+    // Counter-damage (from SelfDestruct, etc.)
+    u32 attacker_wounds = 0;     // Wounds taken by attacker
+    u32 attacker_models_killed = 0;
+
+    // Modifiers used
+    i8 hit_modifier = 0;         // Hit modifier applied
+    u8 quality_used = 4;         // Quality value used
+    u8 ap_used = 0;              // AP value used
+    u8 blast_multiplier = 1;     // Blast multiplier used
+
+    // Trait flags
+    bool bypassed_regeneration = false;
+    bool bypassed_resistance = false;
+    bool forced_defense_reroll = false;
+};
+
+// ==============================================================================
+// Unified Combat Context - Full context for combat resolution (Phase 5)
+// ==============================================================================
+
+struct UnifiedCombatContext {
+    // Participants
+    Unit* attacker = nullptr;
+    Unit* defender = nullptr;
+    Weapon* weapon = nullptr;
+
+    // Combat parameters
+    CombatType combat_type = CombatType::SHOOTING;
+    u8 distance = 0;
+    bool is_charge = false;
+
+    // Hit phase state
+    i8 hit_modifier = 0;
+    u8 quality_used = 4;
+    u32 attacks = 0;
+    u32 hits = 0;
+    u32 natural_sixes = 0;
+
+    // Hit separation state
+    u32 normal_hits = 0;
+    u32 rending_hits = 0;
+    u32 rupture_hits = 0;
+
+    // Bonus hits state
+    u32 bonus_hits = 0;
+
+    // Defense phase state
+    u8 base_ap = 0;
+    u8 effective_ap = 0;
+    u32 wounds = 0;
+    u32 models_killed = 0;
+
+    // Trait flags (aggregated from all applicable rules)
+    bool bypasses_regeneration = false;
+    bool bypasses_resistance = false;
+    bool forces_defense_reroll = false;  // Poison
+
+    // Counter-damage tracking
+    u32 attacker_wounds = 0;
+    u32 attacker_models_killed = 0;
+
+    // Takedown targeting
+    bool has_takedown = false;
+    i8 takedown_target_idx = -1;
+};
+
+// ==============================================================================
 // Registry Combat Resolver
 // ==============================================================================
 
@@ -300,6 +382,245 @@ public:
         return result;
     }
 
+    // ==============================================================================
+    // UNIFIED COMBAT RESOLUTION (Phase 5)
+    // ==============================================================================
+
+    // Resolve combat using unified path - works for both shooting and melee
+    CombatResult resolve_combat(
+        Unit& attacker,
+        Unit& defender,
+        const Weapon& weapon,
+        CombatType combat_type,
+        u8 distance,
+        bool is_charge
+    ) {
+        CombatResult result;
+
+        // Initialize context
+        UnifiedCombatContext ctx;
+        ctx.attacker = &attacker;
+        ctx.defender = &defender;
+        ctx.weapon = const_cast<Weapon*>(&weapon);
+        ctx.combat_type = combat_type;
+        ctx.distance = distance;
+        ctx.is_charge = is_charge;
+        ctx.quality_used = attacker.quality;
+        ctx.base_ap = weapon.ap;
+
+        // Check for Takedown
+        ctx.has_takedown = weapon.has_rule(RuleId::Takedown);
+
+        // Phase 1: HIT_MODIFIERS
+        execute_hit_modifiers(ctx);
+
+        // Phase 2: ROLL_HITS
+        execute_roll_hits(ctx);
+
+        // Phase 3: HIT_SEPARATION
+        execute_hit_separation(ctx);
+
+        // Phase 4: HIT_BONUSES
+        execute_hit_bonuses(ctx);
+
+        // Phase 5: HIT_MULTIPLICATION
+        execute_hit_multiplication(ctx);
+
+        // Phase 6: DEFENSE_RESOLUTION
+        execute_defense_resolution(ctx);
+
+        // Phase 7: WOUND_ALLOCATION
+        execute_wound_allocation(ctx);
+
+        // Build result
+        result.attacks = ctx.attacks;
+        result.hits = ctx.hits + ctx.bonus_hits;
+        result.natural_sixes = ctx.natural_sixes;
+        result.rending_hits = ctx.rending_hits;
+        result.rupture_hits = ctx.rupture_hits;
+        result.wounds_dealt = ctx.wounds;
+        result.models_killed = ctx.models_killed;
+        result.attacker_wounds = ctx.attacker_wounds;
+        result.attacker_models_killed = ctx.attacker_models_killed;
+        result.hit_modifier = ctx.hit_modifier;
+        result.quality_used = ctx.quality_used;
+        result.ap_used = ctx.effective_ap;
+        result.bypassed_regeneration = ctx.bypasses_regeneration;
+        result.bypassed_resistance = ctx.bypasses_resistance;
+        result.forced_defense_reroll = ctx.forces_defense_reroll;
+
+        return result;
+    }
+
+private:
+    // ==============================================================================
+    // Phase Execution Methods
+    // ==============================================================================
+
+    void execute_hit_modifiers(UnifiedCombatContext& ctx) {
+        auto mod_result = apply_hit_modifiers(
+            *ctx.attacker, *ctx.defender, *ctx.weapon,
+            ctx.combat_type, ctx.distance, ctx.is_charge);
+
+        ctx.hit_modifier = mod_result.hit_modifier;
+        if (mod_result.quality_override > 0) {
+            ctx.quality_used = mod_result.quality_override;
+        }
+    }
+
+    void execute_roll_hits(UnifiedCombatContext& ctx) {
+        // Calculate total attacks
+        ctx.attacks = ctx.weapon->attacks * ctx.attacker->alive_count;
+
+        // Roll to hit
+        auto roll_result = dice_.roll_quality_test(
+            ctx.attacks, ctx.quality_used, ctx.hit_modifier);
+
+        ctx.hits = roll_result.hits;
+        ctx.natural_sixes = roll_result.sixes;
+        ctx.normal_hits = ctx.hits;
+    }
+
+    void execute_hit_separation(UnifiedCombatContext& ctx) {
+        auto sep_result = apply_hit_separation(
+            *ctx.attacker, *ctx.defender, *ctx.weapon,
+            ctx.combat_type, ctx.hits, ctx.natural_sixes);
+
+        ctx.normal_hits = sep_result.normal_hits;
+        ctx.rending_hits = sep_result.rending_hits;
+        ctx.rupture_hits = sep_result.rupture_hits;
+
+        // Aggregate traits for later phases
+        if (sep_result.has_rending || sep_result.has_rupture) {
+            ctx.bypasses_regeneration = true;
+        }
+    }
+
+    void execute_hit_bonuses(UnifiedCombatContext& ctx) {
+        auto bonus_result = apply_hit_bonuses(
+            *ctx.attacker, *ctx.defender, *ctx.weapon,
+            ctx.combat_type, ctx.distance, ctx.is_charge,
+            ctx.hits, ctx.natural_sixes, ctx.quality_used, ctx.hit_modifier);
+
+        ctx.bonus_hits = bonus_result.bonus_hits;
+        ctx.hits = bonus_result.total_hits;
+    }
+
+    void execute_hit_multiplication(UnifiedCombatContext& ctx) {
+        auto mult_result = apply_hit_multiplication(
+            *ctx.defender, *ctx.weapon,
+            ctx.hits, ctx.rending_hits, ctx.rupture_hits, ctx.has_takedown);
+
+        ctx.hits = mult_result.total_hits;
+        ctx.rending_hits = mult_result.rending_hits;
+        ctx.rupture_hits = mult_result.rupture_hits;
+    }
+
+    void execute_defense_resolution(UnifiedCombatContext& ctx) {
+        // Aggregate traits from all applicable rules
+        aggregate_combat_traits(ctx);
+
+        // Calculate effective AP
+        ctx.effective_ap = ctx.base_ap;
+
+        // Lance: +2 AP when charging
+        if (ctx.is_charge && ctx.weapon->has_rule(RuleId::Lance)) {
+            ctx.effective_ap += 2;
+        }
+
+        // Thrust: +1 AP when charging (in addition to hit bonus)
+        if (ctx.is_charge && ctx.weapon->has_rule(RuleId::Thrust)) {
+            ctx.effective_ap += 1;
+        }
+
+        // Process normal hits
+        u32 normal_wounds = 0;
+        if (ctx.normal_hits > 0) {
+            normal_wounds = dice_.roll_defense_test(
+                ctx.normal_hits, ctx.defender->defense, ctx.effective_ap,
+                0, ctx.forces_defense_reroll);
+        }
+
+        // Process rending hits (AP+4)
+        u32 rending_wounds = 0;
+        if (ctx.rending_hits > 0) {
+            u8 rending_ap = ctx.effective_ap + 4;
+            rending_wounds = dice_.roll_defense_test(
+                ctx.rending_hits, ctx.defender->defense, rending_ap,
+                0, ctx.forces_defense_reroll);
+        }
+
+        ctx.wounds = normal_wounds + rending_wounds;
+
+        // Rupture adds +1 wound per wound from rupture hits
+        // (simplified - in full implementation would track which wounds came from rupture)
+    }
+
+    void execute_wound_allocation(UnifiedCombatContext& ctx) {
+        if (ctx.wounds == 0) return;
+
+        u32 wounds_remaining = ctx.wounds;
+        u32 models_killed = 0;
+
+        // Get wound allocation order
+        std::array<u8, MAX_MODELS_PER_UNIT> order;
+        u8 order_count;
+        ctx.defender->get_wound_allocation_order(order, order_count);
+
+        // Apply Deadly multiplier
+        u8 deadly_value = ctx.weapon->get_rule_value(RuleId::Deadly);
+        if (deadly_value > 1) {
+            wounds_remaining *= deadly_value;
+        }
+
+        // Allocate wounds to models
+        for (u8 i = 0; i < order_count && wounds_remaining > 0; ++i) {
+            Model& model = ctx.defender->models[order[i]];
+            if (!model.is_alive()) continue;
+
+            u32 wounds_to_apply = wounds_remaining;
+
+            // Check regeneration (if not bypassed)
+            if (!ctx.bypasses_regeneration && ctx.defender->has_rule(RuleId::Regeneration)) {
+                u8 regen_target = ctx.defender->get_rule_value(RuleId::Regeneration);
+                if (regen_target == 0) regen_target = 5;  // Default 5+
+                wounds_to_apply = dice_.roll_regeneration(wounds_to_apply, regen_target);
+            }
+
+            // Apply wounds to model
+            u32 model_wounds = std::min(wounds_to_apply,
+                static_cast<u32>(model.remaining_wounds()));
+
+            model.wounds_taken += static_cast<u8>(model_wounds);
+            wounds_remaining -= model_wounds;
+
+            if (!model.is_alive()) {
+                models_killed++;
+            }
+        }
+
+        ctx.models_killed = models_killed;
+        ctx.defender->update_alive_count();
+    }
+
+    void aggregate_combat_traits(UnifiedCombatContext& ctx) {
+        // Check weapon traits
+        if (ctx.weapon->has_rule(RuleId::Poison)) {
+            ctx.forces_defense_reroll = true;
+        }
+        if (ctx.weapon->has_rule(RuleId::Bane)) {
+            ctx.bypasses_regeneration = true;
+        }
+        if (ctx.weapon->has_rule(RuleId::Rending) ||
+            ctx.weapon->has_rule(RuleId::Rupture)) {
+            ctx.bypasses_regeneration = true;
+        }
+
+        // Check attacker traits
+        // (none currently affect defense resolution)
+    }
+
+public:
     // ==============================================================================
     // Comparison Helper - For A/B Testing
     // ==============================================================================
