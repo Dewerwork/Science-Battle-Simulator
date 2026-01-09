@@ -1681,13 +1681,45 @@ public:
                             logger_->on_rule_triggered("Counter", "reduced_impact_attacks", counter_models);
                         }
                     }
-                    // Roll impact hits (quality 2+)
-                    auto impact_hits = dice_.roll_quality_test(impact_attacks, 2, 0);
-                    if (impact_hits.hits > 0) {
-                        auto wound_result = apply_wounds(defender, impact_hits.hits, false);
-                        result.wounds_dealt += wound_result.wounds_dealt;
-                        result.models_killed += wound_result.models_killed;
-                        result.self_destruct_hits += wound_result.self_destruct_hits;
+
+                    // Impact attacks hit on 2+ (automatic hit on 2+, not quality-based)
+                    if (logger_) dice_.enable_roll_recording(true);
+                    u32 impact_hits = dice_.roll_d6_target(impact_attacks, 2);
+
+                    if (logger_) {
+                        std::vector<u8> rolls = dice_.take_recorded_rolls();
+                        logger_->on_hit_rolls(2, 0, 2, rolls, impact_hits, 0);
+                    }
+
+                    if (impact_hits > 0) {
+                        // Impact has AP(1) by default
+                        u8 impact_ap = 1;
+
+                        // Roll defense for Impact hits
+                        if (logger_) dice_.enable_roll_recording(true);
+                        u32 impact_wounds = dice_.roll_defense_test(
+                            impact_hits, defender.defense(), impact_ap, 0, false);
+
+                        if (logger_) {
+                            std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                            u32 saves = impact_hits - impact_wounds;
+                            u8 defense_target = std::min(static_cast<u8>(6),
+                                static_cast<u8>(defender.defense() + impact_ap));
+                            logger_->on_defense_rolls(defender.defense(), impact_ap, defense_target, false,
+                                                      def_rolls, saves, impact_wounds, 0, {}, 0);
+                            dice_.enable_roll_recording(false);
+                        }
+
+                        if (impact_wounds > 0) {
+                            auto wound_result = apply_wounds(defender, impact_wounds, false);
+                            result.wounds_dealt += wound_result.wounds_dealt;
+                            result.models_killed += wound_result.models_killed;
+                            result.self_destruct_hits += wound_result.self_destruct_hits;
+
+                            if (logger_) {
+                                logger_->on_weapon_attack_end("Impact", impact_wounds, wound_result.models_killed);
+                            }
+                        }
                     }
                 }
             }
