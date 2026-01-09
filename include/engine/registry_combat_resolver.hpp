@@ -133,6 +133,7 @@ struct UnifiedCombatContext {
     // Defense phase state
     u8 base_ap = 0;
     u8 effective_ap = 0;
+    i8 defense_modifier = 0;  // From Shielded, etc.
     u32 wounds = 0;
     u32 models_killed = 0;
 
@@ -148,6 +149,9 @@ struct UnifiedCombatContext {
     // Takedown targeting
     bool has_takedown = false;
     i8 takedown_target_idx = -1;
+
+    // VersatileAttack state
+    bool versatile_ap_chosen = false;  // True = +1 AP, False = +1 hit (already applied)
 };
 
 // ==============================================================================
@@ -671,6 +675,7 @@ private:
         // Copy results back to UnifiedCombatContext
         uctx.hit_modifier = ctx.hit_modifier;
         uctx.quality_used = ctx.quality_used;
+        uctx.defense_modifier = ctx.defense_modifier;
         uctx.hits = ctx.hits;
         uctx.natural_sixes = ctx.natural_sixes;
 
@@ -684,6 +689,7 @@ private:
         uctx.rending_hits = ext.rending_hits;
         uctx.rupture_hits = ext.rupture_hits;
         uctx.bonus_hits = ext.bonus_hits;
+        uctx.versatile_ap_chosen = ext.versatile_ap_chosen;
 
         // Handle quality override from extended context
         if (ext.quality_override.has_value()) {
@@ -994,18 +1000,27 @@ private:
         // ============================================
         apply_all_phase_effects(CombatSubPhase::DEFENSE_RESOLUTION, ctx);
 
+        // Apply VersatileAttack AP bonus if chosen
+        if (ctx.versatile_ap_chosen) {
+            ctx.effective_ap += 1;
+            if (logger_) logger_->on_rule_triggered("VersatileAttack", "ap+1_bonus_applied", 1);
+        }
+
         // Roll defense for normal hits
         u8 defense_target = defender.defense();
         if (logger_) dice_.enable_roll_recording(true);
         u32 wounds_from_normal = dice_.roll_defense_test(
-            ctx.normal_hits, defense_target, ctx.effective_ap, 0, ctx.forces_defense_reroll);
+            ctx.normal_hits, defense_target, ctx.effective_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
 
         // Log defense rolls
         if (logger_) {
             std::vector<u8> def_rolls = dice_.take_recorded_rolls();
-            i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(ctx.effective_ap);
+            i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(ctx.effective_ap) - ctx.defense_modifier;
             effective_target = std::max(i8(2), std::min(i8(6), effective_target));
             u32 saves = ctx.normal_hits - wounds_from_normal;
+            if (ctx.defense_modifier != 0 && logger_) {
+                logger_->on_defense_modifier("Shielded", ctx.defense_modifier, "easier_saves");
+            }
             logger_->on_defense_rolls(defense_target, ctx.effective_ap,
                 static_cast<u8>(effective_target), ctx.forces_defense_reroll,
                 def_rolls, saves, wounds_from_normal, 0, {}, 0);
@@ -1017,11 +1032,11 @@ private:
             u8 rending_ap = ctx.effective_ap + 4;
             if (logger_) dice_.enable_roll_recording(true);
             wounds_from_rending = dice_.roll_defense_test(
-                ctx.rending_hits, defense_target, rending_ap, 0, ctx.forces_defense_reroll);
+                ctx.rending_hits, defense_target, rending_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
 
             if (logger_) {
                 std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
-                i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(rending_ap);
+                i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(rending_ap) - ctx.defense_modifier;
                 effective_target = std::max(i8(2), std::min(i8(6), effective_target));
                 u32 saves = ctx.rending_hits - wounds_from_rending;
                 logger_->on_defense_rolls_rending(defense_target, rending_ap,
