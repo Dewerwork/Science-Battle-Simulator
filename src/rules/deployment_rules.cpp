@@ -9,6 +9,9 @@ namespace battle {
 // Deployment Rules Registry
 // ==============================================================================
 
+// Ambush deployment minimum distance from enemy
+constexpr i8 AMBUSH_MIN_DISTANCE = 9;
+
 namespace {
 
 std::unordered_map<u16, DeploymentRuleDefinition> g_deployment_rules;
@@ -17,7 +20,7 @@ bool g_deployment_rules_initialized = false;
 void init_deployment_rules() {
     if (g_deployment_rules_initialized) return;
 
-    // Scout - Forward deploy 6" closer to center
+    // Scout - Forward deploy 6" closer to center (Deploy 12" ahead)
     g_deployment_rules[static_cast<u16>(RuleId::Scout)] = {
         RuleId::Scout,
         DeploymentType::Scout,
@@ -25,12 +28,13 @@ void init_deployment_rules() {
         {true, false, 0.3f}  // Prefers forward position
     };
 
-    // Ambush - Can deploy anywhere in own half
+    // Ambush - Set aside before deployment, deploy after round 1, 9"+ from enemy
+    // Units with Ambush can't seize/contest objectives on the round they deploy
     g_deployment_rules[static_cast<u16>(RuleId::Ambush)] = {
         RuleId::Ambush,
         DeploymentType::Ambush,
-        0,  // Position calculated dynamically
-        {true, true, 0.2f}  // Can choose best position
+        0,  // Starts in reserve (position set when deploying)
+        {true, true, 0.4f}  // Delayed deployment with flexibility
     };
 
     // Note: DeepStrike and Infiltrate are placeholders for future expansion
@@ -72,43 +76,22 @@ i8 DeploymentProcessor::calculate_starting_position(
 {
     i8 base_position = is_unit_a ? STANDARD_DEPLOY_A : STANDARD_DEPLOY_B;
 
-    // Check for Scout rule
+    // Ambush: Unit starts in reserve, not on the table
+    // Return a special position indicating "off table"
+    // The position will be set when the unit deploys from reserve
+    if (unit.has_rule(RuleId::Ambush)) {
+        // Use a far position to indicate reserve (will be updated on deployment)
+        // Unit A: -24 (far left), Unit B: +24 (far right)
+        return is_unit_a ? -24 : 24;
+    }
+
+    // Check for Scout rule - deploy 6" closer to center
     if (unit.has_rule(RuleId::Scout)) {
         // Move 6" closer to center
         if (is_unit_a) {
             base_position += SCOUT_FORWARD;  // -12 + 6 = -6
         } else {
             base_position -= SCOUT_FORWARD;  // +12 - 6 = +6
-        }
-    }
-
-    // Check for Ambush rule - deploy at optimal position
-    if (unit.has_rule(RuleId::Ambush)) {
-        // AI chooses optimal position based on unit type
-        switch (unit.ai_type) {
-            case AIType::Melee:
-                // Melee units want to be as close as possible
-                if (is_unit_a) {
-                    base_position = AMBUSH_MAX_A;  // -3 (closest to objective)
-                } else {
-                    base_position = AMBUSH_MIN_B;  // +3 (closest to objective)
-                }
-                break;
-
-            case AIType::Shooting:
-                // Shooting units prefer to maintain range
-                // Stay at standard position for maximum shooting distance
-                base_position = is_unit_a ? STANDARD_DEPLOY_A : STANDARD_DEPLOY_B;
-                break;
-
-            case AIType::Hybrid:
-                // Hybrid units compromise - move a bit forward
-                if (is_unit_a) {
-                    base_position = -6;  // Halfway forward
-                } else {
-                    base_position = 6;   // Halfway forward
-                }
-                break;
         }
     }
 
@@ -165,9 +148,60 @@ void DeploymentProcessor::apply_deployment(
     const Unit& unit_a,
     const Unit& unit_b)
 {
+    // Set reserve flags for Ambush units
+    state.unit_a_in_reserve = unit_a.has_rule(RuleId::Ambush);
+    state.unit_b_in_reserve = unit_b.has_rule(RuleId::Ambush);
+
     // Calculate and apply starting positions
     state.pos_a = calculate_starting_position(unit_a, true);
     state.pos_b = calculate_starting_position(unit_b, false);
+}
+
+i8 DeploymentProcessor::calculate_ambush_position(
+    const Unit& unit,
+    bool is_unit_a,
+    i8 enemy_position)
+{
+    // Ambush: Deploy anywhere 9"+ from enemy
+    // Choose optimal position based on unit type
+    // Unit A deploys on negative side, Unit B on positive side
+    i8 safe_distance = AMBUSH_MIN_DISTANCE;
+
+    // Calculate the closest legal position (9" from enemy)
+    i8 closest_legal;
+    if (is_unit_a) {
+        // Unit A is on negative side - deploy at most at enemy_pos - 9"
+        // But also stay on negative side (or at least not past enemy)
+        closest_legal = enemy_position - safe_distance;
+        // If enemy is far positive, we could deploy near objective
+        // Clamp to not go past center too far on enemy's side
+        if (closest_legal > 0) closest_legal = 0;  // Don't deploy past center
+    } else {
+        // Unit B is on positive side - deploy at least at enemy_pos + 9"
+        closest_legal = enemy_position + safe_distance;
+        // Clamp to not go past center on enemy's side
+        if (closest_legal < 0) closest_legal = 0;  // Don't deploy past center
+    }
+
+    switch (unit.ai_type) {
+        case AIType::Melee:
+            // Melee units want to be as close as legally possible (9" from enemy)
+            return closest_legal;
+
+        case AIType::Shooting:
+            // Shooting units prefer to stay at range but close to objective
+            // Deploy at a moderate distance, favoring own side
+            if (is_unit_a) {
+                return std::min(closest_legal, static_cast<i8>(-6));
+            } else {
+                return std::max(closest_legal, static_cast<i8>(6));
+            }
+
+        case AIType::Hybrid:
+        default:
+            // Hybrid units deploy close to enemy but with flexibility
+            return closest_legal;
+    }
 }
 
 } // namespace battle

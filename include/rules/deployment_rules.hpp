@@ -98,6 +98,12 @@ public:
         GameState& state,
         const Unit& unit_a,
         const Unit& unit_b);
+
+    // Calculate optimal Ambush deployment position (9"+ from enemy)
+    static i8 calculate_ambush_position(
+        const Unit& unit,
+        bool is_unit_a,
+        i8 enemy_position);
 };
 
 // ==============================================================================
