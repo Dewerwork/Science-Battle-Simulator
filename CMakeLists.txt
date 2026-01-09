@@ -89,6 +89,7 @@ add_library(battle_core STATIC
     src/core/special_rule.cpp
     src/rules/combat_rules.cpp
     src/rules/movement_rules.cpp
+    src/rules/endround_rules.cpp
     src/rules/factions/faction_rules_registry.cpp
 )
 target_include_directories(battle_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
