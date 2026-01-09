@@ -168,6 +168,12 @@ target_include_directories(test_phase7_ai PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(test_phase7_ai PRIVATE battle_core)
 target_compile_options(test_phase7_ai PRIVATE ${COMMON_FLAGS})
 
+# Phase 8 cleanup and optimization test
+add_executable(test_phase8_cleanup src/test_phase8_cleanup.cpp)
+target_include_directories(test_phase8_cleanup PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_phase8_cleanup PRIVATE battle_core)
+target_compile_options(test_phase8_cleanup PRIVATE ${COMMON_FLAGS})
+
 # Benchmark - parallel simulation
 add_executable(benchmark_sim src/benchmark_sim.cpp)
 target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)

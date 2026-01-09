@@ -14,10 +14,29 @@ namespace battle {
 struct CombatResult;
 
 // ==============================================================================
-// Combat Engine - Handles shooting and melee resolution (optimized for UnitView)
+// Combat Engine - DEPRECATED
+// ==============================================================================
+// This class is DEPRECATED as of Phase 8 of the Rule Registry Architecture.
+// Use RegistryCombatResolver instead (from registry_combat_resolver.hpp).
+//
+// The old CombatEngine uses hardcoded conditional checks for each rule,
+// which doesn't scale well as new rules are added. The new registry-based
+// resolver uses a data-driven approach with rule effects defined in a
+// central registry.
+//
+// Migration guide:
+//   OLD: CombatEngine engine(dice, logger);
+//        auto result = engine.resolve_shooting(attacker, defender, distance, moved);
+//
+//   NEW: RuleRegistry registry = create_default_registry();
+//        RegistryCombatResolver resolver(registry, dice, logger);
+//        auto result = resolver.resolve_combat(attacker, defender, weapon,
+//                                               CombatType::SHOOTING, distance, false);
+//
+// This file will be removed in a future release.
 // ==============================================================================
 
-class CombatEngine {
+class [[deprecated("Use RegistryCombatResolver instead - see registry_combat_resolver.hpp")]] CombatEngine {
 public:
     explicit CombatEngine(DiceRoller& dice, MatchLogger* logger = nullptr)
         : dice_(dice), logger_(logger) {}
