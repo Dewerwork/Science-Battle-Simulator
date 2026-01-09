@@ -7,6 +7,8 @@
 #include "engine/dice.hpp"
 #include "engine/game_state.hpp"
 #include "engine/ai_controller.hpp"
+#include "engine/rule_aware_ai.hpp"
+#include "rules/deployment_rules.hpp"
 #include <algorithm>
 #include <vector>
 
@@ -220,6 +222,10 @@ public:
     // Run a single game with full logging
     GameResult run_game(const Unit& unit_a, const Unit& unit_b) {
         state_.init(unit_a, unit_b);
+
+        // Apply deployment rules (Scout, Ambush, etc.)
+        DeploymentProcessor::apply_deployment(state_, unit_a, unit_b);
+
         log_.log_game_start(unit_a, unit_b, state_.pos_a, state_.pos_b);
 
         // Run up to MAX_ROUNDS
@@ -280,8 +286,8 @@ private:
         if (is_unit_a) state_.unit_a_activated = true;
         else state_.unit_b_activated = true;
 
-        // Get AI decision with logging
-        ActionType action = AIController::decide_action(state_, is_unit_a);
+        // Get AI decision using rule-aware AI
+        ActionType action = RuleAwareAI::decide_action(state_, is_unit_a);
 
         // Log AI decision
         AIDecisionEvent ai_decision = build_ai_decision(is_unit_a, action);
