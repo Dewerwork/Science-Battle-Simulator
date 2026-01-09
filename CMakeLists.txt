@@ -150,6 +150,12 @@ target_include_directories(test_phase4_combat_subphases PRIVATE ${CMAKE_SOURCE_D
 target_link_libraries(test_phase4_combat_subphases PRIVATE battle_core)
 target_compile_options(test_phase4_combat_subphases PRIVATE ${COMMON_FLAGS})
 
+# Phase 5 unified combat path test
+add_executable(test_phase5_unified_combat src/test_phase5_unified_combat.cpp)
+target_include_directories(test_phase5_unified_combat PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_phase5_unified_combat PRIVATE battle_core)
+target_compile_options(test_phase5_unified_combat PRIVATE ${COMMON_FLAGS})
+
 # Benchmark - parallel simulation
 add_executable(benchmark_sim src/benchmark_sim.cpp)
 target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
