@@ -636,6 +636,33 @@ private:
         // (none currently affect defense resolution)
     }
 
+    // Helper to get weapon rules as a string for logging
+    std::string get_weapon_rules_str(const Weapon& w) const {
+        std::string rules;
+        if (w.has_rule(RuleId::Rending)) rules += "Rending,";
+        if (w.has_rule(RuleId::Deadly)) {
+            rules += "Deadly(" + std::to_string(w.get_rule_value(RuleId::Deadly)) + "),";
+        }
+        if (w.has_rule(RuleId::Blast)) {
+            rules += "Blast(" + std::to_string(w.get_rule_value(RuleId::Blast)) + "),";
+        }
+        if (w.has_rule(RuleId::Poison)) rules += "Poison,";
+        if (w.has_rule(RuleId::Bane)) rules += "Bane,";
+        if (w.has_rule(RuleId::Reliable)) rules += "Reliable,";
+        if (w.has_rule(RuleId::Surge)) rules += "Surge,";
+        if (w.has_rule(RuleId::Lance)) rules += "Lance,";
+        if (w.has_rule(RuleId::Thrust)) rules += "Thrust,";
+        if (w.has_rule(RuleId::Unstoppable)) rules += "Unstoppable,";
+        if (w.has_rule(RuleId::Rupture)) rules += "Rupture,";
+        if (w.has_rule(RuleId::Precise)) rules += "Precise,";
+        if (w.has_rule(RuleId::Purge)) rules += "Purge,";
+        if (w.has_rule(RuleId::Shred)) rules += "Shred,";
+        if (w.has_rule(RuleId::Takedown)) rules += "Takedown,";
+        if (w.has_rule(RuleId::Limited)) rules += "Limited,";
+        if (!rules.empty()) rules.pop_back();  // Remove trailing comma
+        return rules;
+    }
+
 public:
     // ==============================================================================
     // Game Interface Methods - Drop-in replacement for CombatEngine
@@ -692,65 +719,169 @@ public:
             u8 models_with_weapon = std::min(w.count, models_shooting);
             if (models_with_weapon == 0) continue;
 
-            // Apply hit modifiers using registry
-            auto hit_mod = apply_hit_modifiers(
-                *attacker.unit, *defender.unit, w,
-                CombatType::SHOOTING, static_cast<u8>(distance), false);
-
-            u8 quality = hit_mod.quality_override > 0 ? hit_mod.quality_override : attacker.quality();
-
             // Calculate attacks
             u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
 
-            // Roll to hit
-            auto hit_result = dice_.roll_quality_test(attacks, quality, hit_mod.hit_modifier);
+            // Log weapon attack start
+            if (logger_) {
+                std::string rules_str = get_weapon_rules_str(w);
+                logger_->on_weapon_attack_start(w.name.c_str(), false, w.range, w.attacks, w.ap, rules_str.c_str());
+                logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
+            }
+
+            // Roll to hit with modifiers
+            u8 base_quality = attacker.quality();
+            u8 quality = base_quality;
+            i8 hit_modifier = 0;
+
+            // Apply hit modifiers and log each one
+            if (w.has_rule(RuleId::Reliable)) {
+                quality = 2;
+                if (logger_) logger_->on_hit_modifier("Reliable", 0, "quality_becomes_2+");
+            }
+            if (defender.has_rule(RuleId::Stealth) && distance > 9) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("Stealth", -1, "target_beyond_9\"");
+            }
+            if (defender.has_rule(RuleId::RangedShrouding)) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("RangedShrouding", -1, "harder_to_hit_at_range");
+            }
+            if (w.has_rule(RuleId::Precise)) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Precise", +1, "weapon_accuracy");
+            }
+            if (attacker.has_rule(RuleId::GoodShot)) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("GoodShot", +1, "skilled_shooter");
+            }
+            if (attacker.has_rule(RuleId::BadShot)) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("BadShot", -1, "poor_shooter");
+            }
+            u8 defender_tough = defender.get_rule_value(RuleId::Tough);
+            if (w.has_rule(RuleId::Purge) && defender_tough >= 3) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Purge", +1, "targeting_tough_3+");
+            }
+
+            // Enable roll recording for logging
+            if (logger_) dice_.enable_roll_recording(true);
+
+            auto hit_result = dice_.roll_quality_test(attacks, quality, hit_modifier);
             u32 hits = hit_result.hits;
             u32 sixes = hit_result.sixes;
 
+            // Log hit rolls
+            if (logger_) {
+                std::vector<u8> hit_rolls = dice_.take_recorded_rolls();
+                i8 effective = static_cast<i8>(quality) - hit_modifier;
+                effective = std::max(i8(2), std::min(i8(6), effective));
+                logger_->on_hit_rolls(base_quality, hit_modifier, static_cast<u8>(effective), hit_rolls, hits, sixes);
+            }
+
             // Apply hit separation (Rending/Rupture)
-            auto sep_result = apply_hit_separation(
-                *attacker.unit, *defender.unit, w,
-                CombatType::SHOOTING, hits, sixes);
+            bool has_rending = w.has_rule(RuleId::Rending);
+            bool has_rupture = w.has_rule(RuleId::Rupture);
+            u32 rending_hits = has_rending ? sixes : 0;
+            u32 normal_hits = hits - rending_hits;
 
             // Apply hit bonuses (Relentless, Surge, etc.)
-            auto bonus_result = apply_hit_bonuses(
-                *attacker.unit, *defender.unit, w,
-                CombatType::SHOOTING, static_cast<u8>(distance), false,
-                hits, sixes, quality, hit_mod.hit_modifier);
-            hits = bonus_result.total_hits;
+            u32 bonus_hits = 0;
+            if (attacker.has_rule(RuleId::Relentless) && distance > 9) {
+                bonus_hits += sixes;
+                hits += sixes;
+                if (logger_) logger_->on_rule_triggered("Relentless", "extra_hits_on_6s", sixes);
+            }
+            if (w.has_rule(RuleId::Surge)) {
+                bonus_hits += sixes;
+                hits += sixes;
+                if (logger_) logger_->on_rule_triggered("Surge", "extra_hits_on_6s", sixes);
+            }
+            if (attacker.has_rule(RuleId::PointBlankSurge) && distance <= 9) {
+                bonus_hits += sixes;
+                hits += sixes;
+                if (logger_) logger_->on_rule_triggered("PointBlankSurge", "extra_hits_on_6s_at_close_range", sixes);
+            }
 
             // Apply hit multiplication (Blast)
-            auto mult_result = apply_hit_multiplication(
-                *defender.unit, w, hits, sep_result.rending_hits, sep_result.rupture_hits,
-                w.has_rule(RuleId::Takedown));
-            hits = mult_result.total_hits;
+            bool has_takedown = w.has_rule(RuleId::Takedown);
+            u8 blast_value = w.get_rule_value(RuleId::Blast);
+            if (blast_value > 0) {
+                u8 max_multiplier = has_takedown ? u8(1) : static_cast<u8>(defender.alive_count());
+                u8 multiplier = std::min(blast_value, max_multiplier);
+                u32 old_hits = hits;
+                hits *= multiplier;
+                rending_hits *= multiplier;
+                normal_hits = hits - rending_hits;
+                if (logger_) logger_->on_rule_triggered("Blast", "multiplied_hits", hits - old_hits);
+            }
 
-            // Determine bypass flags
-            bool bypass_regen = sep_result.has_rending || sep_result.has_rupture ||
+            // Log hits after modifiers
+            if (logger_) {
+                logger_->on_hits_after_modifiers(normal_hits, rending_hits, hits);
+            }
+
+            // Determine bypass and reroll flags
+            bool bypass_regen = has_rending || has_rupture ||
                                 w.has_rule(RuleId::Bane) || w.has_rule(RuleId::Shred) ||
                                 w.has_rule(RuleId::Unstoppable);
             bool force_reroll = w.has_rule(RuleId::Poison) || w.has_rule(RuleId::Bane);
 
+            // Calculate defense modifiers
+            u8 effective_defense = defender.defense();
+            if (defender.has_rule(RuleId::Shielded)) {
+                effective_defense = std::max(u8(2), static_cast<u8>(effective_defense - 1));
+                if (logger_) logger_->on_defense_modifier("Shielded", -1, "easier_saves_vs_shooting");
+            }
+
             // Roll defense for normal hits
-            u32 normal_hits = mult_result.total_hits - mult_result.rending_hits;
-            u32 wounds_from_normal = dice_.roll_defense_test(
-                normal_hits, defender.defense(), w.ap, 0, force_reroll);
+            if (logger_) dice_.enable_roll_recording(true);
+            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, w.ap, 0, force_reroll);
+
+            // Log defense rolls
+            if (logger_) {
+                std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                i8 effective_target = static_cast<i8>(effective_defense) + static_cast<i8>(w.ap);
+                effective_target = std::max(i8(2), std::min(i8(6), effective_target));
+                u32 saves = normal_hits - wounds_from_normal;
+                logger_->on_defense_rolls(effective_defense, w.ap, static_cast<u8>(effective_target), force_reroll,
+                                          def_rolls, saves, wounds_from_normal, 0, {}, 0);
+            }
 
             // Roll defense for rending hits (AP+4)
             u32 wounds_from_rending = 0;
-            if (mult_result.rending_hits > 0) {
-                wounds_from_rending = dice_.roll_defense_test(
-                    mult_result.rending_hits, defender.defense(), w.ap + 4, 0, force_reroll);
+            if (rending_hits > 0) {
+                u8 rending_ap = w.ap + 4;
+                if (logger_) dice_.enable_roll_recording(true);
+                wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, force_reroll);
+
+                if (logger_) {
+                    std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
+                    i8 effective_target = static_cast<i8>(effective_defense) + static_cast<i8>(rending_ap);
+                    effective_target = std::max(i8(2), std::min(i8(6), effective_target));
+                    u32 saves = rending_hits - wounds_from_rending;
+                    logger_->on_defense_rolls_rending(defender.defense(), rending_ap, static_cast<u8>(effective_target),
+                                                      rend_rolls, saves, wounds_from_rending);
+                }
             }
 
+            if (logger_) dice_.enable_roll_recording(false);
+
             u32 total_wounds = wounds_from_normal + wounds_from_rending;
+            u8 weapon_models_killed = 0;
 
             // Apply wounds
             if (total_wounds > 0) {
                 auto wound_result = apply_wounds(defender, total_wounds, bypass_regen);
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
+                weapon_models_killed = wound_result.models_killed;
                 result.self_destruct_hits += wound_result.self_destruct_hits;
+            }
+
+            if (logger_) {
+                logger_->on_weapon_attack_end(w.name.c_str(), total_wounds, weapon_models_killed);
             }
         }
 
@@ -780,14 +911,34 @@ public:
                 u8 effective_impact = (impact_value > counter_models) ? (impact_value - counter_models) : 0;
                 if (effective_impact > 0) {
                     u32 impact_attacks = static_cast<u32>(effective_impact) * models_fighting;
-                    if (logger_) logger_->on_rule_triggered("Impact", "bonus_attacks_on_charge", impact_attacks);
+                    if (logger_) {
+                        logger_->on_rule_triggered("Impact", "bonus_attacks_on_charge", impact_attacks);
+                        if (counter_models > 0) {
+                            logger_->on_rule_triggered("Counter", "reduced_impact_attacks", counter_models);
+                        }
+                    }
 
                     // Impact attacks hit on 2+
+                    if (logger_) dice_.enable_roll_recording(true);
                     auto impact_hits = dice_.roll_d6_target(impact_attacks, 2);
 
+                    if (logger_) {
+                        std::vector<u8> rolls = dice_.take_recorded_rolls();
+                        logger_->on_hit_rolls(2, 0, 2, rolls, impact_hits, 0);
+                    }
+
                     // Roll defense
+                    if (logger_) dice_.enable_roll_recording(true);
                     u32 impact_wounds = dice_.roll_defense_test(
                         impact_hits, defender.defense(), 0, 0, false);
+
+                    if (logger_) {
+                        std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                        u32 saves = impact_hits - impact_wounds;
+                        logger_->on_defense_rolls(defender.defense(), 0, defender.defense(), false,
+                                                  def_rolls, saves, impact_wounds, 0, {}, 0);
+                        dice_.enable_roll_recording(false);
+                    }
 
                     if (impact_wounds > 0) {
                         auto wound_result = apply_wounds(defender, impact_wounds, false);
@@ -817,50 +968,113 @@ public:
             u8 models_with_weapon = std::min(w.count, models_fighting);
             if (models_with_weapon == 0) continue;
 
-            // Apply hit modifiers using registry
-            auto hit_mod = apply_hit_modifiers(
-                *attacker.unit, *defender.unit, w,
-                CombatType::MELEE, 0, is_charging);
-
-            u8 quality = hit_mod.quality_override > 0 ? hit_mod.quality_override : attacker.quality();
-
             // Calculate attacks
             u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
 
-            // Roll to hit
-            auto hit_result = dice_.roll_quality_test(attacks, quality, hit_mod.hit_modifier);
+            // Log weapon attack start
+            if (logger_) {
+                std::string rules_str = get_weapon_rules_str(w);
+                logger_->on_weapon_attack_start(w.name.c_str(), true, 0, w.attacks, w.ap, rules_str.c_str());
+                logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
+            }
+
+            // Roll to hit with modifiers
+            u8 base_quality = attacker.quality();
+            u8 quality = base_quality;
+            i8 hit_modifier = 0;
+
+            // Apply hit modifiers and log each one
+            if (w.has_rule(RuleId::Reliable)) {
+                quality = 2;
+                if (logger_) logger_->on_hit_modifier("Reliable", 0, "quality_becomes_2+");
+            }
+            if (w.has_rule(RuleId::Precise)) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Precise", +1, "weapon_accuracy");
+            }
+            if (is_charging && w.has_rule(RuleId::Thrust)) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Thrust", +1, "charging_accuracy");
+            }
+            if (defender.has_rule(RuleId::Evasion)) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("Evasion", -1, "target_evasive");
+            }
+            if (defender.has_rule(RuleId::Shrouding)) {
+                hit_modifier -= 1;
+                if (logger_) logger_->on_hit_modifier("Shrouding", -1, "target_shrouded");
+            }
+            u8 defender_tough = defender.get_rule_value(RuleId::Tough);
+            if (w.has_rule(RuleId::Purge) && defender_tough >= 3) {
+                hit_modifier += 1;
+                if (logger_) logger_->on_hit_modifier("Purge", +1, "targeting_tough_3+");
+            }
+
+            // Enable roll recording for logging
+            if (logger_) dice_.enable_roll_recording(true);
+
+            auto hit_result = dice_.roll_quality_test(attacks, quality, hit_modifier);
             u32 hits = hit_result.hits;
             u32 sixes = hit_result.sixes;
 
-            // Apply hit separation (Rending/Rupture)
-            auto sep_result = apply_hit_separation(
-                *attacker.unit, *defender.unit, w,
-                CombatType::MELEE, hits, sixes);
+            // Log hit rolls
+            if (logger_) {
+                std::vector<u8> hit_rolls = dice_.take_recorded_rolls();
+                i8 effective = static_cast<i8>(quality) - hit_modifier;
+                effective = std::max(i8(2), std::min(i8(6), effective));
+                logger_->on_hit_rolls(base_quality, hit_modifier, static_cast<u8>(effective), hit_rolls, hits, sixes);
+            }
 
-            // Apply hit bonuses
-            auto bonus_result = apply_hit_bonuses(
-                *attacker.unit, *defender.unit, w,
-                CombatType::MELEE, 0, is_charging,
-                hits, sixes, quality, hit_mod.hit_modifier);
-            hits = bonus_result.total_hits;
+            // Apply hit separation (Rending/Rupture)
+            bool has_rending = w.has_rule(RuleId::Rending);
+            bool has_rupture = w.has_rule(RuleId::Rupture);
+            u32 rending_hits = has_rending ? sixes : 0;
+            u32 normal_hits = hits - rending_hits;
+
+            // Apply hit bonuses (Furious)
+            u32 bonus_hits = 0;
+            if (is_charging && attacker.has_rule(RuleId::Furious)) {
+                bonus_hits += sixes;
+                hits += sixes;
+                if (logger_) logger_->on_rule_triggered("Furious", "extra_hits_on_6s_when_charging", sixes);
+            }
+            if (w.has_rule(RuleId::Surge)) {
+                bonus_hits += sixes;
+                hits += sixes;
+                if (logger_) logger_->on_rule_triggered("Surge", "extra_hits_on_6s", sixes);
+            }
 
             // Apply hit multiplication (Blast)
-            auto mult_result = apply_hit_multiplication(
-                *defender.unit, w, hits, sep_result.rending_hits, sep_result.rupture_hits,
-                w.has_rule(RuleId::Takedown));
-            hits = mult_result.total_hits;
+            bool has_takedown = w.has_rule(RuleId::Takedown);
+            u8 blast_value = w.get_rule_value(RuleId::Blast);
+            if (blast_value > 0) {
+                u8 max_multiplier = has_takedown ? u8(1) : static_cast<u8>(defender.alive_count());
+                u8 multiplier = std::min(blast_value, max_multiplier);
+                u32 old_hits = hits;
+                hits *= multiplier;
+                rending_hits *= multiplier;
+                normal_hits = hits - rending_hits;
+                if (logger_) logger_->on_rule_triggered("Blast", "multiplied_hits", hits - old_hits);
+            }
+
+            // Log hits after modifiers
+            if (logger_) {
+                logger_->on_hits_after_modifiers(normal_hits, rending_hits, hits);
+            }
 
             // Calculate AP with charge bonuses
             u8 effective_ap = w.ap;
             if (is_charging && w.has_rule(RuleId::Lance)) {
                 effective_ap += 2;
+                if (logger_) logger_->on_rule_triggered("Lance", "ap+2_on_charge", 2);
             }
             if (is_charging && w.has_rule(RuleId::Thrust)) {
                 effective_ap += 1;
+                if (logger_) logger_->on_rule_triggered("Thrust", "ap+1_on_charge", 1);
             }
 
-            // Determine bypass flags
-            bool bypass_regen = sep_result.has_rending || sep_result.has_rupture ||
+            // Determine bypass and reroll flags
+            bool bypass_regen = has_rending || has_rupture ||
                                 w.has_rule(RuleId::Bane) || w.has_rule(RuleId::Shred) ||
                                 w.has_rule(RuleId::Unstoppable) ||
                                 attacker.has_rule(RuleId::BaneInMelee);
@@ -868,25 +1082,52 @@ public:
                                 attacker.has_rule(RuleId::BaneInMelee);
 
             // Roll defense for normal hits
-            u32 normal_hits = mult_result.total_hits - mult_result.rending_hits;
-            u32 wounds_from_normal = dice_.roll_defense_test(
-                normal_hits, defender.defense(), effective_ap, 0, force_reroll);
+            if (logger_) dice_.enable_roll_recording(true);
+            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), effective_ap, 0, force_reroll);
+
+            // Log defense rolls
+            if (logger_) {
+                std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                i8 effective_target = static_cast<i8>(defender.defense()) + static_cast<i8>(effective_ap);
+                effective_target = std::max(i8(2), std::min(i8(6), effective_target));
+                u32 saves = normal_hits - wounds_from_normal;
+                logger_->on_defense_rolls(defender.defense(), effective_ap, static_cast<u8>(effective_target), force_reroll,
+                                          def_rolls, saves, wounds_from_normal, 0, {}, 0);
+            }
 
             // Roll defense for rending hits (AP+4)
             u32 wounds_from_rending = 0;
-            if (mult_result.rending_hits > 0) {
-                wounds_from_rending = dice_.roll_defense_test(
-                    mult_result.rending_hits, defender.defense(), effective_ap + 4, 0, force_reroll);
+            if (rending_hits > 0) {
+                u8 rending_ap = effective_ap + 4;
+                if (logger_) dice_.enable_roll_recording(true);
+                wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), rending_ap, 0, force_reroll);
+
+                if (logger_) {
+                    std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
+                    i8 effective_target = static_cast<i8>(defender.defense()) + static_cast<i8>(rending_ap);
+                    effective_target = std::max(i8(2), std::min(i8(6), effective_target));
+                    u32 saves = rending_hits - wounds_from_rending;
+                    logger_->on_defense_rolls_rending(defender.defense(), rending_ap, static_cast<u8>(effective_target),
+                                                      rend_rolls, saves, wounds_from_rending);
+                }
             }
 
+            if (logger_) dice_.enable_roll_recording(false);
+
             u32 total_wounds = wounds_from_normal + wounds_from_rending;
+            u8 weapon_models_killed = 0;
 
             // Apply wounds
             if (total_wounds > 0) {
                 auto wound_result = apply_wounds(defender, total_wounds, bypass_regen);
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
+                weapon_models_killed = wound_result.models_killed;
                 result.self_destruct_hits += wound_result.self_destruct_hits;
+            }
+
+            if (logger_) {
+                logger_->on_weapon_attack_end(w.name.c_str(), total_wounds, weapon_models_killed);
             }
         }
 
