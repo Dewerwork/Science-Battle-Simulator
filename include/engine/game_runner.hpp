@@ -2,9 +2,10 @@
 
 #include "core/types.hpp"
 #include "core/unit.hpp"
+#include "core/rule_registry.hpp"
 #include "engine/dice.hpp"
 #include "engine/game_state.hpp"
-#include "engine/combat_engine.hpp"
+#include "engine/registry_combat_resolver.hpp"
 #include "engine/ai_controller.hpp"
 #include "engine/match_logger.hpp"
 #include <algorithm>
@@ -14,11 +15,15 @@ namespace battle {
 // ==============================================================================
 // Game Runner - Executes a complete game (optimized - no unit copying)
 // ==============================================================================
+// Uses the new registry-based combat resolver for rule processing.
 
 class GameRunner {
 public:
     explicit GameRunner(DiceRoller& dice, MatchLogger* logger = nullptr)
-        : dice_(dice), combat_(dice, logger), logger_(logger) {}
+        : dice_(dice)
+        , registry_(create_default_registry())
+        , combat_(registry_, dice, logger)
+        , logger_(logger) {}
 
     // Run a single game between two units
     GameResult run_game(const Unit& unit_a, const Unit& unit_b) {
@@ -97,7 +102,8 @@ public:
 
 private:
     DiceRoller& dice_;
-    CombatEngine combat_;
+    RuleRegistry registry_;
+    RegistryCombatResolver combat_;
     MatchLogger* logger_;
     GameState state_;  // Reusable game state
 

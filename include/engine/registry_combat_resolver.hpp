@@ -17,11 +17,9 @@
 #include "core/contexts.hpp"
 #include "core/rule_registry.hpp"
 #include "engine/dice.hpp"
-
-// Forward declare MatchLogger to avoid header dependency issues
-namespace battle {
-class MatchLogger;
-}
+#include "engine/game_state.hpp"      // For CombatResult, ActionType
+#include "engine/match_logger.hpp"    // Requires ActionType from game_state.hpp
+#include "simulation/sim_state.hpp"   // For UnitView
 
 namespace battle {
 
@@ -68,10 +66,12 @@ struct HitMultiplicationResult {
 };
 
 // ==============================================================================
-// Combat Result - Final result of unified combat resolution (Phase 5)
+// Detailed Combat Result - Internal result of unified combat resolution (Phase 5)
 // ==============================================================================
+// This is a detailed result used internally by the registry-based combat resolver.
+// For the game interface, see CombatResult in game_state.hpp.
 
-struct CombatResult {
+struct DetailedCombatResult {
     // Hits
     u32 attacks = 0;             // Total attacks made
     u32 hits = 0;                // Total hits scored
@@ -86,6 +86,7 @@ struct CombatResult {
     // Counter-damage (from SelfDestruct, etc.)
     u32 attacker_wounds = 0;     // Wounds taken by attacker
     u32 attacker_models_killed = 0;
+    u32 self_destruct_hits = 0;  // SelfDestruct hits queued for attacker
 
     // Modifiers used
     i8 hit_modifier = 0;         // Hit modifier applied
@@ -387,7 +388,9 @@ public:
     // ==============================================================================
 
     // Resolve combat using unified path - works for both shooting and melee
-    CombatResult resolve_combat(
+    // Returns DetailedCombatResult with full tracking information.
+    // For the simpler game interface, use resolve_shooting() or resolve_melee().
+    DetailedCombatResult resolve_combat(
         Unit& attacker,
         Unit& defender,
         const Weapon& weapon,
@@ -395,7 +398,20 @@ public:
         u8 distance,
         bool is_charge
     ) {
-        CombatResult result;
+        return resolve_combat_internal(attacker, defender, weapon, combat_type, distance, is_charge);
+    }
+
+private:
+    // Internal implementation of resolve_combat
+    DetailedCombatResult resolve_combat_internal(
+        Unit& attacker,
+        Unit& defender,
+        const Weapon& weapon,
+        CombatType combat_type,
+        u8 distance,
+        bool is_charge
+    ) {
+        DetailedCombatResult result;
 
         // Initialize context
         UnifiedCombatContext ctx;
@@ -621,6 +637,452 @@ private:
     }
 
 public:
+    // ==============================================================================
+    // Game Interface Methods - Drop-in replacement for CombatEngine
+    // ==============================================================================
+    // These methods provide the same interface as the deprecated CombatEngine,
+    // allowing GameRunner to use RegistryCombatResolver as a drop-in replacement.
+
+    // Wound result structure (same as CombatEngine::WoundResult)
+    struct WoundResult {
+        u16 wounds_dealt = 0;
+        u8 models_killed = 0;
+        u32 self_destruct_hits = 0;  // Hits to return from SelfDestruct models
+    };
+
+    // Resolve shooting attack - iterates over all ranged weapons
+    CombatResult resolve_shooting(UnitView attacker, UnitView defender, i8 distance, bool /*moved*/) {
+        CombatResult result;
+
+        u8 models_shooting = attacker.alive_count();
+        if (models_shooting == 0) return result;
+
+        // Check if any ranged weapons are in range
+        bool has_valid_weapon = false;
+        for (u8 i = 0; i < attacker.weapon_count(); ++i) {
+            const Weapon& w = attacker.get_weapon(i);
+            if (w.is_ranged() && w.range >= static_cast<u8>(distance)) {
+                has_valid_weapon = true;
+                break;
+            }
+        }
+        if (!has_valid_weapon) return result;
+
+        if (logger_) {
+            logger_->on_shooting_start(true, attacker.unit->name.c_str(),
+                                       defender.unit->name.c_str(), distance, models_shooting);
+        }
+
+        // Process each weapon
+        for (u8 i = 0; i < attacker.weapon_count(); ++i) {
+            const Weapon& w = attacker.get_weapon(i);
+            if (!w.is_ranged() || w.range < static_cast<u8>(distance)) continue;
+
+            // Limited: skip if already used this game
+            if (w.has_rule(RuleId::Limited)) {
+                if (attacker.is_limited_weapon_used(i)) {
+                    if (logger_) logger_->on_rule_triggered("Limited", "weapon_already_used", i);
+                    continue;
+                }
+                attacker.mark_limited_weapon_used(i);
+                if (logger_) logger_->on_rule_triggered("Limited", "using_one_time_weapon", i);
+            }
+
+            // Calculate models with this weapon
+            u8 models_with_weapon = std::min(w.count, models_shooting);
+            if (models_with_weapon == 0) continue;
+
+            // Apply hit modifiers using registry
+            auto hit_mod = apply_hit_modifiers(
+                *attacker.unit, *defender.unit, w,
+                CombatType::SHOOTING, static_cast<u8>(distance), false);
+
+            u8 quality = hit_mod.quality_override > 0 ? hit_mod.quality_override : attacker.quality();
+
+            // Calculate attacks
+            u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
+
+            // Roll to hit
+            auto hit_result = dice_.roll_quality_test(attacks, quality, hit_mod.hit_modifier);
+            u32 hits = hit_result.hits;
+            u32 sixes = hit_result.sixes;
+
+            // Apply hit separation (Rending/Rupture)
+            auto sep_result = apply_hit_separation(
+                *attacker.unit, *defender.unit, w,
+                CombatType::SHOOTING, hits, sixes);
+
+            // Apply hit bonuses (Relentless, Surge, etc.)
+            auto bonus_result = apply_hit_bonuses(
+                *attacker.unit, *defender.unit, w,
+                CombatType::SHOOTING, static_cast<u8>(distance), false,
+                hits, sixes, quality, hit_mod.hit_modifier);
+            hits = bonus_result.total_hits;
+
+            // Apply hit multiplication (Blast)
+            auto mult_result = apply_hit_multiplication(
+                *defender.unit, w, hits, sep_result.rending_hits, sep_result.rupture_hits,
+                w.has_rule(RuleId::Takedown));
+            hits = mult_result.total_hits;
+
+            // Determine bypass flags
+            bool bypass_regen = sep_result.has_rending || sep_result.has_rupture ||
+                                w.has_rule(RuleId::Bane) || w.has_rule(RuleId::Shred) ||
+                                w.has_rule(RuleId::Unstoppable);
+            bool force_reroll = w.has_rule(RuleId::Poison) || w.has_rule(RuleId::Bane);
+
+            // Roll defense for normal hits
+            u32 normal_hits = mult_result.total_hits - mult_result.rending_hits;
+            u32 wounds_from_normal = dice_.roll_defense_test(
+                normal_hits, defender.defense(), w.ap, 0, force_reroll);
+
+            // Roll defense for rending hits (AP+4)
+            u32 wounds_from_rending = 0;
+            if (mult_result.rending_hits > 0) {
+                wounds_from_rending = dice_.roll_defense_test(
+                    mult_result.rending_hits, defender.defense(), w.ap + 4, 0, force_reroll);
+            }
+
+            u32 total_wounds = wounds_from_normal + wounds_from_rending;
+
+            // Apply wounds
+            if (total_wounds > 0) {
+                auto wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                result.wounds_dealt += wound_result.wounds_dealt;
+                result.models_killed += wound_result.models_killed;
+                result.self_destruct_hits += wound_result.self_destruct_hits;
+            }
+        }
+
+        result.target_destroyed = defender.is_destroyed();
+        result.target_shaken = defender.is_shaken();
+        result.target_routed = defender.is_routed();
+
+        if (logger_) {
+            logger_->on_shooting_end(true, result.wounds_dealt, result.models_killed, result.target_destroyed);
+        }
+
+        return result;
+    }
+
+    // Resolve melee attack - handles Impact, Counter, etc.
+    CombatResult resolve_melee(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models = 0) {
+        CombatResult result;
+
+        u8 models_fighting = attacker.alive_count();
+        if (models_fighting == 0) return result;
+
+        // Impact attacks (only when charging)
+        if (is_charging && attacker.has_rule(RuleId::Impact)) {
+            u8 impact_value = attacker.get_rule_value(RuleId::Impact);
+            if (impact_value > 0) {
+                // Counter: reduce Impact attacks by models with Counter
+                u8 effective_impact = (impact_value > counter_models) ? (impact_value - counter_models) : 0;
+                if (effective_impact > 0) {
+                    u32 impact_attacks = static_cast<u32>(effective_impact) * models_fighting;
+                    if (logger_) logger_->on_rule_triggered("Impact", "bonus_attacks_on_charge", impact_attacks);
+
+                    // Impact attacks hit on 2+
+                    auto impact_hits = dice_.roll_d6_target(impact_attacks, 2);
+
+                    // Roll defense
+                    u32 impact_wounds = dice_.roll_defense_test(
+                        impact_hits, defender.defense(), 0, 0, false);
+
+                    if (impact_wounds > 0) {
+                        auto wound_result = apply_wounds(defender, impact_wounds, false);
+                        result.wounds_dealt += wound_result.wounds_dealt;
+                        result.models_killed += wound_result.models_killed;
+                        result.self_destruct_hits += wound_result.self_destruct_hits;
+                    }
+                }
+            }
+        }
+
+        // Process each melee weapon
+        for (u8 i = 0; i < attacker.weapon_count(); ++i) {
+            const Weapon& w = attacker.get_weapon(i);
+            if (!w.is_melee()) continue;
+
+            // Limited: skip if already used
+            if (w.has_rule(RuleId::Limited)) {
+                if (attacker.is_limited_weapon_used(i)) {
+                    if (logger_) logger_->on_rule_triggered("Limited", "weapon_already_used", i);
+                    continue;
+                }
+                attacker.mark_limited_weapon_used(i);
+                if (logger_) logger_->on_rule_triggered("Limited", "using_one_time_weapon", i);
+            }
+
+            u8 models_with_weapon = std::min(w.count, models_fighting);
+            if (models_with_weapon == 0) continue;
+
+            // Apply hit modifiers using registry
+            auto hit_mod = apply_hit_modifiers(
+                *attacker.unit, *defender.unit, w,
+                CombatType::MELEE, 0, is_charging);
+
+            u8 quality = hit_mod.quality_override > 0 ? hit_mod.quality_override : attacker.quality();
+
+            // Calculate attacks
+            u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
+
+            // Roll to hit
+            auto hit_result = dice_.roll_quality_test(attacks, quality, hit_mod.hit_modifier);
+            u32 hits = hit_result.hits;
+            u32 sixes = hit_result.sixes;
+
+            // Apply hit separation (Rending/Rupture)
+            auto sep_result = apply_hit_separation(
+                *attacker.unit, *defender.unit, w,
+                CombatType::MELEE, hits, sixes);
+
+            // Apply hit bonuses
+            auto bonus_result = apply_hit_bonuses(
+                *attacker.unit, *defender.unit, w,
+                CombatType::MELEE, 0, is_charging,
+                hits, sixes, quality, hit_mod.hit_modifier);
+            hits = bonus_result.total_hits;
+
+            // Apply hit multiplication (Blast)
+            auto mult_result = apply_hit_multiplication(
+                *defender.unit, w, hits, sep_result.rending_hits, sep_result.rupture_hits,
+                w.has_rule(RuleId::Takedown));
+            hits = mult_result.total_hits;
+
+            // Calculate AP with charge bonuses
+            u8 effective_ap = w.ap;
+            if (is_charging && w.has_rule(RuleId::Lance)) {
+                effective_ap += 2;
+            }
+            if (is_charging && w.has_rule(RuleId::Thrust)) {
+                effective_ap += 1;
+            }
+
+            // Determine bypass flags
+            bool bypass_regen = sep_result.has_rending || sep_result.has_rupture ||
+                                w.has_rule(RuleId::Bane) || w.has_rule(RuleId::Shred) ||
+                                w.has_rule(RuleId::Unstoppable) ||
+                                attacker.has_rule(RuleId::BaneInMelee);
+            bool force_reroll = w.has_rule(RuleId::Poison) || w.has_rule(RuleId::Bane) ||
+                                attacker.has_rule(RuleId::BaneInMelee);
+
+            // Roll defense for normal hits
+            u32 normal_hits = mult_result.total_hits - mult_result.rending_hits;
+            u32 wounds_from_normal = dice_.roll_defense_test(
+                normal_hits, defender.defense(), effective_ap, 0, force_reroll);
+
+            // Roll defense for rending hits (AP+4)
+            u32 wounds_from_rending = 0;
+            if (mult_result.rending_hits > 0) {
+                wounds_from_rending = dice_.roll_defense_test(
+                    mult_result.rending_hits, defender.defense(), effective_ap + 4, 0, force_reroll);
+            }
+
+            u32 total_wounds = wounds_from_normal + wounds_from_rending;
+
+            // Apply wounds
+            if (total_wounds > 0) {
+                auto wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                result.wounds_dealt += wound_result.wounds_dealt;
+                result.models_killed += wound_result.models_killed;
+                result.self_destruct_hits += wound_result.self_destruct_hits;
+            }
+        }
+
+        result.target_destroyed = defender.is_destroyed();
+        result.target_shaken = defender.is_shaken();
+        result.target_routed = defender.is_routed();
+
+        return result;
+    }
+
+    // Apply wounds to a unit with proper wound allocation
+    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false, i8 takedown_target = -1) {
+        WoundResult result;
+
+        // Regeneration check
+        if (!bypass_regeneration && unit.has_rule(RuleId::Regeneration)) {
+            u32 original_wounds = wounds;
+            wounds = dice_.roll_regeneration(wounds, 5);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Regeneration", "blocked_wounds", blocked);
+            }
+        }
+
+        // Resistance: 6+ to ignore each wound (after regeneration)
+        if (unit.has_rule(RuleId::Resistance) && wounds > 0) {
+            u32 original_wounds = wounds;
+            wounds = dice_.roll_regeneration(wounds, 6);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Resistance", "resisted_wounds", blocked);
+            }
+        }
+
+        result.wounds_dealt = static_cast<u16>(wounds);
+
+        // Takedown: apply wounds to specific target first
+        u32 remaining_wounds = wounds;
+        if (takedown_target >= 0 && unit.model_is_alive(static_cast<u8>(takedown_target))) {
+            u8 model_idx = static_cast<u8>(takedown_target);
+            u8 wounds_to_kill = unit.model_remaining_wounds(model_idx);
+            u8 wounds_applied = static_cast<u8>(std::min(remaining_wounds, static_cast<u32>(wounds_to_kill)));
+
+            for (u8 w = 0; w < wounds_applied && remaining_wounds > 0; ++w) {
+                if (unit.apply_wound_to_model(model_idx)) {
+                    result.models_killed++;
+                    // SelfDestruct: when model dies, queue hits for attacker
+                    if (unit.has_rule(RuleId::SelfDestruct)) {
+                        u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                        result.self_destruct_hits += destruct_value;
+                        if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                    }
+                    break;
+                }
+                remaining_wounds--;
+            }
+            return result;
+        }
+
+        // Get wound allocation order (normal allocation)
+        std::array<u8, MAX_MODELS_PER_UNIT> order;
+        u8 order_count = 0;
+        unit.get_wound_allocation_order(order, order_count);
+
+        // Apply wounds in order
+        for (u8 i = 0; i < order_count && remaining_wounds > 0; ++i) {
+            u8 model_idx = order[i];
+            if (!unit.model_is_alive(model_idx)) continue;
+
+            u8 wounds_to_kill = unit.model_remaining_wounds(model_idx);
+            u8 wounds_applied = static_cast<u8>(std::min(remaining_wounds, static_cast<u32>(wounds_to_kill)));
+
+            for (u8 w = 0; w < wounds_applied; ++w) {
+                if (unit.apply_wound_to_model(model_idx)) {
+                    result.models_killed++;
+                    if (unit.has_rule(RuleId::SelfDestruct)) {
+                        u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                        result.self_destruct_hits += destruct_value;
+                        if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                    }
+                    break;
+                }
+            }
+            remaining_wounds -= wounds_applied;
+        }
+
+        return result;
+    }
+
+    // Morale check
+    bool check_morale(UnitView unit, bool is_from_melee = false, u32 melee_wounds_taken = 0, u32 melee_wounds_dealt = 0, bool is_unit_a = true) {
+        // Check if morale test is needed
+        bool needs_test = false;
+        const char* trigger_reason = "";
+
+        // At half strength
+        if (unit.is_at_half_strength() && !unit.is_shaken() && !unit.is_routed()) {
+            needs_test = true;
+            trigger_reason = "half_strength";
+        }
+
+        // Lost melee
+        if (is_from_melee && melee_wounds_taken > melee_wounds_dealt) {
+            needs_test = true;
+            trigger_reason = "lost_melee";
+        }
+
+        if (!needs_test) return true;
+
+        UnitStatus old_status = unit.state->status;
+
+        if (logger_) {
+            logger_->on_morale_check_start(is_unit_a, unit.unit->name.c_str(), trigger_reason,
+                                           unit.alive_count(), unit.unit->model_count,
+                                           static_cast<u16>(melee_wounds_taken), static_cast<u16>(melee_wounds_dealt));
+        }
+
+        // Roll morale test
+        u8 roll = dice_.roll_d6();
+        u8 target = unit.quality();
+
+        // MoraleBoost: +1 to morale tests
+        if (unit.has_rule(RuleId::MoraleBoost)) {
+            roll += 1;
+            if (logger_) logger_->on_rule_triggered("MoraleBoost", "morale_bonus", 1);
+        }
+
+        bool passed = roll >= target;
+
+        if (logger_) {
+            logger_->on_morale_roll(roll, target, passed);
+        }
+
+        // Fearless: reroll failed test, pass on 4+
+        if (!passed && unit.has_rule(RuleId::Fearless)) {
+            u8 fearless_roll = dice_.roll_d6();
+            bool fearless_passed = fearless_roll >= 4;
+            passed = fearless_passed;
+            if (logger_) logger_->on_fearless_roll(fearless_roll, 4, fearless_passed);
+        }
+
+        // Hold the Line: reroll failed morale test using quality
+        if (!passed && unit.has_rule(RuleId::HoldTheLine)) {
+            u8 hold_line_roll = dice_.roll_d6();
+            bool hold_line_passed = hold_line_roll >= unit.quality();
+            passed = hold_line_passed;
+            if (logger_) logger_->on_fearless_roll(hold_line_roll, unit.quality(), hold_line_passed);
+        }
+
+        if (passed) {
+            if (logger_) logger_->on_morale_check_end(true, old_status, old_status, "passed");
+            return true;
+        }
+
+        // Failed morale
+        UnitStatus new_status = old_status;
+        const char* result_desc = "";
+
+        // NoRetreat: Take wounds instead of becoming Shaken
+        if (unit.has_rule(RuleId::NoRetreat)) {
+            u8 wounds_taken = (dice_.roll_d6() + 1) / 2;  // d3
+            if (logger_) logger_->on_rule_triggered("NoRetreat", "wounds_instead_of_shaken", wounds_taken);
+
+            for (u8 w = 0; w < wounds_taken && !unit.is_destroyed(); ++w) {
+                for (u8 m = 0; m < unit.unit->model_count; ++m) {
+                    if (unit.model_is_alive(m)) {
+                        unit.apply_wound_to_model(m);
+                        break;
+                    }
+                }
+            }
+            result_desc = "no_retreat_wounds_taken";
+        } else if (is_from_melee) {
+            if (unit.is_at_half_strength()) {
+                unit.rout();
+                new_status = UnitStatus::Routed;
+                result_desc = "routed_at_half_strength";
+            } else {
+                unit.become_shaken();
+                new_status = UnitStatus::Shaken;
+                result_desc = "shaken_from_melee";
+            }
+        } else {
+            unit.become_shaken();
+            new_status = UnitStatus::Shaken;
+            result_desc = "shaken_from_shooting";
+        }
+
+        if (logger_) {
+            logger_->on_morale_check_end(false, old_status, new_status, result_desc);
+            logger_->on_status_changed(is_unit_a, old_status, new_status, result_desc);
+        }
+
+        return false;
+    }
+
     // ==============================================================================
     // Comparison Helper - For A/B Testing
     // ==============================================================================
