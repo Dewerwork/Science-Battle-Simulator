@@ -301,7 +301,7 @@ private:
             // Shoot if possible
             i8 dist = state_.distance_between();
             if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
-                CombatResult result = combat_.resolve_shooting(unit, enemy, dist, false);
+                CombatResult result = combat_.resolve_shooting_phased(unit, enemy, dist, false);
                 state_.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
 
                 // Check morale for defender if took wounds (not just kills)
@@ -340,7 +340,7 @@ private:
         // Shoot if possible
         i8 dist = state_.distance_between();
         if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
-            CombatResult result = combat_.resolve_shooting(unit, enemy, dist, true);
+            CombatResult result = combat_.resolve_shooting_phased(unit, enemy, dist, true);
             state_.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
 
             // Check morale for defender if took wounds
@@ -444,7 +444,7 @@ private:
 
         if (defender_strikes_first) {
             // Defender with Counter strikes first
-            CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
+            CombatResult def_result = combat_.resolve_melee_phased(defender, attacker, false, 0);
             state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
             attacker_wounds = def_result.wounds_dealt;
             self_destruct_hits_to_defender += def_result.self_destruct_hits;
@@ -457,7 +457,7 @@ private:
 
             if (!attacker.is_out_of_action()) {
                 // Attacker strikes back (pass counter_models for Impact reduction)
-                CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging, counter_models);
+                CombatResult atk_result = combat_.resolve_melee_phased(attacker, defender, is_charging, counter_models);
                 state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
                 defender_wounds = atk_result.wounds_dealt;
                 self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
@@ -470,7 +470,7 @@ private:
             }
         } else {
             // Normal order: attacker first (pass counter_models for Impact reduction)
-            CombatResult atk_result = combat_.resolve_melee(attacker, defender, is_charging, counter_models);
+            CombatResult atk_result = combat_.resolve_melee_phased(attacker, defender, is_charging, counter_models);
             state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
             defender_wounds = atk_result.wounds_dealt;
             self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
@@ -491,7 +491,7 @@ private:
                         logger_->on_fatigue_changed(!is_unit_a, true, "shaken_unit_strikes_back");
                     }
                 }
-                CombatResult def_result = combat_.resolve_melee(defender, attacker, false, 0);
+                CombatResult def_result = combat_.resolve_melee_phased(defender, attacker, false, 0);
                 state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
                 attacker_wounds = def_result.wounds_dealt;
                 self_destruct_hits_to_defender += def_result.self_destruct_hits;

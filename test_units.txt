@@ -1,0 +1,5 @@
+Assault Sisters [5] Q4+ D4+ | 195pts | Ambush, Devout, Flying
+5x energy swords (A2, AP(1), Rending), 4x 12" heavy pistols (A1, AP(1)), 6" blessed flamer pistol (A1, Blast(3), Purge, Reliable)
+
+Veteran Blood Assault Prime Brothers [3] Q3+ D3+ | 205pts | Ambush, Bloodborn, Courage Aura, Fearless, Flying, Reinforced, Shielded, Versatile Attack
+3x bashes (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), 12" heavy pistols (A1, AP(1)), 6" flamer pistol (A1, Blast(3), Reliable), 9" anti-gravity pistol (A2, Demolish)

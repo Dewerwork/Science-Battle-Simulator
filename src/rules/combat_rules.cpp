@@ -3,6 +3,9 @@
 #include "core/contexts.hpp"
 #include "core/unit.hpp"
 #include "core/weapon.hpp"
+#include "engine/dice.hpp"
+#include "engine/game_state.hpp"
+#include "engine/match_logger.hpp"
 
 namespace battle {
 
@@ -329,14 +332,24 @@ void limited_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /
     }
 }
 
-void versatile_attack_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
-    // VersatileAttack - roll d6: 1-3 = +1 to hit, 4-6 = AP+1
-    // For simulation, the choice is tracked in versatile_ap_chosen
-    // True means AP+1 was chosen, false means +1 hit was chosen
-    // Actual dice roll handled during resolution
-    if (ext) {
-        // Mark that versatile needs to be resolved
-        ext->versatile_ap_chosen = false;  // Default to hit bonus
+void versatile_attack_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // VersatileAttack - roll d6: 1-3 = AP+1, 4-6 = +1 to hit
+    if (ext && ext->dice) {
+        u8 roll = ext->dice->roll_d6();
+        if (roll <= 3) {
+            // AP+1 bonus - tracked for later application
+            ext->versatile_ap_chosen = true;
+            if (ext->logger) {
+                ext->logger->on_rule_triggered("VersatileAttack", "rolled_ap+1", roll);
+            }
+        } else {
+            // +1 hit bonus - applied immediately
+            ctx.hit_modifier += 1;
+            ext->versatile_ap_chosen = false;
+            if (ext->logger) {
+                ext->logger->on_hit_modifier("VersatileAttack", +1, "rolled_+1_hit");
+            }
+        }
     }
 }
 
@@ -871,7 +884,7 @@ const RuleHotData VersatileAttack_HotData{
     GamePhase::COMBAT,
     static_cast<u8>(CombatSubPhase::PRE_ATTACK),
     CombatType::BOTH,
-    Target::WEAPON,
+    Target::ATTACKER,
     Trigger::ALWAYS,
     RulePriority::NORMAL,
     static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) |
