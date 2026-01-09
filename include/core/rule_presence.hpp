@@ -4,6 +4,18 @@
 #include <bitset>
 #include <memory>
 
+// Cross-platform popcount for 64-bit integers
+#if defined(_MSC_VER)
+#include <intrin.h>
+inline int portable_popcountll(unsigned long long x) {
+    return static_cast<int>(__popcnt64(x));
+}
+#else
+inline int portable_popcountll(unsigned long long x) {
+    return __builtin_popcountll(x);
+}
+#endif
+
 namespace battle {
 
 // ==============================================================================
@@ -158,7 +170,7 @@ struct RulePresence {
 
     // Count total rules set
     size_t count() const {
-        size_t n = __builtin_popcountll(primary);
+        size_t n = static_cast<size_t>(portable_popcountll(primary));
         if (extended) {
             n += extended->count();
         }
