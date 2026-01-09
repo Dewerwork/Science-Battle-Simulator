@@ -401,6 +401,136 @@ public:
         return resolve_combat_internal(attacker, defender, weapon, combat_type, distance, is_charge);
     }
 
+    // ==============================================================================
+    // PHASE-BASED COMBAT RESOLUTION (New Architecture)
+    // ==============================================================================
+    // This method uses the registry's effect system for ALL rule application.
+    // Rules are defined once and apply automatically to both shooting and melee.
+
+    DetailedCombatResult resolve_attack_phased(
+        Unit& attacker,
+        Unit& defender,
+        const Weapon& weapon,
+        CombatType combat_type,
+        u8 distance,
+        bool is_charge,
+        u8 models_attacking
+    ) {
+        DetailedCombatResult result;
+
+        // Initialize unified context
+        UnifiedCombatContext ctx;
+        ctx.attacker = &attacker;
+        ctx.defender = &defender;
+        ctx.weapon = const_cast<Weapon*>(&weapon);
+        ctx.combat_type = combat_type;
+        ctx.distance = distance;
+        ctx.is_charge = is_charge;
+        ctx.quality_used = attacker.quality;
+        ctx.base_ap = weapon.ap;
+        ctx.effective_ap = weapon.ap;
+        ctx.attacks = static_cast<u32>(models_attacking) * weapon.attacks;
+
+        // ============================================
+        // Phase 1: PRE_ATTACK
+        // ============================================
+        // VersatileAttack choice, Limited check, Impact hits, Takedown targeting
+        apply_all_phase_effects(CombatSubPhase::PRE_ATTACK, ctx);
+
+        // ============================================
+        // Phase 2: HIT_MODIFIERS
+        // ============================================
+        // Precise, Stealth, Shrouding, GoodShot, BadShot, etc.
+        apply_all_phase_effects(CombatSubPhase::HIT_MODIFIERS, ctx);
+
+        // ============================================
+        // Phase 3: ROLL_HITS
+        // ============================================
+        // Quality overrides (Reliable) then actual dice roll
+        apply_all_phase_effects(CombatSubPhase::ROLL_HITS, ctx);
+
+        // Actually roll the dice
+        auto hit_result = dice_.roll_quality_test(ctx.attacks, ctx.quality_used, ctx.hit_modifier);
+        ctx.hits = hit_result.hits;
+        ctx.natural_sixes = hit_result.sixes;
+
+        // ============================================
+        // Phase 4: HIT_SEPARATION
+        // ============================================
+        // Rending, Rupture - separate natural 6s
+        apply_all_phase_effects(CombatSubPhase::HIT_SEPARATION, ctx);
+
+        // If no explicit separation, normal hits = total hits
+        if (ctx.rending_hits == 0 && ctx.rupture_hits == 0) {
+            ctx.normal_hits = ctx.hits;
+        } else {
+            ctx.normal_hits = ctx.hits - ctx.rending_hits;
+        }
+
+        // ============================================
+        // Phase 5: HIT_BONUSES
+        // ============================================
+        // Surge, Relentless, Furious, PredatorFighter - extra hits on 6s
+        apply_all_phase_effects(CombatSubPhase::HIT_BONUSES, ctx);
+        ctx.hits += ctx.bonus_hits;
+
+        // ============================================
+        // Phase 6: HIT_MULTIPLICATION
+        // ============================================
+        // Blast - multiply hits
+        apply_all_phase_effects(CombatSubPhase::HIT_MULTIPLICATION, ctx);
+
+        // ============================================
+        // Phase 7: DEFENSE_RESOLUTION
+        // ============================================
+        // AP modifiers (Lance, Thrust), Shielded, Poison reroll, etc.
+        apply_all_phase_effects(CombatSubPhase::DEFENSE_RESOLUTION, ctx);
+
+        // Calculate effective defense target
+        u8 defense_target = defender.defense;
+
+        // Apply AP to defense target
+        i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(ctx.effective_ap);
+        effective_target = std::max(i8(2), std::min(i8(6), effective_target));
+
+        // Roll defense for normal hits
+        u32 wounds_from_normal = dice_.roll_defense_test(
+            ctx.normal_hits, defense_target, ctx.effective_ap, 0, ctx.forces_defense_reroll);
+
+        // Roll defense for rending hits (AP+4)
+        u32 wounds_from_rending = 0;
+        if (ctx.rending_hits > 0) {
+            u8 rending_ap = ctx.effective_ap + 4;
+            wounds_from_rending = dice_.roll_defense_test(
+                ctx.rending_hits, defense_target, rending_ap, 0, ctx.forces_defense_reroll);
+        }
+
+        ctx.wounds = wounds_from_normal + wounds_from_rending;
+
+        // ============================================
+        // Phase 8: WOUND_ALLOCATION
+        // ============================================
+        // Regeneration, Resistance, Tough, Deadly, Hero targeting
+        apply_all_phase_effects(CombatSubPhase::WOUND_ALLOCATION, ctx);
+
+        // Build result
+        result.attacks = ctx.attacks;
+        result.hits = ctx.hits;
+        result.natural_sixes = ctx.natural_sixes;
+        result.rending_hits = ctx.rending_hits;
+        result.rupture_hits = ctx.rupture_hits;
+        result.wounds_dealt = ctx.wounds;
+        result.models_killed = ctx.models_killed;
+        result.hit_modifier = ctx.hit_modifier;
+        result.quality_used = ctx.quality_used;
+        result.ap_used = ctx.effective_ap;
+        result.bypassed_regeneration = ctx.bypasses_regeneration;
+        result.bypassed_resistance = ctx.bypasses_resistance;
+        result.forced_defense_reroll = ctx.forces_defense_reroll;
+
+        return result;
+    }
+
 private:
     // Internal implementation of resolve_combat
     DetailedCombatResult resolve_combat_internal(
@@ -469,6 +599,98 @@ private:
     }
 
 private:
+    // ==============================================================================
+    // Generic Phase Effect Application
+    // ==============================================================================
+    // This method applies all registered effects for a given combat sub-phase.
+    // It bridges UnifiedCombatContext with the CombatContextCore used by effects.
+
+    void apply_all_phase_effects(CombatSubPhase phase, UnifiedCombatContext& uctx) {
+        // Build CombatContextCore from UnifiedCombatContext
+        CombatContextCore ctx;
+        ctx.attacker = uctx.attacker;
+        ctx.defender = uctx.defender;
+        ctx.weapon = uctx.weapon;
+        ctx.combat_type = uctx.combat_type;
+        ctx.distance = uctx.distance;
+        ctx.is_charge = uctx.is_charge;
+        ctx.hit_modifier = uctx.hit_modifier;
+        ctx.quality_used = uctx.quality_used;
+        ctx.defense_modifier = 0;  // Will be set by effects
+        ctx.ap_modifier = 0;       // Will be set by effects
+        ctx.attacks = uctx.attacks;
+        ctx.hits = uctx.hits;
+        ctx.natural_sixes = uctx.natural_sixes;
+
+        // Set trait flags
+        if (uctx.bypasses_regeneration) ctx.set_bypass_regen(true);
+        if (uctx.bypasses_resistance) ctx.set_bypass_resist(true);
+        if (uctx.forces_defense_reroll) ctx.set_force_reroll(true);
+        if (uctx.has_takedown) ctx.set_has_takedown(true);
+
+        // Extended context for complex rules
+        CombatContextExtended ext;
+        ext.rending_hits = uctx.rending_hits;
+        ext.rupture_hits = uctx.rupture_hits;
+        ext.bonus_hits = uctx.bonus_hits;
+        ext.logger = logger_;
+        ext.dice = &dice_;
+
+        // Collect all rules that apply in this phase
+        auto rules = registry_.collect_combat_rules(
+            phase,
+            uctx.combat_type,
+            *uctx.attacker,
+            *uctx.defender,
+            *uctx.weapon
+        );
+
+        // Apply each rule's effect
+        for (const auto& rule : rules) {
+            const auto& effects = registry_.get_effects(rule.id);
+
+            // Check condition if one exists
+            if (!check_combat_condition(effects, phase, ctx)) {
+                continue;  // Condition not met, skip this rule
+            }
+
+            // Apply effect
+            apply_combat_effect(effects, phase, ctx, &ext, rule.value);
+
+            // Log the rule application
+            if (logger_) {
+                const auto& cold = registry_.get_cold_data(rule.id);
+                CombatContextExtended::RuleApplication app;
+                app.rule = rule.id;
+                app.value = rule.value;
+                app.effect_description = cold.description;
+                ext.applied_rules.push_back(app);
+            }
+        }
+
+        // Copy results back to UnifiedCombatContext
+        uctx.hit_modifier = ctx.hit_modifier;
+        uctx.quality_used = ctx.quality_used;
+        uctx.hits = ctx.hits;
+        uctx.natural_sixes = ctx.natural_sixes;
+
+        // Copy trait flags back
+        uctx.bypasses_regeneration = ctx.bypasses_regeneration();
+        uctx.bypasses_resistance = ctx.bypasses_resistance();
+        uctx.forces_defense_reroll = ctx.forces_defense_reroll();
+        uctx.has_takedown = ctx.has_takedown();
+
+        // Copy extended context results
+        uctx.rending_hits = ext.rending_hits;
+        uctx.rupture_hits = ext.rupture_hits;
+        uctx.bonus_hits = ext.bonus_hits;
+
+        // Handle quality override from extended context
+        if (ext.quality_override.has_value()) {
+            uctx.quality_used = ext.quality_override.value();
+        }
+    }
+
     // ==============================================================================
     // Phase Execution Methods
     // ==============================================================================
