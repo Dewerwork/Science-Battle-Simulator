@@ -1312,3 +1312,1246 @@ Phases 3-5 (Combat) and Phase 6 (Movement/Deployment) can be parallelized after 
 - [ ] Tough (stat mod)
 - [ ] Hero (allocation priority)
 - [ ] Fear (aura)
+
+---
+
+## ADDENDUM: Critical Issue Resolutions
+
+This section addresses critical architectural issues identified in review.
+
+---
+
+### Issue 1: RuleMask Overflow (CRITICAL)
+
+**Problem:** Current `RuleMask = u64` only supports 64 rules. COUNT is currently ~71, and the granting system could add 185+ more rules.
+
+**Solution: Tiered Bitset Architecture**
+
+```cpp
+// include/core/types.hpp
+
+// Primary rules (base game rules) - fits in cache line
+using PrimaryRuleMask = u64;
+constexpr size_t PRIMARY_RULE_LIMIT = 64;
+
+// Extended rules (faction-specific, granted rules) - second tier
+using ExtendedRuleMask = std::bitset<256>;
+
+// Hybrid structure for units
+struct RulePresence {
+    PrimaryRuleMask primary = 0;      // Hot path - 8 bytes, cache-friendly
+    ExtendedRuleMask* extended = nullptr;  // Cold path - allocated only if needed
+
+    bool has_rule(RuleId id) const {
+        auto idx = static_cast<size_t>(id);
+        if (idx < PRIMARY_RULE_LIMIT) {
+            return (primary & (1ULL << idx)) != 0;
+        }
+        return extended && extended->test(idx - PRIMARY_RULE_LIMIT);
+    }
+
+    void set_rule(RuleId id) {
+        auto idx = static_cast<size_t>(id);
+        if (idx < PRIMARY_RULE_LIMIT) {
+            primary |= (1ULL << idx);
+        } else {
+            if (!extended) extended = new ExtendedRuleMask();
+            extended->set(idx - PRIMARY_RULE_LIMIT);
+        }
+    }
+};
+
+// Organize RuleId enum: frequently-used rules first (0-63)
+enum class RuleId : u16 {  // Expanded from u8 to u16
+    None = 0,
+
+    // === PRIMARY RULES (0-63) - Most frequently checked ===
+    // Combat modifiers (hot path)
+    Precise, Reliable, Rending, Blast, Deadly, Poison, Bane,
+    // Defense (hot path)
+    Regeneration, Tough, Stealth, Protected, Shielded,
+    // Movement (hot path)
+    Fast, Slow, Flying,
+    // ... rest of frequently-used rules ...
+
+    PRIMARY_COUNT = 64,  // Marker for primary/extended boundary
+
+    // === EXTENDED RULES (64+) - Less frequent ===
+    // Faction-specific
+    Devout, Battleborn, PredatorFighter,
+    // Granted rules (from auras/buffs)
+    Granted_Fearless, Granted_Regeneration,
+    // ... etc ...
+
+    COUNT
+};
+
+static_assert(static_cast<size_t>(RuleId::PRIMARY_COUNT) == 64);
+static_assert(static_cast<size_t>(RuleId::COUNT) <= 320);  // Extended limit
+```
+
+**Migration:**
+1. Reorder existing RuleId enum (most used first)
+2. Add RulePresence struct alongside existing RuleMask
+3. Migrate has_rule() calls incrementally
+4. Remove old RuleMask after full migration
+
+---
+
+### Issue 2: std::function Performance Overhead
+
+**Problem:** `std::function` has heap allocation and type erasure overhead. Hot paths run 100K+ simulations.
+
+**Solution: Function Pointer + Context Pattern**
+
+```cpp
+// include/core/rule_effect.hpp
+
+// Fixed function signatures - no type erasure
+using CombatEffect = void(*)(CombatContext& ctx, u8 value);
+using MovementEffect = void(*)(MovementContext& ctx, u8 value);
+using DeployEffect = void(*)(DeploymentContext& ctx, u8 value);
+using EndRoundEffect = void(*)(EndRoundContext& ctx, Unit& unit, u8 value);
+using ConditionCheck = bool(*)(const CombatContext& ctx);
+
+// Compile-time rule definition (no heap allocation)
+struct RuleEffectTable {
+    CombatEffect combat_effects[COMBAT_SUB_PHASE_COUNT];
+    MovementEffect movement_effects[MOVE_SUB_PHASE_COUNT];
+    DeployEffect deploy_effects[DEPLOY_SUB_PHASE_COUNT];
+    EndRoundEffect endround_effects[ENDROUND_SUB_PHASE_COUNT];
+    ConditionCheck conditions[COMBAT_SUB_PHASE_COUNT];
+};
+
+// Static table indexed by RuleId - no indirection
+constexpr RuleEffectTable RULE_EFFECTS[static_cast<size_t>(RuleId::COUNT)] = {
+    // RuleId::None
+    {},
+    // RuleId::Precise
+    {
+        .combat_effects = {
+            nullptr,  // PRE_ATTACK
+            &precise_hit_modifier,  // HIT_MODIFIERS
+            nullptr,  // ROLL_HITS
+            // ...
+        }
+    },
+    // ... etc for all rules
+};
+
+// Hot path: direct function pointer call
+void apply_combat_rules(CombatContext& ctx, CombatSubPhase phase) {
+    auto phase_idx = static_cast<size_t>(phase);
+
+    // Iterate attacker rules
+    for (const auto& rule : ctx.attacker.rules()) {
+        auto rule_idx = static_cast<size_t>(rule.id);
+        auto effect = RULE_EFFECTS[rule_idx].combat_effects[phase_idx];
+        if (effect) {
+            auto condition = RULE_EFFECTS[rule_idx].conditions[phase_idx];
+            if (!condition || condition(ctx)) {
+                effect(ctx, rule.value);
+            }
+        }
+    }
+    // Similar for defender, weapon
+}
+
+// Actual effect implementations (free functions, inlinable)
+void precise_hit_modifier(CombatContext& ctx, u8 value) {
+    ctx.hit_modifier += 1;
+}
+
+void stealth_hit_modifier(CombatContext& ctx, u8 value) {
+    ctx.hit_modifier -= 1;
+}
+
+bool stealth_condition(const CombatContext& ctx) {
+    return ctx.distance > 9;
+}
+```
+
+**Benchmark Target:** Within 20% of current hardcoded performance.
+
+---
+
+### Issue 3: RuleDefinition Struct Size
+
+**Problem:** Proposed struct is ~150-200 bytes vs 2-byte CompactRule.
+
+**Solution: Separate Hot/Cold Data**
+
+```cpp
+// include/core/rule_data.hpp
+
+// HOT DATA: Used during combat resolution (~16 bytes per rule)
+struct RuleHotData {
+    RuleId id;                    // 2 bytes
+    GamePhase game_phase;         // 1 byte
+    u8 sub_phase;                 // 1 byte (union of all sub-phase enums)
+    CombatType combat_type;       // 1 byte
+    Target target;                // 1 byte
+    Trigger trigger;              // 1 byte
+    u8 priority;                  // 1 byte (ordering within phase)
+    TraitMask traits;             // 4 bytes
+    u8 _padding[4];               // Alignment to 16 bytes
+};
+static_assert(sizeof(RuleHotData) == 16);
+
+// COLD DATA: Used during parsing, logging, AI (separate allocation)
+struct RuleColdData {
+    const char* name;             // Pointer to static string
+    const char* const* aliases;   // Pointer to static array
+    u8 alias_count;
+    const char* log_format;
+    const char* description;
+    AIHints ai_hints;             // Only if AI enabled
+};
+
+// Compact storage: array of hot data, lazy-loaded cold data
+class RuleDataStore {
+    std::array<RuleHotData, MAX_RULES> hot_data_;
+    mutable std::array<RuleColdData*, MAX_RULES> cold_data_{};  // Lazy
+
+public:
+    const RuleHotData& hot(RuleId id) const {
+        return hot_data_[static_cast<size_t>(id)];
+    }
+
+    const RuleColdData& cold(RuleId id) const {
+        auto idx = static_cast<size_t>(id);
+        if (!cold_data_[idx]) {
+            cold_data_[idx] = load_cold_data(id);  // One-time load
+        }
+        return *cold_data_[idx];
+    }
+};
+
+// Memory: 71 rules × 16 bytes = 1.1KB hot data (fits in L1 cache)
+// Cold data loaded on-demand, not during combat
+```
+
+---
+
+### Issue 4: Rule Value Lookup O(n)
+
+**Problem:** `get_rule_value()` iterates through all rules on entity.
+
+**Solution: Direct Value Array**
+
+```cpp
+// include/core/unit.hpp
+
+struct UnitRuleState {
+    RulePresence presence;        // Bitset for has_rule() - O(1)
+    std::array<u8, MAX_RULES_PER_UNIT> values{};  // Direct indexing
+
+    bool has_rule(RuleId id) const {
+        return presence.has_rule(id);
+    }
+
+    u8 get_value(RuleId id) const {
+        // O(1) lookup via direct array access
+        return has_rule(id) ? values[rule_index(id)] : 0;
+    }
+
+    void add_rule(RuleId id, u8 value = 0) {
+        presence.set_rule(id);
+        values[rule_index(id)] = value;
+    }
+
+private:
+    // Map RuleId to compact index (only for rules this unit has)
+    u8 rule_index(RuleId id) const {
+        // Use popcount for index calculation
+        auto idx = static_cast<size_t>(id);
+        if (idx < 64) {
+            return __builtin_popcountll(presence.primary & ((1ULL << idx) - 1));
+        }
+        // Extended rules use separate indexing
+        return 64 + extended_index(id);
+    }
+};
+```
+
+**Alternative: Parallel Arrays**
+```cpp
+// For units with few rules, parallel arrays are simpler
+struct CompactRuleSet {
+    std::array<RuleId, 16> ids{};
+    std::array<u8, 16> values{};
+    RuleMask presence = 0;  // Still O(1) for has_rule()
+    u8 count = 0;
+
+    u8 get_value(RuleId id) const {
+        if (!(presence & rule_bit(id))) return 0;
+        // Linear search through max 16 elements (cache-friendly)
+        for (u8 i = 0; i < count; ++i) {
+            if (ids[i] == id) return values[i];
+        }
+        return 0;
+    }
+};
+```
+
+---
+
+### Issue 5: Granting System Architecture
+
+**Problem:** 185+ rules that grant other rules (auras, buffs, marks) are unaddressed.
+
+**Solution: Modifier Layer**
+
+```cpp
+// include/core/modifiers.hpp
+
+enum class ModifierSource : u8 {
+    PERMANENT,      // From unit definition
+    AURA,           // From nearby friendly unit
+    BUFF,           // Granted by ability (temporary)
+    DEBUFF,         // Applied by enemy
+    MARK,           // Target marker
+    TERRAIN         // From terrain feature
+};
+
+enum class ModifierDuration : u8 {
+    PERMANENT,
+    UNTIL_END_OF_ROUND,
+    UNTIL_END_OF_PHASE,
+    UNTIL_ACTIVATED,
+    ONCE_PER_GAME,
+    X_ROUNDS
+};
+
+struct ActiveModifier {
+    RuleId granted_rule;
+    u8 granted_value;
+    ModifierSource source;
+    ModifierDuration duration;
+    u8 rounds_remaining;  // For X_ROUNDS duration
+    u16 source_unit_id;   // For auras - who is granting this
+
+    bool is_expired(u32 current_round, GamePhase phase) const;
+};
+
+// Per-unit modifier tracking
+struct UnitModifiers {
+    // Permanent rules from unit definition
+    CompactRuleSet permanent;
+
+    // Active temporary modifiers (small_vector to avoid heap for common case)
+    small_vector<ActiveModifier, 4> active;
+
+    // Cached effective rules (rebuilt when modifiers change)
+    mutable RulePresence effective_presence;
+    mutable bool cache_dirty = true;
+
+    bool has_rule(RuleId id) const {
+        if (cache_dirty) rebuild_cache();
+        return effective_presence.has_rule(id);
+    }
+
+    void add_modifier(ActiveModifier mod) {
+        active.push_back(mod);
+        cache_dirty = true;
+    }
+
+    void expire_modifiers(u32 round, GamePhase phase) {
+        active.erase(
+            std::remove_if(active.begin(), active.end(),
+                [&](const auto& m) { return m.is_expired(round, phase); }),
+            active.end()
+        );
+        cache_dirty = true;
+    }
+
+private:
+    void rebuild_cache() const {
+        effective_presence = permanent.presence;
+        for (const auto& mod : active) {
+            effective_presence.set_rule(mod.granted_rule);
+        }
+        cache_dirty = false;
+    }
+};
+
+// Aura processing (run at start of each phase)
+class AuraProcessor {
+public:
+    void process_auras(GameState& state, GamePhase phase) {
+        // Remove expired aura modifiers
+        for (auto& unit : state.all_units()) {
+            unit.modifiers.expire_modifiers(state.round(), phase);
+        }
+
+        // Apply active auras
+        for (const auto& unit : state.all_units()) {
+            if (!unit.is_alive()) continue;
+
+            for (const auto& rule : unit.rules_with_trait(RuleTrait::AURA_EFFECT)) {
+                apply_aura(state, unit, rule);
+            }
+        }
+    }
+
+private:
+    void apply_aura(GameState& state, const Unit& source, CompactRule rule) {
+        auto& aura_def = registry_.get_aura_definition(rule.id);
+        float range = aura_def.range;
+
+        for (auto& target : state.units_within(source.position, range)) {
+            if (aura_def.affects_enemies && target.is_enemy(source) ||
+                aura_def.affects_allies && target.is_ally(source)) {
+
+                target.modifiers.add_modifier(ActiveModifier{
+                    .granted_rule = aura_def.granted_rule,
+                    .granted_value = rule.value,
+                    .source = ModifierSource::AURA,
+                    .duration = ModifierDuration::UNTIL_END_OF_PHASE,
+                    .source_unit_id = source.id
+                });
+            }
+        }
+    }
+};
+
+// Example aura definitions
+struct AuraDefinition {
+    RuleId source_rule;       // The aura rule itself
+    RuleId granted_rule;      // What it grants
+    float range;              // Aura radius
+    bool affects_allies;
+    bool affects_enemies;
+    bool affects_self;
+};
+
+constexpr AuraDefinition AURA_DEFINITIONS[] = {
+    // Fearless Aura grants Fearless to allies within 6"
+    { RuleId::FearlessAura, RuleId::Fearless, 6.0f, true, false, false },
+    // Fear affects enemies within 12"
+    { RuleId::Fear, RuleId::Feared, 12.0f, false, true, false },
+    // ... etc
+};
+```
+
+---
+
+### Issue 6: A/B Testing for Stochastic Code
+
+**Problem:** Dice rolls make direct comparison impossible.
+
+**Solution: Deterministic Test Harness**
+
+```cpp
+// include/testing/deterministic_dice.hpp
+
+class DeterministicDice : public DiceRoller {
+    std::vector<u8> predetermined_rolls_;
+    size_t roll_index_ = 0;
+
+public:
+    explicit DeterministicDice(std::vector<u8> rolls)
+        : predetermined_rolls_(std::move(rolls)) {}
+
+    u8 roll_d6() override {
+        assert(roll_index_ < predetermined_rolls_.size());
+        return predetermined_rolls_[roll_index_++];
+    }
+
+    void reset() { roll_index_ = 0; }
+};
+
+// A/B test harness
+class ABTestHarness {
+public:
+    struct TestResult {
+        bool outputs_match;
+        std::string differences;
+        double old_time_ms;
+        double new_time_ms;
+    };
+
+    TestResult compare_combat(
+        const Unit& attacker,
+        const Unit& defender,
+        const Weapon& weapon,
+        const std::vector<u8>& dice_sequence
+    ) {
+        // Create identical dice for both paths
+        DeterministicDice dice_old(dice_sequence);
+        DeterministicDice dice_new(dice_sequence);
+
+        // Run old implementation
+        auto start_old = high_resolution_clock::now();
+        auto result_old = old_engine_.resolve_shooting(
+            attacker, defender, weapon, dice_old);
+        auto end_old = high_resolution_clock::now();
+
+        // Run new implementation
+        dice_new.reset();
+        auto start_new = high_resolution_clock::now();
+        auto result_new = new_engine_.resolve_combat(
+            attacker, defender, weapon, CombatType::SHOOTING, dice_new);
+        auto end_new = high_resolution_clock::now();
+
+        // Compare results
+        return TestResult{
+            .outputs_match = compare_results(result_old, result_new),
+            .differences = diff_results(result_old, result_new),
+            .old_time_ms = duration<double, milli>(end_old - start_old).count(),
+            .new_time_ms = duration<double, milli>(end_new - start_new).count()
+        };
+    }
+
+    // Run exhaustive tests with coverage
+    void run_comprehensive_tests() {
+        // Generate test cases covering all rule combinations
+        auto test_cases = generate_rule_combination_tests();
+
+        for (const auto& tc : test_cases) {
+            // Generate deterministic dice sequences
+            for (int seed = 0; seed < 100; ++seed) {
+                auto dice = generate_dice_sequence(seed, tc.expected_rolls);
+                auto result = compare_combat(
+                    tc.attacker, tc.defender, tc.weapon, dice);
+
+                if (!result.outputs_match) {
+                    report_failure(tc, result);
+                }
+            }
+        }
+    }
+};
+
+// Golden file testing for complex scenarios
+class GoldenFileTests {
+public:
+    void record_golden(const std::string& name, const CombatScenario& scenario) {
+        auto result = run_with_seed(scenario, GOLDEN_SEED);
+        save_golden(name, result);
+    }
+
+    bool verify_against_golden(const std::string& name,
+                               const CombatScenario& scenario) {
+        auto expected = load_golden(name);
+        auto actual = run_with_seed(scenario, GOLDEN_SEED);
+        return expected == actual;
+    }
+};
+```
+
+---
+
+### Issue 7: CombatContext Size Growth
+
+**Problem:** Context struct grows unbounded with new rules.
+
+**Solution: Tiered Context Structure**
+
+```cpp
+// include/core/combat_context.hpp
+
+// CORE context: Always needed, kept small (~64 bytes)
+struct CombatContextCore {
+    Unit* attacker;
+    Unit* defender;
+    Weapon* weapon;
+    CombatType combat_type;
+    u32 distance;
+    bool is_charge;
+
+    // Essential modifiers
+    i32 hit_modifier = 0;
+    i32 defense_modifier = 0;
+    i32 ap_modifier = 0;
+
+    // Hit tracking
+    u32 base_hits = 0;
+    u32 final_hits = 0;
+    u32 natural_sixes = 0;
+
+    // Wound tracking
+    u32 wounds_to_allocate = 0;
+    u32 wounds_allocated = 0;
+
+    // Aggregated traits (bitfield)
+    u8 trait_flags = 0;
+    static constexpr u8 BYPASS_REGEN = 1 << 0;
+    static constexpr u8 BYPASS_RESIST = 1 << 1;
+    static constexpr u8 FORCE_REROLL = 1 << 2;
+};
+static_assert(sizeof(CombatContextCore) <= 64);  // Fits in cache line
+
+// EXTENDED context: Allocated only when needed
+struct CombatContextExtended {
+    // Rending/Rupture separation
+    u32 rending_hits = 0;
+    u32 rupture_hits = 0;
+    u32 bonus_hits = 0;
+
+    // Quality override
+    std::optional<u8> quality_override;
+
+    // Wound multipliers
+    float wound_multiplier = 1.0f;
+    u32 hit_multiplier = 1;
+
+    // Queued effects
+    std::vector<QueuedAttack> queued_attacks;
+
+    // Detailed tracking for logging
+    std::vector<RuleApplication> applied_rules;
+};
+
+// Full context wraps both
+struct CombatContext {
+    CombatContextCore core;
+    CombatContextExtended* extended = nullptr;  // Lazy allocation
+
+    CombatContextExtended& ext() {
+        if (!extended) extended = new CombatContextExtended();
+        return *extended;
+    }
+
+    // Convenience accessors that check extended
+    u32 rending_hits() const {
+        return extended ? extended->rending_hits : 0;
+    }
+};
+
+// Pool allocator for extended contexts (avoid per-combat allocation)
+class CombatContextPool {
+    std::vector<CombatContextExtended> pool_;
+    std::vector<CombatContextExtended*> free_list_;
+
+public:
+    CombatContextExtended* acquire() {
+        if (free_list_.empty()) {
+            pool_.emplace_back();
+            return &pool_.back();
+        }
+        auto* ctx = free_list_.back();
+        free_list_.pop_back();
+        *ctx = CombatContextExtended{};  // Reset
+        return ctx;
+    }
+
+    void release(CombatContextExtended* ctx) {
+        free_list_.push_back(ctx);
+    }
+};
+```
+
+---
+
+### Issue 8: Rule Ordering Within Phases
+
+**Problem:** Order of rule application within a phase is undefined.
+
+**Solution: Explicit Priority System**
+
+```cpp
+// include/core/rule_priority.hpp
+
+// Priority levels within each phase
+enum class RulePriority : u8 {
+    FIRST = 0,       // Always applies first (e.g., quality overrides)
+    EARLY = 32,      // Early modifiers
+    NORMAL = 64,     // Default priority
+    LATE = 96,       // Late modifiers
+    LAST = 128,      // Always applies last (e.g., caps, floors)
+
+    // Special priorities for known interactions
+    RELIABLE = FIRST,           // Quality override before modifiers
+    STEALTH = EARLY,            // Defender penalties early
+    PRECISE = NORMAL,           // Standard hit bonus
+    PURGE = LATE,               // Conditional bonus after others
+    HIT_CAP = LAST,             // Any caps on final value
+};
+
+// Rule definition includes priority
+struct RuleHotData {
+    // ... other fields ...
+    RulePriority priority = RulePriority::NORMAL;
+};
+
+// Collector returns rules sorted by priority
+std::vector<ApplicableRule> collect_combat_rules(
+    CombatSubPhase phase,
+    const CombatContext& ctx
+) {
+    std::vector<ApplicableRule> rules;
+
+    // Collect from attacker, defender, weapon
+    collect_from_entity(rules, ctx.attacker, Target::ATTACKER, phase);
+    collect_from_entity(rules, ctx.defender, Target::DEFENDER, phase);
+    collect_from_entity(rules, ctx.weapon, Target::WEAPON, phase);
+
+    // Sort by priority (stable sort preserves order within same priority)
+    std::stable_sort(rules.begin(), rules.end(),
+        [](const auto& a, const auto& b) {
+            return a.definition->priority < b.definition->priority;
+        });
+
+    return rules;
+}
+
+// Document ordering explicitly
+/**
+ * HIT_MODIFIERS Phase Execution Order:
+ *
+ * FIRST (0):
+ *   - (none currently)
+ *
+ * EARLY (32):
+ *   - Stealth: -1 if distance > 9"
+ *   - RangedShrouding: -1 to be hit at range
+ *   - MeleeEvasion: -1 to be hit in melee
+ *   - MeleeShrouding: -1 to be hit in melee
+ *
+ * NORMAL (64):
+ *   - Precise: +1 to hit
+ *   - GoodShot: +1 when shooting
+ *   - BadShot: -1 when shooting
+ *   - Thrust: +1 when charging
+ *
+ * LATE (96):
+ *   - Purge: +1 vs Tough(3+) targets
+ *
+ * LAST (128):
+ *   - (future: hit modifier caps)
+ */
+```
+
+---
+
+### Issue 9: Trait Aggregation Timing
+
+**Problem:** Traits aggregated at WOUND_ALLOCATION but needed earlier.
+
+**Solution: Aggregate at Combat Start**
+
+```cpp
+// include/engine/combat_resolution.hpp
+
+CombatResult resolve_combat(CombatContext& ctx) {
+    // FIRST: Aggregate traits from ALL rules that will apply
+    // This happens BEFORE any phase executes
+    aggregate_all_traits(ctx);
+
+    // Now execute phases with trait info available
+    for (auto phase : COMBAT_PHASES) {
+        apply_phase(ctx, phase);
+    }
+
+    return build_result(ctx);
+}
+
+void aggregate_all_traits(CombatContext& ctx) {
+    ctx.core.trait_flags = 0;
+
+    // Check attacker rules
+    for (const auto& rule : ctx.core.attacker->rules()) {
+        auto traits = RULE_HOT_DATA[static_cast<size_t>(rule.id)].traits;
+        ctx.core.trait_flags |= extract_combat_traits(traits);
+    }
+
+    // Check weapon rules
+    for (const auto& rule : ctx.core.weapon->rules()) {
+        auto traits = RULE_HOT_DATA[static_cast<size_t>(rule.id)].traits;
+        ctx.core.trait_flags |= extract_combat_traits(traits);
+    }
+
+    // Now defense resolution can check ctx.bypasses_regeneration()
+}
+
+// Accessor methods
+bool CombatContext::bypasses_regeneration() const {
+    return core.trait_flags & CombatContextCore::BYPASS_REGEN;
+}
+```
+
+---
+
+### Issue 10: Registry Singleton
+
+**Problem:** Singleton has testing, thread safety, and initialization order issues.
+
+**Solution: Dependency Injection**
+
+```cpp
+// include/core/rule_registry.hpp
+
+// Registry is no longer a singleton - passed explicitly
+class RuleRegistry {
+public:
+    // No static instance() method
+
+    // Construction
+    explicit RuleRegistry(const RuleDataStore& data);
+
+    // Non-copyable but movable
+    RuleRegistry(const RuleRegistry&) = delete;
+    RuleRegistry& operator=(const RuleRegistry&) = delete;
+    RuleRegistry(RuleRegistry&&) = default;
+
+    // ... query methods ...
+};
+
+// Factory function for production
+RuleRegistry create_default_registry();
+
+// Factory function for testing
+RuleRegistry create_test_registry(const std::vector<RuleHotData>& rules);
+
+// Combat engine takes registry as constructor parameter
+class CombatEngine {
+public:
+    explicit CombatEngine(const RuleRegistry& registry, DiceRoller& dice)
+        : registry_(registry), dice_(dice) {}
+
+    CombatResult resolve_combat(CombatContext& ctx);
+
+private:
+    const RuleRegistry& registry_;
+    DiceRoller& dice_;
+};
+
+// Game initializes and owns the registry
+class Game {
+    RuleRegistry registry_;
+    RandomDice dice_;
+    CombatEngine combat_engine_;
+
+public:
+    Game()
+        : registry_(create_default_registry())
+        , combat_engine_(registry_, dice_)
+    {}
+};
+
+// Tests can create isolated registries
+TEST(CombatEngine, PreciseAddsOneToHit) {
+    auto registry = create_test_registry({
+        rules::Precise  // Only this rule
+    });
+    MockDice dice({5, 5, 5});  // Predetermined rolls
+    CombatEngine engine(registry, dice);
+
+    // Test in isolation
+    auto result = engine.resolve_combat(make_test_context());
+    EXPECT_EQ(result.hit_modifier, 1);
+}
+```
+
+---
+
+### Issue 11: Compilation Time Impact
+
+**Problem:** Inline constexpr with lambdas in headers slows compilation.
+
+**Solution: Explicit Instantiation in .cpp Files**
+
+```cpp
+// include/rules/combat_rules.hpp
+// Header only declares, doesn't define
+
+namespace rules {
+
+// Declaration only
+extern const RuleHotData Precise_Data;
+extern const RuleHotData Stealth_Data;
+extern const RuleHotData Rending_Data;
+// ... etc
+
+// Effect function declarations (defined in .cpp)
+void precise_effect(CombatContext& ctx, u8 value);
+void stealth_effect(CombatContext& ctx, u8 value);
+bool stealth_condition(const CombatContext& ctx);
+void rending_effect(CombatContext& ctx, u8 value);
+
+} // namespace rules
+
+// ============================================
+// src/rules/combat_rules.cpp
+// Definitions in single compilation unit
+
+#include "rules/combat_rules.hpp"
+
+namespace rules {
+
+// Effect implementations
+void precise_effect(CombatContext& ctx, u8 value) {
+    ctx.hit_modifier += 1;
+}
+
+void stealth_effect(CombatContext& ctx, u8 value) {
+    ctx.hit_modifier -= 1;
+}
+
+bool stealth_condition(const CombatContext& ctx) {
+    return ctx.distance > 9;
+}
+
+void rending_effect(CombatContext& ctx, u8 value) {
+    ctx.ext().rending_hits = ctx.natural_sixes;
+    ctx.base_hits -= ctx.natural_sixes;
+}
+
+// Data definitions
+const RuleHotData Precise_Data {
+    .id = RuleId::Precise,
+    .game_phase = GamePhase::COMBAT,
+    .sub_phase = static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    .combat_type = CombatType::BOTH,
+    .target = Target::ATTACKER,
+    .priority = RulePriority::NORMAL,
+    .traits = 0
+};
+
+const RuleHotData Stealth_Data {
+    .id = RuleId::Stealth,
+    .game_phase = GamePhase::COMBAT,
+    .sub_phase = static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    .combat_type = CombatType::SHOOTING,
+    .target = Target::DEFENDER,
+    .priority = RulePriority::EARLY,
+    .traits = 0
+};
+
+// ... etc
+
+// Global effect table (single definition)
+const RuleEffectTable EFFECT_TABLE[] = {
+    // RuleId::None
+    {},
+    // RuleId::Precise
+    { .combat_effects = { nullptr, precise_effect, nullptr, ... } },
+    // RuleId::Stealth
+    { .combat_effects = { nullptr, stealth_effect, nullptr, ... },
+      .conditions = { nullptr, stealth_condition, nullptr, ... } },
+    // ...
+};
+
+} // namespace rules
+```
+
+---
+
+### Issue 12: AI Hints Type System
+
+**Problem:** `std::function<auto(...)>` is invalid C++.
+
+**Solution: Typed Choice Variants**
+
+```cpp
+// include/ai/ai_choices.hpp
+
+// Define all possible choice types
+struct VersatileChoice { bool use_ap_bonus; };
+struct TakedownChoice { u8 target_model_index; };
+struct DeploymentChoice { Position position; };
+
+// Variant of all choice types
+using StrategicChoice = std::variant<
+    std::monostate,      // No choice needed
+    VersatileChoice,
+    TakedownChoice,
+    DeploymentChoice
+>;
+
+// Choice function type - returns variant
+using ChoiceFunction = StrategicChoice(*)(const AIContext& ctx);
+
+// AI hints with proper typing
+struct AIHints {
+    DistancePreference preferred_range = DistancePreference::NONE;
+    ActionPref action_preference{};
+    TargetModifier target_modifier{};
+    ThreatModifier threat_modifier{};
+    ChoiceFunction strategic_choice = nullptr;  // Function pointer, not std::function
+};
+
+// Choice implementations
+StrategicChoice versatile_attack_choice(const AIContext& ctx) {
+    float ap_value = calculate_ap_improvement(ctx);
+    float hit_value = calculate_hit_improvement(ctx);
+    return VersatileChoice{ .use_ap_bonus = (ap_value > hit_value) };
+}
+
+StrategicChoice takedown_choice(const AIContext& ctx) {
+    // Find best target
+    for (const auto& model : ctx.target_unit.models()) {
+        if (model.is_hero && model.is_alive()) {
+            return TakedownChoice{ .target_model_index = model.index };
+        }
+    }
+    return TakedownChoice{ .target_model_index = 0 };
+}
+
+// Using the choice
+void apply_versatile_attack(CombatContext& ctx, const AIHints& hints) {
+    if (!hints.strategic_choice) {
+        // Random fallback
+        ctx.use_ap_bonus = (dice_.roll_d6() <= 3);
+        return;
+    }
+
+    auto choice = hints.strategic_choice(make_ai_context(ctx));
+    if (auto* vc = std::get_if<VersatileChoice>(&choice)) {
+        ctx.use_ap_bonus = vc->use_ap_bonus;
+    }
+}
+```
+
+---
+
+### Issue 13: Rule Interactions
+
+**Problem:** Complex interactions between rules not captured.
+
+**Solution: Explicit Interaction Rules**
+
+```cpp
+// include/core/rule_interactions.hpp
+
+enum class InteractionType : u8 {
+    MUTUALLY_EXCLUSIVE,  // Only one can apply
+    STACKS,              // Both apply additively
+    MULTIPLIES,          // Second multiplies first
+    OVERRIDES,           // Second completely replaces first
+    CONDITIONAL,         // Custom logic
+};
+
+struct RuleInteraction {
+    RuleId rule_a;
+    RuleId rule_b;
+    InteractionType type;
+    // For CONDITIONAL type, custom handler
+    void (*handler)(CombatContext& ctx, u8 value_a, u8 value_b) = nullptr;
+};
+
+// Defined interactions
+constexpr RuleInteraction RULE_INTERACTIONS[] = {
+    // Blast + Takedown: Takedown limits Blast effectiveness
+    { RuleId::Blast, RuleId::Takedown, InteractionType::CONDITIONAL,
+      &blast_takedown_interaction },
+
+    // Deadly bypasses Regeneration (handled via traits, but documented)
+    { RuleId::Deadly, RuleId::Regeneration, InteractionType::OVERRIDES },
+
+    // Rending + Rupture: A hit can trigger both, but goes to Rending
+    { RuleId::Rending, RuleId::Rupture, InteractionType::CONDITIONAL,
+      &rending_rupture_interaction },
+
+    // Multiple hit modifiers stack
+    { RuleId::Precise, RuleId::GoodShot, InteractionType::STACKS },
+    { RuleId::Stealth, RuleId::RangedShrouding, InteractionType::STACKS },
+
+    // Takedown + Deadly: Takedown determines target, Deadly applies wounds
+    { RuleId::Takedown, RuleId::Deadly, InteractionType::STACKS },
+};
+
+// Interaction handlers
+void blast_takedown_interaction(CombatContext& ctx, u8 blast_value, u8) {
+    // Blast hits still multiply, but Takedown targets single model
+    // So effective wounds are capped by target model's health
+    if (ctx.has_takedown_target()) {
+        ctx.ext().hit_multiplier = blast_value;
+        ctx.ext().takedown_active = true;
+        // Wounds will be capped during allocation
+    }
+}
+
+void rending_rupture_interaction(CombatContext& ctx, u8, u8) {
+    // Natural 6s go to Rending (higher priority), not Rupture
+    // Rupture only gets 6s if weapon has Rupture but not Rending
+    if (ctx.weapon_has_rule(RuleId::Rending)) {
+        ctx.ext().rending_hits = ctx.natural_sixes;
+        ctx.ext().rupture_hits = 0;
+    } else {
+        ctx.ext().rupture_hits = ctx.natural_sixes;
+    }
+}
+
+// Lookup during combat
+void check_interactions(CombatContext& ctx, RuleId new_rule) {
+    for (const auto& interaction : RULE_INTERACTIONS) {
+        if (interaction.rule_a == new_rule || interaction.rule_b == new_rule) {
+            RuleId other = (interaction.rule_a == new_rule)
+                ? interaction.rule_b : interaction.rule_a;
+
+            if (ctx.has_active_rule(other)) {
+                apply_interaction(ctx, interaction);
+            }
+        }
+    }
+}
+```
+
+---
+
+### Issue 14: Unified Path Optimization
+
+**Problem:** Unified path adds branch overhead for combat type checks.
+
+**Solution: Template Specialization**
+
+```cpp
+// include/engine/combat_resolution.hpp
+
+// Template for combat-type-specific optimization
+template<CombatType Type>
+class CombatResolver {
+public:
+    CombatResult resolve(CombatContext& ctx);
+
+private:
+    // Only instantiated for relevant combat type
+    void apply_shooting_rules(CombatContext& ctx);  // Only in SHOOTING specialization
+    void apply_melee_rules(CombatContext& ctx);     // Only in MELEE specialization
+};
+
+// Shooting specialization - no melee checks compiled in
+template<>
+class CombatResolver<CombatType::SHOOTING> {
+public:
+    CombatResult resolve(CombatContext& ctx) {
+        // Only shooting-applicable rules are in this code path
+        apply_hit_modifiers<CombatType::SHOOTING>(ctx);
+        roll_hits(ctx);
+        apply_hit_bonuses<CombatType::SHOOTING>(ctx);
+        // ...
+        return build_result(ctx);
+    }
+};
+
+// Melee specialization - no shooting checks compiled in
+template<>
+class CombatResolver<CombatType::MELEE> {
+public:
+    CombatResult resolve(CombatContext& ctx) {
+        apply_hit_modifiers<CombatType::MELEE>(ctx);
+        roll_hits(ctx);
+        apply_hit_bonuses<CombatType::MELEE>(ctx);
+        // ...
+        return build_result(ctx);
+    }
+};
+
+// Rule application also templated
+template<CombatType Type>
+void apply_hit_modifiers(CombatContext& ctx) {
+    // Compile-time filter: only rules for this combat type
+    for (const auto& rule : ctx.attacker->rules()) {
+        auto& data = RULE_HOT_DATA[static_cast<size_t>(rule.id)];
+
+        // constexpr check - optimized away at compile time
+        if constexpr (Type == CombatType::SHOOTING) {
+            if (data.combat_type == CombatType::MELEE) continue;
+        } else {
+            if (data.combat_type == CombatType::SHOOTING) continue;
+        }
+
+        if (data.sub_phase == static_cast<u8>(CombatSubPhase::HIT_MODIFIERS)) {
+            auto effect = EFFECT_TABLE[static_cast<size_t>(rule.id)]
+                .combat_effects[static_cast<size_t>(CombatSubPhase::HIT_MODIFIERS)];
+            if (effect) effect(ctx, rule.value);
+        }
+    }
+}
+
+// Dispatch at runtime (single branch)
+CombatResult resolve_combat(CombatContext& ctx) {
+    if (ctx.combat_type == CombatType::SHOOTING) {
+        return CombatResolver<CombatType::SHOOTING>{}.resolve(ctx);
+    } else {
+        return CombatResolver<CombatType::MELEE>{}.resolve(ctx);
+    }
+}
+```
+
+---
+
+### Issue 15: Migration Order Optimization
+
+**Revised Migration Order:**
+
+```
+Phase 1: Foundation Data Structures
+    ↓
+Phase 2: Rule Registry + RuleMask Fix
+    ↓
+    ├─────────────────────────────────┐
+    ↓                                 ↓
+Phase 3-5: Combat Migration     Phase 6: Movement/Deployment
+(can run in parallel)           (can run in parallel)
+    ↓                                 ↓
+    └─────────────────────────────────┘
+                    ↓
+            Phase 7: AI Integration
+                    ↓
+        Phase 8: Cleanup & Optimization
+```
+
+**Revised Phase 2 (Critical Path):**
+
+```
+Phase 2: Foundation + RuleMask Fix (BLOCKING)
+├── 2.1: Implement RulePresence with tiered bitset
+├── 2.2: Migrate has_rule() to new structure
+├── 2.3: Implement function pointer effect table
+├── 2.4: Create RuleRegistry with DI pattern
+├── 2.5: Add hot/cold data separation
+├── 2.6: Implement priority system
+└── 2.7: Benchmark against current performance
+```
+
+**Parallel Tracks After Phase 2:**
+
+```
+Track A: Combat System                Track B: Non-Combat
+─────────────────────                ─────────────────────
+Phase 3: Hit Modifiers               Phase 6.1: Movement Rules
+Phase 4: Remaining Sub-Phases        Phase 6.2: Deployment Rules
+Phase 5: Unified Combat Path         Phase 6.3: End Round Rules
+```
+
+---
+
+## Updated Risk Assessment
+
+| Issue | Severity | Status |
+|-------|----------|--------|
+| RuleMask overflow | Critical | ✅ Addressed (tiered bitset) |
+| std::function performance | High | ✅ Addressed (function pointers) |
+| RuleDefinition size | High | ✅ Addressed (hot/cold split) |
+| Rule value lookup O(n) | Medium | ✅ Addressed (direct array) |
+| Granting system | High | ✅ Addressed (modifier layer) |
+| A/B testing stochastic | High | ✅ Addressed (deterministic harness) |
+| CombatContext size | Medium | ✅ Addressed (tiered context) |
+| Rule ordering | Medium | ✅ Addressed (priority system) |
+| Trait aggregation timing | Medium | ✅ Addressed (aggregate at start) |
+| Singleton issues | Medium | ✅ Addressed (dependency injection) |
+| Compilation time | Medium | ✅ Addressed (.cpp definitions) |
+| AI hints type system | Medium | ✅ Addressed (typed variants) |
+| Rule interactions | Medium | ✅ Addressed (interaction table) |
+| Unified path optimization | Low | ✅ Addressed (template specialization) |
+| Migration order | Low | ✅ Addressed (parallel tracks) |
+
+---
+
+## Performance Targets
+
+| Metric | Current | Target | Validation |
+|--------|---------|--------|------------|
+| has_rule() | O(1) bitwise | O(1) bitwise | Maintain |
+| get_rule_value() | O(n) linear | O(1) direct | Benchmark |
+| Combat resolution | ~X μs | ≤1.2X μs | Benchmark |
+| Memory per unit | ~70 bytes | ≤100 bytes | sizeof() |
+| Compilation time | ~X sec | ≤1.5X sec | CI timing |
+
+**Benchmark Suite:**
+- 100K combat resolutions with varied rule combinations
+- Memory profiling for unit/rule storage
+- Cache miss analysis for hot path
