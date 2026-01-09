@@ -8,6 +8,7 @@
 #include "core/rule_presence.hpp"
 #include <unordered_map>
 #include <string_view>
+#include <optional>
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
