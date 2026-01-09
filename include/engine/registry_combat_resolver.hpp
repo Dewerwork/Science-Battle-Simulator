@@ -733,6 +733,19 @@ public:
             u8 base_quality = attacker.quality();
             u8 quality = base_quality;
             i8 hit_modifier = 0;
+            bool versatile_ap_bonus = false;
+
+            // VersatileAttack: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
+            if (attacker.has_rule(RuleId::VersatileAttack)) {
+                u8 versatile_roll = dice_.roll_d6();
+                if (versatile_roll <= 3) {
+                    versatile_ap_bonus = true;
+                    if (logger_) logger_->on_rule_triggered("VersatileAttack", "rolled_ap+1", versatile_roll);
+                } else {
+                    hit_modifier += 1;
+                    if (logger_) logger_->on_hit_modifier("VersatileAttack", +1, "rolled_+1_hit");
+                }
+            }
 
             // Apply hit modifiers and log each one
             if (w.has_rule(RuleId::Reliable)) {
@@ -822,6 +835,13 @@ public:
                 logger_->on_hits_after_modifiers(normal_hits, rending_hits, hits);
             }
 
+            // Calculate effective AP with VersatileAttack bonus
+            u8 effective_ap = w.ap;
+            if (versatile_ap_bonus) {
+                effective_ap += 1;
+                if (logger_) logger_->on_rule_triggered("VersatileAttack", "ap+1_bonus_applied", 1);
+            }
+
             // Determine bypass and reroll flags
             bool bypass_regen = has_rending || has_rupture ||
                                 w.has_rule(RuleId::Bane) || w.has_rule(RuleId::Shred) ||
@@ -837,22 +857,22 @@ public:
 
             // Roll defense for normal hits
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, w.ap, 0, force_reroll);
+            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, effective_defense, effective_ap, 0, force_reroll);
 
             // Log defense rolls
             if (logger_) {
                 std::vector<u8> def_rolls = dice_.take_recorded_rolls();
-                i8 effective_target = static_cast<i8>(effective_defense) + static_cast<i8>(w.ap);
+                i8 effective_target = static_cast<i8>(effective_defense) + static_cast<i8>(effective_ap);
                 effective_target = std::max(i8(2), std::min(i8(6), effective_target));
                 u32 saves = normal_hits - wounds_from_normal;
-                logger_->on_defense_rolls(effective_defense, w.ap, static_cast<u8>(effective_target), force_reroll,
+                logger_->on_defense_rolls(effective_defense, effective_ap, static_cast<u8>(effective_target), force_reroll,
                                           def_rolls, saves, wounds_from_normal, 0, {}, 0);
             }
 
             // Roll defense for rending hits (AP+4)
             u32 wounds_from_rending = 0;
             if (rending_hits > 0) {
-                u8 rending_ap = w.ap + 4;
+                u8 rending_ap = effective_ap + 4;
                 if (logger_) dice_.enable_roll_recording(true);
                 wounds_from_rending = dice_.roll_defense_test(rending_hits, effective_defense, rending_ap, 0, force_reroll);
 
@@ -982,6 +1002,19 @@ public:
             u8 base_quality = attacker.quality();
             u8 quality = base_quality;
             i8 hit_modifier = 0;
+            bool versatile_ap_bonus = false;
+
+            // VersatileAttack: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
+            if (attacker.has_rule(RuleId::VersatileAttack)) {
+                u8 versatile_roll = dice_.roll_d6();
+                if (versatile_roll <= 3) {
+                    versatile_ap_bonus = true;
+                    if (logger_) logger_->on_rule_triggered("VersatileAttack", "rolled_ap+1", versatile_roll);
+                } else {
+                    hit_modifier += 1;
+                    if (logger_) logger_->on_hit_modifier("VersatileAttack", +1, "rolled_+1_hit");
+                }
+            }
 
             // Apply hit modifiers and log each one
             if (w.has_rule(RuleId::Reliable)) {
@@ -1072,6 +1105,11 @@ public:
                 effective_ap += 1;
                 if (logger_) logger_->on_rule_triggered("Thrust", "ap+1_on_charge", 1);
             }
+            // VersatileAttack AP bonus (if rolled earlier)
+            if (versatile_ap_bonus) {
+                effective_ap += 1;
+                if (logger_) logger_->on_rule_triggered("VersatileAttack", "ap+1_bonus_applied", 1);
+            }
 
             // Determine bypass and reroll flags
             bool bypass_regen = has_rending || has_rupture ||
@@ -1081,9 +1119,17 @@ public:
             bool force_reroll = w.has_rule(RuleId::Poison) || w.has_rule(RuleId::Bane) ||
                                 attacker.has_rule(RuleId::BaneInMelee);
 
+            // Calculate defense modifiers
+            i8 defense_mod = 0;
+            // Shielded: +1 to Defense vs non-spell attacks (easier saves)
+            if (defender.has_rule(RuleId::Shielded)) {
+                defense_mod -= 1;  // easier save (lower defense roll needed)
+                if (logger_) logger_->on_defense_modifier("Shielded", -1, "easier_saves_vs_melee");
+            }
+
             // Roll defense for normal hits
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), effective_ap, 0, force_reroll);
+            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), effective_ap, defense_mod, force_reroll);
 
             // Log defense rolls
             if (logger_) {
@@ -1100,7 +1146,7 @@ public:
             if (rending_hits > 0) {
                 u8 rending_ap = effective_ap + 4;
                 if (logger_) dice_.enable_roll_recording(true);
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), rending_ap, 0, force_reroll);
+                wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), rending_ap, defense_mod, force_reroll);
 
                 if (logger_) {
                     std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
