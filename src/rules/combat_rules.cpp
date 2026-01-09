@@ -498,6 +498,112 @@ const RuleEffectEntry Blast_Effects = EffectBuilder()
     .combat(CombatSubPhase::HIT_MULTIPLICATION, blast_effect)
     .build();
 
+// === Additional Hit Modifier Effects ===
+
+const RuleEffectEntry GoodShot_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, good_shot_effect)
+    .build();
+
+const RuleEffectEntry BadShot_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, bad_shot_effect)
+    .build();
+
+const RuleEffectEntry RangedShrouding_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, ranged_shrouding_effect)
+    .build();
+
+const RuleEffectEntry MeleeEvasion_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, melee_evasion_effect)
+    .build();
+
+const RuleEffectEntry MeleeShrouding_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, melee_shrouding_effect)
+    .build();
+
+const RuleEffectEntry Purge_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, purge_effect)
+    .condition(CombatSubPhase::HIT_MODIFIERS, purge_condition)
+    .build();
+
+const RuleEffectEntry Thrust_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, thrust_hit_effect)
+    .condition(CombatSubPhase::HIT_MODIFIERS, thrust_condition)
+    .build();
+
+const RuleEffectEntry PointBlankSurge_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, point_blank_surge_effect)
+    .condition(CombatSubPhase::HIT_BONUSES, point_blank_surge_condition)
+    .build();
+
+const RuleEffectEntry Furious_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, furious_effect)
+    .condition(CombatSubPhase::HIT_BONUSES, furious_condition)
+    .build();
+
+const RuleEffectEntry Rupture_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_SEPARATION, rupture_effect)
+    .build();
+
+// ==============================================================================
+// Cold Data for Hit Modifier Rules
+// ==============================================================================
+
+const RuleColdData GoodShot_ColdData{
+    "GoodShot",
+    nullptr,
+    0,
+    "GoodShot: +1 to hit",
+    "This unit gets +1 to hit when shooting."
+};
+
+const RuleColdData BadShot_ColdData{
+    "BadShot",
+    nullptr,
+    0,
+    "BadShot: -1 to hit",
+    "This unit gets -1 to hit when shooting."
+};
+
+const RuleColdData RangedShrouding_ColdData{
+    "RangedShrouding",
+    nullptr,
+    0,
+    "RangedShrouding: -1 to be hit",
+    "Enemies shooting this unit get -1 to hit."
+};
+
+const RuleColdData MeleeEvasion_ColdData{
+    "MeleeEvasion",
+    nullptr,
+    0,
+    "MeleeEvasion: -1 to be hit",
+    "Enemies attacking this unit in melee get -1 to hit."
+};
+
+const RuleColdData MeleeShrouding_ColdData{
+    "MeleeShrouding",
+    nullptr,
+    0,
+    "MeleeShrouding: -1 to be hit",
+    "Enemies attacking this unit in melee get -1 to hit."
+};
+
+const RuleColdData Purge_ColdData{
+    "Purge",
+    nullptr,
+    0,
+    "Purge: +1 to hit vs Tough(3+)",
+    "Weapons with this rule get +1 to hit against targets with Tough(3+)."
+};
+
+const RuleColdData Thrust_ColdData{
+    "Thrust",
+    nullptr,
+    0,
+    "Thrust: +1 to hit when charging",
+    "Weapons with this rule get +1 to hit and AP+1 when charging."
+};
+
 // ==============================================================================
 // Registration Function
 // ==============================================================================
@@ -531,6 +637,13 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::Rending, Rending_ColdData);
     registry.register_cold_data(RuleId::Blast, Blast_ColdData);
     registry.register_cold_data(RuleId::Stealth, Stealth_ColdData);
+    registry.register_cold_data(RuleId::GoodShot, GoodShot_ColdData);
+    registry.register_cold_data(RuleId::BadShot, BadShot_ColdData);
+    registry.register_cold_data(RuleId::RangedShrouding, RangedShrouding_ColdData);
+    registry.register_cold_data(RuleId::MeleeEvasion, MeleeEvasion_ColdData);
+    registry.register_cold_data(RuleId::MeleeShrouding, MeleeShrouding_ColdData);
+    registry.register_cold_data(RuleId::Purge, Purge_ColdData);
+    registry.register_cold_data(RuleId::Thrust, Thrust_ColdData);
 
     // Register effects
     registry.register_effects(RuleId::Precise, Precise_Effects);
@@ -540,6 +653,16 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::Relentless, Relentless_Effects);
     registry.register_effects(RuleId::Surge, Surge_Effects);
     registry.register_effects(RuleId::Blast, Blast_Effects);
+    registry.register_effects(RuleId::GoodShot, GoodShot_Effects);
+    registry.register_effects(RuleId::BadShot, BadShot_Effects);
+    registry.register_effects(RuleId::RangedShrouding, RangedShrouding_Effects);
+    registry.register_effects(RuleId::MeleeEvasion, MeleeEvasion_Effects);
+    registry.register_effects(RuleId::MeleeShrouding, MeleeShrouding_Effects);
+    registry.register_effects(RuleId::Purge, Purge_Effects);
+    registry.register_effects(RuleId::Thrust, Thrust_Effects);
+    registry.register_effects(RuleId::PointBlankSurge, PointBlankSurge_Effects);
+    registry.register_effects(RuleId::Furious, Furious_Effects);
+    registry.register_effects(RuleId::Rupture, Rupture_Effects);
 
     // Register aliases for parsing
     registry.register_alias("precise", RuleId::Precise);
@@ -552,6 +675,20 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_alias("Blast", RuleId::Blast);
     registry.register_alias("stealth", RuleId::Stealth);
     registry.register_alias("Stealth", RuleId::Stealth);
+    registry.register_alias("goodshot", RuleId::GoodShot);
+    registry.register_alias("GoodShot", RuleId::GoodShot);
+    registry.register_alias("badshot", RuleId::BadShot);
+    registry.register_alias("BadShot", RuleId::BadShot);
+    registry.register_alias("rangedshrouding", RuleId::RangedShrouding);
+    registry.register_alias("RangedShrouding", RuleId::RangedShrouding);
+    registry.register_alias("meleeevasion", RuleId::MeleeEvasion);
+    registry.register_alias("MeleeEvasion", RuleId::MeleeEvasion);
+    registry.register_alias("meleeshrouding", RuleId::MeleeShrouding);
+    registry.register_alias("MeleeShrouding", RuleId::MeleeShrouding);
+    registry.register_alias("purge", RuleId::Purge);
+    registry.register_alias("Purge", RuleId::Purge);
+    registry.register_alias("thrust", RuleId::Thrust);
+    registry.register_alias("Thrust", RuleId::Thrust);
 }
 
 } // namespace rules

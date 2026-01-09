@@ -138,6 +138,12 @@ target_include_directories(test_rule_architecture PRIVATE ${CMAKE_SOURCE_DIR}/in
 target_link_libraries(test_rule_architecture PRIVATE battle_core)
 target_compile_options(test_rule_architecture PRIVATE ${COMMON_FLAGS})
 
+# Phase 3 hit modifiers A/B test
+add_executable(test_phase3_hit_modifiers src/test_phase3_hit_modifiers.cpp)
+target_include_directories(test_phase3_hit_modifiers PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_phase3_hit_modifiers PRIVATE battle_core)
+target_compile_options(test_phase3_hit_modifiers PRIVATE ${COMMON_FLAGS})
+
 # Benchmark - parallel simulation
 add_executable(benchmark_sim src/benchmark_sim.cpp)
 target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
