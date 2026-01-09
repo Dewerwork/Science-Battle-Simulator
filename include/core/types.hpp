@@ -97,90 +97,156 @@ enum class VictoryCondition : u8 {
 // ==============================================================================
 
 // Rules are identified by enum for fast comparison and switch statements
-enum class RuleId : u8 {
+// IMPORTANT: Rules 1-63 are PRIMARY (hot path) rules that fit in a 64-bit mask
+// Rules 64+ are EXTENDED rules stored in a separate bitset
+//
+// Reordering note: If you need to add a new frequently-used rule, add it before
+// PRIMARY_COUNT and adjust less-frequently-used rules to EXTENDED section.
+enum class RuleId : u16 {
     None = 0,
 
-    // Weapon rules (affect attacks)
-    AP,             // AP(X) - Armor Piercing
-    Blast,          // Blast(X) - Multiply hits
-    Deadly,         // Deadly(X) - Multiply wounds
-    Lance,          // Lance - +2 AP on charge
-    Poison,         // Poison - Reroll defense 6s
-    Precise,        // Precise - +1 to hit
-    Reliable,       // Reliable - Quality 2+
-    Rending,        // Rending - 6s to hit get AP(4)
-    Bane,           // Bane - Bypass regeneration
-    Impact,         // Impact(X) - Extra attacks on charge
-    Indirect,       // Indirect - Ignore cover
-    Sniper,         // Sniper - Pick target model
-    Lock_On,        // Lock-On - +1 to hit vs vehicles
-    Purge,          // Purge - +1 to hit vs Tough(3+)
+    // === PRIMARY RULES (1-63) - Hot path, frequently checked ===
+    // These rules are checked most often during combat resolution
 
-    // Defense rules
-    Regeneration,   // Regeneration - 5+ to ignore wound
-    Tough,          // Tough(X) - Multiple wounds to kill
-    Protected,      // Protected - 6+ to reduce AP
-    Stealth,        // Stealth - -1 to be hit from >9"
-    ShieldWall,     // Shield Wall - +1 Defense in melee
+    // Combat hit modifiers (checked every attack)
+    Precise,        // Precise - +1 to hit (1)
+    Reliable,       // Reliable - Quality 2+ (2)
+    Rending,        // Rending - 6s to hit get AP(4) (3)
+    Blast,          // Blast(X) - Multiply hits (4)
+    Deadly,         // Deadly(X) - Multiply wounds (5)
+    Poison,         // Poison - Reroll defense 6s (6)
+    Bane,           // Bane - Bypass regeneration (7)
+    AP,             // AP(X) - Armor Piercing (8)
+    Lance,          // Lance - +2 AP on charge (9)
+    Impact,         // Impact(X) - Extra attacks on charge (10)
+    Surge,          // Surge - 6s to hit deal 1 extra hit (11)
+    Thrust,         // Thrust - +1 to hit and AP(+1) when charging (12)
 
-    // Unit rules
-    Fearless,       // Fearless - Reroll failed morale
-    Furious,        // Furious - Extra hits on 6s when charging
-    Hero,           // Hero - Takes wounds last
-    Relentless,     // Relentless - Extra hits on 6s shooting >9"
-    Fear,           // Fear(X) - Counts as +X wounds in melee
-    Counter,        // Counter - Strikes first when charged
-    Fast,           // Fast - 9" move instead of 6"
-    Flying,         // Flying - Can fly over terrain/units
-    Strider,        // Strider - Ignore difficult terrain
-    Scout,          // Scout - Deploy 12" ahead
-    Ambush,         // Ambush - Can deploy anywhere >9" from enemy
-    Devout,         // Devout - Faction rule
-    PiercingAssault,// Piercing Assault - AP(1) on melee in charge
-    Unstoppable,    // Unstoppable - Ignore regen and negative modifiers
-    Casting,        // Casting(X) - Can cast X spells
-    Slow,           // Slow - 4" move instead of 6"
-    Surge,          // Surge - 6s to hit deal 1 extra hit
-    Thrust,         // Thrust - +1 to hit and AP(+1) when charging
-    Takedown,       // Takedown - Pick target model, resolve as unit of 1
-    Limited,        // Limited - Weapon may only be used once per game
+    // Defense rules (checked every defense roll)
+    Regeneration,   // Regeneration - 5+ to ignore wound (13)
+    Tough,          // Tough(X) - Multiple wounds to kill (14)
+    Stealth,        // Stealth - -1 to be hit from >9" (15)
+    Protected,      // Protected - 6+ to reduce AP (16)
+    Shielded,       // Shielded - +1 defense vs non-spell hits (17)
+    ShieldWall,     // Shield Wall - +1 Defense in melee (18)
+    Resistance,     // Resistance - 6+ to ignore wounds (19)
 
-    // Faction-specific rules (added for army special rules)
-    Shielded,       // Shielded - +1 defense vs non-spell hits
-    Resistance,     // Resistance - 6+ to ignore wounds (2+ vs spells)
-    NoRetreat,      // No Retreat - Can't be shaken/routed, take wounds instead
-    MoraleBoost,    // Morale Boost - +1 to morale test rolls
-    Rupture,        // Rupture - Ignore regen, extra wound on unmodified 6 to hit
-    Agile,          // Agile - +1" advance, +2" rush/charge
-    HitAndRun,      // Hit & Run - Can retreat after fighting
-    PointBlankSurge,// Point-Blank Surge - 6s to hit deal extra hit at short range
-    Shred,          // Shred - Extra wound on unmodified 1 to block
-    Smash,          // Smash - Ignore regen, +Blast(3) vs Defense 5+/6+
-    Battleborn,     // Battleborn - 4+ to stop being Shaken at round start
-    PredatorFighter,// Predator Fighter - 6s in melee generate extra attacks
-    RapidCharge,    // Rapid Charge - +4" charge move
-    SelfDestruct,   // Self-Destruct - Deal X hits to attacker when killed in melee
-    VersatileAttack,// Versatile Attack - Choose AP+1 or +1 to hit each activation
-    GoodShot,       // Good Shot - +1 to hit when shooting
-    BadShot,        // Bad Shot - -1 to hit when shooting
-    MeleeEvasion,   // Melee Evasion - -1 to be hit in melee
-    MeleeShrouding, // Melee Shrouding - -1 to be hit in melee (like Stealth)
-    RangedShrouding,// Ranged Shrouding - -1 to be hit when shooting at this unit
-    BaneInMelee,    // Bane in Melee - All melee attacks have Bane (bypass regen, reroll def 6s)
-    HoldTheLine,    // Hold the Line - Reroll failed morale tests
+    // Hit bonus rules (checked after each hit roll)
+    Relentless,     // Relentless - Extra hits on 6s shooting >9" (20)
+    Furious,        // Furious - Extra hits on 6s when charging (21)
+    PointBlankSurge,// Point-Blank Surge - 6s to hit deal extra hit at short range (22)
+    PredatorFighter,// Predator Fighter - 6s in melee generate extra attacks (23)
 
-    COUNT // Number of rules
+    // Wound modification rules (checked during wound application)
+    Rupture,        // Rupture - Ignore regen, extra wound on unmodified 6 to hit (24)
+    Shred,          // Shred - Extra wound on unmodified 1 to block (25)
+    Smash,          // Smash - Ignore regen, +Blast(3) vs Defense 5+/6+ (26)
+    Takedown,       // Takedown - Pick target model, resolve as unit of 1 (27)
+    SelfDestruct,   // Self-Destruct - Deal X hits to attacker when killed in melee (28)
+
+    // Movement rules (checked during movement phase)
+    Fast,           // Fast - 9" move instead of 6" (29)
+    Slow,           // Slow - 4" move instead of 6" (30)
+    Flying,         // Flying - Can fly over terrain/units (31)
+    Strider,        // Strider - Ignore difficult terrain (32)
+    Agile,          // Agile - +1" advance, +2" rush/charge (33)
+    RapidCharge,    // Rapid Charge - +4" charge move (34)
+
+    // Morale rules (checked during morale phase)
+    Fearless,       // Fearless - Reroll failed morale (35)
+    NoRetreat,      // No Retreat - Can't be shaken/routed, take wounds instead (36)
+    MoraleBoost,    // Morale Boost - +1 to morale test rolls (37)
+    HoldTheLine,    // Hold the Line - Reroll failed morale tests (38)
+    Fear,           // Fear(X) - Counts as +X wounds in melee (39)
+
+    // Hit modifier rules - attacker side
+    GoodShot,       // Good Shot - +1 to hit when shooting (40)
+    BadShot,        // Bad Shot - -1 to hit when shooting (41)
+    VersatileAttack,// Versatile Attack - Choose AP+1 or +1 to hit (42)
+    Purge,          // Purge - +1 to hit vs Tough(3+) (43)
+    PiercingAssault,// Piercing Assault - AP(1) on melee in charge (44)
+
+    // Hit modifier rules - defender side
+    MeleeEvasion,   // Melee Evasion - -1 to be hit in melee (45)
+    MeleeShrouding, // Melee Shrouding - -1 to be hit in melee (46)
+    RangedShrouding,// Ranged Shrouding - -1 to be hit when shooting (47)
+
+    // Other combat rules
+    BaneInMelee,    // Bane in Melee - All melee attacks have Bane (48)
+    Limited,        // Limited - Weapon may only be used once per game (49)
+    Counter,        // Counter - Strikes first when charged (50)
+    HitAndRun,      // Hit & Run - Can retreat after fighting (51)
+    Indirect,       // Indirect - Ignore cover (52)
+    Sniper,         // Sniper - Pick target model (53)
+    Lock_On,        // Lock-On - +1 to hit vs vehicles (54)
+
+    // Special unit rules
+    Hero,           // Hero - Takes wounds last (55)
+    Unstoppable,    // Unstoppable - Ignore regen and negative modifiers (56)
+
+    // Deployment rules
+    Scout,          // Scout - Deploy 12" ahead (57)
+    Ambush,         // Ambush - Can deploy anywhere >9" from enemy (58)
+
+    // Reserved slots for future hot rules (59-63)
+    _Reserved59,
+    _Reserved60,
+    _Reserved61,
+    _Reserved62,
+    _Reserved63,
+
+    // === BOUNDARY MARKER ===
+    PRIMARY_COUNT = 64,  // First 64 rules (0-63) fit in PrimaryRuleMask
+
+    // === EXTENDED RULES (64+) - Less frequently checked ===
+    // These rules are stored in ExtendedRuleMask bitset
+
+    // Faction-specific rules
+    Devout = PRIMARY_COUNT,  // Devout - Faction rule (64)
+    Battleborn,     // Battleborn - 4+ to stop being Shaken at round start (65)
+    Casting,        // Casting(X) - Can cast X spells (66)
+
+    // Future expansion rules go here
+    // Each new rule should be categorized as PRIMARY or EXTENDED based on
+    // how frequently it's checked during combat resolution
+
+    COUNT // Total number of rules
 };
 
-// Rule presence bitset - fast O(1) lookup for has_rule()
-// Each bit corresponds to a RuleId (fits in 64 bits since COUNT < 64)
-using RuleMask = u64;
+// Compile-time validation
+static_assert(static_cast<size_t>(RuleId::PRIMARY_COUNT) == 64,
+              "PRIMARY_COUNT must be exactly 64 for PrimaryRuleMask");
+static_assert(static_cast<size_t>(RuleId::COUNT) <= 320,
+              "RuleId::COUNT exceeds ExtendedRuleMask capacity");
 
-inline constexpr RuleMask rule_bit(RuleId id) {
-    return (id == RuleId::None) ? 0 : (RuleMask(1) << static_cast<u8>(id));
+// Primary rule mask - 64-bit for cache-friendly O(1) lookup of hot rules
+using PrimaryRuleMask = u64;
+constexpr size_t PRIMARY_RULE_LIMIT = 64;
+
+// Legacy alias for backwards compatibility (will be removed after full migration)
+using RuleMask = PrimaryRuleMask;
+
+// Helper to get the bit position for a primary rule
+// Returns 0 for None or extended rules (caller must handle extended rules separately)
+inline constexpr PrimaryRuleMask rule_bit(RuleId id) {
+    auto idx = static_cast<u16>(id);
+    if (id == RuleId::None || idx >= PRIMARY_RULE_LIMIT) {
+        return 0;
+    }
+    return PrimaryRuleMask(1) << idx;
 }
 
-static_assert(static_cast<int>(RuleId::COUNT) <= 64, "RuleMask requires COUNT <= 64");
+// Check if a rule is in the primary range (hot path)
+inline constexpr bool is_primary_rule(RuleId id) {
+    auto idx = static_cast<u16>(id);
+    return idx > 0 && idx < PRIMARY_RULE_LIMIT;
+}
+
+// Check if a rule is in the extended range (cold path)
+inline constexpr bool is_extended_rule(RuleId id) {
+    auto idx = static_cast<u16>(id);
+    return idx >= PRIMARY_RULE_LIMIT && idx < static_cast<u16>(RuleId::COUNT);
+}
 
 // AI behavior type for Solo Play rules
 enum class AIType : u8 {
@@ -193,14 +259,16 @@ enum class AIType : u8 {
 // Compact Rule Representation
 // ==============================================================================
 
-// A special rule with its value, packed into 2 bytes
-struct alignas(2) CompactRule {
-    RuleId id    : 8;  // Rule identifier
-    u8     value : 8;  // Rule value (e.g., 3 for Blast(3), 0 if no value)
+// A special rule with its value, packed into 4 bytes
+// Note: RuleId expanded from u8 to u16 to support >64 rules
+struct alignas(4) CompactRule {
+    RuleId id;         // Rule identifier (16 bits)
+    u8     value;      // Rule value (e.g., 3 for Blast(3), 0 if no value)
+    u8     _padding;   // Padding for alignment
 
-    constexpr CompactRule() : id(RuleId::None), value(0) {}
-    constexpr CompactRule(RuleId r) : id(r), value(0) {}
-    constexpr CompactRule(RuleId r, u8 v) : id(r), value(v) {}
+    constexpr CompactRule() : id(RuleId::None), value(0), _padding(0) {}
+    constexpr CompactRule(RuleId r) : id(r), value(0), _padding(0) {}
+    constexpr CompactRule(RuleId r, u8 v) : id(r), value(v), _padding(0) {}
 
     constexpr bool is_valid() const { return id != RuleId::None; }
     constexpr bool operator==(const CompactRule& other) const {
@@ -208,7 +276,7 @@ struct alignas(2) CompactRule {
     }
 };
 
-static_assert(sizeof(CompactRule) == 2, "CompactRule must be 2 bytes");
+static_assert(sizeof(CompactRule) == 4, "CompactRule must be 4 bytes");
 
 // ==============================================================================
 // Fixed-Size String (avoids heap allocation)
