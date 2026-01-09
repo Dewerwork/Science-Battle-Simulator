@@ -87,6 +87,7 @@ endif()
 add_library(battle_core STATIC
     src/core/faction_rules.cpp
     src/core/special_rule.cpp
+    src/rules/combat_rules.cpp
 )
 target_include_directories(battle_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_compile_options(battle_core PRIVATE ${COMMON_FLAGS})
@@ -130,6 +131,12 @@ add_executable(test_game src/test_game.cpp)
 target_include_directories(test_game PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(test_game PRIVATE battle_core)
 target_compile_options(test_game PRIVATE ${COMMON_FLAGS})
+
+# Rule architecture test (Phase 1-2)
+add_executable(test_rule_architecture src/test_rule_architecture.cpp)
+target_include_directories(test_rule_architecture PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_rule_architecture PRIVATE battle_core)
+target_compile_options(test_rule_architecture PRIVATE ${COMMON_FLAGS})
 
 # Benchmark - parallel simulation
 add_executable(benchmark_sim src/benchmark_sim.cpp)
