@@ -88,6 +88,7 @@ add_library(battle_core STATIC
     src/core/faction_rules.cpp
     src/core/special_rule.cpp
     src/rules/combat_rules.cpp
+    src/rules/factions/faction_rules_registry.cpp
 )
 target_include_directories(battle_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_compile_options(battle_core PRIVATE ${COMMON_FLAGS})
