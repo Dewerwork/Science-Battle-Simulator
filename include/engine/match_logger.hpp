@@ -339,6 +339,37 @@ public:
         bool is_unit_a,
         bool now_fatigued,
         const char* reason) = 0;
+
+    // =========================================================================
+    // DEPLOYMENT RULES
+    // =========================================================================
+
+    virtual void on_deployment_rule(
+        bool is_unit_a,
+        const char* rule_name,
+        i8 old_position,
+        i8 new_position,
+        const char* reason) = 0;
+
+    // =========================================================================
+    // MOVEMENT RULES
+    // =========================================================================
+
+    virtual void on_movement_rule_applied(
+        bool is_unit_a,
+        const char* rule_name,
+        i8 modifier,
+        const char* effect) = 0;
+
+    // =========================================================================
+    // END-ROUND RULES
+    // =========================================================================
+
+    virtual void on_end_round_rule(
+        bool is_unit_a,
+        const char* rule_name,
+        const char* effect,
+        u32 value) = 0;
 };
 
 } // namespace battle

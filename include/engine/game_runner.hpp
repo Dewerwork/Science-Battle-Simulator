@@ -37,11 +37,23 @@ public:
     GameResult run_game(const Unit& unit_a, const Unit& unit_b) {
         state_.init(unit_a, unit_b);
 
+        // Store original positions before deployment
+        i8 orig_pos_a = state_.pos_a;
+        i8 orig_pos_b = state_.pos_b;
+
         // Apply deployment rules (Scout, Ambush, etc.)
         DeploymentProcessor::apply_deployment(state_, unit_a, unit_b);
 
         if (logger_) {
             logger_->on_game_start(unit_a, unit_b, state_.pos_a, state_.pos_b);
+
+            // Log deployment rule changes
+            log_deployment_rules(unit_a, true, orig_pos_a, state_.pos_a);
+            log_deployment_rules(unit_b, false, orig_pos_b, state_.pos_b);
+
+            // Log active movement rules for both units
+            log_movement_rules(unit_a, true);
+            log_movement_rules(unit_b, false);
         }
 
         // Run up to MAX_ROUNDS
@@ -169,6 +181,10 @@ private:
             activate_unit(false);
             activate_unit(true);
         }
+
+        // End-round rule processing (Regeneration, etc.)
+        process_end_round_rules(true);   // Unit A
+        process_end_round_rules(false);  // Unit B
 
         // End of round - check objective control
         bool a_in_range = std::abs(state_.pos_a) <= OBJECTIVE_CONTROL_RANGE;
@@ -704,6 +720,109 @@ private:
                 logger_->on_status_changed(is_unit_a, UnitStatus::Shaken, UnitStatus::Normal, "battleborn_rallied");
             }
         }
+    }
+
+    // Log deployment rule effects
+    void log_deployment_rules(const Unit& unit, bool is_unit_a, i8 old_pos, i8 new_pos) {
+        if (old_pos == new_pos) return;  // No change
+
+        // Check which deployment rule caused the change
+        if (unit.has_rule(RuleId::Scout)) {
+            logger_->on_deployment_rule(is_unit_a, "Scout", old_pos, new_pos,
+                                        "forward_deploy_6_inches");
+        } else if (unit.has_rule(RuleId::Ambush)) {
+            logger_->on_deployment_rule(is_unit_a, "Ambush", old_pos, new_pos,
+                                        "flexible_deployment");
+        } else {
+            // Unknown deployment rule
+            logger_->on_deployment_rule(is_unit_a, "Deployment", old_pos, new_pos,
+                                        "position_modified");
+        }
+    }
+
+    // Log movement rules being applied to a unit
+    void log_movement_rules(const Unit& unit, bool is_unit_a) {
+        if (unit.has_rule(RuleId::Fast)) {
+            logger_->on_movement_rule_applied(is_unit_a, "Fast", 3, "+3_inch_move");
+        }
+        if (unit.has_rule(RuleId::Slow)) {
+            logger_->on_movement_rule_applied(is_unit_a, "Slow", -2, "-2_inch_move");
+        }
+        if (unit.has_rule(RuleId::Flying)) {
+            logger_->on_movement_rule_applied(is_unit_a, "Flying", 0, "ignores_terrain");
+        }
+        if (unit.has_rule(RuleId::Strider)) {
+            logger_->on_movement_rule_applied(is_unit_a, "Strider", 0, "ignores_difficult_terrain");
+        }
+        if (unit.has_rule(RuleId::Agile)) {
+            logger_->on_movement_rule_applied(is_unit_a, "Agile", 0, "bonus_charge_range");
+        }
+        if (unit.has_rule(RuleId::RapidCharge)) {
+            logger_->on_movement_rule_applied(is_unit_a, "RapidCharge", 0, "charge_after_rush");
+        }
+        if (unit.has_rule(RuleId::HitAndRun)) {
+            logger_->on_movement_rule_applied(is_unit_a, "HitAndRun", 0, "disengage_after_melee");
+        }
+    }
+
+    // Process end-round rules for a unit
+    void process_end_round_rules(bool is_unit_a) {
+        UnitView unit = state_.view(is_unit_a);
+
+        // Skip destroyed/routed units
+        if (unit.is_out_of_action()) return;
+
+        // Regeneration: Roll for each wound on alive models, 5+ to recover
+        if (unit.has_rule(RuleId::Regeneration)) {
+            UnitSimState& sim_state = is_unit_a ? state_.state_a : state_.state_b;
+            const Unit* unit_ptr = is_unit_a ? state_.unit_a_ptr : state_.unit_b_ptr;
+
+            // Count total wounds on alive models
+            u8 total_wounds = 0;
+            for (u8 i = 0; i < unit_ptr->model_count; ++i) {
+                if (sim_state.models[i].is_alive()) {
+                    total_wounds += sim_state.models[i].wounds_taken;
+                }
+            }
+
+            if (total_wounds > 0) {
+                u8 regen_target = unit.get_rule_value(RuleId::Regeneration);
+                if (regen_target == 0) regen_target = 5;  // Default 5+
+
+                u8 wounds_healed = 0;
+                for (u8 i = 0; i < total_wounds; ++i) {
+                    if (dice_.roll_d6() >= regen_target) {
+                        wounds_healed++;
+                    }
+                }
+
+                if (wounds_healed > 0) {
+                    // Apply healing to wounded models (most wounded first)
+                    u8 remaining_heal = wounds_healed;
+                    for (u8 i = 0; i < unit_ptr->model_count && remaining_heal > 0; ++i) {
+                        if (sim_state.models[i].is_alive() && sim_state.models[i].wounds_taken > 0) {
+                            u8 heal_amount = std::min(remaining_heal, sim_state.models[i].wounds_taken);
+                            sim_state.models[i].wounds_taken -= heal_amount;
+                            remaining_heal -= heal_amount;
+                            if (sim_state.models[i].wounds_taken == 0 &&
+                                sim_state.models[i].state == ModelState::Wounded) {
+                                sim_state.models[i].state = ModelState::Healthy;
+                            }
+                        }
+                    }
+
+                    if (logger_) {
+                        logger_->on_end_round_rule(is_unit_a, "Regeneration",
+                                                   "wounds_recovered", wounds_healed);
+                    }
+                }
+            }
+        }
+
+        // Fear: Log presence of fear (effect applied during morale checks in combat)
+        // (Only log once at start of game, not every round)
+
+        // Fearless, MoraleBoost, HoldTheLine, NoRetreat: Already applied in combat resolver
     }
 };
 
