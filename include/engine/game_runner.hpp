@@ -10,6 +10,7 @@
 #include "engine/ai_controller.hpp"
 #include "engine/rule_aware_ai.hpp"
 #include "engine/match_logger.hpp"
+#include "rules/deployment_rules.hpp"
 #include <algorithm>
 
 namespace battle {
@@ -35,6 +36,9 @@ public:
     // Run a single game between two units
     GameResult run_game(const Unit& unit_a, const Unit& unit_b) {
         state_.init(unit_a, unit_b);
+
+        // Apply deployment rules (Scout, Ambush, etc.)
+        DeploymentProcessor::apply_deployment(state_, unit_a, unit_b);
 
         if (logger_) {
             logger_->on_game_start(unit_a, unit_b, state_.pos_a, state_.pos_b);
