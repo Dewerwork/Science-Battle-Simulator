@@ -144,6 +144,12 @@ target_include_directories(test_phase3_hit_modifiers PRIVATE ${CMAKE_SOURCE_DIR}
 target_link_libraries(test_phase3_hit_modifiers PRIVATE battle_core)
 target_compile_options(test_phase3_hit_modifiers PRIVATE ${COMMON_FLAGS})
 
+# Phase 4 combat sub-phases A/B test
+add_executable(test_phase4_combat_subphases src/test_phase4_combat_subphases.cpp)
+target_include_directories(test_phase4_combat_subphases PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_phase4_combat_subphases PRIVATE battle_core)
+target_compile_options(test_phase4_combat_subphases PRIVATE ${COMMON_FLAGS})
+
 # Benchmark - parallel simulation
 add_executable(benchmark_sim src/benchmark_sim.cpp)
 target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
