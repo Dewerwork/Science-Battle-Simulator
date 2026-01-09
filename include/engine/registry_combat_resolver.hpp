@@ -665,11 +665,18 @@ private:
 };
 
 // ==============================================================================
-// A/B Test Helper Functions
+// A/B Test Helper Functions - DEPRECATED
+// ==============================================================================
+// These functions were used during migration (Phases 3-5) to validate that
+// the registry-based implementation produces identical results to the old
+// hardcoded implementation. Migration is now complete (Phase 8).
+//
+// These functions are kept for reference and potential debugging but should
+// not be used in production code.
 // ==============================================================================
 
 // Compute old-style hit modifier (for comparison)
-// This replicates the logic from combat_engine.hpp for A/B testing
+// DEPRECATED: Use apply_hit_modifiers() instead
 inline i8 compute_hit_modifier_old_style(
     const Unit& attacker,
     const Unit& defender,
@@ -872,21 +879,15 @@ inline HitMultiplicationResult compute_hit_multiplication_old_style(
 }
 
 // ==============================================================================
-// A/B Test Mode Flag
+// A/B Test Mode Flag - DEPRECATED
 // ==============================================================================
+// A/B testing was used during migration (Phases 3-5) to validate correctness.
+// Migration is now complete (Phase 8). These flags are disabled by default.
+// Enable only if debugging migration-related issues.
 
-// Set to true to enable A/B testing (compares old and new implementations)
-// Should be disabled in production for performance
-#ifndef NDEBUG
-inline constexpr bool AB_TEST_HIT_MODIFIERS = true;
-inline constexpr bool AB_TEST_HIT_SEPARATION = true;
-inline constexpr bool AB_TEST_HIT_BONUSES = true;
-inline constexpr bool AB_TEST_HIT_MULTIPLICATION = true;
-#else
 inline constexpr bool AB_TEST_HIT_MODIFIERS = false;
 inline constexpr bool AB_TEST_HIT_SEPARATION = false;
 inline constexpr bool AB_TEST_HIT_BONUSES = false;
 inline constexpr bool AB_TEST_HIT_MULTIPLICATION = false;
-#endif
 
 } // namespace battle
