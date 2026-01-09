@@ -27,7 +27,7 @@ std::array<u8, static_cast<size_t>(FactionId::COUNT)> g_special_counter{};
 std::array<u8, static_cast<size_t>(FactionId::COUNT)> g_aura_counter{};
 
 // Helper to add a faction rule
-u16 add_rule(FactionId faction, FactionRuleType type, const char* name,
+u16 add_rule(FactionId faction, FactionRuleSlot type, const char* name,
              RuleId grants = RuleId::None,
              i8 hit_mod = 0, i8 def_mod = 0, i8 ap_mod = 0, i8 morale_mod = 0,
              u8 deals_hits = 0, u8 hits_ap = 0, u8 hits_range = 0,
@@ -39,13 +39,13 @@ u16 add_rule(FactionId faction, FactionRuleType type, const char* name,
     u8 index;
 
     switch (type) {
-        case FactionRuleType::ArmyWide:
+        case FactionRuleSlot::ArmyWide:
             index = g_army_wide_counter[fid]++;
             break;
-        case FactionRuleType::Special:
+        case FactionRuleSlot::Special:
             index = g_special_counter[fid]++;
             break;
-        case FactionRuleType::Aura:
+        case FactionRuleSlot::Aura:
             index = g_aura_counter[fid]++;
             is_aura = true;  // Force is_aura for Aura type
             break;
@@ -85,9 +85,9 @@ u16 add_rule(FactionId faction, FactionRuleType type, const char* name,
 }
 
 // Shorthand macros for common patterns
-#define ARMY_RULE(faction, name, ...) add_rule(FactionId::faction, FactionRuleType::ArmyWide, name, ##__VA_ARGS__)
-#define SPECIAL_RULE(faction, name, ...) add_rule(FactionId::faction, FactionRuleType::Special, name, ##__VA_ARGS__)
-#define AURA_RULE(faction, name, ...) add_rule(FactionId::faction, FactionRuleType::Aura, name, ##__VA_ARGS__)
+#define ARMY_RULE(faction, name, ...) add_rule(FactionId::faction, FactionRuleSlot::ArmyWide, name, ##__VA_ARGS__)
+#define SPECIAL_RULE(faction, name, ...) add_rule(FactionId::faction, FactionRuleSlot::Special, name, ##__VA_ARGS__)
+#define AURA_RULE(faction, name, ...) add_rule(FactionId::faction, FactionRuleSlot::Aura, name, ##__VA_ARGS__)
 
 // ==============================================================================
 // Register All Faction Rules

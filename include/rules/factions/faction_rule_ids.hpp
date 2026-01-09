@@ -129,10 +129,10 @@ inline FactionId find_faction_by_name(std::string_view name) {
 }
 
 // ==============================================================================
-// Rule Type Offsets within faction block
+// Rule Slot Offsets within faction block
 // ==============================================================================
 
-enum class FactionRuleType : u8 {
+enum class FactionRuleSlot : u8 {
     ArmyWide = 0,   // 0-7: Army-wide rules (8 slots)
     Special = 8,    // 8-23: Special rules (16 slots)
     Aura = 24       // 24-31: Aura/spell rules (8 slots)
@@ -142,10 +142,10 @@ enum class FactionRuleType : u8 {
 // Rule ID Calculation
 // ==============================================================================
 
-constexpr u16 make_faction_rule_id(FactionId faction, FactionRuleType type, u8 index) {
+constexpr u16 make_faction_rule_id(FactionId faction, FactionRuleSlot slot, u8 index) {
     return FACTION_RULE_BASE +
            (static_cast<u16>(faction) * IDS_PER_FACTION) +
-           static_cast<u16>(type) +
+           static_cast<u16>(slot) +
            index;
 }
 
