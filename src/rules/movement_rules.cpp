@@ -11,7 +11,8 @@ namespace battle {
 // ==============================================================================
 
 constexpr u8 LOCAL_STANDARD_MOVE = 6;
-constexpr i8 FAST_BONUS = 3;             // Fast: +3" (9" total)
+constexpr i8 FAST_ADVANCE_BONUS = 2;     // Fast: +2" when using Advance
+constexpr i8 FAST_RUSH_CHARGE_BONUS = 4; // Fast: +4" when using Rush/Charge
 constexpr i8 SLOW_PENALTY = -2;          // Slow: -2" (4" total)
 constexpr i8 AGILE_ADVANCE_BONUS = 1;    // Agile: +1" advance
 constexpr i8 AGILE_CHARGE_BONUS = 2;     // Agile: +2" charge
@@ -25,9 +26,14 @@ constexpr u8 BASE_CHARGE_RANGE = 12;
 
 // Note: These use the existing MovementContext from core/contexts.hpp
 
-// Fast - Increases base movement by 3"
+// Fast - +2" Advance, +4" Rush/Charge
 void effect_fast(MovementContext& ctx) {
-    ctx.distance_modifier += FAST_BONUS;
+    if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
+        ctx.distance_modifier += FAST_ADVANCE_BONUS;
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH ||
+               ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.distance_modifier += FAST_RUSH_CHARGE_BONUS;
+    }
 }
 
 // Slow - Decreases base movement by 2"
@@ -81,7 +87,7 @@ bool g_movement_rules_initialized = false;
 void init_movement_rules() {
     if (g_movement_rules_initialized) return;
 
-    // Fast - +3" movement
+    // Fast - +2" Advance, +4" Rush/Charge
     g_movement_rules[static_cast<u16>(RuleId::Fast)] = {
         RuleId::Fast,
         MovementSubPhase::CALCULATE_DISTANCE,

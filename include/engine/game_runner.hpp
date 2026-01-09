@@ -136,6 +136,15 @@ private:
             logger_->on_round_start(state_.current_round, state_);
         }
 
+        // Clear "deployed this round" flags from previous round
+        state_.unit_a_deployed_this_round = false;
+        state_.unit_b_deployed_this_round = false;
+
+        // Ambush deployment: Units in reserve can deploy at start of round 2+
+        if (state_.current_round >= 2) {
+            deploy_ambush_units();
+        }
+
         // Process auras at round start
         // Check if units are from same faction (for friendly auras)
         bool same_faction = state_.unit_a_ptr->faction.view() == state_.unit_b_ptr->faction.view();
@@ -224,6 +233,14 @@ private:
         UnitView unit = state_.view(is_unit_a);
         UnitView enemy = state_.view(!is_unit_a);
         i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
+
+        // Skip units in reserve (Ambush - haven't deployed yet)
+        bool in_reserve = is_unit_a ? state_.unit_a_in_reserve : state_.unit_b_in_reserve;
+        if (in_reserve) {
+            if (is_unit_a) state_.unit_a_activated = true;
+            else state_.unit_b_activated = true;
+            return;
+        }
 
         // Skip destroyed or routed units entirely (still mark as activated for round progression)
         if (unit.is_out_of_action()) {
@@ -722,18 +739,50 @@ private:
         }
     }
 
+    // Deploy units from Ambush reserve (at start of round 2+)
+    void deploy_ambush_units() {
+        // Deploy Unit A from reserve if applicable
+        if (state_.unit_a_in_reserve) {
+            i8 old_pos = state_.pos_a;
+            state_.pos_a = DeploymentProcessor::calculate_ambush_position(
+                *state_.unit_a_ptr, true, state_.pos_b);
+            state_.unit_a_in_reserve = false;
+            state_.unit_a_deployed_this_round = true;
+
+            if (logger_) {
+                logger_->on_deployment_rule(true, "Ambush", old_pos, state_.pos_a,
+                                            "deployed_from_reserve_9+_from_enemy");
+            }
+        }
+
+        // Deploy Unit B from reserve if applicable
+        if (state_.unit_b_in_reserve) {
+            i8 old_pos = state_.pos_b;
+            state_.pos_b = DeploymentProcessor::calculate_ambush_position(
+                *state_.unit_b_ptr, false, state_.pos_a);
+            state_.unit_b_in_reserve = false;
+            state_.unit_b_deployed_this_round = true;
+
+            if (logger_) {
+                logger_->on_deployment_rule(false, "Ambush", old_pos, state_.pos_b,
+                                            "deployed_from_reserve_9+_from_enemy");
+            }
+        }
+    }
+
     // Log deployment rule effects
     void log_deployment_rules(const Unit& unit, bool is_unit_a, i8 old_pos, i8 new_pos) {
-        if (old_pos == new_pos) return;  // No change
-
-        // Check which deployment rule caused the change
+        // Check which deployment rule is active
         if (unit.has_rule(RuleId::Scout)) {
-            logger_->on_deployment_rule(is_unit_a, "Scout", old_pos, new_pos,
-                                        "forward_deploy_6_inches");
+            if (old_pos != new_pos) {
+                logger_->on_deployment_rule(is_unit_a, "Scout", old_pos, new_pos,
+                                            "forward_deploy_6_inches");
+            }
         } else if (unit.has_rule(RuleId::Ambush)) {
+            // Ambush units start in reserve - log that they're set aside
             logger_->on_deployment_rule(is_unit_a, "Ambush", old_pos, new_pos,
-                                        "flexible_deployment");
-        } else {
+                                        "set_aside_in_reserve_deploys_round_2+");
+        } else if (old_pos != new_pos) {
             // Unknown deployment rule
             logger_->on_deployment_rule(is_unit_a, "Deployment", old_pos, new_pos,
                                         "position_modified");
@@ -743,7 +792,7 @@ private:
     // Log movement rules being applied to a unit
     void log_movement_rules(const Unit& unit, bool is_unit_a) {
         if (unit.has_rule(RuleId::Fast)) {
-            logger_->on_movement_rule_applied(is_unit_a, "Fast", 3, "+3_inch_move");
+            logger_->on_movement_rule_applied(is_unit_a, "Fast", 0, "+2_advance_+4_rush_charge");
         }
         if (unit.has_rule(RuleId::Slow)) {
             logger_->on_movement_rule_applied(is_unit_a, "Slow", -2, "-2_inch_move");

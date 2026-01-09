@@ -116,6 +116,12 @@ struct GameState {
     bool unit_b_activated = false;
     bool in_melee = false;
 
+    // Ambush/Reserve tracking
+    bool unit_a_in_reserve = false;      // Unit A is in Ambush reserve
+    bool unit_b_in_reserve = false;      // Unit B is in Ambush reserve
+    bool unit_a_deployed_this_round = false;  // Can't contest objectives this round
+    bool unit_b_deployed_this_round = false;  // Can't contest objectives this round
+
     // Statistics
     GameStats stats;
 
@@ -136,6 +142,10 @@ struct GameState {
         unit_a_activated = false;
         unit_b_activated = false;
         in_melee = false;
+        unit_a_in_reserve = false;
+        unit_b_in_reserve = false;
+        unit_a_deployed_this_round = false;
+        unit_b_deployed_this_round = false;
         stats.reset();
     }
 
@@ -146,10 +156,13 @@ struct GameState {
 
     bool unit_a_controls_objective() const {
         if (state_a.is_out_of_action()) return false;
+        if (unit_a_in_reserve) return false;  // In reserve, can't control
+        if (unit_a_deployed_this_round) return false;  // Ambush: can't seize/contest on deploy round
         if (std::abs(pos_a) > OBJECTIVE_CONTROL_RANGE) return false;
-        if (!state_b.is_out_of_action() &&
+        // Check if enemy contests (not in reserve, in range, not shaken, didn't just deploy)
+        if (!state_b.is_out_of_action() && !unit_b_in_reserve &&
             std::abs(pos_b) <= OBJECTIVE_CONTROL_RANGE &&
-            !state_b.is_shaken()) {
+            !state_b.is_shaken() && !unit_b_deployed_this_round) {
             return false;
         }
         return true;
@@ -157,10 +170,13 @@ struct GameState {
 
     bool unit_b_controls_objective() const {
         if (state_b.is_out_of_action()) return false;
+        if (unit_b_in_reserve) return false;  // In reserve, can't control
+        if (unit_b_deployed_this_round) return false;  // Ambush: can't seize/contest on deploy round
         if (std::abs(pos_b) > OBJECTIVE_CONTROL_RANGE) return false;
-        if (!state_a.is_out_of_action() &&
+        // Check if enemy contests (not in reserve, in range, not shaken, didn't just deploy)
+        if (!state_a.is_out_of_action() && !unit_a_in_reserve &&
             std::abs(pos_a) <= OBJECTIVE_CONTROL_RANGE &&
-            !state_a.is_shaken()) {
+            !state_a.is_shaken() && !unit_a_deployed_this_round) {
             return false;
         }
         return true;
@@ -168,8 +184,9 @@ struct GameState {
 
     bool is_contested() const {
         if (state_a.is_out_of_action() || state_b.is_out_of_action()) return false;
-        bool a_in_range = std::abs(pos_a) <= OBJECTIVE_CONTROL_RANGE;
-        bool b_in_range = std::abs(pos_b) <= OBJECTIVE_CONTROL_RANGE;
+        if (unit_a_in_reserve || unit_b_in_reserve) return false;
+        bool a_in_range = std::abs(pos_a) <= OBJECTIVE_CONTROL_RANGE && !unit_a_deployed_this_round;
+        bool b_in_range = std::abs(pos_b) <= OBJECTIVE_CONTROL_RANGE && !unit_b_deployed_this_round;
         if (!a_in_range || !b_in_range) return false;
         return !state_a.is_shaken() && !state_b.is_shaken();
     }
