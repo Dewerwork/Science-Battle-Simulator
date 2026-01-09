@@ -3,6 +3,7 @@
 #include "core/types.hpp"
 #include "core/unit.hpp"
 #include "core/rule_registry.hpp"
+#include "core/aura_processor.hpp"
 #include "engine/dice.hpp"
 #include "engine/game_state.hpp"
 #include "engine/registry_combat_resolver.hpp"
@@ -16,6 +17,7 @@ namespace battle {
 // Game Runner - Executes a complete game (optimized - no unit copying)
 // ==============================================================================
 // Uses the new registry-based combat resolver for rule processing.
+// Integrates aura processing for faction rules and modifier effects.
 
 class GameRunner {
 public:
@@ -23,7 +25,11 @@ public:
         : dice_(dice)
         , registry_(create_default_registry())
         , combat_(registry_, dice, logger)
-        , logger_(logger) {}
+        , logger_(logger)
+    {
+        // Register default auras
+        register_default_auras(aura_processor_);
+    }
 
     // Run a single game between two units
     GameResult run_game(const Unit& unit_a, const Unit& unit_b) {
@@ -106,11 +112,25 @@ private:
     RegistryCombatResolver combat_;
     MatchLogger* logger_;
     GameState state_;  // Reusable game state
+    AuraProcessor aura_processor_;  // Handles aura effects
 
     void run_round() {
         if (logger_) {
             logger_->on_round_start(state_.current_round, state_);
         }
+
+        // Process auras at round start
+        // Check if units are from same faction (for friendly auras)
+        bool same_faction = state_.unit_a_ptr->faction.view() == state_.unit_b_ptr->faction.view();
+        aura_processor_.process_auras_1v1(
+            *const_cast<Unit*>(state_.unit_a_ptr),
+            *const_cast<Unit*>(state_.unit_b_ptr),
+            state_.state_a.modifiers,
+            state_.state_b.modifiers,
+            state_.pos_a,
+            state_.pos_b,
+            same_faction
+        );
 
         // Battleborn: 4+ to rally from Shaken at round start
         check_battleborn(true);   // Unit A
