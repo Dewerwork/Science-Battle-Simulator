@@ -885,6 +885,175 @@ private:
         return rules;
     }
 
+    // ==============================================================================
+    // Unified Per-Weapon Attack - Uses phase-based effect dispatch
+    // ==============================================================================
+    // This method resolves a single weapon's attack using the phase system.
+    // Rules are applied via registered effects, not manual if-checks.
+
+    struct WeaponAttackResult {
+        u32 wounds_dealt = 0;
+        u8 models_killed = 0;
+        u32 self_destruct_hits = 0;
+    };
+
+    WeaponAttackResult resolve_weapon_attack_phased(
+        UnitView attacker,
+        UnitView defender,
+        const Weapon& weapon,
+        u8 weapon_index,
+        CombatType combat_type,
+        u8 distance,
+        bool is_charge,
+        u8 models_attacking
+    ) {
+        WeaponAttackResult result;
+
+        // Build unified context - use const_cast because effects need non-const
+        // but we won't actually modify the original units through these pointers
+        UnifiedCombatContext ctx;
+        ctx.attacker = const_cast<Unit*>(attacker.unit);
+        ctx.defender = const_cast<Unit*>(defender.unit);
+        ctx.weapon = const_cast<Weapon*>(&weapon);
+        ctx.combat_type = combat_type;
+        ctx.distance = distance;
+        ctx.is_charge = is_charge;
+        ctx.quality_used = attacker.quality();
+        ctx.base_ap = weapon.ap;
+        ctx.effective_ap = weapon.ap;
+        ctx.attacks = static_cast<u32>(models_attacking) * weapon.attacks;
+
+        // Log weapon attack start
+        if (logger_) {
+            std::string rules_str = get_weapon_rules_str(weapon);
+            bool is_melee = (combat_type == CombatType::MELEE);
+            logger_->on_weapon_attack_start(weapon.name.c_str(), is_melee,
+                is_melee ? 0 : weapon.range, weapon.attacks, weapon.ap, rules_str.c_str());
+            logger_->on_attack_count(models_attacking, weapon.attacks, ctx.attacks);
+        }
+
+        // ============================================
+        // Phase 1: PRE_ATTACK
+        // ============================================
+        apply_all_phase_effects(CombatSubPhase::PRE_ATTACK, ctx);
+
+        // ============================================
+        // Phase 2: HIT_MODIFIERS
+        // ============================================
+        apply_all_phase_effects(CombatSubPhase::HIT_MODIFIERS, ctx);
+
+        // ============================================
+        // Phase 3: ROLL_HITS
+        // ============================================
+        apply_all_phase_effects(CombatSubPhase::ROLL_HITS, ctx);
+
+        // Roll dice
+        if (logger_) dice_.enable_roll_recording(true);
+        auto hit_result = dice_.roll_quality_test(ctx.attacks, ctx.quality_used, ctx.hit_modifier);
+        ctx.hits = hit_result.hits;
+        ctx.natural_sixes = hit_result.sixes;
+
+        // Log hit rolls
+        if (logger_) {
+            std::vector<u8> hit_rolls = dice_.take_recorded_rolls();
+            i8 effective = static_cast<i8>(ctx.quality_used) - ctx.hit_modifier;
+            effective = std::max(i8(2), std::min(i8(6), effective));
+            logger_->on_hit_rolls(attacker.quality(), ctx.hit_modifier,
+                static_cast<u8>(effective), hit_rolls, ctx.hits, ctx.natural_sixes);
+        }
+
+        // ============================================
+        // Phase 4: HIT_SEPARATION
+        // ============================================
+        apply_all_phase_effects(CombatSubPhase::HIT_SEPARATION, ctx);
+        if (ctx.rending_hits == 0) {
+            ctx.normal_hits = ctx.hits;
+        } else {
+            ctx.normal_hits = ctx.hits - ctx.rending_hits;
+        }
+
+        // ============================================
+        // Phase 5: HIT_BONUSES
+        // ============================================
+        u32 hits_before_bonus = ctx.hits;
+        apply_all_phase_effects(CombatSubPhase::HIT_BONUSES, ctx);
+        ctx.hits += ctx.bonus_hits;
+
+        // ============================================
+        // Phase 6: HIT_MULTIPLICATION
+        // ============================================
+        apply_all_phase_effects(CombatSubPhase::HIT_MULTIPLICATION, ctx);
+
+        // Log hits after modifiers
+        if (logger_) {
+            logger_->on_hits_after_modifiers(ctx.normal_hits, ctx.rending_hits, ctx.hits);
+        }
+
+        // ============================================
+        // Phase 7: DEFENSE_RESOLUTION
+        // ============================================
+        apply_all_phase_effects(CombatSubPhase::DEFENSE_RESOLUTION, ctx);
+
+        // Roll defense for normal hits
+        u8 defense_target = defender.defense();
+        if (logger_) dice_.enable_roll_recording(true);
+        u32 wounds_from_normal = dice_.roll_defense_test(
+            ctx.normal_hits, defense_target, ctx.effective_ap, 0, ctx.forces_defense_reroll);
+
+        // Log defense rolls
+        if (logger_) {
+            std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+            i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(ctx.effective_ap);
+            effective_target = std::max(i8(2), std::min(i8(6), effective_target));
+            u32 saves = ctx.normal_hits - wounds_from_normal;
+            logger_->on_defense_rolls(defense_target, ctx.effective_ap,
+                static_cast<u8>(effective_target), ctx.forces_defense_reroll,
+                def_rolls, saves, wounds_from_normal, 0, {}, 0);
+        }
+
+        // Roll defense for rending hits (AP+4)
+        u32 wounds_from_rending = 0;
+        if (ctx.rending_hits > 0) {
+            u8 rending_ap = ctx.effective_ap + 4;
+            if (logger_) dice_.enable_roll_recording(true);
+            wounds_from_rending = dice_.roll_defense_test(
+                ctx.rending_hits, defense_target, rending_ap, 0, ctx.forces_defense_reroll);
+
+            if (logger_) {
+                std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
+                i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(rending_ap);
+                effective_target = std::max(i8(2), std::min(i8(6), effective_target));
+                u32 saves = ctx.rending_hits - wounds_from_rending;
+                logger_->on_defense_rolls_rending(defense_target, rending_ap,
+                    static_cast<u8>(effective_target), rend_rolls, saves, wounds_from_rending);
+            }
+        }
+
+        if (logger_) dice_.enable_roll_recording(false);
+
+        u32 total_wounds = wounds_from_normal + wounds_from_rending;
+        ctx.wounds = total_wounds;
+
+        // ============================================
+        // Phase 8: WOUND_ALLOCATION
+        // ============================================
+        apply_all_phase_effects(CombatSubPhase::WOUND_ALLOCATION, ctx);
+
+        // Apply wounds to defender
+        if (total_wounds > 0) {
+            auto wound_result = apply_wounds(defender, total_wounds, ctx.bypasses_regeneration);
+            result.wounds_dealt = wound_result.wounds_dealt;
+            result.models_killed = wound_result.models_killed;
+            result.self_destruct_hits = wound_result.self_destruct_hits;
+        }
+
+        if (logger_) {
+            logger_->on_weapon_attack_end(weapon.name.c_str(), total_wounds, result.models_killed);
+        }
+
+        return result;
+    }
+
 public:
     // ==============================================================================
     // Game Interface Methods - Drop-in replacement for CombatEngine
@@ -1397,6 +1566,153 @@ public:
             if (logger_) {
                 logger_->on_weapon_attack_end(w.name.c_str(), total_wounds, weapon_models_killed);
             }
+        }
+
+        result.target_destroyed = defender.is_destroyed();
+        result.target_shaken = defender.is_shaken();
+        result.target_routed = defender.is_routed();
+
+        return result;
+    }
+
+    // ==============================================================================
+    // PHASED COMBAT METHODS - Use registry effect dispatch
+    // ==============================================================================
+    // These methods use the new phase-based effect system where rules are defined
+    // once and apply automatically. They can replace the manual methods above.
+
+    // Resolve shooting using phase-based effect dispatch
+    CombatResult resolve_shooting_phased(UnitView attacker, UnitView defender, i8 distance, bool /*moved*/) {
+        CombatResult result;
+
+        u8 models_shooting = attacker.alive_count();
+        if (models_shooting == 0) return result;
+
+        // Check if any ranged weapons are in range
+        bool has_valid_weapon = false;
+        for (u8 i = 0; i < attacker.weapon_count(); ++i) {
+            const Weapon& w = attacker.get_weapon(i);
+            if (w.is_ranged() && w.range >= static_cast<u8>(distance)) {
+                has_valid_weapon = true;
+                break;
+            }
+        }
+        if (!has_valid_weapon) return result;
+
+        if (logger_) {
+            logger_->on_shooting_start(true, attacker.unit->name.c_str(),
+                                       defender.unit->name.c_str(), distance, models_shooting);
+        }
+
+        // Process each weapon using phased resolution
+        for (u8 i = 0; i < attacker.weapon_count(); ++i) {
+            const Weapon& w = attacker.get_weapon(i);
+            if (!w.is_ranged() || w.range < static_cast<u8>(distance)) continue;
+
+            // Limited: skip if already used this game
+            if (w.has_rule(RuleId::Limited)) {
+                if (attacker.is_limited_weapon_used(i)) {
+                    if (logger_) logger_->on_rule_triggered("Limited", "weapon_already_used", i);
+                    continue;
+                }
+                attacker.mark_limited_weapon_used(i);
+                if (logger_) logger_->on_rule_triggered("Limited", "using_one_time_weapon", i);
+            }
+
+            u8 models_with_weapon = std::min(w.count, models_shooting);
+            if (models_with_weapon == 0) continue;
+
+            // Use phased weapon attack resolution
+            auto weapon_result = resolve_weapon_attack_phased(
+                attacker, defender, w, i,
+                CombatType::SHOOTING, static_cast<u8>(distance),
+                false,  // not charging
+                models_with_weapon
+            );
+
+            result.wounds_dealt += weapon_result.wounds_dealt;
+            result.models_killed += weapon_result.models_killed;
+            result.self_destruct_hits += weapon_result.self_destruct_hits;
+        }
+
+        result.target_destroyed = defender.is_destroyed();
+        result.target_shaken = defender.is_shaken();
+        result.target_routed = defender.is_routed();
+
+        if (logger_) {
+            logger_->on_shooting_end(true, result.wounds_dealt, result.models_killed, result.target_destroyed);
+        }
+
+        return result;
+    }
+
+    // Resolve melee using phase-based effect dispatch
+    CombatResult resolve_melee_phased(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models = 0) {
+        CombatResult result;
+
+        u8 models_fighting = attacker.alive_count();
+        if (models_fighting == 0) return result;
+
+        // Impact attacks (only when charging) - handle separately as it's a unit-level effect
+        if (is_charging && attacker.has_rule(RuleId::Impact)) {
+            u8 impact_value = attacker.get_rule_value(RuleId::Impact);
+            if (impact_value > 0) {
+                u8 effective_impact = (impact_value > counter_models) ? (impact_value - counter_models) : 0;
+                if (effective_impact > 0) {
+                    u32 impact_attacks = static_cast<u32>(effective_impact) * models_fighting;
+                    if (logger_) {
+                        logger_->on_rule_triggered("Impact", "bonus_attacks_on_charge", impact_attacks);
+                        if (counter_models > 0) {
+                            logger_->on_rule_triggered("Counter", "reduced_impact_attacks", counter_models);
+                        }
+                    }
+                    // Roll impact hits (quality 2+)
+                    auto impact_hits = dice_.roll_quality_test(impact_attacks, 2, 0);
+                    if (impact_hits.hits > 0) {
+                        auto wound_result = apply_wounds(defender, impact_hits.hits, false);
+                        result.wounds_dealt += wound_result.wounds_dealt;
+                        result.models_killed += wound_result.models_killed;
+                        result.self_destruct_hits += wound_result.self_destruct_hits;
+                    }
+                }
+            }
+        }
+
+        if (logger_) {
+            const char* charge_str = is_charging ? " (CHARGING)" : "";
+            std::string msg = std::string("MELEE: ") + attacker.unit->name.c_str() +
+                              " vs " + defender.unit->name.c_str() + charge_str;
+        }
+
+        // Process each melee weapon using phased resolution
+        for (u8 i = 0; i < attacker.weapon_count(); ++i) {
+            const Weapon& w = attacker.get_weapon(i);
+            if (!w.is_melee()) continue;
+
+            // Limited: skip if already used
+            if (w.has_rule(RuleId::Limited)) {
+                if (attacker.is_limited_weapon_used(i)) {
+                    if (logger_) logger_->on_rule_triggered("Limited", "weapon_already_used", i);
+                    continue;
+                }
+                attacker.mark_limited_weapon_used(i);
+                if (logger_) logger_->on_rule_triggered("Limited", "using_one_time_weapon", i);
+            }
+
+            u8 models_with_weapon = std::min(w.count, models_fighting);
+            if (models_with_weapon == 0) continue;
+
+            // Use phased weapon attack resolution
+            auto weapon_result = resolve_weapon_attack_phased(
+                attacker, defender, w, i,
+                CombatType::MELEE, 0,  // distance 0 for melee
+                is_charging,
+                models_with_weapon
+            );
+
+            result.wounds_dealt += weapon_result.wounds_dealt;
+            result.models_killed += weapon_result.models_killed;
+            result.self_destruct_hits += weapon_result.self_destruct_hits;
         }
 
         result.target_destroyed = defender.is_destroyed();
