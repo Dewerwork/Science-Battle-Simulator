@@ -996,13 +996,13 @@ public:
                 hit_modifier += 1;
                 if (logger_) logger_->on_hit_modifier("Thrust", +1, "charging_accuracy");
             }
-            if (defender.has_rule(RuleId::Evasion)) {
+            if (defender.has_rule(RuleId::MeleeEvasion)) {
                 hit_modifier -= 1;
-                if (logger_) logger_->on_hit_modifier("Evasion", -1, "target_evasive");
+                if (logger_) logger_->on_hit_modifier("Melee Evasion", -1, "target_evasive");
             }
-            if (defender.has_rule(RuleId::Shrouding)) {
+            if (defender.has_rule(RuleId::MeleeShrouding)) {
                 hit_modifier -= 1;
-                if (logger_) logger_->on_hit_modifier("Shrouding", -1, "target_shrouded");
+                if (logger_) logger_->on_hit_modifier("Melee Shrouding", -1, "target_shrouded");
             }
             u8 defender_tough = defender.get_rule_value(RuleId::Tough);
             if (w.has_rule(RuleId::Purge) && defender_tough >= 3) {
