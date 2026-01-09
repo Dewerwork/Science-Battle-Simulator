@@ -37,7 +37,7 @@ struct CombatContextCore {
     i8 hit_modifier = 0;                // 1 byte - Accumulated +/- to hit
     u8 quality_used = 4;                // 1 byte - Effective quality after overrides
     i8 defense_modifier = 0;            // 1 byte - Accumulated defense modifier
-    u8 ap_final = 0;                    // 1 byte - Final AP after all modifiers
+    i8 ap_modifier = 0;                 // 1 byte - Accumulated AP modifier
 
     // Hit tracking - 12 bytes
     u32 attacks = 0;                    // 4 bytes - Total attacks made
@@ -115,6 +115,24 @@ struct CombatContextExtended {
 
     // Self-destruct tracking
     u32 self_destruct_hits = 0;         // Queued hits from dying models
+    u8 self_destruct_value = 0;         // Value of SelfDestruct(X) rule
+
+    // Additional rule state flags
+    bool protected_active = false;       // Protected - 6+ to reduce AP
+    bool resistance_active = false;      // Resistance - 6+ to ignore wound
+    bool shred_active = false;           // Shred - extra wound on defense 1s
+    bool takedown_active = false;        // Takedown - targeting active
+    bool limited_weapon = false;         // Limited - one use weapon
+    bool counter_active = false;         // Counter - strike first
+    bool sniper_active = false;          // Sniper - pick target
+    bool ignores_cover = false;          // Indirect - ignore cover
+    bool predator_fighter_active = false; // PredatorFighter - recursive attacks
+    bool hero_present = false;           // Hero - takes wounds last
+
+    // Rule values
+    u8 tough_value = 0;                  // Tough(X) value
+    u8 impact_attacks = 0;               // Impact(X) bonus attacks
+    u8 smash_bonus_blast = 0;            // Smash bonus blast vs heavy armor
 
     // Logging support
     MatchLogger* logger = nullptr;
@@ -140,6 +158,20 @@ struct CombatContextExtended {
         versatile_ap_chosen = false;
         defense_ones_rolled = 0;
         self_destruct_hits = 0;
+        self_destruct_value = 0;
+        protected_active = false;
+        resistance_active = false;
+        shred_active = false;
+        takedown_active = false;
+        limited_weapon = false;
+        counter_active = false;
+        sniper_active = false;
+        ignores_cover = false;
+        predator_fighter_active = false;
+        hero_present = false;
+        tough_value = 0;
+        impact_attacks = 0;
+        smash_bonus_blast = 0;
         applied_rules.clear();
         // Note: logger and dice are not reset - they're set per-engine
     }
