@@ -72,6 +72,16 @@ struct RuleHotData {
         return static_cast<MoveSubPhase>(sub_phase);
     }
 
+    // Helper to check deployment sub-phase
+    DeploySubPhase deploy_sub_phase() const {
+        return static_cast<DeploySubPhase>(sub_phase);
+    }
+
+    // Helper to check end round sub-phase
+    EndRoundSubPhase endround_sub_phase() const {
+        return static_cast<EndRoundSubPhase>(sub_phase);
+    }
+
     // Check if rule applies to a specific combat type
     bool applies_to(CombatType type) const {
         return combat_type == CombatType::BOTH || combat_type == type;
