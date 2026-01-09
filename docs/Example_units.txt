@@ -1,0 +1,74 @@
+Hive Guardians [FID:26070237] [BKT:1E3C9863] [3] Q3+ D3+ | 160pts | Hive Bond, Relentless, Tough(3)
+5x razor claws (A2), slashing blade (A2, AP(1), Rending)
+
+Hive Guardians [FID:26070237] [BKT:12DFAB2E] [3] Q3+ D3+ | 165pts | Hive Bond, Relentless, Tough(3)
+5x razor claws (A2), smashing club (A1, AP(2), Blast(3))
+
+Hive Guardians [FID:26070237] [BKT:A4E5D822] [3] Q3+ D3+ | 150pts | Hive Bond, Relentless, Tough(3)
+6x razor claws (A2)
+
+Hive Guardians [FID:26070237] [BKT:84B7EA6C] [3] Q3+ D3+ | 200pts | Hive Bond, Relentless, Tough(3)
+6x razor claws (A2), 24" shock harpoon (A1, AP(2), Deadly(3))
+
+Hive Guardians [FID:26070237] [BKT:8F9BCEA5] [3] Q3+ D3+ | 275pts | Hive Bond, Relentless, Tough(3)
+6x razor claws (A2), 24" shock harpoon (A1, AP(2), Deadly(3)), 30" skewer cannon (A2, AP(4), Unstoppable)
+
+Hive Guardians [FID:26070237] [BKT:0489ADE4] [3] Q3+ D3+ | 350pts | Hive Bond, Relentless, Tough(3)
+6x razor claws (A2), 24" shock harpoon (A1, AP(2), Deadly(3)), 2x 30" skewer cannon (A2, AP(4), Unstoppable)
+
+Hive Guardians [FID:26070237] [BKT:F231359C] [3] Q3+ D3+ | 250pts | Hive Bond, Relentless, Tough(3)
+6x razor claws (A2), 2x 24" shock harpoon (A1, AP(2), Deadly(3))
+
+Hive Guardians [FID:26070237] [BKT:F6834392] [3] Q3+ D3+ | 395pts | Hive Bond, Relentless, Tough(3)
+razor whip (A2, Bane, Precise), 2x serrated blade (A2, AP(4)), 3x slashing blade (A2, AP(1), Rending), 2x 24" shock harpoon (A1, AP(2), Deadly(3)), 30" skewer cannon (A2, AP(4), Unstoppable)
+
+Hive Guardians [FID:26070237] [BKT:F1D9FAC4] [3] Q3+ D3+ | 410pts | Hive Bond, Relentless, Tough(3)
+razor whip (A2, Bane, Precise), 2x serrated blade (A2, AP(4)), 3x slashing blade (A2, AP(1), Rending), smashing club (A1, AP(2), Blast(3)), 2x 24" shock harpoon (A1, AP(2), Deadly(3)), 30" skewer cannon (A2, AP(4), Unstoppable)
+
+Hive Guardians [FID:26070237] [BKT:8573A522] [3] Q3+ D3+ | 325pts | Hive Bond, Relentless, Tough(3)
+razor whip (A2, Bane, Precise), 2x serrated blade (A2, AP(4)), 2x slashing blade (A2, AP(1), Rending), smashing club (A1, AP(2), Blast(3)), 2x 24" shock harpoon (A1, AP(2), Deadly(3))
+
+Hive Guardians [FID:26070237] [BKT:F9B2BBBC] [3] Q3+ D3+ | 320pts | Hive Bond, Relentless, Tough(3)
+razor whip (A2, Bane, Precise), 2x serrated blade (A2, AP(4)), 3x slashing blade (A2, AP(1), Rending), 2x 24" shock harpoon (A1, AP(2), Deadly(3))
+
+Watch Battle Brothers [FID:4E8C4EA1] [BKT:9C2D7A82] [3] Q3+ D3+ | 195pts | Courage Aura, Fearless, Watchborn
+dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy hammer (A1, Blast(3)), heavy ccws (A2, AP(1)), 2x 12" heavy pistols (A1, AP(1)), 24" plasma rifle (A1, AP(4)), 9" gravity pistol (A2, Smash)
+
+Watch Battle Brothers [FID:4E8C4EA1] [BKT:A83554BB] [3] Q3+ D3+ | 180pts | Courage Aura, Fearless, Watchborn
+dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy hammer (A1, Blast(3)), heavy ccws (A2, AP(1)), 2x 12" heavy pistols (A1, AP(1)), 12" shotgun (A2, AP(1)), 9" gravity pistol (A2, Smash)
+
+Watch Battle Brothers [FID:4E8C4EA1] [BKT:EB4DC1CA] [3] Q3+ D3+ | 195pts | Courage Aura, Fearless, Watchborn
+dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy hammer (A1, Blast(3)), heavy ccws (A2, AP(1)), 2x 12" heavy pistols (A1, AP(1)), 24" stalker rifle (A1, AP(1), Reliable, Takedown), 9" gravity pistol (A2, Smash)
+
+Watch Battle Brothers [FID:4E8C4EA1] [BKT:2E2235A8] [3] Q3+ D3+ | 225pts | Courage Aura, Fearless, Watchborn
+dual energy claws (A4, Rending), energy fist (A2, AP(4)), energy hammer (A1, Blast(3)), heavy ccws (A2, AP(1)), 2x 12" heavy pistols (A1, AP(1)), 24" storm rifle (A3, AP(1)), 9" gravity pistol (A2, Smash)
+
+Veterans [FID:5D3C5446] [BKT:518D8818] [5] Q4+ D5+ | 310pts | Hold the Line, Scout, Stealth
+5x ccws (A1), energy sword (A2, AP(1), Rending), 12" fusion rifle (A1, AP(4), Deadly(3)), 12" shotgun (A2, AP(1)), 24" rifles (A1), 30" mortar (A1, Blast(3), Indirect), 2x 30" sniper rifle (A1, AP(1), Reliable, Takedown), 9" drum pistol (A2, Rending)
+
+Veterans [FID:5D3C5446] [BKT:7997BC6A] [5] Q4+ D5+ | 290pts | Hold the Line, Scout, Stealth
+5x ccws (A1), energy sword (A2, AP(1), Rending), 12" fusion rifle (A1, AP(4), Deadly(3)), 2x 12" shotgun (A2, AP(1)), 24" rifles (A1), 30" mortar (A1, Blast(3), Indirect), 30" sniper rifle (A1, AP(1), Reliable, Takedown), 9" drum pistol (A2, Rending)
+
+Veterans [FID:5D3C5446] [BKT:4AAE2C67] [5] Q4+ D5+ | 270pts | Hold the Line, Scout, Stealth
+5x ccws (A1), energy sword (A2, AP(1), Rending), 12" fusion rifle (A1, AP(4), Deadly(3)), 3x 12" shotgun (A2, AP(1)), 24" rifles (A1), 30" mortar (A1, Blast(3), Indirect), 9" drum pistol (A2, Rending)
+
+Veterans [FID:5D3C5446] [BKT:B26AFC96] [5] Q4+ D5+ | 285pts | Hold the Line, Scout, Stealth
+5x ccws (A1), energy sword (A2, AP(1), Rending), sgt. hand weapon (A2), 12" fusion rifle (A1, AP(4), Deadly(3)), 12" sgt. pistol (A1), 12" shotgun (A2, AP(1)), 2x 24" rifles (A1), 30" mortar (A1, Blast(3), Indirect), 30" sniper rifle (A1, AP(1), Reliable, Takedown), 9" drum pistol (A2, Rending)
+
+Chosen Change Brothers [FID:7BF97B31] [BKT:E5C22BE8] [3] Q3+ D3+ | 185pts | Changebound, Versatile Attack, Versatile Defense Aura
+3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), 2x 12" flamer (A1, Blast(3), Reliable), 12" plasma pistol (A1, AP(4)), 24" heavy rifles (A1, AP(1))
+
+Chosen Change Brothers [FID:7BF97B31] [BKT:084EBEFE] [3] Q3+ D3+ | 190pts | Changebound, Versatile Attack, Versatile Defense Aura
+3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), 2x 12" flamer (A1, Blast(3), Reliable), 18" hexed rifle (A2, Shred)
+
+Chosen Change Brothers [FID:7BF97B31] [BKT:89F823D0] [3] Q3+ D3+ | 270pts | Changebound, Versatile Attack, Versatile Defense Aura
+3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), 2x 12" flamer (A1, Blast(3), Reliable), 18" hexed rifle (A2, Shred), 36" laser cannon (A1, AP(3), Deadly(3))
+
+Chosen Change Brothers [FID:7BF97B31] [BKT:05CA2A79] [3] Q3+ D3+ | 275pts | Changebound, Versatile Attack, Versatile Defense Aura
+3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), 2x 12" flamer (A1, Blast(3), Reliable), 12" plasma pistol (A1, AP(4)), 18" hexed rifle (A2, Shred), 36" laser cannon (A1, AP(3), Deadly(3))
+
+Chosen Change Brothers [FID:7BF97B31] [BKT:816672D3] [3] Q3+ D3+ | 255pts | Changebound, Versatile Attack, Versatile Defense Aura
+3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), 2x 12" flamer (A1, Blast(3), Reliable), 18" hexed rifle (A2, Shred), 30" missile launcher (A1, AP(2), Deadly(3), Unstoppable)
+
+Chosen Change Brothers [FID:7BF97B31] [BKT:2A3D5A16] [3] Q3+ D3+ | 260pts | Changebound, Versatile Attack, Versatile Defense Aura
+3x ccws (A1), dual energy claws (A4, Rending), energy fist (A2, AP(4)), 2x 12" flamer (A1, Blast(3), Reliable), 12" plasma pistol (A1, AP(4)), 18" hexed rifle (A2, Shred), 30" missile launcher (A1, AP(2), Deadly(3), Unstoppable)
