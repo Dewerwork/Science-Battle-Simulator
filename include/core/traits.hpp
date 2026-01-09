@@ -65,7 +65,10 @@ enum class RuleTrait : u32 {
     ON_DEATH_EFFECT         = 1 << 27,  // SelfDestruct
 
     // Value-carrying traits (rule has an associated numeric value)
-    HAS_VALUE               = 1 << 28   // Blast(X), Deadly(X), AP(X), Impact(X), etc.
+    HAS_VALUE               = 1 << 28,  // Blast(X), Deadly(X), AP(X), Impact(X), etc.
+
+    // Healing traits
+    HEALS_WOUNDS            = 1 << 29   // Regeneration (end of round healing)
 };
 
 // Trait mask for combining multiple traits

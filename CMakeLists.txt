@@ -156,6 +156,12 @@ target_include_directories(test_phase5_unified_combat PRIVATE ${CMAKE_SOURCE_DIR
 target_link_libraries(test_phase5_unified_combat PRIVATE battle_core)
 target_compile_options(test_phase5_unified_combat PRIVATE ${COMMON_FLAGS})
 
+# Phase 6 movement/deployment/endround test
+add_executable(test_phase6_movement_deploy src/test_phase6_movement_deploy.cpp)
+target_include_directories(test_phase6_movement_deploy PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_phase6_movement_deploy PRIVATE battle_core)
+target_compile_options(test_phase6_movement_deploy PRIVATE ${COMMON_FLAGS})
+
 # Benchmark - parallel simulation
 add_executable(benchmark_sim src/benchmark_sim.cpp)
 target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)

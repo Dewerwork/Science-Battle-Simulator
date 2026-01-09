@@ -1,5 +1,6 @@
 #include "rules/combat_rules.hpp"
 #include "core/rule_registry.hpp"
+#include "core/contexts.hpp"
 #include "core/unit.hpp"
 #include "core/weapon.hpp"
 
@@ -545,6 +546,489 @@ const RuleEffectEntry Rupture_Effects = EffectBuilder()
     .build();
 
 // ==============================================================================
+// Movement Phase Effects
+// ==============================================================================
+
+void fast_effect(MovementContext& ctx, u8 /*value*/) {
+    // Fast units move 9" instead of 6"
+    ctx.distance_modifier += 3;
+}
+
+void slow_effect(MovementContext& ctx, u8 /*value*/) {
+    // Slow units move 4" instead of 6"
+    ctx.distance_modifier -= 2;
+}
+
+void flying_effect(MovementContext& ctx, u8 /*value*/) {
+    // Flying units ignore all terrain and can leave engagement
+    ctx.terrain_flags |= MovementContext::IGNORE_DIFFICULT;
+    ctx.terrain_flags |= MovementContext::IGNORE_DANGEROUS;
+    ctx.terrain_flags |= MovementContext::FLY_OVER;
+    ctx.ignores_engagement = true;
+}
+
+void strider_effect(MovementContext& ctx, u8 /*value*/) {
+    // Strider ignores difficult terrain
+    ctx.terrain_flags |= MovementContext::IGNORE_DIFFICULT;
+}
+
+void agile_effect(MovementContext& ctx, u8 /*value*/) {
+    // Agile gives +1" advance, +2" rush/charge
+    if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
+        ctx.distance_modifier += 1;
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH ||
+               ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.distance_modifier += 2;
+    }
+}
+
+void rapid_charge_effect(MovementContext& ctx, u8 /*value*/) {
+    // Rapid Charge gives +4" to charge moves
+    ctx.charge_bonus += 4;
+}
+
+void hit_and_run_effect(MovementContext& ctx, u8 /*value*/) {
+    // Hit and Run allows retreat after combat
+    ctx.hit_and_run_pending = true;
+}
+
+// ==============================================================================
+// Deployment Phase Effects
+// ==============================================================================
+
+void scout_effect(DeploymentContext& ctx, u8 /*value*/) {
+    // Scout allows 12" forward deployment
+    ctx.zone = DeploymentContext::DeployZone::FORWARD;
+    ctx.timing = DeploymentContext::DeployTiming::SCOUT_MOVE;
+    ctx.forward_distance = 12;
+}
+
+void ambush_effect(DeploymentContext& ctx, u8 /*value*/) {
+    // Ambush allows deploying anywhere >9" from enemy
+    ctx.zone = DeploymentContext::DeployZone::ANYWHERE;
+    ctx.timing = DeploymentContext::DeployTiming::NORMAL;
+    ctx.min_enemy_distance = 9;
+}
+
+// ==============================================================================
+// End Round Phase Effects
+// ==============================================================================
+
+void fearless_morale_effect(EndRoundContext& /*ctx*/, Unit& unit, u8 /*value*/) {
+    // Fearless allows reroll of failed morale test
+    // Find or create morale state for this unit
+    // Note: In a real implementation, this would modify morale_states
+    (void)unit;  // Placeholder - actual implementation depends on morale system
+}
+
+void no_retreat_effect(EndRoundContext& /*ctx*/, Unit& unit, u8 /*value*/) {
+    // No Retreat - can't be shaken/routed, take wounds instead
+    // This is typically handled during morale resolution
+    (void)unit;  // Placeholder
+}
+
+void morale_boost_effect(EndRoundContext& /*ctx*/, Unit& unit, u8 /*value*/) {
+    // Morale Boost - +1 to morale test rolls
+    (void)unit;  // Placeholder
+}
+
+void hold_the_line_effect(EndRoundContext& /*ctx*/, Unit& unit, u8 /*value*/) {
+    // Hold the Line - reroll failed morale tests
+    (void)unit;  // Placeholder
+}
+
+void regeneration_heal_effect(EndRoundContext& /*ctx*/, Unit& unit, u8 /*value*/) {
+    // Regeneration - heal wounded models at end of round (5+ per model)
+    (void)unit;  // Placeholder - actual implementation needs dice roller
+}
+
+void battleborn_effect(EndRoundContext& /*ctx*/, Unit& unit, u8 /*value*/) {
+    // Battleborn - 4+ to stop being Shaken at round start
+    (void)unit;  // Placeholder
+}
+
+// ==============================================================================
+// Movement Hot Data Definitions
+// ==============================================================================
+
+const RuleHotData Fast_HotData{
+    RuleId::Fast,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CALCULATE_DISTANCE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData Slow_HotData{
+    RuleId::Slow,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CALCULATE_DISTANCE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData Flying_HotData{
+    RuleId::Flying,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::EXECUTE_MOVE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData Strider_HotData{
+    RuleId::Strider,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::EXECUTE_MOVE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData Agile_HotData{
+    RuleId::Agile,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CALCULATE_DISTANCE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData RapidCharge_HotData{
+    RuleId::RapidCharge,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CHARGE_RESOLVE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData HitAndRun_HotData{
+    RuleId::HitAndRun,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::POST_MOVE),
+    CombatType::MELEE,
+    Target::SELF,
+    Trigger::AFTER_COMBAT,
+    RulePriority::NORMAL,
+    0
+};
+
+// ==============================================================================
+// Deployment Hot Data Definitions
+// ==============================================================================
+
+const RuleHotData Scout_HotData{
+    RuleId::Scout,
+    GamePhase::DEPLOYMENT,
+    static_cast<u8>(DeploySubPhase::SCOUT_MOVE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData Ambush_HotData{
+    RuleId::Ambush,
+    GamePhase::DEPLOYMENT,
+    static_cast<u8>(DeploySubPhase::INFILTRATE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+// ==============================================================================
+// End Round Hot Data Definitions
+// ==============================================================================
+
+const RuleHotData Fearless_HotData{
+    RuleId::Fearless,
+    GamePhase::END_ROUND,
+    static_cast<u8>(EndRoundSubPhase::MORALE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::AFFECTS_MORALE)
+};
+
+const RuleHotData NoRetreat_HotData{
+    RuleId::NoRetreat,
+    GamePhase::END_ROUND,
+    static_cast<u8>(EndRoundSubPhase::MORALE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::EARLY,  // Process before other morale effects
+    static_cast<TraitMask>(RuleTrait::AFFECTS_MORALE)
+};
+
+const RuleHotData MoraleBoost_HotData{
+    RuleId::MoraleBoost,
+    GamePhase::END_ROUND,
+    static_cast<u8>(EndRoundSubPhase::MORALE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::AFFECTS_MORALE)
+};
+
+const RuleHotData HoldTheLine_HotData{
+    RuleId::HoldTheLine,
+    GamePhase::END_ROUND,
+    static_cast<u8>(EndRoundSubPhase::MORALE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::AFFECTS_MORALE)
+};
+
+const RuleHotData Regeneration_HotData{
+    RuleId::Regeneration,
+    GamePhase::END_ROUND,
+    static_cast<u8>(EndRoundSubPhase::REGENERATION),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::HEALS_WOUNDS)
+};
+
+const RuleHotData Battleborn_HotData{
+    RuleId::Battleborn,
+    GamePhase::END_ROUND,
+    static_cast<u8>(EndRoundSubPhase::MORALE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::FIRST,  // Process very early
+    static_cast<TraitMask>(RuleTrait::AFFECTS_MORALE)
+};
+
+// ==============================================================================
+// Movement Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Fast_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CALCULATE_DISTANCE, fast_effect)
+    .build();
+
+const RuleEffectEntry Slow_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CALCULATE_DISTANCE, slow_effect)
+    .build();
+
+const RuleEffectEntry Flying_Effects = EffectBuilder()
+    .movement(MoveSubPhase::EXECUTE_MOVE, flying_effect)
+    .build();
+
+const RuleEffectEntry Strider_Effects = EffectBuilder()
+    .movement(MoveSubPhase::EXECUTE_MOVE, strider_effect)
+    .build();
+
+const RuleEffectEntry Agile_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CALCULATE_DISTANCE, agile_effect)
+    .build();
+
+const RuleEffectEntry RapidCharge_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CHARGE_RESOLVE, rapid_charge_effect)
+    .build();
+
+const RuleEffectEntry HitAndRun_Effects = EffectBuilder()
+    .movement(MoveSubPhase::POST_MOVE, hit_and_run_effect)
+    .build();
+
+// ==============================================================================
+// Deployment Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Scout_Effects = EffectBuilder()
+    .deploy(DeploySubPhase::SCOUT_MOVE, scout_effect)
+    .build();
+
+const RuleEffectEntry Ambush_Effects = EffectBuilder()
+    .deploy(DeploySubPhase::INFILTRATE, ambush_effect)
+    .build();
+
+// ==============================================================================
+// End Round Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Fearless_Effects = EffectBuilder()
+    .endround(EndRoundSubPhase::MORALE, fearless_morale_effect)
+    .build();
+
+const RuleEffectEntry NoRetreat_Effects = EffectBuilder()
+    .endround(EndRoundSubPhase::MORALE, no_retreat_effect)
+    .build();
+
+const RuleEffectEntry MoraleBoost_Effects = EffectBuilder()
+    .endround(EndRoundSubPhase::MORALE, morale_boost_effect)
+    .build();
+
+const RuleEffectEntry HoldTheLine_Effects = EffectBuilder()
+    .endround(EndRoundSubPhase::MORALE, hold_the_line_effect)
+    .build();
+
+const RuleEffectEntry Regeneration_EndRound_Effects = EffectBuilder()
+    .endround(EndRoundSubPhase::REGENERATION, regeneration_heal_effect)
+    .build();
+
+const RuleEffectEntry Battleborn_Effects = EffectBuilder()
+    .endround(EndRoundSubPhase::MORALE, battleborn_effect)
+    .build();
+
+// ==============================================================================
+// Cold Data for Movement Rules
+// ==============================================================================
+
+const RuleColdData Fast_ColdData{
+    "Fast",
+    nullptr,
+    0,
+    "Fast: +3\" movement",
+    "This unit moves 9\" instead of 6\"."
+};
+
+const RuleColdData Slow_ColdData{
+    "Slow",
+    nullptr,
+    0,
+    "Slow: -2\" movement",
+    "This unit moves 4\" instead of 6\"."
+};
+
+const RuleColdData Flying_ColdData{
+    "Flying",
+    nullptr,
+    0,
+    "Flying: ignores terrain",
+    "This unit can fly over terrain and other units."
+};
+
+const RuleColdData Strider_ColdData{
+    "Strider",
+    nullptr,
+    0,
+    "Strider: ignores difficult terrain",
+    "This unit ignores difficult terrain penalties."
+};
+
+const RuleColdData Agile_ColdData{
+    "Agile",
+    nullptr,
+    0,
+    "Agile: +1\" advance, +2\" rush/charge",
+    "This unit gets bonus movement when advancing, rushing, or charging."
+};
+
+const RuleColdData RapidCharge_ColdData{
+    "RapidCharge",
+    nullptr,
+    0,
+    "Rapid Charge: +4\" charge",
+    "This unit adds 4\" to its charge range."
+};
+
+const RuleColdData HitAndRun_ColdData{
+    "HitAndRun",
+    nullptr,
+    0,
+    "Hit and Run: retreat after combat",
+    "This unit can retreat after fighting in melee."
+};
+
+// ==============================================================================
+// Cold Data for Deployment Rules
+// ==============================================================================
+
+const RuleColdData Scout_ColdData{
+    "Scout",
+    nullptr,
+    0,
+    "Scout: 12\" forward deploy",
+    "This unit can deploy up to 12\" forward of the deployment zone."
+};
+
+const RuleColdData Ambush_ColdData{
+    "Ambush",
+    nullptr,
+    0,
+    "Ambush: deploy anywhere",
+    "This unit can deploy anywhere more than 9\" from enemy units."
+};
+
+// ==============================================================================
+// Cold Data for End Round Rules
+// ==============================================================================
+
+const RuleColdData Fearless_ColdData{
+    "Fearless",
+    nullptr,
+    0,
+    "Fearless: reroll morale",
+    "This unit can reroll failed morale tests."
+};
+
+const RuleColdData NoRetreat_ColdData{
+    "NoRetreat",
+    nullptr,
+    0,
+    "No Retreat: never flee",
+    "This unit can't be shaken or routed, but takes extra wounds instead."
+};
+
+const RuleColdData MoraleBoost_ColdData{
+    "MoraleBoost",
+    nullptr,
+    0,
+    "Morale Boost: +1 morale",
+    "This unit gets +1 to morale test rolls."
+};
+
+const RuleColdData HoldTheLine_ColdData{
+    "HoldTheLine",
+    nullptr,
+    0,
+    "Hold the Line: reroll morale",
+    "This unit can reroll failed morale tests."
+};
+
+const RuleColdData Regeneration_ColdData{
+    "Regeneration",
+    nullptr,
+    0,
+    "Regeneration: heal wounds",
+    "At the end of each round, roll 5+ for each wounded model to heal a wound."
+};
+
+const RuleColdData Battleborn_ColdData{
+    "Battleborn",
+    nullptr,
+    0,
+    "Battleborn: rally on 4+",
+    "At the start of the round, roll 4+ to remove Shaken status."
+};
+
+// ==============================================================================
 // Cold Data for Hit Modifier Rules
 // ==============================================================================
 
@@ -609,7 +1093,9 @@ const RuleColdData Thrust_ColdData{
 // ==============================================================================
 
 void register_combat_rules(RuleRegistry& registry) {
-    // Register hot data
+    // =========================================================================
+    // Register Combat hot data
+    // =========================================================================
     registry.register_hot_data(RuleId::Precise, Precise_HotData);
     registry.register_hot_data(RuleId::Reliable, Reliable_HotData);
     registry.register_hot_data(RuleId::Rending, Rending_HotData);
@@ -631,7 +1117,36 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::Purge, Purge_HotData);
     registry.register_hot_data(RuleId::Thrust, Thrust_HotData);
 
-    // Register cold data
+    // =========================================================================
+    // Register Movement hot data
+    // =========================================================================
+    registry.register_hot_data(RuleId::Fast, Fast_HotData);
+    registry.register_hot_data(RuleId::Slow, Slow_HotData);
+    registry.register_hot_data(RuleId::Flying, Flying_HotData);
+    registry.register_hot_data(RuleId::Strider, Strider_HotData);
+    registry.register_hot_data(RuleId::Agile, Agile_HotData);
+    registry.register_hot_data(RuleId::RapidCharge, RapidCharge_HotData);
+    registry.register_hot_data(RuleId::HitAndRun, HitAndRun_HotData);
+
+    // =========================================================================
+    // Register Deployment hot data
+    // =========================================================================
+    registry.register_hot_data(RuleId::Scout, Scout_HotData);
+    registry.register_hot_data(RuleId::Ambush, Ambush_HotData);
+
+    // =========================================================================
+    // Register End Round hot data
+    // =========================================================================
+    registry.register_hot_data(RuleId::Fearless, Fearless_HotData);
+    registry.register_hot_data(RuleId::NoRetreat, NoRetreat_HotData);
+    registry.register_hot_data(RuleId::MoraleBoost, MoraleBoost_HotData);
+    registry.register_hot_data(RuleId::HoldTheLine, HoldTheLine_HotData);
+    registry.register_hot_data(RuleId::Regeneration, Regeneration_HotData);
+    registry.register_hot_data(RuleId::Battleborn, Battleborn_HotData);
+
+    // =========================================================================
+    // Register Combat cold data
+    // =========================================================================
     registry.register_cold_data(RuleId::Precise, Precise_ColdData);
     registry.register_cold_data(RuleId::Reliable, Reliable_ColdData);
     registry.register_cold_data(RuleId::Rending, Rending_ColdData);
@@ -645,7 +1160,36 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::Purge, Purge_ColdData);
     registry.register_cold_data(RuleId::Thrust, Thrust_ColdData);
 
-    // Register effects
+    // =========================================================================
+    // Register Movement cold data
+    // =========================================================================
+    registry.register_cold_data(RuleId::Fast, Fast_ColdData);
+    registry.register_cold_data(RuleId::Slow, Slow_ColdData);
+    registry.register_cold_data(RuleId::Flying, Flying_ColdData);
+    registry.register_cold_data(RuleId::Strider, Strider_ColdData);
+    registry.register_cold_data(RuleId::Agile, Agile_ColdData);
+    registry.register_cold_data(RuleId::RapidCharge, RapidCharge_ColdData);
+    registry.register_cold_data(RuleId::HitAndRun, HitAndRun_ColdData);
+
+    // =========================================================================
+    // Register Deployment cold data
+    // =========================================================================
+    registry.register_cold_data(RuleId::Scout, Scout_ColdData);
+    registry.register_cold_data(RuleId::Ambush, Ambush_ColdData);
+
+    // =========================================================================
+    // Register End Round cold data
+    // =========================================================================
+    registry.register_cold_data(RuleId::Fearless, Fearless_ColdData);
+    registry.register_cold_data(RuleId::NoRetreat, NoRetreat_ColdData);
+    registry.register_cold_data(RuleId::MoraleBoost, MoraleBoost_ColdData);
+    registry.register_cold_data(RuleId::HoldTheLine, HoldTheLine_ColdData);
+    registry.register_cold_data(RuleId::Regeneration, Regeneration_ColdData);
+    registry.register_cold_data(RuleId::Battleborn, Battleborn_ColdData);
+
+    // =========================================================================
+    // Register Combat effects
+    // =========================================================================
     registry.register_effects(RuleId::Precise, Precise_Effects);
     registry.register_effects(RuleId::Reliable, Reliable_Effects);
     registry.register_effects(RuleId::Rending, Rending_Effects);
@@ -664,7 +1208,36 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::Furious, Furious_Effects);
     registry.register_effects(RuleId::Rupture, Rupture_Effects);
 
-    // Register aliases for parsing
+    // =========================================================================
+    // Register Movement effects
+    // =========================================================================
+    registry.register_effects(RuleId::Fast, Fast_Effects);
+    registry.register_effects(RuleId::Slow, Slow_Effects);
+    registry.register_effects(RuleId::Flying, Flying_Effects);
+    registry.register_effects(RuleId::Strider, Strider_Effects);
+    registry.register_effects(RuleId::Agile, Agile_Effects);
+    registry.register_effects(RuleId::RapidCharge, RapidCharge_Effects);
+    registry.register_effects(RuleId::HitAndRun, HitAndRun_Effects);
+
+    // =========================================================================
+    // Register Deployment effects
+    // =========================================================================
+    registry.register_effects(RuleId::Scout, Scout_Effects);
+    registry.register_effects(RuleId::Ambush, Ambush_Effects);
+
+    // =========================================================================
+    // Register End Round effects
+    // =========================================================================
+    registry.register_effects(RuleId::Fearless, Fearless_Effects);
+    registry.register_effects(RuleId::NoRetreat, NoRetreat_Effects);
+    registry.register_effects(RuleId::MoraleBoost, MoraleBoost_Effects);
+    registry.register_effects(RuleId::HoldTheLine, HoldTheLine_Effects);
+    registry.register_effects(RuleId::Regeneration, Regeneration_EndRound_Effects);
+    registry.register_effects(RuleId::Battleborn, Battleborn_Effects);
+
+    // =========================================================================
+    // Register Combat aliases for parsing
+    // =========================================================================
     registry.register_alias("precise", RuleId::Precise);
     registry.register_alias("Precise", RuleId::Precise);
     registry.register_alias("reliable", RuleId::Reliable);
@@ -689,6 +1262,48 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_alias("Purge", RuleId::Purge);
     registry.register_alias("thrust", RuleId::Thrust);
     registry.register_alias("Thrust", RuleId::Thrust);
+
+    // =========================================================================
+    // Register Movement aliases for parsing
+    // =========================================================================
+    registry.register_alias("fast", RuleId::Fast);
+    registry.register_alias("Fast", RuleId::Fast);
+    registry.register_alias("slow", RuleId::Slow);
+    registry.register_alias("Slow", RuleId::Slow);
+    registry.register_alias("flying", RuleId::Flying);
+    registry.register_alias("Flying", RuleId::Flying);
+    registry.register_alias("strider", RuleId::Strider);
+    registry.register_alias("Strider", RuleId::Strider);
+    registry.register_alias("agile", RuleId::Agile);
+    registry.register_alias("Agile", RuleId::Agile);
+    registry.register_alias("rapidcharge", RuleId::RapidCharge);
+    registry.register_alias("RapidCharge", RuleId::RapidCharge);
+    registry.register_alias("hitandrun", RuleId::HitAndRun);
+    registry.register_alias("HitAndRun", RuleId::HitAndRun);
+
+    // =========================================================================
+    // Register Deployment aliases for parsing
+    // =========================================================================
+    registry.register_alias("scout", RuleId::Scout);
+    registry.register_alias("Scout", RuleId::Scout);
+    registry.register_alias("ambush", RuleId::Ambush);
+    registry.register_alias("Ambush", RuleId::Ambush);
+
+    // =========================================================================
+    // Register End Round aliases for parsing
+    // =========================================================================
+    registry.register_alias("fearless", RuleId::Fearless);
+    registry.register_alias("Fearless", RuleId::Fearless);
+    registry.register_alias("noretreat", RuleId::NoRetreat);
+    registry.register_alias("NoRetreat", RuleId::NoRetreat);
+    registry.register_alias("moraleboost", RuleId::MoraleBoost);
+    registry.register_alias("MoraleBoost", RuleId::MoraleBoost);
+    registry.register_alias("holdtheline", RuleId::HoldTheLine);
+    registry.register_alias("HoldTheLine", RuleId::HoldTheLine);
+    registry.register_alias("regeneration", RuleId::Regeneration);
+    registry.register_alias("Regeneration", RuleId::Regeneration);
+    registry.register_alias("battleborn", RuleId::Battleborn);
+    registry.register_alias("Battleborn", RuleId::Battleborn);
 }
 
 } // namespace rules
