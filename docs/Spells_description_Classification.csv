@@ -1,0 +1,259 @@
+army,Spell Name,Spell Text,Spell Type
+Alien Hives,Animate Spirit (1),"Pick one friendly unit within 12"", which gets Hit & Run Fighter once (next time the effect would apply).",Grants
+Alien Hives,Overwhelming Strike (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Rupture . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Alien Hives,Infuse Bloodthirst (2),"Pick up to two friendly units within 12"", which get Hive Bond Boost once (next time the effect would apply).",Grants
+Alien Hives,Psychic Blast (2),"Pick one enemy unit within 12"", which takes 4 hit with AP (2).",direct hit
+Alien Hives,Terror Seeker (3),"Pick up to three enemy units within 18"", which friendly units gets Unpredictable Fighter against once (next time the effect would apply).",Grants
+Alien Hives,Hive Shriek (3),"Pick one enemy model within 18"", which takes 6 hit with AP (1).",direct hit
+Battle Brothers,Advanced Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Battle Brothers,Cerebral Trauma (1),"Pick one enemy unit within 18"", which takes 1 hit with Smash .",direct hit
+Battle Brothers,Blessed Ammo (2),"Pick up to two friendly units within 12"", which get Shred when shooting once (next time the effect would apply).",Grants
+Battle Brothers,Lightning Fog (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Battle Brothers,Protective Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Battle Brothers,Psychic Terror (3),"Pick one enemy unit within 6"", which takes 9 hit with Bane .",direct hit
+Blood Brothers,Blood Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Blood Brothers,Blood Trauma (1),"Pick one enemy unit within 18"", which takes 1 hit with Smash .",direct hit
+Blood Brothers,Burst of Rage (2),"Pick up to two friendly units within 12"", which get Furious once (next time the effect would apply).",Grants
+Blood Brothers,Heavenly Lance (2),"Pick one enemy model within 18"", which takes 4 hit with AP (1).",direct hit
+Blood Brothers,Blood Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Blood Brothers,Shield Breaker (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred .",direct hit
+Dark Brothers,Dark Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Dark Brothers,Dark Trauma (1),"Pick one enemy unit within 18"", which takes 1 hit with Smash .",direct hit
+Dark Brothers,Blessed Ammo (2),"Pick up to two friendly units within 12"", which get Shred when shooting once (next time the effect would apply).",Grants
+Dark Brothers,Lightning Fog (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Dark Brothers,Dark Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Dark Brothers,Psychic Terror (3),"Pick one enemy unit within 6"", which takes 9 hit with Bane .",direct hit
+Knight Brothers,Knight Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Knight Brothers,Knight Trauma (1),"Pick one enemy unit within 18"", which takes 1 hit with Smash .",direct hit
+Knight Brothers,Banishing Sigil (2),"Pick up to two enemy units within 18"", which get -1 to defense rolls once (next time the effect would apply).",Modify
+Knight Brothers,Doom Strike (2),"Pick one enemy unit within 6"", which takes 2 hit with AP (2) and Deadly (3).",direct hit
+Knight Brothers,Knight Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Knight Brothers,Purge the Impure (3),"Pick up to two enemy units within 12"", which take 3 hits with AP (2) each.",direct hit
+Watch Brothers,Watch Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Watch Brothers,Watch Trauma (1),"Pick one enemy unit within 18"", which takes 1 hit with Smash .",direct hit
+Watch Brothers,Blessed Ammo (2),"Pick up to two friendly units within 12"", which get Shred when shooting once (next time the effect would apply).",Grants
+Watch Brothers,Lightning Fog (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Watch Brothers,Watch Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Watch Brothers,Psychic Terror (3),"Pick one enemy unit within 6"", which takes 9 hit with Bane .",direct hit
+Wolf Brothers,Wolf Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Wolf Brothers,Wolf Trauma (1),"Pick one enemy unit within 18"", which takes 1 hit with Smash .",direct hit
+Wolf Brothers,Righteous Fury (2),"Pick up to two friendly units within 12"", which get Piercing Assault once (next time the effect would apply).",Grants
+Wolf Brothers,Godly Thunder (2),"Pick one enemy model within 24"", which takes 2 hit with AP (4).",direct hit
+Wolf Brothers,Wolf Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Wolf Brothers,Storm of Power (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Blessed Sisters,Burn the Heretic (1),"Pick one enemy unit within 18"", which gets -3 to casting rolls once (next time the effect would apply).",Modify
+Blessed Sisters,Righteous Wrath (1),"Pick one enemy model within 24"", which takes 1 hit with AP (4).",direct hit
+Blessed Sisters,Holy Rage (2),"Pick up to two friendly units within 12"", which get Piercing Hunter once (next time the effect would apply).",Grants
+Blessed Sisters,Eternal Flame (2),"Pick one enemy unit within 6"", which takes 6 hit with Purge .",direct hit
+Blessed Sisters,Litanies of War (3),"Pick up to three friendly units within 12"", which get Devout Boost once (next time the effect would apply).",Grants
+Blessed Sisters,Searing Admonition (3),"Pick one enemy unit within 18"", which takes 3 hit with Blast (3).",direct hit
+Custodian Brothers,The Founder's Curse (1),"Pick one enemy unit within 18"", which friendly units gets Shred when attacking against once (next time the effect would apply).",Grants
+Custodian Brothers,Thunderous Mist (1),"Pick one enemy unit within 18"", which takes 2 hit.",direct hit
+Custodian Brothers,Focused Defender (2),"Pick up to two friendly units within 12"", which get Unpredictable Fighter once (next time the effect would apply).",Grants
+Custodian Brothers,Dread Strike (2),"Pick one enemy model within 24"", which takes 2 hit with Tear .",direct hit
+Custodian Brothers,Guardian Protection (3),"Pick up to three friendly units within 12"", which get Guardian Boost once (next time the effect would apply).",Grants
+Custodian Brothers,Mind Gash (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred .",direct hit
+DAO Union,Aura of Peace (1),"Pick one friendly unit within 12"", which gets Fearless once (next time the effect would apply).",Grants
+DAO Union,Killing Blow (1),"Pick one enemy model within 18"", which takes 2 hit with AP (1).",direct hit
+DAO Union,Psychic Stabilization (2),"Pick up to two friendly units within 12"", which get Targeting Visor Boost once (next time the effect would apply).",Grants
+DAO Union,Deadly Surge (2),"Pick one enemy unit within 6"", which takes 6 hit with Bane .",direct hit
+DAO Union,Coordinated Aggression (3),"Pick up to three enemy units within 18"", which friendly units gets AP (1) when shooting against once (next time the effect would apply).",Modify
+DAO Union,Devastating Strike (3),"Pick one enemy unit within 12"", which takes 6 hit with Decimate .",direct hit
+Dark Elf Raiders,Psy-Adrenaline (1),"Pick one friendly unit within 12"", which gets Harassing Boost once (next time the effect would apply).",Grants
+Dark Elf Raiders,Snake Bite (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Lacerate .",direct hit
+Dark Elf Raiders,Raiding Drugs (2),"Pick up to two enemy units within 18"", which friendly units get +1 to hit rolls in melee against once (next time the effect would apply).",direct hit
+Dark Elf Raiders,Art of Pain (2),"Pick one enemy unit within 6"", which takes 2 hit with AP (2) and Deadly (3).",direct hit
+Dark Elf Raiders,Fade in the Dark (3),"Pick up to three friendly units within 12"", which get Stealth once (next time the effect would apply).",Grants
+Dark Elf Raiders,Holistic Suffering (3),"Pick one enemy unit within 12"", which takes 9 hit.",direct hit
+Dwarf Guilds,Battle Rune  (1),"Pick one friendly unit within 12"", which gets +6"" range when shooting once (next time the effect would apply).",Modify
+Dwarf Guilds,Breaking Rune  (1),"Pick one enemy model within 24"", which takes 1 hit with AP (4).",direct hit
+Dwarf Guilds,Armor Rune  (2),"Pick up to two friendly units within 12"", which get Sturdy Boost once (next time the effect would apply).",Grants
+Dwarf Guilds,Smiting Rune  (2),"Pick one enemy unit within 12"", which takes 4 hit with AP (1) and Quake .",direct hit
+Dwarf Guilds,Deceleration Rune  (3),"Pick up to three enemy units within 18"", which moves -2"" when using Advance actions and -4"" when using Rush/Charge actions once (next time the effect would apply).",Modify
+Dwarf Guilds,Cleaving Rune  (3),"Pick one enemy unit within 18"", which takes 3 hit with Blast (3).",direct hit
+Elven Jesters,Asphyxiating Fog (1),"Pick one friendly unit within 12"", which gets Counter-Attack once (next time the effect would apply).",Grants
+Elven Jesters,Blades of Discord (1),"Pick one enemy unit within 6"", which takes 1 hit with AP (2) and Deadly (3).",direct hit
+Elven Jesters,Shadow Dance (2),"Pick up to two friendly units within 12"", which get Rapid Blink Boost once (next time the effect would apply).",Grants
+Elven Jesters,Light Fragments (2),"Pick one enemy unit within 12"", which takes 4 hit with AP (1) and Fragment .",direct hit
+Elven Jesters,Veil of Madness (3),"Pick up to three enemy units within 18"", which friendly units gets Slayer against once (next time the effect would apply).",Grants
+Elven Jesters,Fatal Sorrow (3),"Pick one enemy unit within 18"", which takes 6 hit.",direct hit
+Eternal Dynasty,Spirit Power (1),"Pick one friendly unit within 12"", which gets Flying once (next time the effect would apply).",Grants
+Eternal Dynasty,Soul Spear (1),"Pick one enemy model within 24"", which takes 1 hit with Puncture .",direct hit
+Eternal Dynasty,Spirit Resolve (2),"Pick up to two friendly units within 12"", which get Clan Warrior Boost once (next time the effect would apply).",Grants
+Eternal Dynasty,Mind Vortex (2),"Pick up to two enemy units within 12"", which take 2 hits with AP (2) each.",direct hit
+Eternal Dynasty,Eternal Guidance (3),"Pick up to three enemy units within 18"", which friendly units get +6"" range when shooting against once (next time the effect would apply).",Modify
+Eternal Dynasty,Dragon Breath (3),"Pick one enemy unit within 12"", which takes 9 hit.",direct hit
+Goblin Reclaimers,Ammo Boost (1),"Pick one friendly unit within 12"", which gets Mischievous Boost once (next time the effect would apply).",Grants
+Goblin Reclaimers,Zap! (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge .",direct hit
+Goblin Reclaimers,Mob Frenzy (2),"Pick up to two enemy units within 18"", which friendly units gets AP (1) when shooting against once (next time the effect would apply).",Modify
+Goblin Reclaimers,Boom! (2),"Pick one enemy unit within 18"", which takes 2 hit with Blast (3).",direct hit
+Goblin Reclaimers,Shroud Field (3),"Pick up to three friendly units within 12"", which get +1 to defense rolls once (next time the effect would apply).",Modify
+Goblin Reclaimers,Pow! (3),"Pick one enemy unit within 6"", which takes 3 hit with AP (2) and Skewer .",direct hit
+Havoc Brothers,Cursed Stride (1),"Pick one enemy unit within 18"", which counts as being in Dangerous Terrain once (next time the effect would apply).",movement
+Havoc Brothers,Havoc Trauma (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (2).",direct hit
+Havoc Brothers,Dark Assault (2),"Pick up to two friendly units within 12"", which get Shred in melee once (next time the effect would apply).",Grants
+Havoc Brothers,Havoc Terror (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Havoc Brothers,Havoc Boon (3),"Pick up to three friendly units within 12"", which get Havocbound Boost once (next time the effect would apply).",Grants
+Havoc Brothers,Havoc Fog (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Slam .",direct hit
+Change Disciples,Shifting Form (1),"Pick one enemy unit within 18"", which gets -3 to casting rolls once (next time the effect would apply).",Modify
+Change Disciples,Sky Blaze (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Slash . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Change Disciples,Breath of Change (2),"Pick up to two friendly units within 12"", which get Bane when Shooting once (next time the effect would apply).",Grants
+Change Disciples,Mutating Inferno (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Change Disciples,Change Boon (3),"Pick up to three friendly units within 12"", which get Changebound Boost once (next time the effect would apply).",Grants
+Change Disciples,Power Bolt (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (2).",direct hit
+Lust Disciples,Combat Ecstasy (1),"Pick one enemy unit within 18"", which friendly units gets Quick Shot against once (next time the effect would apply).",Grants
+Lust Disciples,Beautiful Pain (1),"Pick one enemy unit within 12"", which takes 2 hit with Shatter .",direct hit
+Lust Disciples,Blissful Dance (2),"Pick up to two friendly units within 12"", which get Melee Evasion once (next time the effect would apply).",Grants
+Lust Disciples,Total Seizure (2),"Pick one enemy model within 18"", which takes 4 hit with AP (1).",direct hit
+Lust Disciples,Lust Boon (3),"Pick up to three friendly units within 12"", which get Lustbound Boost once (next time the effect would apply).",Grants
+Lust Disciples,Overpowering Lash (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred .",direct hit
+Plague Disciples,Aura of Pestilence (1),"Pick one enemy unit within 18"", which counts as being in Difficult Terrain once (next time the effect would apply).",movement
+Plague Disciples,Rapid Putrefaction (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Butcher . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Plague Disciples,Blessed Virus (2),"Pick up to two friendly units within 12"", which get Rapid Rush once (next time the effect would apply).",Grants
+Plague Disciples,Plague Malediction (2),"Pick one enemy model within 24"", which takes 2 hit with AP (4).",direct hit
+Plague Disciples,Plague Boon (3),"Pick up to three friendly units within 12"", which get Plaguebound Boost once (next time the effect would apply).",Grants
+Plague Disciples,Rot Wave (3),"Pick one enemy unit within 18"", which takes 6 hit.",direct hit
+War Disciples,Terrifying Fury (1),"Pick one enemy unit within 18"", which must take a morale test. If failed, it becomes fatigued.",morale
+War Disciples,Flame of Destruction (1),"Pick one enemy unit within 18"", which takes 1 hit with Blast (3).",direct hit
+War Disciples,Fiery Protection (2),"Pick up to two friendly units within 12"", which get Melee Evasion once (next time the effect would apply).",Grants
+War Disciples,Brutal Massacre (2),"Pick one enemy unit within 6"", which takes 6 hit with Break . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+War Disciples,War Boon (3),"Pick up to three friendly units within 12"", which get Warbound Boost once (next time the effect would apply).",Grants
+War Disciples,Headtaker Strike (3),"Pick up to two enemy units within 12"", which take 3 hits with AP (2) each.",direct hit
+High Elf Fleets,Creator of Illusions (1),"Pick one enemy unit within 18"", which gets Unwieldy in melee once (next time the effect would apply).",Grants
+High Elf Fleets,Elemental Seeker (1),"Pick one enemy unit within 18"", which takes 1 hit with Blast (3).",direct hit
+High Elf Fleets,Hidden Spirits (2),"Pick up to two friendly units within 12"", which get Unpredictable Shooter once (next time the effect would apply).",Grants
+High Elf Fleets,Psy-Destruction (2),"Pick one enemy model within 24"", which takes 2 hit with AP (4).",direct hit
+High Elf Fleets,Blessing of Souls (3),"Pick up to three friendly units within 12"", which get Highborn Boost once (next time the effect would apply).",Grants
+High Elf Fleets,Shattering Curse (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Crack . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Human Defense Force,Psy-Injected Courage (1),"Pick one friendly unit within 12"", which gets Hold the Line Boost once (next time the effect would apply).",Grants
+Human Defense Force,Electric Tempest (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Fracture . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Human Defense Force,Calculated Foresight (2),"Pick up to two enemy units within 18"", which friendly units gets Relentless against once (next time the effect would apply).",Grants
+Human Defense Force,Searing Burst (2),"Pick one enemy unit within 12"", which takes 6 hit.",direct hit
+Human Defense Force,Shock Speed (3),"Pick up to three friendly units within 12"", which moves +2"" when using Advance actions and +4"" when using Rush/Charge actions once (next time the effect would apply).",movement
+Human Defense Force,Expel Threat (3),"Pick one enemy model within 18"", which takes 6 hit with AP (1).",direct hit
+Human Inquisition,Psy-Injected Courage (1),"Pick one friendly unit within 12"", which gets +1 to morale test rolls once (next time the effect would apply).",Modify
+Human Inquisition,Electric Tempest (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Human Inquisition,Calculated Foresight (2),"Pick up to two enemy units within 18"", which friendly units gets Relentless against once (next time the effect would apply).",Grants
+Human Inquisition,Searing Burst (2),"Pick one enemy unit within 12"", which takes 6 hit.",direct hit
+Human Inquisition,Shock Speed (3),"Pick up to three friendly units within 12"", which moves +2"" when using Advance actions and +4"" when using Rush/Charge actions once (next time the effect would apply).",movement
+Human Inquisition,Expel Threat (3),"Pick one enemy model within 18"", which takes 6 hit with AP (1).",direct hit
+Infected Colonies,Violent Onslaught (1),"Pick one friendly unit within 12"", which gets Infected Boost once (next time the effect would apply).",Grants
+Infected Colonies,Bio-Horror (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Infected Colonies,Brain Infestation (2),"Pick up to two enemy units within 18"", which get -1 to hit rolls when attacking once (next time the effect would apply).",direct hit
+Infected Colonies,Spread Plague (2),"Pick one enemy unit within 18"", which takes 2 hit with Bash .",direct hit
+Infected Colonies,Rapid Mutation (3),"Pick up to three friendly units within 12"", which get Regeneration once (next time the effect would apply).",Grants
+Infected Colonies,Volatile Infection (3),"Pick one enemy unit within 6"", which takes 3 hit with AP (2) and Deadly (3).",direct hit
+Jackals,Psy-Hunter (1),"Pick one friendly unit within 12"", which gets Scrapper Boost once (next time the effect would apply).",Grants
+Jackals,Power Maw (1),"Pick up to two enemy units within 12"", which take 1 hits with AP (2) each.",direct hit
+Jackals,Mind Shaper (2),"Pick up to two enemy units within 18"", which get -1 to morale test rolls once (next time the effect would apply).",Modify
+Jackals,Quill Blast (2),"Pick one enemy unit within 12"", which takes 4 hit with Scratch .",direct hit
+Jackals,Power Field (3),"Pick up to three friendly units within 12"", which get Shielded once (next time the effect would apply).",Grants
+Jackals,Feral Strike (3),"Pick one enemy unit within 6"", which takes 3 hit with AP (2) and Deadly (3).",direct hit
+Machine Cult,Cyborg Assault (1),"Pick one friendly unit within 12"", which gets Hit & Run Shooter once (next time the effect would apply).",Grants
+Machine Cult,Power Beam (1),"Pick one enemy model within 18"", which takes 2 hit with AP (1).",direct hit
+Machine Cult,Shrouding Incense (2),"Pick up to two friendly units within 12"", which get Machine-Fog Boost once (next time the effect would apply).",Grants
+Machine Cult,Searing Shrapnel (2),"Pick one enemy unit within 12"", which takes 4 hit with AP (1) and Wreck .",direct hit
+Machine Cult,Corrode Weapons (3),"Pick up to three enemy units within 18"", which loses AP (1) when shooting once (next time the effect would apply).",modify
+Machine Cult,Crushing Force (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (2).",direct hit
+Orc Marauders,Elder Protection (1),"Pick one friendly unit within 12"", which gets Resistance once (next time the effect would apply).",Grants
+Orc Marauders,Death Bolt (1),"Pick one enemy unit within 6"", which takes 1 hit with AP (2) and Impale .",direct hit
+Orc Marauders,Path of War (2),"Pick up to two friendly units within 12"", which get Ferocious Boost once (next time the effect would apply).",Grants
+Orc Marauders,Psychic Vomit (2),"Pick one enemy unit within 6"", which takes 6 hit with Bane .",direct hit
+Orc Marauders,Head Bang (3),"Pick up to three enemy units within 18"", which friendly units gets Rending in melee against once (next time the effect would apply).",Grants
+Orc Marauders,Crackling Bolt (3),"Pick one enemy unit within 18"", which takes 3 hit with Blast (3).",direct hit
+Prime Brothers,Advanced Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Prime Brothers,Mind Wound (1),"Pick one enemy unit within 12"", which takes 2 hit with Demolish .",direct hit
+Prime Brothers,Blessed Ammo (2),"Pick up to two friendly units within 12"", which get Shred when shooting once (next time the effect would apply).",Grants
+Prime Brothers,Lightning Fog (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Prime Brothers,Protective Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Prime Brothers,Psychic Terror (3),"Pick one enemy unit within 6"", which takes 9 hit with Bane .",direct hit
+Blood Prime Brothers,Blood Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Blood Prime Brothers,Blood Wound (1),"Pick one enemy unit within 12"", which takes 2 hit with Demolish .",direct hit
+Blood Prime Brothers,Burst of Rage (2),"Pick up to two friendly units within 12"", which get Furious once (next time the effect would apply).",Grants
+Blood Prime Brothers,Heavenly Lance (2),"Pick one enemy model within 18"", which takes 4 hit with AP (1).",direct hit
+Blood Prime Brothers,Blood Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Blood Prime Brothers,Shield Breaker (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred .",direct hit
+Dark Prime Brothers,Dark Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Dark Prime Brothers,Dark Wound (1),"Pick one enemy unit within 12"", which takes 2 hit with Demolish .",direct hit
+Dark Prime Brothers,Blessed Ammo (2),"Pick up to two friendly units within 12"", which get Shred when shooting once (next time the effect would apply).",Grants
+Dark Prime Brothers,Lightning Fog (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Dark Prime Brothers,Dark Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Dark Prime Brothers,Psychic Terror (3),"Pick one enemy unit within 6"", which takes 9 hit with Bane .",direct hit
+Knight Prime Brothers,Knight Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Knight Prime Brothers,Knight Wound (1),"Pick one enemy unit within 12"", which takes 2 hit with Demolish .",direct hit
+Knight Prime Brothers,Banishing Sigil (2),"Pick up to two enemy units within 18"", which get -1 to defense rolls once (next time the effect would apply).",Modify
+Knight Prime Brothers,Doom Strike (2),"Pick one enemy unit within 6"", which takes 2 hit with AP (2) and Deadly (3).",direct hit
+Knight Prime Brothers,Knight Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Knight Prime Brothers,Purge the Impure (3),"Pick up to two enemy units within 12"", which take 3 hits with AP (2) each.",direct hit
+Watch Prime Brothers,Watch Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Watch Prime Brothers,Watch Wound (1),"Pick one enemy unit within 12"", which takes 2 hit with Demolish .",direct hit
+Watch Prime Brothers,Blessed Ammo (2),"Pick up to two friendly units within 12"", which get Shred when shooting once (next time the effect would apply).",Grants
+Watch Prime Brothers,Lightning Fog (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Watch Prime Brothers,Watch Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Watch Prime Brothers,Psychic Terror (3),"Pick one enemy unit within 6"", which takes 9 hit with Bane .",direct hit
+Wolf Prime Brothers,Wolf Sight (1),"Pick one enemy unit within 18"", which friendly units gets Unstoppable when shooting against once (next time the effect would apply).",Grants
+Wolf Prime Brothers,Wolf Wound (1),"Pick one enemy unit within 12"", which takes 2 hit with Demolish .",direct hit
+Wolf Prime Brothers,Righteous Fury (2),"Pick up to two friendly units within 12"", which get Piercing Assault once (next time the effect would apply).",Grants
+Wolf Prime Brothers,Godly Thunder (2),"Pick one enemy model within 24"", which takes 2 hit with AP (4).",direct hit
+Wolf Prime Brothers,Wolf Dome (3),"Pick up to three friendly units within 12"", which get Evasive once (next time the effect would apply).",Grants
+Wolf Prime Brothers,Storm of Power (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Ratmen Clans,Weapon Booster (1),"Pick one friendly unit within 12"", which gets Scurry Boost once (next time the effect would apply).",Grants
+Ratmen Clans,Focused Shock (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Shred .",direct hit
+Ratmen Clans,Tech-Sickness (2),"Pick up to two enemy units within 18"", which get -1 to defense rolls once (next time the effect would apply).",Modify
+Ratmen Clans,System Takeover (2),"Pick one enemy unit within 12"", which takes 6 hit.",direct hit
+Ratmen Clans,Enhance Serum (3),"Pick up to three friendly units within 12"", which get Regeneration once (next time the effect would apply).",Grants
+Ratmen Clans,Power Surge (3),"Pick one enemy model within 12"", which takes 6 hit with Hazardous . Roll as many dice as hits to see if ""on rolls of 1"" effects trigger.",direct hit
+Rebel Guerrillas,Aura of Peace (1),"Pick one friendly unit within 12"", which gets +1 to morale test rolls once (next time the effect would apply).",Modify
+Rebel Guerrillas,Mind Breaker (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Rebel Guerrillas,Bad Omen (2),"Pick up to two enemy units within 18"", which friendly units gets Furious against once (next time the effect would apply).",Grants
+Rebel Guerrillas,Wave of Discord (2),"Pick one enemy unit within 18"", which takes 2 hit with Thrash .",direct hit
+Rebel Guerrillas,Deep Meditation (3),"Pick up to three friendly units within 12"", which get +1 to hit rolls when shooting once (next time the effect would apply).",direct hit
+Rebel Guerrillas,Piercing Pulse (3),"Pick one enemy model within 24"", which takes 3 hit with AP (4).",direct hit
+Robot Legions,Triangulation Bots (1),"Pick one enemy unit within 18"", which friendly units gets Indirect when shooting against once (next time the effect would apply).",Grants
+Robot Legions,Piercing Bots (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (2).",direct hit
+Robot Legions,Inspiring Bots (2),"Pick up to two friendly units within 12"", which get Rapid Advance once (next time the effect would apply).",Grants
+Robot Legions,Flame Bots (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Robot Legions,Mending Bots (3),"Pick up to three friendly units within 12"", which get Self-Repair Boost once (next time the effect would apply).",Grants
+Robot Legions,Gauss Bots (3),"Pick one enemy unit within 6"", which takes 9 hit with Destructive . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Saurian Starhost,Toxin Mist (1),"Pick one enemy unit within 18"", which friendly units gets Bane when attacking against once (next time the effect would apply).",Grants
+Saurian Starhost,Serpent Comet (1),"Pick one enemy unit within 12"", which takes 2 hit with Disintegrate .",direct hit
+Saurian Starhost,Fateful Guidance (2),"Pick up to two friendly units within 12"", which get Furious once (next time the effect would apply).",Grants
+Saurian Starhost,Piranha Curse (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Saurian Starhost,Celestial Roar (3),"Pick up to three friendly units within 12"", which get Primal Boost once (next time the effect would apply).",Grants
+Saurian Starhost,Jaguar Blaze (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred .",direct hit
+Soul-Snatcher Cults,Insidious Protection (1),"Pick one friendly unit within 12"", which gets Grounded Reinforcement once (next time the effect would apply).",Grants
+Soul-Snatcher Cults,Mind Corruption (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Soul-Snatcher Cults,Deep Hypnosis (2),"Pick up to two enemy units within 18"", which must take a morale test. If failed you may move it by up to 6"" in a straight line in any direction.",morale
+Soul-Snatcher Cults,Psychic Onslaught (2),"Pick one enemy unit within 12"", which takes 4 hit with Reap .",direct hit
+Soul-Snatcher Cults,Bio-Displacer (3),"Pick up to three friendly units within 12"", which get Teleport once (next time the effect would apply).",Grants
+Soul-Snatcher Cults,Brain Burst (3),"Pick one enemy unit within 6"", which takes 3 hit with AP (2) and Deadly (3).",direct hit
+Titan Lords,Psy-Injected Courage (1),"Pick one friendly unit within 12"", which gets +1 to morale test rolls once (next time the effect would apply).",Modify
+Titan Lords,Electric Tempest (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Surge . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Titan Lords,Calculated Foresight (2),"Pick up to two enemy units within 18"", which friendly units gets Relentless against once (next time the effect would apply).",Grants
+Titan Lords,Searing Burst (2),"Pick one enemy unit within 12"", which takes 6 hit.",direct hit
+Titan Lords,Shock Speed (3),"Pick up to three friendly units within 12"", which moves +2"" when using Advance actions and +4"" when using Rush/Charge actions once (next time the effect would apply).",movement
+Titan Lords,Expel Threat (3),"Pick one enemy model within 18"", which takes 6 hit with AP (1).",direct hit
+Wormhole Daemons of Change,Shifting Form (1),"Pick one enemy unit within 18"", which gets -3 to casting rolls once (next time the effect would apply).",Modify
+Wormhole Daemons of Change,Sky Blaze (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Slash . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Wormhole Daemons of Change,Breath of Change (2),"Pick up to two friendly units within 12"", which get Bane when Shooting once (next time the effect would apply).",Grants
+Wormhole Daemons of Change,Mutating Inferno (2),"Pick up to two enemy units within 9"", which take 4 hits each.",direct hit
+Wormhole Daemons of Change,Change Boon (3),"Pick up to three friendly units within 12"", which get Changebound Boost once (next time the effect would apply).",Grants
+Wormhole Daemons of Change,Power Bolt (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (2).",direct hit
+Wormhole Daemons of Lust,Combat Ecstasy (1),"Pick one enemy unit within 18"", which friendly units gets Quick Shot against once (next time the effect would apply).",Grants
+Wormhole Daemons of Lust,Beautiful Pain (1),"Pick one enemy unit within 12"", which takes 2 hit with Shatter .",direct hit
+Wormhole Daemons of Lust,Blissful Dance (2),"Pick up to two friendly units within 12"", which get Melee Evasion once (next time the effect would apply).",Grants
+Wormhole Daemons of Lust,Total Seizure (2),"Pick one enemy model within 18"", which takes 4 hit with AP (1).",direct hit
+Wormhole Daemons of Lust,Lust Boon (3),"Pick up to three friendly units within 12"", which get Lustbound Boost once (next time the effect would apply).",Grants
+Wormhole Daemons of Lust,Overpowering Lash (3),"Pick one enemy unit within 12"", which takes 6 hit with AP (1) and Shred .",direct hit
+Wormhole Daemons of Plague,Aura of Pestilence (1),"Pick one enemy unit within 18"", which counts as being in Difficult Terrain once (next time the effect would apply).",movement
+Wormhole Daemons of Plague,Rapid Putrefaction (1),"Pick one enemy unit within 12"", which takes 2 hit with AP (1) and Butcher . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Wormhole Daemons of Plague,Blessed Virus (2),"Pick up to two friendly units within 12"", which get Rapid Rush once (next time the effect would apply).",Grants
+Wormhole Daemons of Plague,Plague Malediction (2),"Pick one enemy model within 24"", which takes 2 hit with AP (4).",direct hit
+Wormhole Daemons of Plague,Plague Boon (3),"Pick up to three friendly units within 12"", which get Plaguebound Boost once (next time the effect would apply).",Grants
+Wormhole Daemons of Plague,Rot Wave (3),"Pick one enemy unit within 18"", which takes 6 hit.",direct hit
+Wormhole Daemons of War,Terrifying Fury (1),"Pick one enemy unit within 18"", which must take a morale test. If failed, it becomes fatigued.",morale
+Wormhole Daemons of War,Flame of Destruction (1),"Pick one enemy unit within 18"", which takes 1 hit with Blast (3).",direct hit
+Wormhole Daemons of War,Fiery Protection (2),"Pick up to two friendly units within 12"", which get Melee Evasion once (next time the effect would apply).",Grants
+Wormhole Daemons of War,Brutal Massacre (2),"Pick one enemy unit within 6"", which takes 6 hit with Break . Roll as many dice as hits to see if ""on rolls of 6"" effects trigger.",direct hit
+Wormhole Daemons of War,War Boon (3),"Pick up to three friendly units within 12"", which get Warbound Boost once (next time the effect would apply).",Grants
+Wormhole Daemons of War,Headtaker Strike (3),"Pick up to two enemy units within 12"", which take 3 hits with AP (2) each.",direct hit
