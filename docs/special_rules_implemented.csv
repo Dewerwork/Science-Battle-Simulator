@@ -92,3 +92,4 @@ Fast Aura,Aura - Movement,No,"This model and its unit move +2"" Advance and +4""
 Ignores Cover Aura,Aura - Combat,No,"This model and its unit ignore cover when shooting.",Implemented (maps to Indirect)
 Ignores Cover when Shooting Aura,Aura - Combat,No,"This model and its unit ignore cover when shooting.",Implemented (maps to Indirect)
 Indirect when Shooting Aura,Aura - Combat,No,"This model and its unit get Indirect when shooting.",Implemented (maps to Indirect)
+Precision Shooter Aura,Aura - Combat,No,"This model and its unit get +1 to hit rolls when shooting.",Implemented (maps to GoodShot)

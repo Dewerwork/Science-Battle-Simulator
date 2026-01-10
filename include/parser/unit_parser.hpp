@@ -304,6 +304,10 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"indirect when shooting aura", RuleId::Indirect},
         {"indirectwhenshootingaura", RuleId::Indirect},
 
+        // Precision auras (map to hit modifier rules)
+        {"precision shooter aura", RuleId::GoodShot},
+        {"precisionshooteraura", RuleId::GoodShot},
+
         // Buff variants (same effect as auras)
         {"stealth buff", RuleId::Stealth},
         {"stealthbuff", RuleId::Stealth},
