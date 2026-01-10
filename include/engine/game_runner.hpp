@@ -772,16 +772,16 @@ private:
 
     // Log deployment rule effects
     void log_deployment_rules(const Unit& unit, bool is_unit_a, i8 old_pos, i8 new_pos) {
-        // Check which deployment rule is active
-        if (unit.has_rule(RuleId::Scout)) {
+        // Check rules in SAME ORDER as calculate_starting_position (Ambush first!)
+        if (unit.has_rule(RuleId::Ambush)) {
+            // Ambush units start in reserve - log that they're set aside
+            logger_->on_deployment_rule(is_unit_a, "Ambush", old_pos, new_pos,
+                                        "set_aside_in_reserve_deploys_round_2+");
+        } else if (unit.has_rule(RuleId::Scout)) {
             if (old_pos != new_pos) {
                 logger_->on_deployment_rule(is_unit_a, "Scout", old_pos, new_pos,
                                             "forward_deploy_6_inches");
             }
-        } else if (unit.has_rule(RuleId::Ambush)) {
-            // Ambush units start in reserve - log that they're set aside
-            logger_->on_deployment_rule(is_unit_a, "Ambush", old_pos, new_pos,
-                                        "set_aside_in_reserve_deploys_round_2+");
         } else if (old_pos != new_pos) {
             // Unknown deployment rule
             logger_->on_deployment_rule(is_unit_a, "Deployment", old_pos, new_pos,
