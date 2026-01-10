@@ -105,6 +105,7 @@ inline std::string rule_id_to_string(RuleId id) {
         case RuleId::Thrust: return "Thrust";
         case RuleId::Takedown: return "Takedown";
         case RuleId::Limited: return "Limited";
+        case RuleId::Immobile: return "Immobile";
         case RuleId::Shielded: return "Shielded";
         case RuleId::Resistance: return "Resistance";
         case RuleId::NoRetreat: return "No Retreat";

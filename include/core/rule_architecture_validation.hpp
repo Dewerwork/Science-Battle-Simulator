@@ -46,9 +46,9 @@ static_assert(static_cast<size_t>(RuleId::PRIMARY_COUNT) == 64,
 static_assert(static_cast<size_t>(RuleId::COUNT) <= 320,
     "RuleId::COUNT must not exceed 320");
 
-// Verify the reserved slots are in the expected position
-static_assert(static_cast<size_t>(RuleId::_Reserved59) == 59,
-    "_Reserved59 must be at position 59");
+// Verify the rule slots are in the expected position
+static_assert(static_cast<size_t>(RuleId::Immobile) == 59,
+    "Immobile must be at position 59");
 static_assert(static_cast<size_t>(RuleId::_Reserved63) == 63,
     "_Reserved63 must be at position 63");
 

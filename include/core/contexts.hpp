@@ -128,6 +128,8 @@ struct CombatContextExtended {
     bool ignores_cover = false;          // Indirect - ignore cover
     bool predator_fighter_active = false; // PredatorFighter - recursive attacks
     bool hero_present = false;           // Hero - takes wounds last
+    bool ignores_negative_hit_mods = false; // Unstoppable - ignore negative modifiers
+    bool moved_this_activation = false;  // Did attacker move before shooting (for Indirect)
 
     // Rule values
     u8 tough_value = 0;                  // Tough(X) value
@@ -169,6 +171,8 @@ struct CombatContextExtended {
         ignores_cover = false;
         predator_fighter_active = false;
         hero_present = false;
+        ignores_negative_hit_mods = false;
+        moved_this_activation = false;
         tough_value = 0;
         impact_attacks = 0;
         smash_bonus_blast = 0;

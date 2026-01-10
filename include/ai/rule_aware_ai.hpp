@@ -264,6 +264,8 @@ public:
                 return AIHintBuilder().aggressive().charge_bonus().first_strike().offense(20);
             case RuleId::HitAndRun:
                 return AIHintBuilder().opportunistic().mobile().avoid_charges().offense(15);
+            case RuleId::Immobile:
+                return AIHintBuilder().defensive().static_bonus().holding_bonus().defense(10);
 
             // Morale rules
             case RuleId::Fearless:

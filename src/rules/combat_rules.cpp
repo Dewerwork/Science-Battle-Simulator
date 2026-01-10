@@ -317,9 +317,12 @@ void takedown_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 
     }
 }
 
-void unstoppable_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
-    // Unstoppable - ignore regen and negative modifiers
+void unstoppable_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Unstoppable - ignore regen and negative modifiers to this weapon
     ctx.set_bypass_regen(true);
+    if (ext) {
+        ext->ignores_negative_hit_mods = true;
+    }
 }
 
 // === PRE_ATTACK Phase Effects ===
@@ -380,10 +383,14 @@ void sniper_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*
     }
 }
 
-void indirect_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
-    // Indirect - ignore cover
+void indirect_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Indirect - ignore cover, but -1 to hit if moved
     if (ext) {
         ext->ignores_cover = true;
+        // Apply -1 to hit penalty when shooting after moving
+        if (ext->moved_this_activation) {
+            ctx.hit_modifier -= 1;
+        }
     }
 }
 

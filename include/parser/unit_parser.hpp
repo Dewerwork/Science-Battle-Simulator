@@ -178,6 +178,7 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"thrust", RuleId::Thrust},
         {"takedown", RuleId::Takedown},
         {"limited", RuleId::Limited},
+        {"immobile", RuleId::Immobile},
 
         // Faction-specific rules
         {"shielded", RuleId::Shielded},
