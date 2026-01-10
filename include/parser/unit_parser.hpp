@@ -258,6 +258,34 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"rending when shooting aura", RuleId::Rending},
         {"rendingwhenshootingaura", RuleId::Rending},
 
+        // Shred auras (melee and shooting variants)
+        {"shred in melee aura", RuleId::Shred},
+        {"shredinmeleeaura", RuleId::Shred},
+        {"shred when shooting aura", RuleId::Shred},
+        {"shredwhenshootingaura", RuleId::Shred},
+
+        // Defense auras
+        {"no retreat aura", RuleId::NoRetreat},
+        {"noretreat aura", RuleId::NoRetreat},
+        {"noretreataua", RuleId::NoRetreat},
+        {"resistance aura", RuleId::Resistance},
+        {"resistanceaura", RuleId::Resistance},
+        {"melee evasion aura", RuleId::MeleeEvasion},
+        {"meleeevasionaura", RuleId::MeleeEvasion},
+        {"melee shrouding aura", RuleId::MeleeShrouding},
+        {"meleeshroudingaura", RuleId::MeleeShrouding},
+        {"ranged shrouding aura", RuleId::RangedShrouding},
+        {"rangedshroudingaura", RuleId::RangedShrouding},
+
+        // Combat auras
+        {"piercing assault aura", RuleId::PiercingAssault},
+        {"piercingassaultaura", RuleId::PiercingAssault},
+        {"hit & run fighter aura", RuleId::HitAndRun},
+        {"hit and run fighter aura", RuleId::HitAndRun},
+        {"hitandrunfighteraura", RuleId::HitAndRun},
+        {"thrust in melee aura", RuleId::Thrust},
+        {"thrustinmeleeaura", RuleId::Thrust},
+
         // Buff variants (same effect as auras)
         {"stealth buff", RuleId::Stealth},
         {"stealthbuff", RuleId::Stealth},
