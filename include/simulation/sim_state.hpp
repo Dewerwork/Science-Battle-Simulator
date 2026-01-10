@@ -3,6 +3,7 @@
 #include "core/types.hpp"
 #include "core/unit.hpp"
 #include "core/modifiers.hpp"
+#include "core/spell.hpp"
 #include <array>
 
 namespace battle {
@@ -33,6 +34,11 @@ struct UnitSimState {
     bool is_fatigued = false;
     u32 limited_weapons_used = 0;  // Bitmask of Limited weapons already used this game
 
+    // Spell casting state (Caster(X) rule)
+    u8 spell_tokens = 0;           // Current spell tokens available
+    u8 caster_value = 0;           // X from Caster(X) - tokens gained per round
+    u8 spells_attempted = 0;       // Bitmask of spell indices attempted this round (max 8)
+
     // Active modifiers from auras, buffs, faction rules
     UnitModifiers modifiers;
 
@@ -41,6 +47,10 @@ struct UnitSimState {
         status = UnitStatus::Normal;
         is_fatigued = false;
         limited_weapons_used = 0;
+        // Initialize spell casting state
+        spell_tokens = 0;
+        caster_value = unit.get_rule_value(RuleId::Casting);  // Caster(X) value
+        spells_attempted = 0;
         modifiers.clear();
         for (u8 i = 0; i < unit.model_count; ++i) {
             models[i].wounds_taken = 0;
@@ -53,6 +63,9 @@ struct UnitSimState {
         status = UnitStatus::Normal;
         is_fatigued = false;
         limited_weapons_used = 0;
+        // Note: caster_value is preserved from init_from, tokens reset at round start
+        spell_tokens = 0;
+        spells_attempted = 0;
         modifiers.clear();
         for (u8 i = 0; i < model_count; ++i) {
             models[i].reset();
@@ -67,6 +80,41 @@ struct UnitSimState {
     // Mark a Limited weapon as used
     void mark_limited_weapon_used(u8 weapon_idx) {
         limited_weapons_used |= (1u << weapon_idx);
+    }
+
+    // Spell token management
+    bool is_caster() const { return caster_value > 0; }
+
+    // Grant spell tokens at round start (capped at MAX_SPELL_TOKENS)
+    void grant_spell_tokens() {
+        if (caster_value > 0) {
+            u8 new_tokens = spell_tokens + caster_value;
+            spell_tokens = (new_tokens > MAX_SPELL_TOKENS) ? MAX_SPELL_TOKENS : new_tokens;
+        }
+    }
+
+    // Check if a spell has been attempted this round
+    bool is_spell_attempted(u8 spell_idx) const {
+        return (spells_attempted & (1u << spell_idx)) != 0;
+    }
+
+    // Mark a spell as attempted
+    void mark_spell_attempted(u8 spell_idx) {
+        spells_attempted |= (1u << spell_idx);
+    }
+
+    // Spend spell tokens (returns true if successful)
+    bool spend_spell_tokens(u8 amount) {
+        if (spell_tokens >= amount) {
+            spell_tokens -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    // Reset spell attempts at round start
+    void reset_spell_attempts() {
+        spells_attempted = 0;
     }
 
     // Apply wound to a specific model, returns true if model died
@@ -92,7 +140,10 @@ struct UnitSimState {
     void become_shaken() { status = UnitStatus::Shaken; }
     void rally() { if (status == UnitStatus::Shaken) status = UnitStatus::Normal; }
     void rout() { status = UnitStatus::Routed; }
-    void reset_round_state() { is_fatigued = false; }
+    void reset_round_state() {
+        is_fatigued = false;
+        reset_spell_attempts();  // Spells can be attempted again each round
+    }
 };
 
 // ==============================================================================
@@ -139,6 +190,16 @@ struct UnitView {
     // Limited weapon tracking
     bool is_limited_weapon_used(u8 weapon_idx) const { return state->is_limited_weapon_used(weapon_idx); }
     void mark_limited_weapon_used(u8 weapon_idx) { state->mark_limited_weapon_used(weapon_idx); }
+
+    // Spell token tracking (Caster(X) rule)
+    bool is_caster() const { return state->is_caster(); }
+    u8 spell_tokens() const { return state->spell_tokens; }
+    u8 caster_value() const { return state->caster_value; }
+    void grant_spell_tokens() { state->grant_spell_tokens(); }
+    bool is_spell_attempted(u8 spell_idx) const { return state->is_spell_attempted(spell_idx); }
+    void mark_spell_attempted(u8 spell_idx) { state->mark_spell_attempted(spell_idx); }
+    bool spend_spell_tokens(u8 amount) { return state->spend_spell_tokens(amount); }
+    void reset_spell_attempts() { state->reset_spell_attempts(); }
 
     // Modifier access
     UnitModifiers& modifiers() { return state->modifiers; }

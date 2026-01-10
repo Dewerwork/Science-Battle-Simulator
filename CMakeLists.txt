@@ -87,6 +87,7 @@ endif()
 add_library(battle_core STATIC
     src/core/faction_rules.cpp
     src/core/special_rule.cpp
+    src/core/spell_registry.cpp
     src/rules/combat_rules.cpp
     src/rules/movement_rules.cpp
     src/rules/endround_rules.cpp

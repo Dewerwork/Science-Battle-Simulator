@@ -370,6 +370,49 @@ public:
         const char* rule_name,
         const char* effect,
         u32 value) = 0;
+
+    // =========================================================================
+    // SPELL CASTING
+    // =========================================================================
+
+    virtual void on_spell_tokens_granted(
+        bool is_unit_a,
+        u8 tokens_gained,
+        u8 tokens_total,
+        u8 caster_value) = 0;
+
+    virtual void on_spell_cast_attempt(
+        bool is_unit_a,
+        const char* spell_name,
+        u8 spell_cost,
+        u8 tokens_remaining,
+        i8 range,
+        const char* target_type) = 0;
+
+    virtual void on_spell_interference(
+        bool interferer_is_a,
+        u8 tokens_spent,
+        i8 modifier_applied) = 0;
+
+    virtual void on_spell_roll(
+        u8 roll,
+        u8 target_number,
+        i8 modifier,
+        bool success) = 0;
+
+    virtual void on_spell_effect(
+        const char* spell_name,
+        const char* effect_type,
+        u32 hits_dealt,
+        u32 wounds_dealt,
+        u8 models_killed,
+        const char* buff_applied) = 0;
+
+    virtual void on_spell_phase_end(
+        bool is_unit_a,
+        u8 spells_cast,
+        u8 spells_succeeded,
+        u8 tokens_remaining) = 0;
 };
 
 } // namespace battle
