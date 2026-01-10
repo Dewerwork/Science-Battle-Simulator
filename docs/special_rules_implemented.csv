@@ -1,0 +1,63 @@
+Rule Name,Category,Value,Description,Implementation Status
+Precise,Combat - Hit Modifier,No,"+1 to hit rolls with this weapon.",Implemented
+Reliable,Combat - Hit Modifier,No,"Attacks with this weapon always hit on 2+.",Implemented
+Rending,Combat - Hit Modifier,No,"Unmodified rolls of 6 to hit get AP(4) and bypass regeneration.",Implemented
+Blast,Combat - Hit Multiplier,X,"Multiply the number of hits by X.",Implemented
+Deadly,Combat - Wound Multiplier,X,"Multiply the number of wounds by X.",Implemented
+Poison,Combat - Defense,No,"Enemy must re-roll successful defense rolls of 6.",Implemented
+Bane,Combat - Defense,No,"Attacks bypass regeneration and force defense re-rolls on 6.",Implemented
+AP,Combat - Defense,X,"Reduces enemy Defense by X (minimum 6+).",Implemented
+Lance,Combat - AP Modifier,No,"+2 AP when charging in melee.",Implemented
+Impact,Combat - Extra Attacks,X,"Get X extra attacks that hit on 2+ when charging (then roll defense with AP(1)).",Implemented
+Surge,Combat - Hit Bonus,No,"Unmodified rolls of 6 to hit deal 1 extra hit.",Implemented
+Thrust,Combat - Charge Bonus,No,"+1 to hit and AP(+1) when charging in melee.",Implemented
+Regeneration,Defense,No,"5+ to ignore each wound (after defense roll).",Implemented
+Tough,Defense,X,"Takes X wounds to kill each model instead of 1.",Implemented
+Stealth,Defense - Hit Modifier,No,"-1 to be hit when shot at from more than 9"" away.",Implemented
+Protected,Defense,No,"On 6+, reduce AP of incoming attacks by half (round up).",Implemented
+Shielded,Defense,No,"+1 to defense rolls vs non-spell attacks.",Implemented
+ShieldWall,Defense,No,"+1 to defense rolls in melee.",Implemented
+Resistance,Defense,No,"6+ to ignore wounds (after regeneration).",Implemented
+Relentless,Combat - Hit Bonus,No,"When shooting at enemies over 9"" away, unmodified 6s to hit deal 1 extra hit.",Implemented
+Furious,Combat - Hit Bonus,No,"When charging, unmodified 6s to hit deal 1 extra hit.",Implemented
+PointBlankSurge,Combat - Hit Bonus,No,"When shooting at enemies within 9"", unmodified 6s to hit deal 1 extra hit.",Implemented
+PredatorFighter,Combat - Hit Bonus,No,"In melee, unmodified 6s to hit generate additional attacks (recursive).",Implemented
+Rupture,Combat - Wound Bonus,No,"Bypasses regeneration. Unmodified 6s to hit deal +1 wound.",Implemented
+Shred,Combat - Wound Bonus,No,"Unmodified 1s on defense rolls deal +1 wound.",Implemented
+Smash,Combat - Wound Bonus,No,"Bypasses regeneration. Gets +Blast(3) vs targets with Defense 5+ or 6+.",Implemented
+Takedown,Combat - Targeting,No,"Pick a specific target model. Resolve wounds as if targeting a unit of 1.",Implemented
+SelfDestruct,Combat - Retaliation,X,"When killed in melee, deal X automatic hits to the attacker.",Implemented
+Fast,Movement,No,"+2"" Advance, +4"" Rush/Charge movement.",Implemented
+Slow,Movement,No,"-2"" to all movement.",Implemented
+Flying,Movement,No,"Can fly over terrain and other units.",Implemented
+Strider,Movement,No,"Ignores difficult terrain penalties.",Implemented
+Agile,Movement,No,"+1"" Advance, +2"" Rush/Charge movement.",Implemented
+RapidCharge,Movement,No,"+4"" to charge distance.",Implemented
+Fearless,Morale,No,"Re-roll failed morale tests.",Implemented
+NoRetreat,Morale,No,"Cannot be shaken or routed. Take wounds instead of fleeing.",Implemented
+MoraleBoost,Morale,No,"+1 to morale test rolls.",Implemented
+HoldTheLine,Morale,No,"Re-roll failed morale tests.",Implemented
+Fear,Morale,X,"Counts as having dealt +X wounds in melee for morale purposes.",Implemented
+GoodShot,Combat - Hit Modifier,No,"+1 to hit when shooting.",Implemented
+BadShot,Combat - Hit Modifier,No,"-1 to hit when shooting.",Implemented
+VersatileAttack,Combat - Choice,No,"Before attacking, roll D6: 1-3 = AP+1, 4-6 = +1 to hit.",Implemented
+Purge,Combat - Hit Modifier,No,"+1 to hit against targets with Tough(3+).",Implemented
+PiercingAssault,Combat - AP Modifier,No,"When charging in melee, attacks have at least AP(1).",Implemented
+MeleeEvasion,Defense - Hit Modifier,No,"-1 to be hit in melee.",Implemented
+MeleeShrouding,Defense - Hit Modifier,No,"-1 to be hit in melee.",Implemented
+RangedShrouding,Defense - Hit Modifier,No,"-1 to be hit when shot at.",Implemented
+BaneInMelee,Combat - Defense,No,"All melee attacks have Bane (bypass regen, force re-roll 6s).",Implemented
+Limited,Combat - Restriction,No,"Weapon may only be used once per game.",Implemented
+Counter,Combat - Initiative,No,"Strikes first when charged (before the charging unit).",Implemented
+HitAndRun,Movement,No,"May retreat D3"" after fighting in melee.",Implemented
+Indirect,Combat - Hit Modifier,No,"-1 to hit when shooting after moving. Ignores cover and can target units not in line of sight.",Implemented
+Sniper,Combat - Targeting,No,"Pick a specific target model when shooting.",Implemented
+Lock_On,Combat - Hit Modifier,No,"+1 to hit vs vehicles.",Implemented
+Hero,Defense - Wound Allocation,No,"Takes wounds last in the unit (after all other models).",Implemented
+Unstoppable,Combat - Modifier,No,"Ignores regeneration and all negative hit modifiers on this weapon.",Implemented
+Scout,Deployment,No,"Deploy up to 12"" further forward than normal deployment zone.",Implemented
+Ambush,Deployment,No,"Set aside in reserve. Deploy after round 1, at least 9"" from enemies. Cannot contest objectives on deployment round.",Implemented
+Immobile,Movement - Restriction,No,"May only use Hold actions (cannot Advance, Rush, or Charge).",Implemented
+Devout,Faction,No,"Faction-specific rule.",Implemented
+Battleborn,Morale,No,"At the start of each round, roll 4+: stop being Shaken.",Implemented
+Casting,Spells,X,"Can cast X spells per activation.",Partial
