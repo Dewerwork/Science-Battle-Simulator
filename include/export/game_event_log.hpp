@@ -163,6 +163,14 @@ inline std::string rule_id_to_string(RuleId id) {
         case RuleId::Scurry: return "Scurry";
         case RuleId::Darkborn: return "Darkborn";
         case RuleId::HitAndRunShooter: return "Hit & Run Shooter";
+        // Category D: Defense Modifiers
+        case RuleId::Fortified: return "Fortified";
+        case RuleId::Guardian: return "Guardian";
+        case RuleId::GuardianBoost: return "Guardian Boost";
+        case RuleId::Sturdy: return "Sturdy";
+        case RuleId::Knightborn: return "Knightborn";
+        case RuleId::Plaguebound: return "Plaguebound";
+        case RuleId::Changebound: return "Changebound";
         default: return "Unknown";
     }
 }

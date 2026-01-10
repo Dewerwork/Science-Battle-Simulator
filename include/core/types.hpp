@@ -248,6 +248,15 @@ enum class RuleId : u16 {
     Darkborn,       // Darkborn - +3" range, +3" Charge (99)
     HitAndRunShooter, // Hit & Run Shooter - Move 3" after shooting (100)
 
+    // === Category D: Defense Modifiers ===
+    Fortified,      // Fortified - Hits count as AP(-1), min AP(0) (101)
+    Guardian,       // Guardian - AP(-1) when shot/charged from >9" (102)
+    GuardianBoost,  // Guardian Boost - Guardian always applies (103)
+    Sturdy,         // Sturdy - +1 defense when shot/charged from >9" (104)
+    Knightborn,     // Knightborn - 6+ ignore wounds (4+ vs spells) (105)
+    Plaguebound,    // Plaguebound - 6+ ignore wounds (106)
+    Changebound,    // Changebound - Enemies get -1 to hit from >9" (107)
+
     // Future expansion rules go here
     // Each new rule should be categorized as PRIMARY or EXTENDED based on
     // how frequently it's checked during combat resolution

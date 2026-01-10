@@ -700,6 +700,66 @@ void hit_and_run_shooter_effect(MovementContext& ctx, u8 /*value*/) {
     ctx.hit_and_run_distance = 3;
 }
 
+// ==============================================================================
+// Category D: Defense Modifier Effect Implementations
+// ==============================================================================
+
+void fortified_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Fortified - All hits count as AP(-1), min AP(0)
+    // Reduce attacker's AP by 1 (minimum 0)
+    if (ctx.ap_modifier > 0) {
+        ctx.ap_modifier -= 1;
+    }
+}
+
+bool distance_over_9_condition(const CombatContextCore& ctx) {
+    // Condition for rules that only apply from >9" away
+    return ctx.distance > 9;
+}
+
+void guardian_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Guardian - AP(-1) when shot/charged from >9"
+    // Condition checked separately, this just applies the effect
+    if (ctx.ap_modifier > 0) {
+        ctx.ap_modifier -= 1;
+    }
+}
+
+void guardian_boost_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Guardian Boost - Guardian always applies (AP(-1))
+    // No distance check needed
+    if (ctx.ap_modifier > 0) {
+        ctx.ap_modifier -= 1;
+    }
+}
+
+void sturdy_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Sturdy - +1 defense when shot/charged from >9"
+    // This effectively gives defender +1 to defense rolls
+    ctx.defense_modifier += 1;
+}
+
+void knightborn_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Knightborn - 6+ to ignore wounds (4+ vs spells)
+    // Flag for wound allocation phase to check
+    if (ext) {
+        ext->knightborn_active = true;
+    }
+}
+
+void plaguebound_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Plaguebound - 6+ to ignore wounds
+    if (ext) {
+        ext->plaguebound_active = true;
+    }
+}
+
+void changebound_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Changebound - Enemies get -1 to hit from >9"
+    // Condition checked separately
+    ctx.hit_modifier -= 1;
+}
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -1636,6 +1696,87 @@ const RuleHotData HitAndRunShooter_HotData{
 };
 
 // ==============================================================================
+// Category D: Defense Modifier Hot Data
+// ==============================================================================
+
+const RuleHotData Fortified_HotData{
+    RuleId::Fortified,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::EARLY,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Guardian_HotData{
+    RuleId::Guardian,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::EARLY,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData GuardianBoost_HotData{
+    RuleId::GuardianBoost,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::EARLY,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Sturdy_HotData{
+    RuleId::Sturdy,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::EARLY,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_DEFENSE)
+};
+
+const RuleHotData Knightborn_HotData{
+    RuleId::Knightborn,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0  // Wound ignore effect
+};
+
+const RuleHotData Plaguebound_HotData{
+    RuleId::Plaguebound,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0  // Wound ignore effect
+};
+
+const RuleHotData Changebound_HotData{
+    RuleId::Changebound,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::EARLY,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)
+};
+
+// ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
 
@@ -2206,6 +2347,66 @@ const RuleColdData HitAndRunShooter_ColdData{
 };
 
 // ==============================================================================
+// Category D: Defense Modifier Cold Data
+// ==============================================================================
+
+const RuleColdData Fortified_ColdData{
+    "Fortified",
+    nullptr,
+    0,
+    "Fortified: AP(-1) on all hits",
+    "All hits count as having AP(-1), to a min of AP(0)."
+};
+
+const RuleColdData Guardian_ColdData{
+    "Guardian",
+    nullptr,
+    0,
+    "Guardian: AP(-1) from >9\"",
+    "When shot/charged from over 9\" away, hits count as AP(-1)."
+};
+
+const RuleColdData GuardianBoost_ColdData{
+    "GuardianBoost",
+    nullptr,
+    0,
+    "Guardian Boost: AP(-1) always",
+    "All hits count as AP(-1), regardless of distance."
+};
+
+const RuleColdData Sturdy_ColdData{
+    "Sturdy",
+    nullptr,
+    0,
+    "Sturdy: +1 defense from >9\"",
+    "When shot/charged from over 9\" away, +1 to defense rolls."
+};
+
+const RuleColdData Knightborn_ColdData{
+    "Knightborn",
+    nullptr,
+    0,
+    "Knightborn: 6+ ignore wounds",
+    "Roll 6+ to ignore wounds (4+ vs spells)."
+};
+
+const RuleColdData Plaguebound_ColdData{
+    "Plaguebound",
+    nullptr,
+    0,
+    "Plaguebound: 6+ ignore wounds",
+    "Roll 6+ to ignore each wound."
+};
+
+const RuleColdData Changebound_ColdData{
+    "Changebound",
+    nullptr,
+    0,
+    "Changebound: -1 to hit from >9\"",
+    "Enemies shooting/charging from over 9\" away get -1 to hit."
+};
+
+// ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
 
@@ -2564,6 +2765,41 @@ const RuleEffectEntry Darkborn_Effects = EffectBuilder()
 
 const RuleEffectEntry HitAndRunShooter_Effects = EffectBuilder()
     .movement(MoveSubPhase::POST_MOVE, hit_and_run_shooter_effect)
+    .build();
+
+// ==============================================================================
+// Category D: Defense Modifier Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Fortified_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, fortified_effect)
+    .build();
+
+const RuleEffectEntry Guardian_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, guardian_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, distance_over_9_condition)
+    .build();
+
+const RuleEffectEntry GuardianBoost_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, guardian_boost_effect)
+    .build();
+
+const RuleEffectEntry Sturdy_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, sturdy_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, distance_over_9_condition)
+    .build();
+
+const RuleEffectEntry Knightborn_Effects = EffectBuilder()
+    .combat(CombatSubPhase::WOUND_ALLOCATION, knightborn_effect)
+    .build();
+
+const RuleEffectEntry Plaguebound_Effects = EffectBuilder()
+    .combat(CombatSubPhase::WOUND_ALLOCATION, plaguebound_effect)
+    .build();
+
+const RuleEffectEntry Changebound_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, changebound_effect)
+    .condition(CombatSubPhase::HIT_MODIFIERS, distance_over_9_condition)
     .build();
 
 // ==============================================================================
@@ -3204,6 +3440,15 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::Darkborn, Darkborn_HotData);
     registry.register_hot_data(RuleId::HitAndRunShooter, HitAndRunShooter_HotData);
 
+    // Category D: Defense Modifier hot data
+    registry.register_hot_data(RuleId::Fortified, Fortified_HotData);
+    registry.register_hot_data(RuleId::Guardian, Guardian_HotData);
+    registry.register_hot_data(RuleId::GuardianBoost, GuardianBoost_HotData);
+    registry.register_hot_data(RuleId::Sturdy, Sturdy_HotData);
+    registry.register_hot_data(RuleId::Knightborn, Knightborn_HotData);
+    registry.register_hot_data(RuleId::Plaguebound, Plaguebound_HotData);
+    registry.register_hot_data(RuleId::Changebound, Changebound_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -3318,6 +3563,15 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::Scurry, Scurry_ColdData);
     registry.register_cold_data(RuleId::Darkborn, Darkborn_ColdData);
     registry.register_cold_data(RuleId::HitAndRunShooter, HitAndRunShooter_ColdData);
+
+    // Category D: Defense Modifier cold data
+    registry.register_cold_data(RuleId::Fortified, Fortified_ColdData);
+    registry.register_cold_data(RuleId::Guardian, Guardian_ColdData);
+    registry.register_cold_data(RuleId::GuardianBoost, GuardianBoost_ColdData);
+    registry.register_cold_data(RuleId::Sturdy, Sturdy_ColdData);
+    registry.register_cold_data(RuleId::Knightborn, Knightborn_ColdData);
+    registry.register_cold_data(RuleId::Plaguebound, Plaguebound_ColdData);
+    registry.register_cold_data(RuleId::Changebound, Changebound_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -3436,6 +3690,15 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::Scurry, Scurry_Effects);
     registry.register_effects(RuleId::Darkborn, Darkborn_Effects);
     registry.register_effects(RuleId::HitAndRunShooter, HitAndRunShooter_Effects);
+
+    // Category D: Defense Modifier effects
+    registry.register_effects(RuleId::Fortified, Fortified_Effects);
+    registry.register_effects(RuleId::Guardian, Guardian_Effects);
+    registry.register_effects(RuleId::GuardianBoost, GuardianBoost_Effects);
+    registry.register_effects(RuleId::Sturdy, Sturdy_Effects);
+    registry.register_effects(RuleId::Knightborn, Knightborn_Effects);
+    registry.register_effects(RuleId::Plaguebound, Plaguebound_Effects);
+    registry.register_effects(RuleId::Changebound, Changebound_Effects);
 
     // =========================================================================
     // Register Movement effects

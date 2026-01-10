@@ -133,3 +133,15 @@ Ferocious Aura,Aura - Combat,No,"This model and its unit get Ferocious (extra hi
 Lacerate Aura,Aura - Combat,No,"This model and its unit get Lacerate (reroll defense 6s).",Implemented (maps to Lacerate)
 Scurry Aura,Aura - Movement,No,"This model and its unit get Scurry (+2\" Adv/Rush/Charge).",Implemented (maps to Scurry)
 Darkborn Aura,Aura - Movement,No,"This model and its unit get Darkborn (+3\" range/charge).",Implemented (maps to Darkborn)
+Fortified,Defense - AP Reduction,No,"All hits count as AP(-1), to a minimum of AP(0).",Implemented
+Guardian,Defense - AP Reduction,No,"When shot/charged from over 9\" away, hits count as AP(-1).",Implemented
+GuardianBoost,Defense - AP Reduction,No,"All hits count as AP(-1), regardless of distance.",Implemented
+Sturdy,Defense - Defense Bonus,No,"When shot/charged from over 9\" away, +1 to defense rolls.",Implemented
+Knightborn,Defense - Wound Ignore,No,"Roll 6+ to ignore each wound (4+ vs spells).",Implemented
+Plaguebound,Defense - Wound Ignore,No,"Roll 6+ to ignore each wound.",Implemented
+Changebound,Defense - Hit Modifier,No,"Enemies shooting/charging from over 9\" away get -1 to hit.",Implemented
+Fortified Aura,Aura - Defense,No,"This model and its unit get Fortified (AP(-1) on hits).",Implemented (maps to Fortified)
+Guardian Aura,Aura - Defense,No,"This model and its unit get Guardian (AP(-1) from >9\").",Implemented (maps to Guardian)
+Sturdy Aura,Aura - Defense,No,"This model and its unit get Sturdy (+1 defense from >9\").",Implemented (maps to Sturdy)
+Changebound Aura,Aura - Defense,No,"This model and its unit get Changebound (-1 to hit from >9\").",Implemented (maps to Changebound)
+Machine-Fog,Defense - Hit Modifier,No,"Same as Changebound: -1 to hit from >9\" away.",Implemented (maps to Changebound)

@@ -399,6 +399,36 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"hit & run shooter aura", RuleId::HitAndRunShooter},
         {"hit and run shooter aura", RuleId::HitAndRunShooter},
         {"hitandrunshooteraura", RuleId::HitAndRunShooter},
+
+        // === Category D: Defense Modifiers ===
+        {"fortified", RuleId::Fortified},
+        {"guardian", RuleId::Guardian},
+        {"guardian boost", RuleId::GuardianBoost},
+        {"guardianboost", RuleId::GuardianBoost},
+        {"sturdy", RuleId::Sturdy},
+        {"knightborn", RuleId::Knightborn},
+        {"plaguebound", RuleId::Plaguebound},
+        {"changebound", RuleId::Changebound},
+
+        // === Category D: Defense Modifier Auras ===
+        {"fortified aura", RuleId::Fortified},
+        {"fortifiedaura", RuleId::Fortified},
+        {"guardian aura", RuleId::Guardian},
+        {"guardianaura", RuleId::Guardian},
+        {"guardian boost aura", RuleId::GuardianBoost},
+        {"guardianboostaura", RuleId::GuardianBoost},
+        {"sturdy aura", RuleId::Sturdy},
+        {"sturdyaura", RuleId::Sturdy},
+        {"sturdy boost aura", RuleId::Sturdy},
+        {"sturdyboostaura", RuleId::Sturdy},
+        {"changebound aura", RuleId::Changebound},
+        {"changeboundaura", RuleId::Changebound},
+        {"changebound boost aura", RuleId::Changebound},
+        {"changeboundboostaura", RuleId::Changebound},
+        {"machine-fog", RuleId::Changebound},
+        {"machinefog", RuleId::Changebound},
+        {"machine-fog aura", RuleId::Changebound},
+        {"machinefogaura", RuleId::Changebound},
     };
     return map;
 }

@@ -130,6 +130,8 @@ struct CombatContextExtended {
     bool hero_present = false;           // Hero - takes wounds last
     bool ignores_negative_hit_mods = false; // Unstoppable - ignore negative modifiers
     bool moved_this_activation = false;  // Did attacker move before shooting (for Indirect)
+    bool knightborn_active = false;      // Knightborn - 6+ ignore wounds (4+ vs spells)
+    bool plaguebound_active = false;     // Plaguebound - 6+ ignore wounds
 
     // Rule values
     u8 tough_value = 0;                  // Tough(X) value
@@ -174,6 +176,8 @@ struct CombatContextExtended {
         hero_present = false;
         ignores_negative_hit_mods = false;
         moved_this_activation = false;
+        knightborn_active = false;
+        plaguebound_active = false;
         tough_value = 0;
         impact_attacks = 0;
         smash_bonus_blast = 0;
