@@ -285,6 +285,24 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"hitandrunfighteraura", RuleId::HitAndRun},
         {"thrust in melee aura", RuleId::Thrust},
         {"thrustinmeleeaura", RuleId::Thrust},
+        {"unstoppable in melee aura", RuleId::Unstoppable},
+        {"unstoppableinmeleeaura", RuleId::Unstoppable},
+        {"unstoppable when shooting aura", RuleId::Unstoppable},
+        {"unstoppablewhenshootingaura", RuleId::Unstoppable},
+
+        // Movement auras
+        {"rapid charge aura", RuleId::RapidCharge},
+        {"rapidchargeaura", RuleId::RapidCharge},
+        {"fast aura", RuleId::Fast},
+        {"fastaura", RuleId::Fast},
+
+        // Cover/Indirect auras
+        {"ignores cover aura", RuleId::Indirect},
+        {"ignorescoveraura", RuleId::Indirect},
+        {"ignores cover when shooting aura", RuleId::Indirect},
+        {"ignorescoverwhenshootingaura", RuleId::Indirect},
+        {"indirect when shooting aura", RuleId::Indirect},
+        {"indirectwhenshootingaura", RuleId::Indirect},
 
         // Buff variants (same effect as auras)
         {"stealth buff", RuleId::Stealth},
