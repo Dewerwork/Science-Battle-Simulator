@@ -188,8 +188,10 @@ enum class RuleId : u16 {
     Scout,          // Scout - Deploy 12" ahead (57)
     Ambush,         // Ambush - Can deploy anywhere >9" from enemy (58)
 
-    // Reserved slots for future hot rules (59-63)
-    _Reserved59,
+    // Movement restriction rules
+    Immobile,       // Immobile - Can only use Hold actions (59)
+
+    // Reserved slots for future hot rules (60-63)
     _Reserved60,
     _Reserved61,
     _Reserved62,

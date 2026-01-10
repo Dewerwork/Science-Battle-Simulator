@@ -152,6 +152,12 @@ struct UnifiedCombatContext {
 
     // VersatileAttack state
     bool versatile_ap_chosen = false;  // True = +1 AP, False = +1 hit (already applied)
+
+    // Movement state (for Indirect penalty)
+    bool moved_this_activation = false;  // Did unit move before shooting
+
+    // Unstoppable state
+    bool ignores_negative_hit_mods = false;  // Ignore negative hit modifiers
 };
 
 // ==============================================================================
@@ -911,7 +917,8 @@ private:
         CombatType combat_type,
         u8 distance,
         bool is_charge,
-        u8 models_attacking
+        u8 models_attacking,
+        bool moved = false  // Did unit move before attacking (for Indirect penalty)
     ) {
         WeaponAttackResult result;
 
@@ -924,6 +931,7 @@ private:
         ctx.combat_type = combat_type;
         ctx.distance = distance;
         ctx.is_charge = is_charge;
+        ctx.moved_this_activation = moved;  // Track movement for Indirect penalty
         ctx.quality_used = attacker.quality();
         ctx.base_ap = weapon.ap;
         ctx.effective_ap = weapon.ap;
@@ -947,6 +955,22 @@ private:
         // Phase 2: HIT_MODIFIERS
         // ============================================
         apply_all_phase_effects(CombatSubPhase::HIT_MODIFIERS, ctx);
+
+        // Indirect: -1 to hit when shooting after moving
+        if (combat_type == CombatType::SHOOTING && ctx.moved_this_activation &&
+            weapon.has_rule(RuleId::Indirect)) {
+            ctx.hit_modifier -= 1;
+            if (logger_) logger_->on_hit_modifier("Indirect", -1, "moved_before_shooting");
+        }
+
+        // Unstoppable: Ignore all negative modifiers to this weapon
+        if (weapon.has_rule(RuleId::Unstoppable)) {
+            ctx.ignores_negative_hit_mods = true;
+            if (ctx.hit_modifier < 0) {
+                if (logger_) logger_->on_rule_triggered("Unstoppable", "ignoring_negative_hit_modifiers", static_cast<u32>(-ctx.hit_modifier));
+                ctx.hit_modifier = 0;
+            }
+        }
 
         // ============================================
         // Phase 3: ROLL_HITS
@@ -1597,7 +1621,7 @@ public:
     // once and apply automatically. They can replace the manual methods above.
 
     // Resolve shooting using phase-based effect dispatch
-    CombatResult resolve_shooting_phased(UnitView attacker, UnitView defender, i8 distance, bool /*moved*/) {
+    CombatResult resolve_shooting_phased(UnitView attacker, UnitView defender, i8 distance, bool moved) {
         CombatResult result;
 
         u8 models_shooting = attacker.alive_count();
@@ -1642,7 +1666,8 @@ public:
                 attacker, defender, w, i,
                 CombatType::SHOOTING, static_cast<u8>(distance),
                 false,  // not charging
-                models_with_weapon
+                models_with_weapon,
+                moved   // did unit move before shooting
             );
 
             result.wounds_dealt += weapon_result.wounds_dealt;
