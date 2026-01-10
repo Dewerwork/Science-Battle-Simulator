@@ -93,3 +93,43 @@ Ignores Cover Aura,Aura - Combat,No,"This model and its unit ignore cover when s
 Ignores Cover when Shooting Aura,Aura - Combat,No,"This model and its unit ignore cover when shooting.",Implemented (maps to Indirect)
 Indirect when Shooting Aura,Aura - Combat,No,"This model and its unit get Indirect when shooting.",Implemented (maps to Indirect)
 Precision Shooter Aura,Aura - Combat,No,"This model and its unit get +1 to hit rolls when shooting.",Implemented (maps to GoodShot)
+Evasive,Defense - Hit Modifier,No,"Enemies always get -1 to hit against this unit.",Implemented
+Steadfast,Morale,No,"At the start of each round, roll 4+ to stop being Shaken.",Implemented
+Swift,Movement,No,"Ignores the Slow rule.",Implemented
+Ferocious,Combat - Hit Bonus,No,"Unmodified 6s to hit generate an extra hit (unit rule).",Implemented
+Lacerate,Combat - Defense,No,"Defender must reroll successful defense rolls of 6.",Implemented
+Mischievous,Combat - Defense,No,"Defender must reroll successful defense rolls of 6.",Implemented
+Scrapper,Combat - Defense,No,"Defender must reroll successful defense rolls of 6.",Implemented
+Bash,Combat - Conditional,No,"Gains Blast(3) vs targets with Defense 5+ or 6+.",Implemented
+Thrash,Combat - Conditional,No,"Gains Blast(3) vs targets with Defense 5+ or 6+.",Implemented
+Crack,Combat - Conditional,No,"Unmodified 6s to hit gain AP(+2).",Implemented
+Destructive,Combat - Conditional,No,"Unmodified 6s to hit gain AP(+4).",Implemented
+Fracture,Combat - Conditional,No,"Unmodified 6s to hit gain AP(+2). Ignores cover.",Implemented
+Break,Combat - Conditional,No,"Unmodified 6s to hit gain AP(+2). Bypasses regeneration.",Implemented
+Slash,Combat - Conditional,No,"Unmodified 6s to hit generate an extra hit. Ignores cover.",Implemented
+Butcher,Combat - Conditional,No,"Unmodified 6s to hit generate an extra hit. Bypasses regeneration.",Implemented
+Slam,Combat - Conditional,No,"Unmodified defense roll of 1 causes extra wound. Ignores cover.",Implemented
+Quake,Combat - Conditional,No,"Unmodified defense roll of 1 causes extra wound. Bypasses regeneration.",Implemented
+Tear,Combat - Conditional,No,"Gains AP(+4) against targets with Tough(3-9).",Implemented
+Scratch,Combat - Conditional,No,"Gains AP(+2) against targets with Tough(3-9).",Implemented
+Puncture,Combat - Conditional,No,"Gains AP(+4) vs Tough(3-9). Bypasses regeneration.",Implemented
+Shatter,Combat - Conditional,No,"Gains AP(+2) vs Tough(3-9). Bypasses regeneration.",Implemented
+Demolish,Combat - Conditional,No,"Gains AP(+2) vs Tough(3-9). Ignores cover.",Implemented
+Impale,Combat - Conditional,No,"Gains Deadly(+3) against targets with Tough(3-9).",Implemented
+Skewer,Combat - Conditional,No,"Gains Deadly(+3) vs Tough(3-9). Ignores cover.",Implemented
+Reap,Combat - Conditional,No,"Gains AP(+2) against targets with Defense 2-3+.",Implemented
+Disintegrate,Combat - Conditional,No,"Gains AP(+2) vs Defense 2-3+. Bypasses regeneration.",Implemented
+Decimate,Combat - Conditional,No,"Gains AP(+2) vs Defense 2-3+. Ignores cover.",Implemented
+Fragment,Combat - Conditional,No,"Gains AP(+1) vs Defense 2-4+. Ignores cover.",Implemented
+Wreck,Combat - Conditional,No,"Force reroll of defense 6s. Ignores cover.",Implemented
+Lustbound,Movement,No,"Gains +1\" to Advance and +3\" to Rush/Charge.",Implemented
+Highborn,Movement,No,"Gains +2\" to Advance and +2\" to Rush/Charge.",Implemented
+Scurry,Movement,No,"Gains +2\" to Advance and +2\" to Rush/Charge.",Implemented
+Darkborn,Movement,No,"Gains +3\" to weapon range and +3\" to Charge.",Implemented
+HitAndRunShooter,Movement,No,"Can move 3\" after shooting.",Implemented
+Evasive Aura,Aura - Defense,No,"This model and its unit get Evasive (-1 to be hit always).",Implemented (maps to Evasive)
+Steadfast Aura,Aura - Morale,No,"This model and its unit get Steadfast (4+ to rally).",Implemented (maps to Steadfast)
+Ferocious Aura,Aura - Combat,No,"This model and its unit get Ferocious (extra hit on 6s).",Implemented (maps to Ferocious)
+Lacerate Aura,Aura - Combat,No,"This model and its unit get Lacerate (reroll defense 6s).",Implemented (maps to Lacerate)
+Scurry Aura,Aura - Movement,No,"This model and its unit get Scurry (+2\" Adv/Rush/Charge).",Implemented (maps to Scurry)
+Darkborn Aura,Aura - Movement,No,"This model and its unit get Darkborn (+3\" range/charge).",Implemented (maps to Darkborn)

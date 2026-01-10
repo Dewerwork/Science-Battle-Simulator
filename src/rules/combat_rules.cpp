@@ -423,6 +423,283 @@ bool predator_fighter_condition(const CombatContextCore& ctx) {
     return ctx.combat_type == CombatType::MELEE;
 }
 
+// ==============================================================================
+// Category A: Simple Modifier Effect Implementations
+// ==============================================================================
+
+void evasive_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Evasive - enemies always get -1 to hit (unlike Stealth which is >9" only)
+    ctx.hit_modifier -= 1;
+}
+
+void steadfast_morale_effect(EndRoundContext& /*ctx*/, Unit& unit, u8 /*value*/) {
+    // Steadfast - 4+ to stop being Shaken at round start (same as Battleborn)
+    (void)unit;  // Placeholder - implemented in morale system
+}
+
+void swift_effect(MovementContext& ctx, u8 /*value*/) {
+    // Swift - ignore Slow rule (cancels the -2" penalty)
+    // If Slow is also present, this nullifies its effect
+    ctx.swift_active = true;
+}
+
+void ferocious_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Ferocious - extra hit on natural 6s (unit rule version of Surge)
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+    }
+}
+
+void lacerate_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Lacerate - force defender to reroll defense 6s (like Poison)
+    ctx.set_force_reroll(true);
+}
+
+void mischievous_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Mischievous - force defender to reroll defense 6s (like Poison)
+    ctx.set_force_reroll(true);
+}
+
+void scrapper_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Scrapper - force defender to reroll defense 6s (like Poison)
+    ctx.set_force_reroll(true);
+}
+
+// ==============================================================================
+// Category B: Weapon Conditional Effect Implementations
+// ==============================================================================
+
+void bash_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Bash - +Blast(3) vs Defense 5+/6+
+    if (ext && ctx.defender && ctx.defender->defense >= 5) {
+        ext->smash_bonus_blast = 3;  // Reuse smash_bonus_blast for conditional blast
+    }
+}
+
+void thrash_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Thrash - +Blast(3) vs Defense 5+/6+ (same as Bash)
+    if (ext && ctx.defender && ctx.defender->defense >= 5) {
+        ext->smash_bonus_blast = 3;
+    }
+}
+
+void crack_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Crack - AP(+2) on natural 6s to hit
+    if (ext && ctx.natural_sixes > 0) {
+        ext->crack_ap_bonus = 2;
+    }
+}
+
+void destructive_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Destructive - AP(+4) on natural 6s to hit
+    if (ext && ctx.natural_sixes > 0) {
+        ext->crack_ap_bonus = 4;
+    }
+}
+
+void fracture_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Fracture - AP(+2) on natural 6s to hit + ignores cover
+    if (ext) {
+        ext->ignores_cover = true;
+        if (ctx.natural_sixes > 0) {
+            ext->crack_ap_bonus = 2;
+        }
+    }
+}
+
+void break_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Break - AP(+2) on natural 6s to hit + ignores regen
+    ctx.set_bypass_regen(true);
+    if (ext && ctx.natural_sixes > 0) {
+        ext->crack_ap_bonus = 2;
+    }
+}
+
+void slash_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Slash - Extra hit on 6s + ignores cover
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+        ext->ignores_cover = true;
+    }
+}
+
+void butcher_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Butcher - Extra hit on 6s + ignores regen
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    ctx.set_bypass_regen(true);
+    if (ext) {
+        ext->bonus_hits += bonus;
+    }
+}
+
+void slam_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Slam - Extra wound on defense 1s + ignores cover
+    if (ext) {
+        ext->shred_active = true;  // Reuse shred mechanism
+        ext->ignores_cover = true;
+    }
+}
+
+void quake_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Quake - Extra wound on defense 1s + ignores regen
+    ctx.set_bypass_regen(true);
+    if (ext) {
+        ext->shred_active = true;  // Reuse shred mechanism
+    }
+}
+
+bool tough_target_condition(const CombatContextCore& ctx) {
+    // Condition for rules that affect Tough(3-9) targets
+    if (!ctx.defender) return false;
+    u8 tough_val = ctx.defender->get_rule_value(RuleId::Tough);
+    return tough_val >= 3 && tough_val <= 9;
+}
+
+void tear_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Tear - AP(+4) vs Tough(3-9)
+    ctx.ap_modifier += 4;
+}
+
+void scratch_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Scratch - AP(+2) vs Tough(3-9)
+    ctx.ap_modifier += 2;
+}
+
+void puncture_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Puncture - AP(+4) vs Tough(3-9) + ignores regen
+    ctx.ap_modifier += 4;
+    ctx.set_bypass_regen(true);
+}
+
+void shatter_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Shatter - AP(+2) vs Tough(3-9) + ignores regen
+    ctx.ap_modifier += 2;
+    ctx.set_bypass_regen(true);
+}
+
+void demolish_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Demolish - AP(+2) vs Tough(3-9) + ignores cover
+    ctx.ap_modifier += 2;
+    if (ext) {
+        ext->ignores_cover = true;
+    }
+}
+
+void impale_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Impale - Deadly(+3) vs Tough(3-9)
+    if (ext) {
+        ext->wound_multiplier += 3;
+    }
+}
+
+void skewer_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Skewer - Deadly(+3) vs Tough(3-9) + ignores cover
+    if (ext) {
+        ext->wound_multiplier += 3;
+        ext->ignores_cover = true;
+    }
+}
+
+bool light_armor_condition(const CombatContextCore& ctx) {
+    // Condition for rules that affect Defense 2-3+ (light armor)
+    if (!ctx.defender) return false;
+    return ctx.defender->defense >= 2 && ctx.defender->defense <= 3;
+}
+
+bool light_medium_armor_condition(const CombatContextCore& ctx) {
+    // Condition for rules that affect Defense 2-4+ (light-medium armor)
+    if (!ctx.defender) return false;
+    return ctx.defender->defense >= 2 && ctx.defender->defense <= 4;
+}
+
+void reap_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Reap - AP(+2) vs Defense 2-3+
+    ctx.ap_modifier += 2;
+}
+
+void disintegrate_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Disintegrate - AP(+2) vs Defense 2-3+ + ignores regen
+    ctx.ap_modifier += 2;
+    ctx.set_bypass_regen(true);
+}
+
+void decimate_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Decimate - AP(+2) vs Defense 2-3+ + ignores cover
+    ctx.ap_modifier += 2;
+    if (ext) {
+        ext->ignores_cover = true;
+    }
+}
+
+void fragment_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Fragment - AP(+1) vs Defense 2-4+ + ignores cover
+    ctx.ap_modifier += 1;
+    if (ext) {
+        ext->ignores_cover = true;
+    }
+}
+
+void wreck_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Wreck - Re-roll defense 6s + ignores cover
+    ctx.set_force_reroll(true);
+    if (ext) {
+        ext->ignores_cover = true;
+    }
+}
+
+// ==============================================================================
+// Category C: Movement Bonus Effect Implementations
+// ==============================================================================
+
+void lustbound_effect(MovementContext& ctx, u8 /*value*/) {
+    // Lustbound - +1" Advance, +3" Rush/Charge
+    if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
+        ctx.distance_modifier += 1;
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH ||
+               ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.distance_modifier += 3;
+    }
+}
+
+void highborn_effect(MovementContext& ctx, u8 /*value*/) {
+    // Highborn - +2" Advance, +2" Rush/Charge
+    if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
+        ctx.distance_modifier += 2;
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH ||
+               ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.distance_modifier += 2;
+    }
+}
+
+void scurry_effect(MovementContext& ctx, u8 /*value*/) {
+    // Scurry - +2" Advance, +2" Rush/Charge (same as Highborn)
+    if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
+        ctx.distance_modifier += 2;
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH ||
+               ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.distance_modifier += 2;
+    }
+}
+
+void darkborn_effect(MovementContext& ctx, u8 /*value*/) {
+    // Darkborn - +3" range, +3" Charge
+    // Range bonus handled elsewhere, charge bonus here
+    if (ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.distance_modifier += 3;
+    }
+}
+
+void hit_and_run_shooter_effect(MovementContext& ctx, u8 /*value*/) {
+    // Hit & Run Shooter - Move 3" after shooting
+    ctx.hit_and_run_pending = true;
+    ctx.hit_and_run_distance = 3;
+}
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -959,6 +1236,406 @@ const RuleHotData PiercingAssault_HotData{
 };
 
 // ==============================================================================
+// Category A: Simple Modifier Hot Data
+// ==============================================================================
+
+const RuleHotData Evasive_HotData{
+    RuleId::Evasive,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::EARLY,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)
+};
+
+const RuleHotData Steadfast_HotData{
+    RuleId::Steadfast,
+    GamePhase::END_ROUND,
+    static_cast<u8>(EndRoundSubPhase::MORALE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::FIRST,
+    static_cast<TraitMask>(RuleTrait::AFFECTS_MORALE)
+};
+
+const RuleHotData Swift_HotData{
+    RuleId::Swift,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CALCULATE_DISTANCE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::FIRST,
+    0
+};
+
+const RuleHotData Ferocious_HotData{
+    RuleId::Ferocious,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_BONUSES),
+    CombatType::BOTH,
+    Target::ATTACKER,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)
+};
+
+const RuleHotData Lacerate_HotData{
+    RuleId::Lacerate,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL)
+};
+
+const RuleHotData Mischievous_HotData{
+    RuleId::Mischievous,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::ATTACKER,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL)
+};
+
+const RuleHotData Scrapper_HotData{
+    RuleId::Scrapper,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::ATTACKER,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL)
+};
+
+// ==============================================================================
+// Category B: Weapon Conditional Hot Data
+// ==============================================================================
+
+const RuleHotData Bash_HotData{
+    RuleId::Bash,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MULTIPLIES_HITS)
+};
+
+const RuleHotData Thrash_HotData{
+    RuleId::Thrash,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MULTIPLIES_HITS)
+};
+
+const RuleHotData Crack_HotData{
+    RuleId::Crack,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_SEPARATION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Destructive_HotData{
+    RuleId::Destructive,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_SEPARATION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Fracture_HotData{
+    RuleId::Fracture,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_SEPARATION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP) |
+    static_cast<TraitMask>(RuleTrait::IGNORES_COVER)
+};
+
+const RuleHotData Break_HotData{
+    RuleId::Break,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_SEPARATION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP) |
+    static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)
+};
+
+const RuleHotData Slash_HotData{
+    RuleId::Slash,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_BONUSES),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS) |
+    static_cast<TraitMask>(RuleTrait::IGNORES_COVER)
+};
+
+const RuleHotData Butcher_HotData{
+    RuleId::Butcher,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_BONUSES),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS) |
+    static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)
+};
+
+const RuleHotData Slam_HotData{
+    RuleId::Slam,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS) |
+    static_cast<TraitMask>(RuleTrait::IGNORES_COVER)
+};
+
+const RuleHotData Quake_HotData{
+    RuleId::Quake,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS) |
+    static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)
+};
+
+const RuleHotData Tear_HotData{
+    RuleId::Tear,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Scratch_HotData{
+    RuleId::Scratch,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Puncture_HotData{
+    RuleId::Puncture,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP) |
+    static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)
+};
+
+const RuleHotData Shatter_HotData{
+    RuleId::Shatter,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP) |
+    static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)
+};
+
+const RuleHotData Demolish_HotData{
+    RuleId::Demolish,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP) |
+    static_cast<TraitMask>(RuleTrait::IGNORES_COVER)
+};
+
+const RuleHotData Impale_HotData{
+    RuleId::Impale,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MULTIPLIES_WOUNDS)
+};
+
+const RuleHotData Skewer_HotData{
+    RuleId::Skewer,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MULTIPLIES_WOUNDS) |
+    static_cast<TraitMask>(RuleTrait::IGNORES_COVER)
+};
+
+const RuleHotData Reap_HotData{
+    RuleId::Reap,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Disintegrate_HotData{
+    RuleId::Disintegrate,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP) |
+    static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)
+};
+
+const RuleHotData Decimate_HotData{
+    RuleId::Decimate,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP) |
+    static_cast<TraitMask>(RuleTrait::IGNORES_COVER)
+};
+
+const RuleHotData Fragment_HotData{
+    RuleId::Fragment,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::LATE,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP) |
+    static_cast<TraitMask>(RuleTrait::IGNORES_COVER)
+};
+
+const RuleHotData Wreck_HotData{
+    RuleId::Wreck,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL) |
+    static_cast<TraitMask>(RuleTrait::IGNORES_COVER)
+};
+
+// ==============================================================================
+// Category C: Movement Bonus Hot Data
+// ==============================================================================
+
+const RuleHotData Lustbound_HotData{
+    RuleId::Lustbound,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CALCULATE_DISTANCE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData Highborn_HotData{
+    RuleId::Highborn,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CALCULATE_DISTANCE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData Scurry_HotData{
+    RuleId::Scurry,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CALCULATE_DISTANCE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData Darkborn_HotData{
+    RuleId::Darkborn,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::CHARGE_RESOLVE),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    0
+};
+
+const RuleHotData HitAndRunShooter_HotData{
+    RuleId::HitAndRunShooter,
+    GamePhase::MOVEMENT,
+    static_cast<u8>(MoveSubPhase::POST_MOVE),
+    CombatType::SHOOTING,
+    Target::SELF,
+    Trigger::AFTER_COMBAT,
+    RulePriority::NORMAL,
+    0
+};
+
+// ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
 
@@ -1245,6 +1922,290 @@ const RuleColdData Rupture_ColdData{
 };
 
 // ==============================================================================
+// Category A: Simple Modifier Cold Data
+// ==============================================================================
+
+const RuleColdData Evasive_ColdData{
+    "Evasive",
+    nullptr,
+    0,
+    "Evasive: always -1 to hit",
+    "Enemies attacking this unit always get -1 to hit."
+};
+
+const RuleColdData Steadfast_ColdData{
+    "Steadfast",
+    nullptr,
+    0,
+    "Steadfast: rally on 4+",
+    "At the start of each round, roll 4+ to stop being Shaken."
+};
+
+const RuleColdData Swift_ColdData{
+    "Swift",
+    nullptr,
+    0,
+    "Swift: ignore Slow",
+    "This unit ignores the Slow rule."
+};
+
+const RuleColdData Ferocious_ColdData{
+    "Ferocious",
+    nullptr,
+    0,
+    "Ferocious: extra hit on 6s",
+    "Unmodified 6s to hit generate an extra hit."
+};
+
+const RuleColdData Lacerate_ColdData{
+    "Lacerate",
+    nullptr,
+    0,
+    "Lacerate: reroll defense 6s",
+    "Defender must reroll successful defense rolls of 6."
+};
+
+const RuleColdData Mischievous_ColdData{
+    "Mischievous",
+    nullptr,
+    0,
+    "Mischievous: reroll defense 6s",
+    "Defender must reroll successful defense rolls of 6."
+};
+
+const RuleColdData Scrapper_ColdData{
+    "Scrapper",
+    nullptr,
+    0,
+    "Scrapper: reroll defense 6s",
+    "Defender must reroll successful defense rolls of 6."
+};
+
+// ==============================================================================
+// Category B: Weapon Conditional Cold Data
+// ==============================================================================
+
+const RuleColdData Bash_ColdData{
+    "Bash",
+    nullptr,
+    0,
+    "Bash: +Blast(3) vs heavy armor",
+    "Gains Blast(3) vs targets with Defense 5+ or 6+."
+};
+
+const RuleColdData Thrash_ColdData{
+    "Thrash",
+    nullptr,
+    0,
+    "Thrash: +Blast(3) vs heavy armor",
+    "Gains Blast(3) vs targets with Defense 5+ or 6+."
+};
+
+const RuleColdData Crack_ColdData{
+    "Crack",
+    nullptr,
+    0,
+    "Crack: AP(+2) on 6s",
+    "Unmodified 6s to hit gain AP(+2)."
+};
+
+const RuleColdData Destructive_ColdData{
+    "Destructive",
+    nullptr,
+    0,
+    "Destructive: AP(+4) on 6s",
+    "Unmodified 6s to hit gain AP(+4)."
+};
+
+const RuleColdData Fracture_ColdData{
+    "Fracture",
+    nullptr,
+    0,
+    "Fracture: AP(+2) on 6s, ignores cover",
+    "Unmodified 6s to hit gain AP(+2). Ignores cover."
+};
+
+const RuleColdData Break_ColdData{
+    "Break",
+    nullptr,
+    0,
+    "Break: AP(+2) on 6s, ignores regen",
+    "Unmodified 6s to hit gain AP(+2). Bypasses regeneration."
+};
+
+const RuleColdData Slash_ColdData{
+    "Slash",
+    nullptr,
+    0,
+    "Slash: extra hit on 6s, ignores cover",
+    "Unmodified 6s to hit generate an extra hit. Ignores cover."
+};
+
+const RuleColdData Butcher_ColdData{
+    "Butcher",
+    nullptr,
+    0,
+    "Butcher: extra hit on 6s, ignores regen",
+    "Unmodified 6s to hit generate an extra hit. Bypasses regeneration."
+};
+
+const RuleColdData Slam_ColdData{
+    "Slam",
+    nullptr,
+    0,
+    "Slam: extra wound on 1s, ignores cover",
+    "Unmodified defense roll of 1 causes extra wound. Ignores cover."
+};
+
+const RuleColdData Quake_ColdData{
+    "Quake",
+    nullptr,
+    0,
+    "Quake: extra wound on 1s, ignores regen",
+    "Unmodified defense roll of 1 causes extra wound. Bypasses regeneration."
+};
+
+const RuleColdData Tear_ColdData{
+    "Tear",
+    nullptr,
+    0,
+    "Tear: AP(+4) vs Tough(3-9)",
+    "Gains AP(+4) against targets with Tough(3-9)."
+};
+
+const RuleColdData Scratch_ColdData{
+    "Scratch",
+    nullptr,
+    0,
+    "Scratch: AP(+2) vs Tough(3-9)",
+    "Gains AP(+2) against targets with Tough(3-9)."
+};
+
+const RuleColdData Puncture_ColdData{
+    "Puncture",
+    nullptr,
+    0,
+    "Puncture: AP(+4) vs Tough, ignores regen",
+    "Gains AP(+4) vs Tough(3-9). Bypasses regeneration."
+};
+
+const RuleColdData Shatter_ColdData{
+    "Shatter",
+    nullptr,
+    0,
+    "Shatter: AP(+2) vs Tough, ignores regen",
+    "Gains AP(+2) vs Tough(3-9). Bypasses regeneration."
+};
+
+const RuleColdData Demolish_ColdData{
+    "Demolish",
+    nullptr,
+    0,
+    "Demolish: AP(+2) vs Tough, ignores cover",
+    "Gains AP(+2) vs Tough(3-9). Ignores cover."
+};
+
+const RuleColdData Impale_ColdData{
+    "Impale",
+    nullptr,
+    0,
+    "Impale: Deadly(+3) vs Tough(3-9)",
+    "Gains Deadly(+3) against targets with Tough(3-9)."
+};
+
+const RuleColdData Skewer_ColdData{
+    "Skewer",
+    nullptr,
+    0,
+    "Skewer: Deadly(+3) vs Tough, ignores cover",
+    "Gains Deadly(+3) vs Tough(3-9). Ignores cover."
+};
+
+const RuleColdData Reap_ColdData{
+    "Reap",
+    nullptr,
+    0,
+    "Reap: AP(+2) vs light armor",
+    "Gains AP(+2) against targets with Defense 2-3+."
+};
+
+const RuleColdData Disintegrate_ColdData{
+    "Disintegrate",
+    nullptr,
+    0,
+    "Disintegrate: AP(+2) vs light, ignores regen",
+    "Gains AP(+2) vs Defense 2-3+. Bypasses regeneration."
+};
+
+const RuleColdData Decimate_ColdData{
+    "Decimate",
+    nullptr,
+    0,
+    "Decimate: AP(+2) vs light, ignores cover",
+    "Gains AP(+2) vs Defense 2-3+. Ignores cover."
+};
+
+const RuleColdData Fragment_ColdData{
+    "Fragment",
+    nullptr,
+    0,
+    "Fragment: AP(+1) vs light/medium, ignores cover",
+    "Gains AP(+1) vs Defense 2-4+. Ignores cover."
+};
+
+const RuleColdData Wreck_ColdData{
+    "Wreck",
+    nullptr,
+    0,
+    "Wreck: reroll 6s, ignores cover",
+    "Force reroll of defense 6s. Ignores cover."
+};
+
+// ==============================================================================
+// Category C: Movement Bonus Cold Data
+// ==============================================================================
+
+const RuleColdData Lustbound_ColdData{
+    "Lustbound",
+    nullptr,
+    0,
+    "Lustbound: +1\" Adv, +3\" Rush/Charge",
+    "Gains +1\" to Advance and +3\" to Rush/Charge."
+};
+
+const RuleColdData Highborn_ColdData{
+    "Highborn",
+    nullptr,
+    0,
+    "Highborn: +2\" Adv, +2\" Rush/Charge",
+    "Gains +2\" to Advance and +2\" to Rush/Charge."
+};
+
+const RuleColdData Scurry_ColdData{
+    "Scurry",
+    nullptr,
+    0,
+    "Scurry: +2\" Adv, +2\" Rush/Charge",
+    "Gains +2\" to Advance and +2\" to Rush/Charge."
+};
+
+const RuleColdData Darkborn_ColdData{
+    "Darkborn",
+    nullptr,
+    0,
+    "Darkborn: +3\" range, +3\" Charge",
+    "Gains +3\" to weapon range and +3\" to Charge."
+};
+
+const RuleColdData HitAndRunShooter_ColdData{
+    "HitAndRunShooter",
+    nullptr,
+    0,
+    "Hit & Run Shooter: move 3\" after shooting",
+    "Can move 3\" after shooting."
+};
+
+// ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
 
@@ -1444,6 +2405,165 @@ const RuleEffectEntry PiercingAssault_Effects = EffectBuilder()
 const RuleEffectEntry Thrust_AP_Effects = EffectBuilder()
     .combat(CombatSubPhase::DEFENSE_RESOLUTION, thrust_ap_effect)
     .condition(CombatSubPhase::DEFENSE_RESOLUTION, thrust_condition)
+    .build();
+
+// ==============================================================================
+// Category A: Simple Modifier Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Evasive_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, evasive_effect)
+    .build();
+
+const RuleEffectEntry Steadfast_Effects = EffectBuilder()
+    .endround(EndRoundSubPhase::MORALE, steadfast_morale_effect)
+    .build();
+
+const RuleEffectEntry Swift_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CALCULATE_DISTANCE, swift_effect)
+    .build();
+
+const RuleEffectEntry Ferocious_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, ferocious_effect)
+    .build();
+
+const RuleEffectEntry Lacerate_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, lacerate_effect)
+    .build();
+
+const RuleEffectEntry Mischievous_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, mischievous_effect)
+    .build();
+
+const RuleEffectEntry Scrapper_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, scrapper_effect)
+    .build();
+
+// ==============================================================================
+// Category B: Weapon Conditional Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Bash_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, bash_effect)
+    .build();
+
+const RuleEffectEntry Thrash_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, thrash_effect)
+    .build();
+
+const RuleEffectEntry Crack_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_SEPARATION, crack_effect)
+    .build();
+
+const RuleEffectEntry Destructive_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_SEPARATION, destructive_effect)
+    .build();
+
+const RuleEffectEntry Fracture_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_SEPARATION, fracture_effect)
+    .build();
+
+const RuleEffectEntry Break_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_SEPARATION, break_effect)
+    .build();
+
+const RuleEffectEntry Slash_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, slash_effect)
+    .build();
+
+const RuleEffectEntry Butcher_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, butcher_effect)
+    .build();
+
+const RuleEffectEntry Slam_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, slam_effect)
+    .build();
+
+const RuleEffectEntry Quake_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, quake_effect)
+    .build();
+
+const RuleEffectEntry Tear_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, tear_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, tough_target_condition)
+    .build();
+
+const RuleEffectEntry Scratch_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, scratch_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, tough_target_condition)
+    .build();
+
+const RuleEffectEntry Puncture_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, puncture_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, tough_target_condition)
+    .build();
+
+const RuleEffectEntry Shatter_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, shatter_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, tough_target_condition)
+    .build();
+
+const RuleEffectEntry Demolish_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, demolish_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, tough_target_condition)
+    .build();
+
+const RuleEffectEntry Impale_Effects = EffectBuilder()
+    .combat(CombatSubPhase::WOUND_ALLOCATION, impale_effect)
+    .condition(CombatSubPhase::WOUND_ALLOCATION, tough_target_condition)
+    .build();
+
+const RuleEffectEntry Skewer_Effects = EffectBuilder()
+    .combat(CombatSubPhase::WOUND_ALLOCATION, skewer_effect)
+    .condition(CombatSubPhase::WOUND_ALLOCATION, tough_target_condition)
+    .build();
+
+const RuleEffectEntry Reap_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, reap_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, light_armor_condition)
+    .build();
+
+const RuleEffectEntry Disintegrate_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, disintegrate_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, light_armor_condition)
+    .build();
+
+const RuleEffectEntry Decimate_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, decimate_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, light_armor_condition)
+    .build();
+
+const RuleEffectEntry Fragment_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, fragment_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, light_medium_armor_condition)
+    .build();
+
+const RuleEffectEntry Wreck_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, wreck_effect)
+    .build();
+
+// ==============================================================================
+// Category C: Movement Bonus Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Lustbound_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CALCULATE_DISTANCE, lustbound_effect)
+    .build();
+
+const RuleEffectEntry Highborn_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CALCULATE_DISTANCE, highborn_effect)
+    .build();
+
+const RuleEffectEntry Scurry_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CALCULATE_DISTANCE, scurry_effect)
+    .build();
+
+const RuleEffectEntry Darkborn_Effects = EffectBuilder()
+    .movement(MoveSubPhase::CHARGE_RESOLVE, darkborn_effect)
+    .build();
+
+const RuleEffectEntry HitAndRunShooter_Effects = EffectBuilder()
+    .movement(MoveSubPhase::POST_MOVE, hit_and_run_shooter_effect)
     .build();
 
 // ==============================================================================
@@ -2044,6 +3164,46 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::Unstoppable, Unstoppable_HotData);
     registry.register_hot_data(RuleId::PiercingAssault, PiercingAssault_HotData);
 
+    // Category A: Simple Modifier hot data
+    registry.register_hot_data(RuleId::Evasive, Evasive_HotData);
+    registry.register_hot_data(RuleId::Steadfast, Steadfast_HotData);
+    registry.register_hot_data(RuleId::Swift, Swift_HotData);
+    registry.register_hot_data(RuleId::Ferocious, Ferocious_HotData);
+    registry.register_hot_data(RuleId::Lacerate, Lacerate_HotData);
+    registry.register_hot_data(RuleId::Mischievous, Mischievous_HotData);
+    registry.register_hot_data(RuleId::Scrapper, Scrapper_HotData);
+
+    // Category B: Weapon Conditional hot data
+    registry.register_hot_data(RuleId::Bash, Bash_HotData);
+    registry.register_hot_data(RuleId::Thrash, Thrash_HotData);
+    registry.register_hot_data(RuleId::Crack, Crack_HotData);
+    registry.register_hot_data(RuleId::Destructive, Destructive_HotData);
+    registry.register_hot_data(RuleId::Fracture, Fracture_HotData);
+    registry.register_hot_data(RuleId::Break, Break_HotData);
+    registry.register_hot_data(RuleId::Slash, Slash_HotData);
+    registry.register_hot_data(RuleId::Butcher, Butcher_HotData);
+    registry.register_hot_data(RuleId::Slam, Slam_HotData);
+    registry.register_hot_data(RuleId::Quake, Quake_HotData);
+    registry.register_hot_data(RuleId::Tear, Tear_HotData);
+    registry.register_hot_data(RuleId::Scratch, Scratch_HotData);
+    registry.register_hot_data(RuleId::Puncture, Puncture_HotData);
+    registry.register_hot_data(RuleId::Shatter, Shatter_HotData);
+    registry.register_hot_data(RuleId::Demolish, Demolish_HotData);
+    registry.register_hot_data(RuleId::Impale, Impale_HotData);
+    registry.register_hot_data(RuleId::Skewer, Skewer_HotData);
+    registry.register_hot_data(RuleId::Reap, Reap_HotData);
+    registry.register_hot_data(RuleId::Disintegrate, Disintegrate_HotData);
+    registry.register_hot_data(RuleId::Decimate, Decimate_HotData);
+    registry.register_hot_data(RuleId::Fragment, Fragment_HotData);
+    registry.register_hot_data(RuleId::Wreck, Wreck_HotData);
+
+    // Category C: Movement Bonus hot data
+    registry.register_hot_data(RuleId::Lustbound, Lustbound_HotData);
+    registry.register_hot_data(RuleId::Highborn, Highborn_HotData);
+    registry.register_hot_data(RuleId::Scurry, Scurry_HotData);
+    registry.register_hot_data(RuleId::Darkborn, Darkborn_HotData);
+    registry.register_hot_data(RuleId::HitAndRunShooter, HitAndRunShooter_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -2118,6 +3278,46 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::Surge, Surge_ColdData);
     registry.register_cold_data(RuleId::PointBlankSurge, PointBlankSurge_ColdData);
     registry.register_cold_data(RuleId::Rupture, Rupture_ColdData);
+
+    // Category A: Simple Modifier cold data
+    registry.register_cold_data(RuleId::Evasive, Evasive_ColdData);
+    registry.register_cold_data(RuleId::Steadfast, Steadfast_ColdData);
+    registry.register_cold_data(RuleId::Swift, Swift_ColdData);
+    registry.register_cold_data(RuleId::Ferocious, Ferocious_ColdData);
+    registry.register_cold_data(RuleId::Lacerate, Lacerate_ColdData);
+    registry.register_cold_data(RuleId::Mischievous, Mischievous_ColdData);
+    registry.register_cold_data(RuleId::Scrapper, Scrapper_ColdData);
+
+    // Category B: Weapon Conditional cold data
+    registry.register_cold_data(RuleId::Bash, Bash_ColdData);
+    registry.register_cold_data(RuleId::Thrash, Thrash_ColdData);
+    registry.register_cold_data(RuleId::Crack, Crack_ColdData);
+    registry.register_cold_data(RuleId::Destructive, Destructive_ColdData);
+    registry.register_cold_data(RuleId::Fracture, Fracture_ColdData);
+    registry.register_cold_data(RuleId::Break, Break_ColdData);
+    registry.register_cold_data(RuleId::Slash, Slash_ColdData);
+    registry.register_cold_data(RuleId::Butcher, Butcher_ColdData);
+    registry.register_cold_data(RuleId::Slam, Slam_ColdData);
+    registry.register_cold_data(RuleId::Quake, Quake_ColdData);
+    registry.register_cold_data(RuleId::Tear, Tear_ColdData);
+    registry.register_cold_data(RuleId::Scratch, Scratch_ColdData);
+    registry.register_cold_data(RuleId::Puncture, Puncture_ColdData);
+    registry.register_cold_data(RuleId::Shatter, Shatter_ColdData);
+    registry.register_cold_data(RuleId::Demolish, Demolish_ColdData);
+    registry.register_cold_data(RuleId::Impale, Impale_ColdData);
+    registry.register_cold_data(RuleId::Skewer, Skewer_ColdData);
+    registry.register_cold_data(RuleId::Reap, Reap_ColdData);
+    registry.register_cold_data(RuleId::Disintegrate, Disintegrate_ColdData);
+    registry.register_cold_data(RuleId::Decimate, Decimate_ColdData);
+    registry.register_cold_data(RuleId::Fragment, Fragment_ColdData);
+    registry.register_cold_data(RuleId::Wreck, Wreck_ColdData);
+
+    // Category C: Movement Bonus cold data
+    registry.register_cold_data(RuleId::Lustbound, Lustbound_ColdData);
+    registry.register_cold_data(RuleId::Highborn, Highborn_ColdData);
+    registry.register_cold_data(RuleId::Scurry, Scurry_ColdData);
+    registry.register_cold_data(RuleId::Darkborn, Darkborn_ColdData);
+    registry.register_cold_data(RuleId::HitAndRunShooter, HitAndRunShooter_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -2196,6 +3396,46 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::Unstoppable, Unstoppable_Effects);
     registry.register_effects(RuleId::PiercingAssault, PiercingAssault_Effects);
     registry.register_effects(RuleId::Thrust, Thrust_AP_Effects);  // AP effect for thrust
+
+    // Category A: Simple Modifier effects
+    registry.register_effects(RuleId::Evasive, Evasive_Effects);
+    registry.register_effects(RuleId::Steadfast, Steadfast_Effects);
+    registry.register_effects(RuleId::Swift, Swift_Effects);
+    registry.register_effects(RuleId::Ferocious, Ferocious_Effects);
+    registry.register_effects(RuleId::Lacerate, Lacerate_Effects);
+    registry.register_effects(RuleId::Mischievous, Mischievous_Effects);
+    registry.register_effects(RuleId::Scrapper, Scrapper_Effects);
+
+    // Category B: Weapon Conditional effects
+    registry.register_effects(RuleId::Bash, Bash_Effects);
+    registry.register_effects(RuleId::Thrash, Thrash_Effects);
+    registry.register_effects(RuleId::Crack, Crack_Effects);
+    registry.register_effects(RuleId::Destructive, Destructive_Effects);
+    registry.register_effects(RuleId::Fracture, Fracture_Effects);
+    registry.register_effects(RuleId::Break, Break_Effects);
+    registry.register_effects(RuleId::Slash, Slash_Effects);
+    registry.register_effects(RuleId::Butcher, Butcher_Effects);
+    registry.register_effects(RuleId::Slam, Slam_Effects);
+    registry.register_effects(RuleId::Quake, Quake_Effects);
+    registry.register_effects(RuleId::Tear, Tear_Effects);
+    registry.register_effects(RuleId::Scratch, Scratch_Effects);
+    registry.register_effects(RuleId::Puncture, Puncture_Effects);
+    registry.register_effects(RuleId::Shatter, Shatter_Effects);
+    registry.register_effects(RuleId::Demolish, Demolish_Effects);
+    registry.register_effects(RuleId::Impale, Impale_Effects);
+    registry.register_effects(RuleId::Skewer, Skewer_Effects);
+    registry.register_effects(RuleId::Reap, Reap_Effects);
+    registry.register_effects(RuleId::Disintegrate, Disintegrate_Effects);
+    registry.register_effects(RuleId::Decimate, Decimate_Effects);
+    registry.register_effects(RuleId::Fragment, Fragment_Effects);
+    registry.register_effects(RuleId::Wreck, Wreck_Effects);
+
+    // Category C: Movement Bonus effects
+    registry.register_effects(RuleId::Lustbound, Lustbound_Effects);
+    registry.register_effects(RuleId::Highborn, Highborn_Effects);
+    registry.register_effects(RuleId::Scurry, Scurry_Effects);
+    registry.register_effects(RuleId::Darkborn, Darkborn_Effects);
+    registry.register_effects(RuleId::HitAndRunShooter, HitAndRunShooter_Effects);
 
     // =========================================================================
     // Register Movement effects

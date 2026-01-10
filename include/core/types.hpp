@@ -208,6 +208,46 @@ enum class RuleId : u16 {
     Battleborn,     // Battleborn - 4+ to stop being Shaken at round start (65)
     Casting,        // Casting(X) - Can cast X spells (66)
 
+    // === Category A: Simple Modifiers ===
+    Evasive,        // Evasive - Enemies get -1 to hit always (67)
+    Steadfast,      // Steadfast - 4+ to stop being Shaken at round start (68)
+    Swift,          // Swift - Ignore Slow rule (69)
+    Ferocious,      // Ferocious - Extra hit on 6s (unit rule, same as Surge) (70)
+    Lacerate,       // Lacerate - Force re-roll defense 6s (71)
+    Mischievous,    // Mischievous - Force re-roll defense 6s (72)
+    Scrapper,       // Scrapper - Force re-roll defense 6s (73)
+
+    // === Category B: Weapon Conditionals ===
+    Bash,           // Bash - +Blast(3) vs Defense 5+/6+ (74)
+    Thrash,         // Thrash - +Blast(3) vs Defense 5+/6+ (75)
+    Crack,          // Crack - AP(+2) on hit 6s (76)
+    Destructive,    // Destructive - AP(+4) on hit 6s (77)
+    Fracture,       // Fracture - AP(+2) on hit 6s + ignores cover (78)
+    Break,          // Break - AP(+2) on hit 6s + ignores regen (79)
+    Slash,          // Slash - Extra hit on 6s + ignores cover (80)
+    Butcher,        // Butcher - Extra hit on 6s + ignores regen (81)
+    Slam,           // Slam - Extra wound on def 1s + ignores cover (82)
+    Quake,          // Quake - Extra wound on def 1s + ignores regen (83)
+    Tear,           // Tear - AP(+4) vs Tough(3-9) (84)
+    Scratch,        // Scratch - AP(+2) vs Tough(3-9) (85)
+    Puncture,       // Puncture - AP(+4) vs Tough(3-9) + ignores regen (86)
+    Shatter,        // Shatter - AP(+2) vs Tough(3-9) + ignores regen (87)
+    Demolish,       // Demolish - AP(+2) vs Tough(3-9) + ignores cover (88)
+    Impale,         // Impale - Deadly(+3) vs Tough(3-9) (89)
+    Skewer,         // Skewer - Deadly(+3) vs Tough(3-9) + ignores cover (90)
+    Reap,           // Reap - AP(+2) vs Defense 2-3+ (91)
+    Disintegrate,   // Disintegrate - AP(+2) vs Defense 2-3+ + ignores regen (92)
+    Decimate,       // Decimate - AP(+2) vs Defense 2-3+ + ignores cover (93)
+    Fragment,       // Fragment - AP(+1) vs Defense 2-4+ + ignores cover (94)
+    Wreck,          // Wreck - Re-roll def 6s + ignores cover (95)
+
+    // === Category C: Movement Bonuses ===
+    Lustbound,      // Lustbound - +1" Advance, +3" Rush/Charge (96)
+    Highborn,       // Highborn - +2" Advance, +2" Rush/Charge (97)
+    Scurry,         // Scurry - +2" Advance, +2" Rush/Charge (98)
+    Darkborn,       // Darkborn - +3" range, +3" Charge (99)
+    HitAndRunShooter, // Hit & Run Shooter - Move 3" after shooting (100)
+
     // Future expansion rules go here
     // Each new rule should be categorized as PRIMARY or EXTENDED based on
     // how frequently it's checked during combat resolution

@@ -135,6 +135,7 @@ struct CombatContextExtended {
     u8 tough_value = 0;                  // Tough(X) value
     u8 impact_attacks = 0;               // Impact(X) bonus attacks
     u8 smash_bonus_blast = 0;            // Smash bonus blast vs heavy armor
+    u8 crack_ap_bonus = 0;               // Crack/Destructive AP bonus on 6s
 
     // Logging support
     MatchLogger* logger = nullptr;
@@ -176,6 +177,7 @@ struct CombatContextExtended {
         tough_value = 0;
         impact_attacks = 0;
         smash_bonus_blast = 0;
+        crack_ap_bonus = 0;
         applied_rules.clear();
         // Note: logger and dice are not reset - they're set per-engine
     }
@@ -270,6 +272,10 @@ struct MovementContext {
     bool ignores_engagement = false;    // Can leave melee without penalty
     bool can_advance_and_charge = false;
     bool hit_and_run_pending = false;   // Post-combat move available
+    bool swift_active = false;          // Swift - ignore Slow rule
+
+    // Hit and Run distance
+    u8 hit_and_run_distance = 0;        // Distance to move after combat
 };
 
 // ==============================================================================

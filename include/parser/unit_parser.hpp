@@ -222,6 +222,53 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"hold the line", RuleId::HoldTheLine},
         {"holdtheline", RuleId::HoldTheLine},
 
+        // === Category A: Simple Modifiers ===
+        {"evasive", RuleId::Evasive},
+        {"steadfast", RuleId::Steadfast},
+        {"swift", RuleId::Swift},
+        {"ferocious", RuleId::Ferocious},
+        {"lacerate", RuleId::Lacerate},
+        {"mischievous", RuleId::Mischievous},
+        {"scrapper", RuleId::Scrapper},
+
+        // === Category B: Weapon Conditionals ===
+        {"bash", RuleId::Bash},
+        {"thrash", RuleId::Thrash},
+        {"crack", RuleId::Crack},
+        {"destructive", RuleId::Destructive},
+        {"fracture", RuleId::Fracture},
+        {"break", RuleId::Break},
+        {"slash", RuleId::Slash},
+        {"butcher", RuleId::Butcher},
+        {"slam", RuleId::Slam},
+        {"quake", RuleId::Quake},
+        {"tear", RuleId::Tear},
+        {"scratch", RuleId::Scratch},
+        {"puncture", RuleId::Puncture},
+        {"shatter", RuleId::Shatter},
+        {"demolish", RuleId::Demolish},
+        {"impale", RuleId::Impale},
+        {"skewer", RuleId::Skewer},
+        {"reap", RuleId::Reap},
+        {"disintegrate", RuleId::Disintegrate},
+        {"decimate", RuleId::Decimate},
+        {"fragment", RuleId::Fragment},
+        {"wreck", RuleId::Wreck},
+
+        // === Category C: Movement Bonuses ===
+        {"lustbound", RuleId::Lustbound},
+        {"highborn", RuleId::Highborn},
+        {"scurry", RuleId::Scurry},
+        {"darkborn", RuleId::Darkborn},
+        {"hit & run shooter", RuleId::HitAndRunShooter},
+        {"hit and run shooter", RuleId::HitAndRunShooter},
+        {"hitandrunshooter", RuleId::HitAndRunShooter},
+
+        // Courage Aura maps to MoraleBoost
+        {"courage", RuleId::MoraleBoost},
+        {"courage aura", RuleId::MoraleBoost},
+        {"courageaura", RuleId::MoraleBoost},
+
         // Type 1 Auras - Map to their underlying rules
         // These auras simply grant another rule, so we treat them as the underlying rule
         {"furious aura", RuleId::Furious},
@@ -325,6 +372,33 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"furiousmark", RuleId::Furious},
         {"bane mark", RuleId::Bane},
         {"banemark", RuleId::Bane},
+
+        // === Category A: Simple Modifier Auras ===
+        {"evasive aura", RuleId::Evasive},
+        {"evasiveaura", RuleId::Evasive},
+        {"steadfast aura", RuleId::Steadfast},
+        {"steadfastaura", RuleId::Steadfast},
+        {"ferocious aura", RuleId::Ferocious},
+        {"ferociousaura", RuleId::Ferocious},
+        {"lacerate aura", RuleId::Lacerate},
+        {"lacerateaura", RuleId::Lacerate},
+        {"mischievous aura", RuleId::Mischievous},
+        {"mischievousaura", RuleId::Mischievous},
+        {"scrapper aura", RuleId::Scrapper},
+        {"scrapperaura", RuleId::Scrapper},
+
+        // === Category C: Movement Bonus Auras ===
+        {"scurry aura", RuleId::Scurry},
+        {"scurryaura", RuleId::Scurry},
+        {"darkborn aura", RuleId::Darkborn},
+        {"darkbornaura", RuleId::Darkborn},
+        {"lustbound aura", RuleId::Lustbound},
+        {"lustboundaura", RuleId::Lustbound},
+        {"highborn aura", RuleId::Highborn},
+        {"highbornaura", RuleId::Highborn},
+        {"hit & run shooter aura", RuleId::HitAndRunShooter},
+        {"hit and run shooter aura", RuleId::HitAndRunShooter},
+        {"hitandrunshooteraura", RuleId::HitAndRunShooter},
     };
     return map;
 }
