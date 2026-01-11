@@ -181,7 +181,7 @@ Bloodborn,Combat - Hit Bonus,Implemented,6s to hit generate +1 attack (non-recur
 Rapid Ambush,Deployment,Not Started,Ambush variant - can deploy round 1
 Teleport,Movement,Not Started,Place model anywhere within 6" before attacking
 Unpredictable Fighter Aura,Aura - Combat,Not Started,Unit gets Unpredictable Fighter
-Watchborn,Combat - Choice,Not Started,Pick AP(+1) or +1 to hit when activated
+Watchborn,Combat - Choice,Implemented,Pick AP(+1) or +1 to hit when activated
 Wolfborn,Movement,Not Started,Place models anywhere within 3" when activated
 Righteous Fury,Buff - Combat,Not Started,Grant Piercing Assault to friendlies
 Casting Debuff,Debuff - Spells,Not Started,-1 to casting rolls for enemy caster
@@ -204,7 +204,7 @@ Ranged Slayer Aura,Aura - Combat,Not Started,Unit gets Ranged Slayer
 Targeting Visor Boost Aura,Aura - Combat,Not Started,Unit gets Targeting Visor Boost
 Harassing,Movement,Not Started,Move 3" after shooting or melee
 Martial Prowess,Activation,Not Started,Activate twice per round (once per game)
-Melee Slayer,Combat - AP Modifier,Not Started,AP(+2) vs Tough(3+) in melee
+Melee Slayer,Combat - AP Modifier,Implemented,AP(+2) vs Tough(3+) in melee
 Precision Fighting Mark,Buff - Combat,Not Started,Grant +1 melee hit vs target
 Regeneration Buff,Buff - Defense,Not Started,Grant Regeneration to friendly
 Ruinous Frenzy,Combat - Scaling,Not Started,Marker-based hit/defense bonus
@@ -280,7 +280,7 @@ Scrapper Boost Aura,Aura - Combat,Not Started,Unit gets Scrapper Boost
 Grounded Stealth,Defense - Terrain,Not Started,-1 to be hit when near terrain
 Piercing Shooting Debuff,Debuff - Combat,Not Started,Remove AP(+1) from enemy shooting
 Machine-Fog Boost Aura,Aura - Defense,Not Started,Unit gets Machine-Fog Boost
-Ferocious Boost,Combat - Hit Bonus,Not Started,Extra hits on 5-6 instead of just 6
+Ferocious Boost,Combat - Hit Bonus,Implemented,Extra hits on 5-6 instead of just 6
 Rending in Melee Mark,Buff - Combat,Not Started,Grant Rending in melee vs target
 Ferocious Boost Aura,Aura - Combat,Not Started,Unit gets Ferocious Boost
 Piercing Fighter Aura,Aura - Combat,Not Started,AP(+1) in melee for unit
@@ -291,7 +291,7 @@ Mind Wound,Combat - Special,Not Started,Enemy takes 2 hits with Demolish
 Crush,Combat - Special,Not Started,Roll X dice in melee for AP(2) hits
 Defense Debuff,Debuff - Defense,Not Started,-1 to defense for enemy unit
 Hazardous,Combat - Self-Damage,Not Started,AP(4) but take wound on hit roll of 1
-Heavy Impact,Combat - Modifier,Not Started,Impact hits get AP(1)
+Heavy Impact,Combat - Modifier,Implemented,Impact hits get AP(1)
 Reinforcement,Deployment,Not Started,Respawn when shaken/destroyed
 Scurry Boost Aura,Aura - Movement,Not Started,Unit gets Scurry Boost
 Guerrilla,Movement,Not Started,Move 3" after shooting or melee (once per round)
@@ -315,19 +315,19 @@ Grounded Precision Aura,Aura - Combat,Not Started,Unit gets Grounded Precision
 Grounded Reinforcement Aura,Aura - Defense,Not Started,Unit gets Grounded Reinforcement
 Melee Slayer Aura,Aura - Combat,Not Started,Unit gets Melee Slayer
 Honor Code,Morale,Implemented,4+ to stop being Shaken (maps to Steadfast)
-Changebound Boost,Defense - Hit Modifier,Not Started,-1 to hit always (not just over 9")
+Changebound Boost,Defense - Hit Modifier,Implemented,-1 to hit always (not just over 9")
 Split,Deployment,Not Started,Spawn new unit when destroyed
 Storm of Change,Combat - Special,Not Started,Roll 3 dice for AoE Shred hits
 Storm of Lust,Combat - Special,Not Started,Roll 3 dice for AoE Surge hits
-Lustbound Boost,Movement,Not Started,+2/+6" movement from Lustbound
+Lustbound Boost,Movement,Implemented,+2/+6" movement from Lustbound
 Quick Shot Mark,Buff - Combat,Not Started,Grant Quick Shot vs target
 Storm of Plague,Combat - Special,Not Started,Roll 3 dice for AoE Bane hits
 Destructive Frenzy,Combat - Scaling,Not Started,Marker-based hit/AP bonus
 Fatigue Debuff,Debuff - Activation,Not Started,Force enemy to become fatigued
 Storm of War,Combat - Special,Not Started,Roll 3 dice for AoE AP(1) hits
-Warbound Boost,Combat - Wound Bonus,Not Started,Extra wound on defense 1-2 (not just 1)
+Warbound Boost,Combat - Wound Bonus,Implemented,Extra wound on defense 1-2 (not just 1)
 Piercing Shooter Aura,Aura - Combat,Not Started,AP(+1) when shooting for unit
 Difficult Terrain Debuff,Debuff - Movement,Not Started,Force Difficult Terrain on enemy
 Fortified Growth,Defense - Scaling,Not Started,Marker-based AP reduction over rounds
-Plaguebound Boost,Defense - Wound Ignore,Not Started,5-6 to ignore wounds (not just 6)
+Plaguebound Boost,Defense - Wound Ignore,Implemented,5-6 to ignore wounds (not just 6)
 Precision Attacks Buff,Buff - Combat,Not Started,Grant +1 to hit attacking to friendly

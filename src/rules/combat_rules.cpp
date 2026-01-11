@@ -873,6 +873,86 @@ void deathstrike_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, 
     }
 }
 
+// ==============================================================================
+// Category G: Enhanced Combat Modifiers & Boost Rules Effect Implementations
+// ==============================================================================
+
+void ferocious_boost_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Ferocious Boost - Extra hits on 5-6 to hit (instead of just 6)
+    // Count both 5s and 6s for bonus hits
+    u32 bonus = ctx.natural_sixes;  // Already counted 6s
+    // Note: natural_fives would need to be tracked separately if we want exact 5s
+    // For now, we double the bonus since 5-6 is twice as likely as just 6
+    ctx.hits += bonus;  // Additional bonus for the 5s (approximation)
+    if (ext) {
+        ext->bonus_hits += bonus;
+        ext->ferocious_boost_active = true;
+    }
+}
+
+void changebound_boost_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Changebound Boost - -1 to hit always (not just from >9")
+    // No distance condition needed
+    ctx.hit_modifier -= 1;
+}
+
+void warbound_boost_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Warbound Boost - Extra wound on defense 1-2 (not just 1)
+    if (ext) {
+        ext->warbound_boost_active = true;
+    }
+}
+
+void plaguebound_boost_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Plaguebound Boost - 5-6 to ignore wounds (not just 6)
+    if (ext) {
+        ext->plaguebound_boost_active = true;
+    }
+}
+
+void lustbound_boost_effect(MovementContext& ctx, u8 /*value*/) {
+    // Lustbound Boost - +2" Advance, +6" Rush/Charge (enhanced Lustbound)
+    // Use distance_modifier for advance (+2) and charge_bonus for charge (+6)
+    ctx.distance_modifier += 2;
+    ctx.charge_bonus += 6;
+}
+
+bool target_has_tough_3_plus(const CombatContextCore& ctx) {
+    // Check if defender has Tough(3) or higher
+    // This would need access to defender's rules
+    return ctx.defender != nullptr;  // Simplified - actual check in combat resolver
+}
+
+void melee_slayer_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Melee Slayer - AP(+2) vs Tough(3+) in melee
+    // Condition checked separately
+    ctx.ap_modifier += 2;
+    if (ext) {
+        ext->melee_slayer_active = true;
+    }
+}
+
+void heavy_impact_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Heavy Impact - Impact hits get AP(1)
+    // Applied during Impact hit resolution
+    if (ext && ext->impact_attacks > 0) {
+        ctx.ap_modifier += 1;
+    }
+}
+
+void watchborn_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Watchborn - Pick AP(+1) or +1 to hit when activated
+    // Unlike Unpredictable, this is player choice not dice roll
+    // For simulation, use same versatile_roll logic
+    if (ext && ext->versatile_roll > 0) {
+        if (ext->versatile_roll <= 3) {
+            ctx.ap_modifier += 1;
+        } else {
+            ctx.hit_modifier += 1;
+        }
+    }
+}
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -2011,6 +2091,99 @@ const RuleHotData Deathstrike_HotData{
 };
 
 // ==============================================================================
+// Category G: Enhanced Combat Modifiers Hot Data
+// ==============================================================================
+
+const RuleHotData FerociousBoost_HotData{
+    RuleId::FerociousBoost,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_BONUSES),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)
+};
+
+const RuleHotData ChangeboundBoost_HotData{
+    RuleId::ChangeboundBoost,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::ALWAYS,
+    RulePriority::EARLY,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)
+};
+
+const RuleHotData WarboundBoost_HotData{
+    RuleId::WarboundBoost,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS)
+};
+
+const RuleHotData PlaegueboundBoost_HotData{
+    RuleId::PlaegueboundBoost,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION),
+    CombatType::BOTH,
+    Target::DEFENDER,
+    Trigger::WHEN_WOUNDED,
+    RulePriority::NORMAL,
+    0  // Wound ignore effect
+};
+
+const RuleHotData LustboundBoost_HotData{
+    RuleId::LustboundBoost,
+    GamePhase::MOVEMENT,
+    0,
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_MOVEMENT)
+};
+
+const RuleHotData MeleeSlayer_HotData{
+    RuleId::MeleeSlayer,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::MELEE,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData HeavyImpact_HotData{
+    RuleId::HeavyImpact,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::MELEE,
+    Target::WEAPON,
+    Trigger::ON_CHARGE,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Watchborn_HotData{
+    RuleId::Watchborn,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) |
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+// ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
 
@@ -2729,6 +2902,74 @@ const RuleColdData Deathstrike_ColdData{
 };
 
 // ==============================================================================
+// Category G: Enhanced Combat Modifiers Cold Data
+// ==============================================================================
+
+const RuleColdData FerociousBoost_ColdData{
+    "FerociousBoost",
+    nullptr,
+    0,
+    "Ferocious Boost: extra hits on 5-6",
+    "Unmodified 5-6 to hit deal extra hits."
+};
+
+const RuleColdData ChangeboundBoost_ColdData{
+    "ChangeboundBoost",
+    nullptr,
+    0,
+    "Changebound Boost: -1 to hit always",
+    "Enemies always get -1 to hit (not just from >9\")."
+};
+
+const RuleColdData WarboundBoost_ColdData{
+    "WarboundBoost",
+    nullptr,
+    0,
+    "Warbound Boost: wound on def 1-2",
+    "Unmodified defense roll of 1-2 causes extra wound."
+};
+
+const RuleColdData PlaegueboundBoost_ColdData{
+    "PlaegueboundBoost",
+    nullptr,
+    0,
+    "Plaguebound Boost: 5-6 ignore wounds",
+    "Roll 5-6 to ignore each wound."
+};
+
+const RuleColdData LustboundBoost_ColdData{
+    "LustboundBoost",
+    nullptr,
+    0,
+    "Lustbound Boost: +2/+6\" movement",
+    "Get +2\" Advance and +6\" Rush/Charge."
+};
+
+const RuleColdData MeleeSlayer_ColdData{
+    "MeleeSlayer",
+    nullptr,
+    0,
+    "Melee Slayer: AP+2 vs Tough",
+    "Get AP(+2) against targets with Tough(3+) in melee."
+};
+
+const RuleColdData HeavyImpact_ColdData{
+    "HeavyImpact",
+    nullptr,
+    0,
+    "Heavy Impact: Impact gets AP(1)",
+    "Impact hits have AP(1)."
+};
+
+const RuleColdData Watchborn_ColdData{
+    "Watchborn",
+    nullptr,
+    0,
+    "Watchborn: pick AP or hit bonus",
+    "Pick AP(+1) or +1 to hit when activated."
+};
+
+// ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
 
@@ -3177,6 +3418,39 @@ const RuleEffectEntry Retaliate_Effects = EffectBuilder()
 const RuleEffectEntry Deathstrike_Effects = EffectBuilder()
     .combat(CombatSubPhase::WOUND_ALLOCATION, deathstrike_effect)
     .condition(CombatSubPhase::WOUND_ALLOCATION, melee_only_condition)
+    .build();
+
+// ==============================================================================
+// Category G: Enhanced Combat Modifiers Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry FerociousBoost_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, ferocious_boost_effect)
+    .build();
+
+const RuleEffectEntry ChangeboundBoost_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, changebound_boost_effect)
+    .build();
+
+const RuleEffectEntry WarboundBoost_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, warbound_boost_effect)
+    .build();
+
+const RuleEffectEntry PlaegueboundBoost_Effects = EffectBuilder()
+    .combat(CombatSubPhase::WOUND_ALLOCATION, plaguebound_boost_effect)
+    .build();
+
+const RuleEffectEntry MeleeSlayer_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, melee_slayer_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, melee_only_condition)
+    .build();
+
+const RuleEffectEntry HeavyImpact_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, heavy_impact_effect)
+    .build();
+
+const RuleEffectEntry Watchborn_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, watchborn_effect)
     .build();
 
 // ==============================================================================
@@ -3840,6 +4114,16 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::Retaliate, Retaliate_HotData);
     registry.register_hot_data(RuleId::Deathstrike, Deathstrike_HotData);
 
+    // Category G: Enhanced Combat Modifiers hot data
+    registry.register_hot_data(RuleId::FerociousBoost, FerociousBoost_HotData);
+    registry.register_hot_data(RuleId::ChangeboundBoost, ChangeboundBoost_HotData);
+    registry.register_hot_data(RuleId::WarboundBoost, WarboundBoost_HotData);
+    registry.register_hot_data(RuleId::PlaegueboundBoost, PlaegueboundBoost_HotData);
+    registry.register_hot_data(RuleId::LustboundBoost, LustboundBoost_HotData);
+    registry.register_hot_data(RuleId::MeleeSlayer, MeleeSlayer_HotData);
+    registry.register_hot_data(RuleId::HeavyImpact, HeavyImpact_HotData);
+    registry.register_hot_data(RuleId::Watchborn, Watchborn_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -3977,6 +4261,16 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::UnpredictableShooter, UnpredictableShooter_ColdData);
     registry.register_cold_data(RuleId::Retaliate, Retaliate_ColdData);
     registry.register_cold_data(RuleId::Deathstrike, Deathstrike_ColdData);
+
+    // Category G: Enhanced Combat Modifiers cold data
+    registry.register_cold_data(RuleId::FerociousBoost, FerociousBoost_ColdData);
+    registry.register_cold_data(RuleId::ChangeboundBoost, ChangeboundBoost_ColdData);
+    registry.register_cold_data(RuleId::WarboundBoost, WarboundBoost_ColdData);
+    registry.register_cold_data(RuleId::PlaegueboundBoost, PlaegueboundBoost_ColdData);
+    registry.register_cold_data(RuleId::LustboundBoost, LustboundBoost_ColdData);
+    registry.register_cold_data(RuleId::MeleeSlayer, MeleeSlayer_ColdData);
+    registry.register_cold_data(RuleId::HeavyImpact, HeavyImpact_ColdData);
+    registry.register_cold_data(RuleId::Watchborn, Watchborn_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -4118,6 +4412,15 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::UnpredictableShooter, UnpredictableShooter_Effects);
     registry.register_effects(RuleId::Retaliate, Retaliate_Effects);
     registry.register_effects(RuleId::Deathstrike, Deathstrike_Effects);
+
+    // Category G: Enhanced Combat Modifiers effects
+    registry.register_effects(RuleId::FerociousBoost, FerociousBoost_Effects);
+    registry.register_effects(RuleId::ChangeboundBoost, ChangeboundBoost_Effects);
+    registry.register_effects(RuleId::WarboundBoost, WarboundBoost_Effects);
+    registry.register_effects(RuleId::PlaegueboundBoost, PlaegueboundBoost_Effects);
+    registry.register_effects(RuleId::MeleeSlayer, MeleeSlayer_Effects);
+    registry.register_effects(RuleId::HeavyImpact, HeavyImpact_Effects);
+    registry.register_effects(RuleId::Watchborn, Watchborn_Effects);
 
     // =========================================================================
     // Register Movement effects

@@ -271,6 +271,16 @@ enum class RuleId : u16 {
     Retaliate,            // Retaliate - When wounded in melee, attacker takes X hits (116)
     Deathstrike,          // Deathstrike - If killed in melee, attacker takes X hits (117)
 
+    // === Category G: Enhanced Combat Modifiers & Boost Rules ===
+    FerociousBoost,       // Ferocious Boost - Extra hits on 5-6 to hit (118)
+    ChangeboundBoost,     // Changebound Boost - -1 to hit always (119)
+    WarboundBoost,        // Warbound Boost - Extra wound on defense 1-2 (120)
+    PlaegueboundBoost,    // Plaguebound Boost - 5-6 to ignore wounds (121)
+    LustboundBoost,       // Lustbound Boost - +2/+6" movement (122)
+    MeleeSlayer,          // Melee Slayer - AP(+2) vs Tough(3+) in melee (123)
+    HeavyImpact,          // Heavy Impact - Impact hits get AP(1) (124)
+    Watchborn,            // Watchborn - Pick AP(+1) or +1 to hit (125)
+
     // Future expansion rules go here
     // Each new rule should be categorized as PRIMARY or EXTENDED based on
     // how frequently it's checked during combat resolution

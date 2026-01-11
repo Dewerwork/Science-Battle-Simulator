@@ -503,6 +503,41 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"selfrepairboostaura", RuleId::Plaguebound},
         {"reinforced aura", RuleId::Guardian},
         {"reinforcedaura", RuleId::Guardian},
+
+        // === Category G: Enhanced Combat Modifiers & Boost Rules ===
+        {"ferocious boost", RuleId::FerociousBoost},
+        {"ferociousboost", RuleId::FerociousBoost},
+        {"changebound boost", RuleId::ChangeboundBoost},
+        {"changeboundboost", RuleId::ChangeboundBoost},
+        {"warbound boost", RuleId::WarboundBoost},
+        {"warboundboost", RuleId::WarboundBoost},
+        {"plaguebound boost", RuleId::PlaegueboundBoost},
+        {"plagueboundboost", RuleId::PlaegueboundBoost},
+        {"lustbound boost", RuleId::LustboundBoost},
+        {"lustboundboost", RuleId::LustboundBoost},
+        {"melee slayer", RuleId::MeleeSlayer},
+        {"meleeslayer", RuleId::MeleeSlayer},
+        {"heavy impact", RuleId::HeavyImpact},
+        {"heavyimpact", RuleId::HeavyImpact},
+        {"watchborn", RuleId::Watchborn},
+
+        // === Category G: Aura Mappings ===
+        {"ferocious boost aura", RuleId::FerociousBoost},
+        {"ferociousboostaura", RuleId::FerociousBoost},
+        {"changebound boost aura", RuleId::ChangeboundBoost},
+        {"changeboundboostaura", RuleId::ChangeboundBoost},
+        {"warbound boost aura", RuleId::WarboundBoost},
+        {"warboundboostaura", RuleId::WarboundBoost},
+        {"plaguebound boost aura", RuleId::PlaegueboundBoost},
+        {"plagueboundboostaura", RuleId::PlaegueboundBoost},
+        {"lustbound boost aura", RuleId::LustboundBoost},
+        {"lustboundboostaura", RuleId::LustboundBoost},
+        {"melee slayer aura", RuleId::MeleeSlayer},
+        {"meleeslayeraura", RuleId::MeleeSlayer},
+        {"heavy impact aura", RuleId::HeavyImpact},
+        {"heavyimpactaura", RuleId::HeavyImpact},
+        {"watchborn aura", RuleId::Watchborn},
+        {"watchbornaura", RuleId::Watchborn},
     };
     return map;
 }
