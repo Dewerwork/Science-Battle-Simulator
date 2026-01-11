@@ -179,6 +179,12 @@ target_include_directories(test_phase8_cleanup PRIVATE ${CMAKE_SOURCE_DIR}/inclu
 target_link_libraries(test_phase8_cleanup PRIVATE battle_core)
 target_compile_options(test_phase8_cleanup PRIVATE ${COMMON_FLAGS})
 
+# Spell casting test
+add_executable(test_spell_casting src/test_spell_casting.cpp)
+target_include_directories(test_spell_casting PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_spell_casting PRIVATE battle_core)
+target_compile_options(test_spell_casting PRIVATE ${COMMON_FLAGS})
+
 # Benchmark - parallel simulation
 add_executable(benchmark_sim src/benchmark_sim.cpp)
 target_include_directories(benchmark_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
