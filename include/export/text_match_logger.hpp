@@ -460,6 +460,55 @@ public:
         out_ << "\n";
     }
 
+    // =========================================================================
+    // SPELL CASTING
+    // =========================================================================
+
+    void on_spell_tokens_granted(bool is_unit_a, u8 tokens_gained, u8 tokens_total,
+                                 u8 caster_value) override {
+        out_ << ind() << "[SPELLS] " << (is_unit_a ? "Unit A" : "Unit B")
+             << ": Granted " << (int)tokens_gained << " spell tokens (Caster("
+             << (int)caster_value << ")), total: " << (int)tokens_total << "\n";
+    }
+
+    void on_spell_cast_attempt(bool is_unit_a, const char* spell_name, u8 spell_cost,
+                               u8 tokens_remaining, i8 range, const char* target_type) override {
+        out_ << ind() << "[SPELL CAST] " << (is_unit_a ? "Unit A" : "Unit B")
+             << ": Casting \"" << spell_name << "\" (cost " << (int)spell_cost
+             << ", " << target_type << ", range " << (int)range << "\")\n";
+        indent_++;
+    }
+
+    void on_spell_interference(bool interferer_is_a, u8 tokens_spent,
+                               i8 modifier_applied) override {
+        out_ << ind() << "Interference: " << (interferer_is_a ? "Unit A" : "Unit B")
+             << " spends " << (int)tokens_spent << " token(s) for "
+             << (int)modifier_applied << " to cast roll\n";
+    }
+
+    void on_spell_roll(u8 roll, u8 target_number, i8 modifier, bool success) override {
+        out_ << ind() << "Cast roll: " << (int)roll << " vs " << (int)target_number << "+ = "
+             << (success ? "SUCCESS" : "FAILED") << "\n";
+        indent_--;
+    }
+
+    void on_spell_effect(const char* spell_name, const char* effect_type, u32 hits_dealt,
+                         u32 wounds_dealt, u8 models_killed, const char* buff_applied) override {
+        out_ << ind() << "[SPELL EFFECT] " << spell_name << " (" << effect_type << ")";
+        if (hits_dealt > 0) out_ << ": " << hits_dealt << " hits";
+        if (wounds_dealt > 0) out_ << ", " << wounds_dealt << " wounds";
+        if (models_killed > 0) out_ << ", " << (int)models_killed << " killed";
+        if (buff_applied && buff_applied[0]) out_ << " - " << buff_applied;
+        out_ << "\n";
+    }
+
+    void on_spell_phase_end(bool is_unit_a, u8 spells_cast, u8 spells_succeeded,
+                            u8 tokens_remaining) override {
+        out_ << ind() << "[SPELL PHASE END] " << (is_unit_a ? "Unit A" : "Unit B")
+             << ": " << (int)spells_succeeded << "/" << (int)spells_cast
+             << " spells succeeded, " << (int)tokens_remaining << " tokens remaining\n";
+    }
+
 private:
     std::ostream& out_;
     int indent_;

@@ -10,6 +10,7 @@
 #include "engine/ai_controller.hpp"
 #include "engine/rule_aware_ai.hpp"
 #include "engine/match_logger.hpp"
+#include "engine/spell_caster.hpp"
 #include "rules/deployment_rules.hpp"
 #include <algorithm>
 
@@ -27,6 +28,7 @@ public:
         : dice_(dice)
         , registry_(create_default_registry())
         , combat_(registry_, dice, logger)
+        , spell_caster_(dice, logger)
         , logger_(logger)
     {
         // Register default auras
@@ -127,6 +129,7 @@ private:
     DiceRoller& dice_;
     RuleRegistry registry_;
     RegistryCombatResolver combat_;
+    SpellCaster spell_caster_;  // Handles spell casting phase
     MatchLogger* logger_;
     GameState state_;  // Reusable game state
     AuraProcessor aura_processor_;  // Handles aura effects
@@ -161,6 +164,10 @@ private:
         // Battleborn: 4+ to rally from Shaken at round start
         check_battleborn(true);   // Unit A
         check_battleborn(false);  // Unit B
+
+        // Grant spell tokens at round start (casters get tokens even if in reserve)
+        spell_caster_.grant_round_tokens(state_.state_a, true);
+        spell_caster_.grant_round_tokens(state_.state_b, false);
 
         // Determine activation order (random for round 1, alternating after)
         bool a_goes_first;
@@ -352,12 +359,15 @@ private:
         UnitView unit = state_.view(is_unit_a);
         UnitView enemy = state_.view(!is_unit_a);
 
+        // Spell phase: Cast spells before attacking
+        i8 dist = state_.distance_between();
+        spell_caster_.process_spell_phase(unit, enemy, dist, is_unit_a);
+
         if (state_.in_melee) {
             // Fight in melee
             execute_melee_round(is_unit_a, false);
         } else {
             // Shoot if possible
-            i8 dist = state_.distance_between();
             if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
                 CombatResult result = combat_.resolve_shooting_phased(unit, enemy, dist, false);
                 state_.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
@@ -377,6 +387,9 @@ private:
         i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
 
         if (state_.in_melee) {
+            // Spell phase: Cast spells before melee
+            i8 dist = state_.distance_between();
+            spell_caster_.process_spell_phase(unit, enemy, dist, is_unit_a);
             execute_melee_round(is_unit_a, false);
             return;
         }
@@ -395,8 +408,11 @@ private:
                                  static_cast<i8>(std::abs(my_pos - from_pos)), "advancing_toward_enemy");
         }
 
-        // Shoot if possible
+        // Spell phase: Cast spells after movement, before shooting
         i8 dist = state_.distance_between();
+        spell_caster_.process_spell_phase(unit, enemy, dist, is_unit_a);
+
+        // Shoot if possible
         if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
             CombatResult result = combat_.resolve_shooting_phased(unit, enemy, dist, true);
             state_.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
@@ -457,6 +473,10 @@ private:
         if (logger_) {
             logger_->on_melee_state_changed(true, "charge_into_contact");
         }
+
+        // Spell phase: Cast spells after movement, before melee
+        i8 dist = state_.distance_between();
+        spell_caster_.process_spell_phase(unit, enemy, dist, is_unit_a);
 
         // Resolve charge (attacker strikes first)
         execute_melee_round(is_unit_a, true);
