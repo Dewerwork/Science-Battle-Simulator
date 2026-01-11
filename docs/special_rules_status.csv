@@ -177,7 +177,7 @@ Courage Aura,Aura - Morale,Not Started,+1 to morale test rolls for unit
 Rapid Rush Aura,Aura - Movement,Not Started,Unit gets Rapid Rush
 Versatile Reach Aura,Aura - Combat,Not Started,Unit gets Versatile Reach
 Protective Dome,Buff - Defense,Not Started,Grant Evasive to up to three friendly units
-Bloodborn,Combat - Hit Bonus,Not Started,6s to hit generate +1 attack (non-recursive)
+Bloodborn,Combat - Hit Bonus,Implemented,6s to hit generate +1 attack (non-recursive)
 Rapid Ambush,Deployment,Not Started,Ambush variant - can deploy round 1
 Teleport,Movement,Not Started,Place model anywhere within 6" before attacking
 Unpredictable Fighter Aura,Aura - Combat,Not Started,Unit gets Unpredictable Fighter
@@ -196,7 +196,7 @@ Point-Blank Piercing Aura,Aura - Combat,Not Started,Unit gets Point-Blank Pierci
 Hit & Run Shooter,Movement,Not Started,Move 3" after shooting
 Piercing Target,Targeting,Not Started,Place markers for AP bonus
 Shred Mark,Buff - Combat,Not Started,Grant Shred to friendlies vs target
-Targeting Visor,Combat - Hit Modifier,Not Started,+1 to hit when shooting over 9"
+Targeting Visor,Combat - Hit Modifier,Implemented,+1 to hit when shooting over 9"
 Ambush Beacon,Deployment,Not Started,Friendly Ambushers can ignore distance
 Piercing Shooting Mark,Buff - Combat,Not Started,Grant AP(+1) shooting vs target
 Precision Spotter,Targeting,Not Started,Place markers for hit bonus
@@ -220,7 +220,7 @@ Rapid Blink,Movement,Not Started,Place models within 3" when activated
 Ambush Re-Deployment,Deployment,Not Started,Remove and redeploy via Ambush
 Slayer Mark,Buff - Combat,Not Started,Grant Slayer vs target
 Rapid Blink Boost Aura,Aura - Movement,Not Started,Unit gets Rapid Blink Boost
-Clan Warrior,Combat - Hit Bonus,Not Started,6s to hit generate +1 attack (non-recursive)
+Clan Warrior,Combat - Hit Bonus,Implemented,6s to hit generate +1 attack (non-recursive) (maps to Bloodborn)
 Bounding,Movement,Not Started,Place models within D3+1" when activated
 Casting Buff,Buff - Spells,Not Started,+1 to casting rolls for friendly caster
 Increased Shooting Range Mark,Buff - Range,Not Started,Grant +6" range vs target
@@ -234,7 +234,7 @@ Instinctive,Movement - Combat,Not Started,Must attack closest target with +1 hit
 Retaliate,Combat - Retaliation,Not Started,Attacker takes X hits when this model wounded
 Mischievous Boost Aura,Aura - Combat,Not Started,Unit gets Mischievous Boost
 Quick Shot Aura,Aura - Combat,Not Started,Unit gets Quick Shot
-Havocbound,Combat - AP Modifier,Not Started,AP(+1) when shooting over 9" or charging
+Havocbound,Combat - AP Modifier,Implemented,AP(+1) when shooting over 9" or charging
 Steadfast Buff,Buff - Morale,Not Started,Grant Steadfast to friendly
 Unpredictable,Combat - Choice,Not Started,Roll D6 for AP+1 or +1 hit
 Havocbound Boost Aura,Aura - Combat,Not Started,Unit gets Havocbound Boost
@@ -243,7 +243,7 @@ Changebound Boost Aura,Aura - Defense,Not Started,Unit gets Changebound Boost
 Lustbound Boost Aura,Aura - Movement,Not Started,Unit gets Lustbound Boost
 Bounding Aura,Aura - Movement,Not Started,Unit gets Bounding
 Plaguebound Boost Aura,Aura - Defense,Not Started,Unit gets Plaguebound Boost
-Warbound,Combat - Wound Bonus,Not Started,Extra wound on unmodified defense 1
+Warbound,Combat - Wound Bonus,Implemented,Extra wound on unmodified defense 1
 Warbound Boost Aura,Aura - Combat,Not Started,Unit gets Warbound Boost
 Crossing Attack,Combat - Special,Not Started,Roll X dice moving through enemies for hits
 Piercing Spotter,Targeting,Not Started,Place markers for AP bonus
@@ -260,14 +260,14 @@ Rapid Advance Buff,Buff - Movement,Not Started,Grant Rapid Advance to friendly
 Relentless Mark,Buff - Combat,Not Started,Grant Relentless vs target
 Hold the Line Boost Aura,Aura - Morale,Not Started,Unit gets Hold the Line Boost
 Inquisitorial Agent,Activation,Not Started,Activate twice per round (once per game)
-Brutal Fighter,Combat - Hit Bonus,Not Started,6s to hit deal extra hit in melee
+Brutal Fighter,Combat - Hit Bonus,Implemented,6s to hit deal extra hit in melee
 Delayed Action,Activation,Not Started,Pass turn if opponent has more units
 Piercing Tag,Targeting,Not Started,Place markers for AP bonus (removable)
 Quick Readjustment,Combat - Modifier,Not Started,Ignore Indirect move penalty
 Spell Accumulator,Spells,Not Started,Token generation for spell casting
 Unpredictable Shooter,Combat - Choice,Not Started,Roll D6 for AP+1 or +1 hit when shooting
 Defensive Growth Aura,Aura - Defense,Not Started,Unit gets Defensive Growth
-Infected,Combat - Wound Bonus,Not Started,Extra wound on unmodified defense 1
+Infected,Combat - Wound Bonus,Implemented,Extra wound on unmodified defense 1 (maps to Warbound)
 Deathstrike,Combat - Retaliation,Not Started,Attacking unit takes X hits when killed
 Precision Debuff,Debuff - Combat,Not Started,-1 to hit for enemy unit
 Precision Growth,Combat - Scaling,Not Started,Marker-based hit bonus over rounds
@@ -302,7 +302,7 @@ Indirect Mark,Buff - Combat,Not Started,Grant Indirect vs target
 Self-Repair Boost Buff,Buff - Defense,Not Started,Grant Self-Repair Boost to friendly
 Swift Buff,Buff - Movement,Not Started,Grant Swift to friendly
 Reanimation Aura,Aura - Defense,Not Started,Unit gets Reanimation
-Primal,Combat - Hit Bonus,Not Started,6s to hit generate +1 attack (non-recursive)
+Primal,Combat - Hit Bonus,Implemented,6s to hit generate +1 attack (non-recursive) (maps to Bloodborn)
 Bane Mark,Buff - Combat,Not Started,Grant Bane vs target
 Primal Boost Buff,Buff - Combat,Not Started,Grant Primal Boost to friendly
 Protection Feat,Defense - Wound Ignore,Not Started,Once per game 4+ to ignore wounds

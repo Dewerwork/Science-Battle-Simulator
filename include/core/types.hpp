@@ -257,6 +257,13 @@ enum class RuleId : u16 {
     Plaguebound,    // Plaguebound - 6+ ignore wounds (106)
     Changebound,    // Changebound - Enemies get -1 to hit from >9" (107)
 
+    // === Category E: Extra Attack Generation & Distance-based Combat ===
+    Bloodborn,      // Bloodborn - 6s to hit generate +1 attack (non-recursive) (108)
+    TargetingVisor, // Targeting Visor - +1 to hit when shooting over 9" (109)
+    Havocbound,     // Havocbound - AP(+1) when shooting over 9" or charging (110)
+    Warbound,       // Warbound - Extra wound on defense 1s (like Shred) (111)
+    BrutalFighter,  // Brutal Fighter - 6s to hit deal extra hit in melee (112)
+
     // Future expansion rules go here
     // Each new rule should be categorized as PRIMARY or EXTENDED based on
     // how frequently it's checked during combat resolution

@@ -760,6 +760,61 @@ void changebound_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, 
     ctx.hit_modifier -= 1;
 }
 
+// ==============================================================================
+// Category E: Extra Attack Generation & Distance-based Combat Effect Implementations
+// ==============================================================================
+
+void bloodborn_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Bloodborn - 6s to hit generate +1 attack (non-recursive)
+    // Unlike PredatorFighter, these bonus attacks don't trigger more attacks
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+        // Note: predator_fighter_active stays false - no recursion
+    }
+}
+
+bool shooting_over_9_condition(const CombatContextCore& ctx) {
+    // Only when shooting from >9"
+    return ctx.combat_type == CombatType::SHOOTING && ctx.distance > 9;
+}
+
+void targeting_visor_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Targeting Visor - +1 to hit when shooting over 9"
+    ctx.hit_modifier += 1;
+}
+
+bool havocbound_condition(const CombatContextCore& ctx) {
+    // Havocbound - applies when shooting over 9" or charging
+    return (ctx.combat_type == CombatType::SHOOTING && ctx.distance > 9) || ctx.is_charge;
+}
+
+void havocbound_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Havocbound - AP(+1) when shooting over 9" or charging
+    ctx.ap_modifier += 1;
+}
+
+void warbound_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Warbound - Extra wound on defense 1s (like Shred)
+    if (ext) {
+        ext->shred_active = true;
+    }
+}
+
+bool melee_only_condition(const CombatContextCore& ctx) {
+    return ctx.combat_type == CombatType::MELEE;
+}
+
+void brutal_fighter_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Brutal Fighter - 6s to hit deal extra hit in melee
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+    }
+}
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -1777,6 +1832,65 @@ const RuleHotData Changebound_HotData{
 };
 
 // ==============================================================================
+// Category E: Extra Attack Generation Hot Data
+// ==============================================================================
+
+const RuleHotData Bloodborn_HotData{
+    RuleId::Bloodborn,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_BONUSES),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)
+};
+
+const RuleHotData TargetingVisor_HotData{
+    RuleId::TargetingVisor,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    CombatType::SHOOTING,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)
+};
+
+const RuleHotData Havocbound_HotData{
+    RuleId::Havocbound,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Warbound_HotData{
+    RuleId::Warbound,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS)
+};
+
+const RuleHotData BrutalFighter_HotData{
+    RuleId::BrutalFighter,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_BONUSES),
+    CombatType::MELEE,
+    Target::SELF,
+    Trigger::ON_HIT_ROLL_6,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)
+};
+
+// ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
 
@@ -2407,6 +2521,50 @@ const RuleColdData Changebound_ColdData{
 };
 
 // ==============================================================================
+// Category E: Extra Attack Generation Cold Data
+// ==============================================================================
+
+const RuleColdData Bloodborn_ColdData{
+    "Bloodborn",
+    nullptr,
+    0,
+    "Bloodborn: +1 attack on 6s",
+    "Unmodified 6s to hit generate +1 attack (non-recursive)."
+};
+
+const RuleColdData TargetingVisor_ColdData{
+    "TargetingVisor",
+    nullptr,
+    0,
+    "Targeting Visor: +1 hit from >9\"",
+    "Get +1 to hit when shooting at enemies over 9\" away."
+};
+
+const RuleColdData Havocbound_ColdData{
+    "Havocbound",
+    nullptr,
+    0,
+    "Havocbound: AP(+1) at range/charge",
+    "Get AP(+1) when shooting over 9\" or charging."
+};
+
+const RuleColdData Warbound_ColdData{
+    "Warbound",
+    nullptr,
+    0,
+    "Warbound: extra wound on def 1s",
+    "Unmodified defense roll of 1 causes an extra wound."
+};
+
+const RuleColdData BrutalFighter_ColdData{
+    "BrutalFighter",
+    nullptr,
+    0,
+    "Brutal Fighter: extra hit on 6s in melee",
+    "Unmodified 6s to hit deal 1 extra hit in melee."
+};
+
+// ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
 
@@ -2800,6 +2958,33 @@ const RuleEffectEntry Plaguebound_Effects = EffectBuilder()
 const RuleEffectEntry Changebound_Effects = EffectBuilder()
     .combat(CombatSubPhase::HIT_MODIFIERS, changebound_effect)
     .condition(CombatSubPhase::HIT_MODIFIERS, distance_over_9_condition)
+    .build();
+
+// ==============================================================================
+// Category E: Extra Attack Generation Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Bloodborn_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, bloodborn_effect)
+    .build();
+
+const RuleEffectEntry TargetingVisor_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, targeting_visor_effect)
+    .condition(CombatSubPhase::HIT_MODIFIERS, shooting_over_9_condition)
+    .build();
+
+const RuleEffectEntry Havocbound_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, havocbound_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, havocbound_condition)
+    .build();
+
+const RuleEffectEntry Warbound_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, warbound_effect)
+    .build();
+
+const RuleEffectEntry BrutalFighter_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, brutal_fighter_effect)
+    .condition(CombatSubPhase::HIT_BONUSES, melee_only_condition)
     .build();
 
 // ==============================================================================
@@ -3449,6 +3634,13 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::Plaguebound, Plaguebound_HotData);
     registry.register_hot_data(RuleId::Changebound, Changebound_HotData);
 
+    // Category E: Extra Attack Generation hot data
+    registry.register_hot_data(RuleId::Bloodborn, Bloodborn_HotData);
+    registry.register_hot_data(RuleId::TargetingVisor, TargetingVisor_HotData);
+    registry.register_hot_data(RuleId::Havocbound, Havocbound_HotData);
+    registry.register_hot_data(RuleId::Warbound, Warbound_HotData);
+    registry.register_hot_data(RuleId::BrutalFighter, BrutalFighter_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -3572,6 +3764,13 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::Knightborn, Knightborn_ColdData);
     registry.register_cold_data(RuleId::Plaguebound, Plaguebound_ColdData);
     registry.register_cold_data(RuleId::Changebound, Changebound_ColdData);
+
+    // Category E: Extra Attack Generation cold data
+    registry.register_cold_data(RuleId::Bloodborn, Bloodborn_ColdData);
+    registry.register_cold_data(RuleId::TargetingVisor, TargetingVisor_ColdData);
+    registry.register_cold_data(RuleId::Havocbound, Havocbound_ColdData);
+    registry.register_cold_data(RuleId::Warbound, Warbound_ColdData);
+    registry.register_cold_data(RuleId::BrutalFighter, BrutalFighter_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -3699,6 +3898,13 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::Knightborn, Knightborn_Effects);
     registry.register_effects(RuleId::Plaguebound, Plaguebound_Effects);
     registry.register_effects(RuleId::Changebound, Changebound_Effects);
+
+    // Category E: Extra Attack Generation effects
+    registry.register_effects(RuleId::Bloodborn, Bloodborn_Effects);
+    registry.register_effects(RuleId::TargetingVisor, TargetingVisor_Effects);
+    registry.register_effects(RuleId::Havocbound, Havocbound_Effects);
+    registry.register_effects(RuleId::Warbound, Warbound_Effects);
+    registry.register_effects(RuleId::BrutalFighter, BrutalFighter_Effects);
 
     // =========================================================================
     // Register Movement effects
