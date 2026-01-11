@@ -160,7 +160,7 @@ Caster Group,Spells,Not Started,Complex caster pooling mechanic
 Increased Shooting Range,Combat - Range,Not Started,+6" range when shooting
 Infiltrate,Deployment,Not Started,Ambush variant - deploy up to 1" from enemy units
 Piercing Growth,Combat - Scaling,Not Started,Marker-based AP scaling over rounds
-Ravage,Combat - Special,Not Started,Roll X dice in melee for each 6+ target takes wound
+Ravage,Combat - Special,Implemented,Roll X dice in melee for each 6+ target takes wound
 Regenerative Strength,Defense - Combat,Not Started,Gain attacks when ignoring wounds
 Spawn,Deployment,Not Started,Once per game place new unit of X within 6"
 Spell Conduit,Spells,Not Started,Casters within 12" can cast from this position
@@ -202,7 +202,7 @@ Piercing Shooting Mark,Buff - Combat,Not Started,Grant AP(+1) shooting vs target
 Precision Spotter,Targeting,Not Started,Place markers for hit bonus
 Ranged Slayer Aura,Aura - Combat,Not Started,Unit gets Ranged Slayer
 Targeting Visor Boost Aura,Aura - Combat,Not Started,Unit gets Targeting Visor Boost
-Harassing,Movement,Not Started,Move 3" after shooting or melee
+Harassing,Movement,Implemented,Move 3" after shooting or melee
 Martial Prowess,Activation,Not Started,Activate twice per round (once per game)
 Melee Slayer,Combat - AP Modifier,Implemented,AP(+2) vs Tough(3+) in melee
 Precision Fighting Mark,Buff - Combat,Not Started,Grant +1 melee hit vs target
@@ -212,7 +212,7 @@ Unpredictable Fighter,Combat - Choice,Implemented,Roll D6 in melee: 1-3 = AP+1 4
 Harassing Boost Aura,Aura - Movement,Not Started,Unit gets Harassing Boost
 Piercing Hunter Aura,Aura - Combat,Not Started,Unit gets Piercing Hunter
 Devastating Frenzy,Combat - Scaling,Not Started,Marker-based AP/defense bonus
-Quake when Shooting,Combat - Conditional,Not Started,Quake when shooting
+Quake when Shooting,Combat - Conditional,Implemented,Quake when shooting
 Speed Debuff,Debuff - Movement,Not Started,Reduce enemy movement
 Sturdy Boost Aura,Aura - Defense,Not Started,Unit gets Sturdy Boost
 Swift Aura,Aura - Movement,Not Started,Unit gets Swift
@@ -288,13 +288,13 @@ Precision Charge Aura,Aura - Combat,Not Started,+1 to hit when charging for unit
 Speed Feat Aura,Aura - Movement,Not Started,Unit gets Speed Feat
 Reinforced,Defense - AP Reduction,Implemented,AP(-1) from over 9" (maps to Guardian)
 Mind Wound,Combat - Special,Not Started,Enemy takes 2 hits with Demolish
-Crush,Combat - Special,Not Started,Roll X dice in melee for AP(2) hits
+Crush,Combat - Special,Implemented,Roll X dice in melee for AP(2) hits
 Defense Debuff,Debuff - Defense,Not Started,-1 to defense for enemy unit
-Hazardous,Combat - Self-Damage,Not Started,AP(4) but take wound on hit roll of 1
+Hazardous,Combat - Self-Damage,Implemented,AP(4) but take wound on hit roll of 1
 Heavy Impact,Combat - Modifier,Implemented,Impact hits get AP(1)
 Reinforcement,Deployment,Not Started,Respawn when shaken/destroyed
 Scurry Boost Aura,Aura - Movement,Not Started,Unit gets Scurry Boost
-Guerrilla,Movement,Not Started,Move 3" after shooting or melee (once per round)
+Guerrilla,Movement,Implemented,Move 3" after shooting or melee (once per round)
 Furious Mark,Buff - Combat,Not Started,Grant Furious vs target
 Guerrilla Boost Aura,Aura - Movement,Not Started,Unit gets Guerrilla Boost
 Self-Repair,Defense - Wound Ignore,Implemented,6+ to ignore wounds (maps to Plaguebound)

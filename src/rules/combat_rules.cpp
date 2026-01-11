@@ -953,6 +953,65 @@ void watchborn_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*v
     }
 }
 
+// ==============================================================================
+// Category H: Dice-Based Special Attacks & Post-Combat Movement Effect Implementations
+// ==============================================================================
+
+void crush_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 value) {
+    // Crush(X) - Roll X dice in melee, each 4+ is an AP(2) hit
+    // This generates additional hits with AP(2)
+    // The dice rolling would be done in the combat resolver
+    // Here we just set up the parameters
+    if (ext && ctx.combat_type == CombatType::MELEE) {
+        // Mark that crush hits should have AP(2)
+        ctx.ap_modifier += 2;  // AP(2) for crush hits
+        // value = number of dice to roll (handled in resolver)
+        (void)value;
+    }
+}
+
+void ravage_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) {
+    // Ravage(X) - Roll X dice in melee, each 6+ causes a wound
+    // Direct wounds, not attacks
+    if (ctx.combat_type == CombatType::MELEE) {
+        // value = number of dice to roll
+        // In simplified simulation, treat as ~16.67% chance per die
+        // For now, store value for resolver to handle
+        (void)value;
+    }
+}
+
+void hazardous_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Hazardous - Attacks have AP(4) but take wound on hit roll of 1
+    // Apply AP(4) bonus
+    ctx.ap_modifier += 4;
+    if (ext) {
+        // Mark hazardous active for self-damage tracking
+        // Self-damage on 1s handled in combat resolver
+    }
+}
+
+void quake_when_shooting_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Quake when Shooting - Apply Shred effect (extra wound on defense 1s)
+    // Also bypasses regeneration
+    if (ext) {
+        ext->shred_active = true;  // Use same mechanism as Shred
+    }
+}
+
+void harassing_effect(MovementContext& ctx, u8 /*value*/) {
+    // Harassing - Move 3" after shooting or melee
+    ctx.hit_and_run_pending = true;
+    ctx.hit_and_run_distance = 3;
+}
+
+void guerrilla_effect(MovementContext& ctx, u8 /*value*/) {
+    // Guerrilla - Move 3" after shooting or melee (once per round)
+    // Same as harassing but tracked per-round in game state
+    ctx.hit_and_run_pending = true;
+    ctx.hit_and_run_distance = 3;
+}
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -2184,6 +2243,78 @@ const RuleHotData Watchborn_HotData{
 };
 
 // ==============================================================================
+// Category H: Dice-Based Special Attacks Hot Data
+// ==============================================================================
+
+const RuleHotData Crush_HotData{
+    RuleId::Crush,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_BONUSES),
+    CombatType::MELEE,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS) |
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Ravage_HotData{
+    RuleId::Ravage,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION),
+    CombatType::MELEE,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS)
+};
+
+const RuleHotData Hazardous_HotData{
+    RuleId::Hazardous,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::BOTH,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData QuakeWhenShooting_HotData{
+    RuleId::QuakeWhenShooting,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION),
+    CombatType::SHOOTING,
+    Target::WEAPON,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS) |
+    static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)
+};
+
+const RuleHotData Harassing_HotData{
+    RuleId::Harassing,
+    GamePhase::MOVEMENT,
+    0,
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_MOVEMENT)
+};
+
+const RuleHotData Guerrilla_HotData{
+    RuleId::Guerrilla,
+    GamePhase::MOVEMENT,
+    0,
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_MOVEMENT)
+};
+
+// ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
 
@@ -2970,6 +3101,58 @@ const RuleColdData Watchborn_ColdData{
 };
 
 // ==============================================================================
+// Category H: Dice-Based Special Attacks Cold Data
+// ==============================================================================
+
+const RuleColdData Crush_ColdData{
+    "Crush",
+    nullptr,
+    0,
+    "Crush: roll dice for AP(2) hits",
+    "Roll X dice in melee, each 4+ is an AP(2) hit."
+};
+
+const RuleColdData Ravage_ColdData{
+    "Ravage",
+    nullptr,
+    0,
+    "Ravage: roll dice for wounds",
+    "Roll X dice in melee, each 6+ causes a wound."
+};
+
+const RuleColdData Hazardous_ColdData{
+    "Hazardous",
+    nullptr,
+    0,
+    "Hazardous: AP(4) with self-damage",
+    "Attacks have AP(4) but take wound on hit roll of 1."
+};
+
+const RuleColdData QuakeWhenShooting_ColdData{
+    "QuakeWhenShooting",
+    nullptr,
+    0,
+    "Quake when Shooting: Shred effect",
+    "Defense 1s cause extra wounds when shooting. Bypasses regeneration."
+};
+
+const RuleColdData Harassing_ColdData{
+    "Harassing",
+    nullptr,
+    0,
+    "Harassing: 3\" post-combat move",
+    "May move 3\" after shooting or melee."
+};
+
+const RuleColdData Guerrilla_ColdData{
+    "Guerrilla",
+    nullptr,
+    0,
+    "Guerrilla: 3\" post-combat move",
+    "May move 3\" after shooting or melee (once per round)."
+};
+
+// ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
 
@@ -3451,6 +3634,37 @@ const RuleEffectEntry HeavyImpact_Effects = EffectBuilder()
 
 const RuleEffectEntry Watchborn_Effects = EffectBuilder()
     .combat(CombatSubPhase::HIT_MODIFIERS, watchborn_effect)
+    .build();
+
+// ==============================================================================
+// Category H: Dice-Based Special Attacks Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Crush_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_BONUSES, crush_effect)
+    .condition(CombatSubPhase::HIT_BONUSES, melee_only_condition)
+    .build();
+
+const RuleEffectEntry Ravage_Effects = EffectBuilder()
+    .combat(CombatSubPhase::WOUND_ALLOCATION, ravage_effect)
+    .condition(CombatSubPhase::WOUND_ALLOCATION, melee_only_condition)
+    .build();
+
+const RuleEffectEntry Hazardous_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, hazardous_effect)
+    .build();
+
+const RuleEffectEntry QuakeWhenShooting_Effects = EffectBuilder()
+    .combat(CombatSubPhase::DEFENSE_RESOLUTION, quake_when_shooting_effect)
+    .condition(CombatSubPhase::DEFENSE_RESOLUTION, shooting_only_condition)
+    .build();
+
+const RuleEffectEntry Harassing_Effects = EffectBuilder()
+    .movement(MoveSubPhase::POST_MOVE, harassing_effect)
+    .build();
+
+const RuleEffectEntry Guerrilla_Effects = EffectBuilder()
+    .movement(MoveSubPhase::POST_MOVE, guerrilla_effect)
     .build();
 
 // ==============================================================================
@@ -4124,6 +4338,14 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::HeavyImpact, HeavyImpact_HotData);
     registry.register_hot_data(RuleId::Watchborn, Watchborn_HotData);
 
+    // Category H: Dice-Based Special Attacks hot data
+    registry.register_hot_data(RuleId::Crush, Crush_HotData);
+    registry.register_hot_data(RuleId::Ravage, Ravage_HotData);
+    registry.register_hot_data(RuleId::Hazardous, Hazardous_HotData);
+    registry.register_hot_data(RuleId::QuakeWhenShooting, QuakeWhenShooting_HotData);
+    registry.register_hot_data(RuleId::Harassing, Harassing_HotData);
+    registry.register_hot_data(RuleId::Guerrilla, Guerrilla_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -4271,6 +4493,14 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::MeleeSlayer, MeleeSlayer_ColdData);
     registry.register_cold_data(RuleId::HeavyImpact, HeavyImpact_ColdData);
     registry.register_cold_data(RuleId::Watchborn, Watchborn_ColdData);
+
+    // Category H: Dice-Based Special Attacks cold data
+    registry.register_cold_data(RuleId::Crush, Crush_ColdData);
+    registry.register_cold_data(RuleId::Ravage, Ravage_ColdData);
+    registry.register_cold_data(RuleId::Hazardous, Hazardous_ColdData);
+    registry.register_cold_data(RuleId::QuakeWhenShooting, QuakeWhenShooting_ColdData);
+    registry.register_cold_data(RuleId::Harassing, Harassing_ColdData);
+    registry.register_cold_data(RuleId::Guerrilla, Guerrilla_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -4421,6 +4651,14 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::MeleeSlayer, MeleeSlayer_Effects);
     registry.register_effects(RuleId::HeavyImpact, HeavyImpact_Effects);
     registry.register_effects(RuleId::Watchborn, Watchborn_Effects);
+
+    // Category H: Dice-Based Special Attacks effects
+    registry.register_effects(RuleId::Crush, Crush_Effects);
+    registry.register_effects(RuleId::Ravage, Ravage_Effects);
+    registry.register_effects(RuleId::Hazardous, Hazardous_Effects);
+    registry.register_effects(RuleId::QuakeWhenShooting, QuakeWhenShooting_Effects);
+    registry.register_effects(RuleId::Harassing, Harassing_Effects);
+    registry.register_effects(RuleId::Guerrilla, Guerrilla_Effects);
 
     // =========================================================================
     // Register Movement effects

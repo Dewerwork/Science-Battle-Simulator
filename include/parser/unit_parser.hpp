@@ -538,6 +538,33 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"heavyimpactaura", RuleId::HeavyImpact},
         {"watchborn aura", RuleId::Watchborn},
         {"watchbornaura", RuleId::Watchborn},
+
+        // === Category H: Dice-Based Special Attacks & Post-Combat Movement ===
+        {"crush", RuleId::Crush},
+        {"ravage", RuleId::Ravage},
+        {"hazardous", RuleId::Hazardous},
+        {"quake when shooting", RuleId::QuakeWhenShooting},
+        {"quakewhenshooting", RuleId::QuakeWhenShooting},
+        {"harassing", RuleId::Harassing},
+        {"guerrilla", RuleId::Guerrilla},
+
+        // === Category H: Aura Mappings ===
+        {"crush aura", RuleId::Crush},
+        {"crushaura", RuleId::Crush},
+        {"ravage aura", RuleId::Ravage},
+        {"ravageaura", RuleId::Ravage},
+        {"hazardous aura", RuleId::Hazardous},
+        {"hazardousaura", RuleId::Hazardous},
+        {"quake when shooting aura", RuleId::QuakeWhenShooting},
+        {"quakewhenspootingaura", RuleId::QuakeWhenShooting},
+        {"harassing aura", RuleId::Harassing},
+        {"harassingaura", RuleId::Harassing},
+        {"harassing boost aura", RuleId::Harassing},
+        {"harassingboostaura", RuleId::Harassing},
+        {"guerrilla aura", RuleId::Guerrilla},
+        {"guerrillaaura", RuleId::Guerrilla},
+        {"guerrilla boost aura", RuleId::Guerrilla},
+        {"guerrillaboostaura", RuleId::Guerrilla},
     };
     return map;
 }

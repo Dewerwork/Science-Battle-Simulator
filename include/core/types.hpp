@@ -281,6 +281,14 @@ enum class RuleId : u16 {
     HeavyImpact,          // Heavy Impact - Impact hits get AP(1) (124)
     Watchborn,            // Watchborn - Pick AP(+1) or +1 to hit (125)
 
+    // === Category H: Dice-Based Special Attacks & Post-Combat Movement ===
+    Crush,                // Crush(X) - Roll X dice in melee, 4+ = AP(2) hit (126)
+    Ravage,               // Ravage(X) - Roll X dice in melee, 6+ = wound (127)
+    Hazardous,            // Hazardous - AP(4) but take wound on hit roll of 1 (128)
+    QuakeWhenShooting,    // Quake when Shooting - Shred effect when shooting (129)
+    Harassing,            // Harassing - Move 3" after shooting or melee (130)
+    Guerrilla,            // Guerrilla - Move 3" after shooting/melee (once/round) (131)
+
     // Future expansion rules go here
     // Each new rule should be categorized as PRIMARY or EXTENDED based on
     // how frequently it's checked during combat resolution
