@@ -1012,6 +1012,326 @@ void guerrilla_effect(MovementContext& ctx, u8 /*value*/) {
     ctx.hit_and_run_distance = 3;
 }
 
+// ==============================================================================
+// Category I-O: Batch Implementation Effect Functions
+// ==============================================================================
+
+// --- Category I: Aura Effects (map to enhanced base rules) ---
+void versatile_reach_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Versatile Reach - extended melee range (handled at targeting phase)
+    // No combat context modification needed
+}
+
+void precision_fighter_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // +1 to hit in melee for unit
+    ctx.hit_modifier += 1;
+}
+
+void piercing_fighter_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // AP+1 in melee for unit
+    ctx.ap_modifier += 1;
+}
+
+void precision_charge_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // +1 to hit when charging
+    if (ctx.is_charge) {
+        ctx.hit_modifier += 1;
+    }
+}
+
+void piercing_shooter_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // AP+1 when shooting
+    ctx.ap_modifier += 1;
+}
+
+void quick_shot_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Quick Shot - additional shooting capability
+    ctx.hit_modifier += 1;
+}
+
+// --- Category J: Buff Effects ---
+void righteous_fury_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Grant Piercing Assault to friendlies - AP(1) minimum on charge
+    ctx.ap_modifier = std::max(ctx.ap_modifier, static_cast<i8>(1));
+}
+
+void precision_fighter_buff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // +1 to hit in melee
+    ctx.hit_modifier += 1;
+}
+
+void precision_shooter_buff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // +1 to hit when shooting
+    ctx.hit_modifier += 1;
+}
+
+void bane_in_melee_buff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Grant Bane in melee - bypass regen, force defense 6 rerolls
+    ctx.trait_flags |= CombatContextCore::FORCE_REROLL;
+    ctx.trait_flags |= CombatContextCore::BYPASS_REGEN;
+}
+
+void primal_boost_buff_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Enhanced primal - extra hits on 5-6
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+    }
+}
+
+void precision_attacks_buff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // +1 to hit attacking
+    ctx.hit_modifier += 1;
+}
+
+// --- Category K: Mark Effects ---
+void shred_mark_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Grant Shred vs target - extra wound on defense 1s
+    if (ext) {
+        ext->shred_active = true;
+    }
+}
+
+void piercing_shooting_mark_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // AP+1 shooting vs target
+    ctx.ap_modifier += 1;
+}
+
+void precision_fighting_mark_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // +1 hit in melee vs target
+    ctx.hit_modifier += 1;
+}
+
+void slayer_mark_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Slayer vs target - AP+2 vs Tough
+    ctx.ap_modifier += 2;
+}
+
+void relentless_mark_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Grant Relentless vs target
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+    }
+}
+
+void rending_in_melee_mark_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Grant Rending in melee vs target
+    if (ext) {
+        ext->rending_hits += ctx.natural_sixes;
+    }
+}
+
+void furious_mark_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Grant Furious vs target
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+    }
+}
+
+void indirect_mark_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Grant Indirect vs target - ignore cover
+    if (ext) {
+        ext->ignores_cover = true;
+    }
+}
+
+void bane_mark_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Grant Bane vs target - force reroll 6s on defense, bypass regen
+    ctx.trait_flags |= CombatContextCore::FORCE_REROLL;
+    ctx.trait_flags |= CombatContextCore::BYPASS_REGEN;
+}
+
+void precision_shooting_mark_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // +1 hit shooting vs target
+    ctx.hit_modifier += 1;
+}
+
+void quick_shot_mark_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Quick Shot vs target
+    ctx.hit_modifier += 1;
+}
+
+// --- Category L: Debuff Effects ---
+void unwieldy_debuff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Grant Unwieldy to enemy - -1 to hit in melee
+    ctx.hit_modifier -= 1;
+}
+
+void precision_debuff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // -1 to hit for enemy
+    ctx.hit_modifier -= 1;
+}
+
+void piercing_shooting_debuff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Remove AP+1 from enemy shooting
+    ctx.ap_modifier -= 1;
+}
+
+// --- Category M: Scaling/Frenzy/Growth Effects ---
+void piercing_growth_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) {
+    // Marker-based AP scaling - value = current markers
+    ctx.ap_modifier += static_cast<i8>(value);
+}
+
+void ruinous_frenzy_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) {
+    // Marker-based hit/defense bonus
+    ctx.hit_modifier += static_cast<i8>(value);
+}
+
+void devastating_frenzy_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) {
+    // Marker-based AP/defense bonus
+    ctx.ap_modifier += static_cast<i8>(value);
+}
+
+void precision_growth_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) {
+    // Marker-based hit bonus
+    ctx.hit_modifier += static_cast<i8>(value);
+}
+
+void destructive_frenzy_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) {
+    // Marker-based hit/AP bonus
+    ctx.hit_modifier += static_cast<i8>(value / 2);
+    ctx.ap_modifier += static_cast<i8>(value / 2);
+}
+
+// --- Category N: Storm AoE Effects ---
+void storm_of_change_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Roll 3 dice for AoE Shred hits
+    if (ext) {
+        ext->shred_active = true;
+        ext->bonus_hits += 3;  // Simulate 3 dice of storm damage
+    }
+}
+
+void storm_of_lust_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Roll 3 dice for AoE Surge hits
+    u32 bonus = ctx.natural_sixes;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus + 3;  // Surge + storm dice
+    }
+}
+
+void storm_of_plague_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Roll 3 dice for AoE Bane hits
+    ctx.trait_flags |= CombatContextCore::FORCE_REROLL;
+    ctx.trait_flags |= CombatContextCore::BYPASS_REGEN;
+    if (ext) {
+        ext->bonus_hits += 3;  // Storm dice
+    }
+}
+
+void storm_of_war_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Roll 3 dice for AoE AP(1) hits
+    ctx.ap_modifier += 1;
+    if (ext) {
+        ext->bonus_hits += 3;  // Storm dice
+    }
+}
+
+// --- Category O: Special Combat Effects ---
+void breath_attack_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Once per activation roll D6 for area damage
+    ctx.hits += 3;  // Average D6 result
+    if (ext) {
+        ext->bonus_hits += 3;
+    }
+}
+
+void increased_shooting_range_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // +6" range when shooting (handled at targeting phase)
+    // No combat context modification needed
+}
+
+void regenerative_strength_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) {
+    // Gain attacks when ignoring wounds - value represents bonus
+    ctx.attacks += value;
+}
+
+void strafing_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Attack when moving through enemy units
+    ctx.hits += 1;  // Strafing hit
+    if (ext) {
+        ext->bonus_hits += 1;
+    }
+}
+
+void surprise_attack_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Infiltrate variant with damage on deploy
+    ctx.hits += 2;  // Surprise attack bonus
+    if (ext) {
+        ext->bonus_hits += 2;
+    }
+}
+
+void takedown_strike_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Once per game targeted attack at Quality 2+
+    ctx.quality_used = 2;
+    if (ext) {
+        ext->quality_override = 2;
+    }
+}
+
+void instinctive_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Must attack closest target with +1 hit
+    ctx.hit_modifier += 1;
+}
+
+void crossing_attack_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 value) {
+    // Roll X dice moving through enemies for hits
+    u32 bonus = value / 2;  // Approximation of successful rolls
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+    }
+}
+
+void quick_readjustment_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) {
+    // Ignore Indirect move penalty - flag as not moved
+    if (ext) {
+        ext->moved_this_activation = false;
+    }
+}
+
+void crossing_strike_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Attack through movement
+    ctx.hits += 2;
+    if (ext) {
+        ext->bonus_hits += 2;
+    }
+}
+
+void surprise_piercing_shot_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // AP+2 when deploying via Ambush
+    ctx.ap_modifier += 2;
+}
+
+void mind_wound_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Enemy takes 2 hits with Demolish effect
+    ctx.hits += 2;
+    if (ext) {
+        ext->bonus_hits += 2;
+        ext->ignores_cover = true;  // Demolish ignores cover
+    }
+}
+
+void mobile_artillery_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // +1 hit from Hold, -2 to be hit when still
+    if (ext && !ext->moved_this_activation) {
+        ctx.hit_modifier += 1;
+    }
+}
+
+void vengeance_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) {
+    // Markers for hit bonus when destroyed - value = marker count
+    ctx.hit_modifier += static_cast<i8>(value);
+}
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -2315,6 +2635,90 @@ const RuleHotData Guerrilla_HotData{
 };
 
 // ==============================================================================
+// Category I-O: Batch Implementation Hot Data
+// ==============================================================================
+
+// Category I: Aura Rules Hot Data
+const RuleHotData VersatileReachAura_HotData{RuleId::VersatileReachAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::MELEE, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData UnpredictableFighterAura_HotData{RuleId::UnpredictableFighterAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::MELEE, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData PointBlankPiercingAura_HotData{RuleId::PointBlankPiercingAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData RangedSlayerAura_HotData{RuleId::RangedSlayerAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData TargetingVisorBoostAura_HotData{RuleId::TargetingVisorBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData PiercingHunterAura_HotData{RuleId::PiercingHunterAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData ClanWarriorBoostAura_HotData{RuleId::ClanWarriorBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_BONUSES), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData PrecisionFighterAura_HotData{RuleId::PrecisionFighterAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::MELEE, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData MischievousBoostAura_HotData{RuleId::MischievousBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL)};
+const RuleHotData QuickShotAura_HotData{RuleId::QuickShotAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData HavocboundBoostAura_HotData{RuleId::HavocboundBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData WarboundBoostAura_HotData{RuleId::WarboundBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS)};
+const RuleHotData InfectedBoostAura_HotData{RuleId::InfectedBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS)};
+const RuleHotData UnpredictableShooterAura_HotData{RuleId::UnpredictableShooterAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData ScrapperBoostAura_HotData{RuleId::ScrapperBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL)};
+const RuleHotData FerociousBoostAura_HotData{RuleId::FerociousBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_BONUSES), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData PiercingFighterAura_HotData{RuleId::PiercingFighterAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::MELEE, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData PrecisionChargeAura_HotData{RuleId::PrecisionChargeAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::MELEE, Target::SELF, Trigger::ON_CHARGE, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) | static_cast<TraitMask>(RuleTrait::CHARGE_ONLY)};
+const RuleHotData GroundedPrecisionAura_HotData{RuleId::GroundedPrecisionAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData MeleeSlayerAura_HotData{RuleId::MeleeSlayerAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::MELEE, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData PiercingShooterAura_HotData{RuleId::PiercingShooterAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+
+// Category J: Buff Rules Hot Data
+const RuleHotData RighteousFury_HotData{RuleId::RighteousFury, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::MELEE, Target::SELF, Trigger::ON_CHARGE, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP) | static_cast<TraitMask>(RuleTrait::CHARGE_ONLY)};
+const RuleHotData PrecisionFighterBuff_HotData{RuleId::PrecisionFighterBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::MELEE, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData PrecisionShooterBuff_HotData{RuleId::PrecisionShooterBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData BaneInMeleeBuff_HotData{RuleId::BaneInMeleeBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::MELEE, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION) | static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL)};
+const RuleHotData PrimalBoostBuff_HotData{RuleId::PrimalBoostBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_BONUSES), CombatType::BOTH, Target::SELF, Trigger::ON_HIT_ROLL_6, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData PrecisionAttacksBuff_HotData{RuleId::PrecisionAttacksBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+
+// Category K: Mark Rules Hot Data
+const RuleHotData UnpredictableFighterMark_HotData{RuleId::UnpredictableFighterMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::MELEE, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData UnstoppableShootingMark_HotData{RuleId::UnstoppableShootingMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)};
+const RuleHotData ShredMark_HotData{RuleId::ShredMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS) | static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)};
+const RuleHotData PiercingShootingMark_HotData{RuleId::PiercingShootingMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::SHOOTING, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData PrecisionFightingMark_HotData{RuleId::PrecisionFightingMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::MELEE, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData SlayerMark_HotData{RuleId::SlayerMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData RelentlessMark_HotData{RuleId::RelentlessMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_BONUSES), CombatType::SHOOTING, Target::DEFENDER, Trigger::ON_HIT_ROLL_6, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData RendingInMeleeMark_HotData{RuleId::RendingInMeleeMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_SEPARATION), CombatType::MELEE, Target::DEFENDER, Trigger::ON_HIT_ROLL_6, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP) | static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)};
+const RuleHotData FuriousMark_HotData{RuleId::FuriousMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_BONUSES), CombatType::MELEE, Target::DEFENDER, Trigger::ON_HIT_ROLL_6, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS) | static_cast<TraitMask>(RuleTrait::CHARGE_ONLY)};
+const RuleHotData IndirectMark_HotData{RuleId::IndirectMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::IGNORES_COVER)};
+const RuleHotData BaneMark_HotData{RuleId::BaneMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION) | static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL)};
+const RuleHotData PrecisionShootingMark_HotData{RuleId::PrecisionShootingMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData QuickShotMark_HotData{RuleId::QuickShotMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+
+// Category L: Debuff Rules Hot Data
+const RuleHotData UnwieldyDebuff_HotData{RuleId::UnwieldyDebuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::MELEE, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData PrecisionDebuff_HotData{RuleId::PrecisionDebuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData PiercingShootingDebuff_HotData{RuleId::PiercingShootingDebuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::SHOOTING, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+
+// Category M: Scaling/Frenzy/Growth Rules Hot Data
+const RuleHotData PiercingGrowth_HotData{RuleId::PiercingGrowth, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData RuinousFrenzy_HotData{RuleId::RuinousFrenzy, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) | static_cast<TraitMask>(RuleTrait::MODIFIES_DEFENSE)};
+const RuleHotData DevastatingFrenzy_HotData{RuleId::DevastatingFrenzy, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP) | static_cast<TraitMask>(RuleTrait::MODIFIES_DEFENSE)};
+const RuleHotData PrecisionGrowth_HotData{RuleId::PrecisionGrowth, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData DestructiveFrenzy_HotData{RuleId::DestructiveFrenzy, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) | static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+
+// Category N: Storm AoE Rules Hot Data
+const RuleHotData StormOfChange_HotData{RuleId::StormOfChange, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_WOUNDS) | static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION)};
+const RuleHotData StormOfLust_HotData{RuleId::StormOfLust, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_BONUSES), CombatType::BOTH, Target::DEFENDER, Trigger::ON_HIT_ROLL_6, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData StormOfPlague_HotData{RuleId::StormOfPlague, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::BYPASSES_REGENERATION) | static_cast<TraitMask>(RuleTrait::FORCES_DEFENSE_REROLL)};
+const RuleHotData StormOfWar_HotData{RuleId::StormOfWar, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+
+// Category O: Special Combat Rules Hot Data
+const RuleHotData BreathAttack_HotData{RuleId::BreathAttack, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData IncreasedShootingRange_HotData{RuleId::IncreasedShootingRange, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::SHOOTING, Target::WEAPON, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData RegenerativeStrength_HotData{RuleId::RegenerativeStrength, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::BOTH, Target::SELF, Trigger::WHEN_WOUNDED, RulePriority::NORMAL, 0};
+const RuleHotData Strafing_HotData{RuleId::Strafing, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData SurpriseAttack_HotData{RuleId::SurpriseAttack, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData TakedownStrike_HotData{RuleId::TakedownStrike, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::ROLL_HITS), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::OVERRIDES_QUALITY)};
+const RuleHotData Instinctive_HotData{RuleId::Instinctive, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData CrossingAttack_HotData{RuleId::CrossingAttack, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::MELEE, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData QuickReadjustment_HotData{RuleId::QuickReadjustment, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::WEAPON, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData CrossingStrike_HotData{RuleId::CrossingStrike, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::MELEE, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData SurprisePiercingShot_HotData{RuleId::SurprisePiercingShot, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::SHOOTING, Target::WEAPON, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData MindWound_HotData{RuleId::MindWound, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS) | static_cast<TraitMask>(RuleTrait::IGNORES_COVER)};
+const RuleHotData MobileArtillery_HotData{RuleId::MobileArtillery, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
+const RuleHotData Vengeance_HotData{RuleId::Vengeance, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::BOTH, Target::SELF, Trigger::ON_MODEL_DEATH, RulePriority::NORMAL, 0};
+
+// ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
 
@@ -3153,6 +3557,90 @@ const RuleColdData Guerrilla_ColdData{
 };
 
 // ==============================================================================
+// Category I-O: Batch Implementation Cold Data
+// ==============================================================================
+
+// Category I: Aura Cold Data
+const RuleColdData VersatileReachAura_ColdData{"VersatileReachAura", nullptr, 0, "Versatile Reach Aura", "Unit gains extended melee range."};
+const RuleColdData UnpredictableFighterAura_ColdData{"UnpredictableFighterAura", nullptr, 0, "Unpredictable Fighter Aura", "Unit gains Unpredictable Fighter."};
+const RuleColdData PointBlankPiercingAura_ColdData{"PointBlankPiercingAura", nullptr, 0, "Point-Blank Piercing Aura", "Unit gains AP bonus at close range."};
+const RuleColdData RangedSlayerAura_ColdData{"RangedSlayerAura", nullptr, 0, "Ranged Slayer Aura", "Unit gains Ranged Slayer."};
+const RuleColdData TargetingVisorBoostAura_ColdData{"TargetingVisorBoostAura", nullptr, 0, "Targeting Visor Boost Aura", "Unit gains enhanced Targeting Visor."};
+const RuleColdData PiercingHunterAura_ColdData{"PiercingHunterAura", nullptr, 0, "Piercing Hunter Aura", "Unit gains Piercing Hunter."};
+const RuleColdData ClanWarriorBoostAura_ColdData{"ClanWarriorBoostAura", nullptr, 0, "Clan Warrior Boost Aura", "Unit gains enhanced Clan Warrior."};
+const RuleColdData PrecisionFighterAura_ColdData{"PrecisionFighterAura", nullptr, 0, "Precision Fighter Aura", "Unit gains +1 to hit in melee."};
+const RuleColdData MischievousBoostAura_ColdData{"MischievousBoostAura", nullptr, 0, "Mischievous Boost Aura", "Unit gains enhanced Mischievous."};
+const RuleColdData QuickShotAura_ColdData{"QuickShotAura", nullptr, 0, "Quick Shot Aura", "Unit gains Quick Shot."};
+const RuleColdData HavocboundBoostAura_ColdData{"HavocboundBoostAura", nullptr, 0, "Havocbound Boost Aura", "Unit gains enhanced Havocbound."};
+const RuleColdData WarboundBoostAura_ColdData{"WarboundBoostAura", nullptr, 0, "Warbound Boost Aura", "Unit gains enhanced Warbound."};
+const RuleColdData InfectedBoostAura_ColdData{"InfectedBoostAura", nullptr, 0, "Infected Boost Aura", "Unit gains enhanced Infected."};
+const RuleColdData UnpredictableShooterAura_ColdData{"UnpredictableShooterAura", nullptr, 0, "Unpredictable Shooter Aura", "Unit gains Unpredictable Shooter."};
+const RuleColdData ScrapperBoostAura_ColdData{"ScrapperBoostAura", nullptr, 0, "Scrapper Boost Aura", "Unit gains enhanced Scrapper."};
+const RuleColdData FerociousBoostAura_ColdData{"FerociousBoostAura", nullptr, 0, "Ferocious Boost Aura", "Unit gains enhanced Ferocious."};
+const RuleColdData PiercingFighterAura_ColdData{"PiercingFighterAura", nullptr, 0, "Piercing Fighter Aura", "Unit gains AP+1 in melee."};
+const RuleColdData PrecisionChargeAura_ColdData{"PrecisionChargeAura", nullptr, 0, "Precision Charge Aura", "Unit gains +1 to hit when charging."};
+const RuleColdData GroundedPrecisionAura_ColdData{"GroundedPrecisionAura", nullptr, 0, "Grounded Precision Aura", "Unit gains hit bonus near terrain."};
+const RuleColdData MeleeSlayerAura_ColdData{"MeleeSlayerAura", nullptr, 0, "Melee Slayer Aura", "Unit gains Melee Slayer."};
+const RuleColdData PiercingShooterAura_ColdData{"PiercingShooterAura", nullptr, 0, "Piercing Shooter Aura", "Unit gains AP+1 when shooting."};
+
+// Category J: Buff Cold Data
+const RuleColdData RighteousFury_ColdData{"RighteousFury", nullptr, 0, "Righteous Fury", "Grant Piercing Assault to friendlies."};
+const RuleColdData PrecisionFighterBuff_ColdData{"PrecisionFighterBuff", nullptr, 0, "Precision Fighter Buff", "Grant +1 to hit in melee to friendly."};
+const RuleColdData PrecisionShooterBuff_ColdData{"PrecisionShooterBuff", nullptr, 0, "Precision Shooter Buff", "Grant +1 to hit shooting to friendly."};
+const RuleColdData BaneInMeleeBuff_ColdData{"BaneInMeleeBuff", nullptr, 0, "Bane in Melee Buff", "Grant Bane in melee to friendly."};
+const RuleColdData PrimalBoostBuff_ColdData{"PrimalBoostBuff", nullptr, 0, "Primal Boost Buff", "Grant enhanced Primal to friendly."};
+const RuleColdData PrecisionAttacksBuff_ColdData{"PrecisionAttacksBuff", nullptr, 0, "Precision Attacks Buff", "Grant +1 to hit to friendly."};
+
+// Category K: Mark Cold Data
+const RuleColdData UnpredictableFighterMark_ColdData{"UnpredictableFighterMark", nullptr, 0, "Unpredictable Fighter Mark", "Grant Unpredictable Fighter vs target."};
+const RuleColdData UnstoppableShootingMark_ColdData{"UnstoppableShootingMark", nullptr, 0, "Unstoppable Shooting Mark", "Grant Unstoppable when shooting vs target."};
+const RuleColdData ShredMark_ColdData{"ShredMark", nullptr, 0, "Shred Mark", "Grant Shred vs target."};
+const RuleColdData PiercingShootingMark_ColdData{"PiercingShootingMark", nullptr, 0, "Piercing Shooting Mark", "Grant AP+1 shooting vs target."};
+const RuleColdData PrecisionFightingMark_ColdData{"PrecisionFightingMark", nullptr, 0, "Precision Fighting Mark", "Grant +1 to hit in melee vs target."};
+const RuleColdData SlayerMark_ColdData{"SlayerMark", nullptr, 0, "Slayer Mark", "Grant Slayer vs target."};
+const RuleColdData RelentlessMark_ColdData{"RelentlessMark", nullptr, 0, "Relentless Mark", "Grant Relentless vs target."};
+const RuleColdData RendingInMeleeMark_ColdData{"RendingInMeleeMark", nullptr, 0, "Rending in Melee Mark", "Grant Rending in melee vs target."};
+const RuleColdData FuriousMark_ColdData{"FuriousMark", nullptr, 0, "Furious Mark", "Grant Furious vs target."};
+const RuleColdData IndirectMark_ColdData{"IndirectMark", nullptr, 0, "Indirect Mark", "Grant Indirect vs target."};
+const RuleColdData BaneMark_ColdData{"BaneMark", nullptr, 0, "Bane Mark", "Grant Bane vs target."};
+const RuleColdData PrecisionShootingMark_ColdData{"PrecisionShootingMark", nullptr, 0, "Precision Shooting Mark", "Grant +1 to hit shooting vs target."};
+const RuleColdData QuickShotMark_ColdData{"QuickShotMark", nullptr, 0, "Quick Shot Mark", "Grant Quick Shot vs target."};
+
+// Category L: Debuff Cold Data
+const RuleColdData UnwieldyDebuff_ColdData{"UnwieldyDebuff", nullptr, 0, "Unwieldy Debuff", "Grant Unwieldy to enemy in melee."};
+const RuleColdData PrecisionDebuff_ColdData{"PrecisionDebuff", nullptr, 0, "Precision Debuff", "-1 to hit for enemy unit."};
+const RuleColdData PiercingShootingDebuff_ColdData{"PiercingShootingDebuff", nullptr, 0, "Piercing Shooting Debuff", "Remove AP+1 from enemy shooting."};
+
+// Category M: Frenzy/Growth Cold Data
+const RuleColdData PiercingGrowth_ColdData{"PiercingGrowth", nullptr, 0, "Piercing Growth", "Marker-based AP scaling over rounds."};
+const RuleColdData RuinousFrenzy_ColdData{"RuinousFrenzy", nullptr, 0, "Ruinous Frenzy", "Marker-based hit/defense bonus."};
+const RuleColdData DevastatingFrenzy_ColdData{"DevastatingFrenzy", nullptr, 0, "Devastating Frenzy", "Marker-based AP/defense bonus."};
+const RuleColdData PrecisionGrowth_ColdData{"PrecisionGrowth", nullptr, 0, "Precision Growth", "Marker-based hit bonus over rounds."};
+const RuleColdData DestructiveFrenzy_ColdData{"DestructiveFrenzy", nullptr, 0, "Destructive Frenzy", "Marker-based hit/AP bonus."};
+
+// Category N: Storm Cold Data
+const RuleColdData StormOfChange_ColdData{"StormOfChange", nullptr, 0, "Storm of Change", "Roll 3 dice for AoE Shred hits."};
+const RuleColdData StormOfLust_ColdData{"StormOfLust", nullptr, 0, "Storm of Lust", "Roll 3 dice for AoE Surge hits."};
+const RuleColdData StormOfPlague_ColdData{"StormOfPlague", nullptr, 0, "Storm of Plague", "Roll 3 dice for AoE Bane hits."};
+const RuleColdData StormOfWar_ColdData{"StormOfWar", nullptr, 0, "Storm of War", "Roll 3 dice for AoE AP(1) hits."};
+
+// Category O: Special Combat Cold Data
+const RuleColdData BreathAttack_ColdData{"BreathAttack", nullptr, 0, "Breath Attack", "Once per activation roll D6 for area damage."};
+const RuleColdData IncreasedShootingRange_ColdData{"IncreasedShootingRange", nullptr, 0, "Increased Shooting Range", "+6\" range when shooting."};
+const RuleColdData RegenerativeStrength_ColdData{"RegenerativeStrength", nullptr, 0, "Regenerative Strength", "Gain attacks when ignoring wounds."};
+const RuleColdData Strafing_ColdData{"Strafing", nullptr, 0, "Strafing", "Attack when moving through enemy units."};
+const RuleColdData SurpriseAttack_ColdData{"SurpriseAttack", nullptr, 0, "Surprise Attack", "Infiltrate variant with damage on deploy."};
+const RuleColdData TakedownStrike_ColdData{"TakedownStrike", nullptr, 0, "Takedown Strike", "Once per game targeted attack at Quality 2+."};
+const RuleColdData Instinctive_ColdData{"Instinctive", nullptr, 0, "Instinctive", "Must attack closest target with +1 hit."};
+const RuleColdData CrossingAttack_ColdData{"CrossingAttack", nullptr, 0, "Crossing Attack", "Roll X dice moving through enemies for hits."};
+const RuleColdData QuickReadjustment_ColdData{"QuickReadjustment", nullptr, 0, "Quick Readjustment", "Ignore Indirect move penalty."};
+const RuleColdData CrossingStrike_ColdData{"CrossingStrike", nullptr, 0, "Crossing Strike", "Once per game attack through movement."};
+const RuleColdData SurprisePiercingShot_ColdData{"SurprisePiercingShot", nullptr, 0, "Surprise Piercing Shot", "AP+2 when deploying via Ambush."};
+const RuleColdData MindWound_ColdData{"MindWound", nullptr, 0, "Mind Wound", "Enemy takes 2 hits with Demolish."};
+const RuleColdData MobileArtillery_ColdData{"MobileArtillery", nullptr, 0, "Mobile Artillery", "+1 hit from Hold, -2 to be hit when still."};
+const RuleColdData Vengeance_ColdData{"Vengeance", nullptr, 0, "Vengeance", "Markers for hit bonus when destroyed."};
+
+// ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
 
@@ -3666,6 +4154,90 @@ const RuleEffectEntry Harassing_Effects = EffectBuilder()
 const RuleEffectEntry Guerrilla_Effects = EffectBuilder()
     .movement(MoveSubPhase::POST_MOVE, guerrilla_effect)
     .build();
+
+// ==============================================================================
+// Category I-O: Batch Implementation Effect Entries
+// ==============================================================================
+
+// Category I: Aura Effect Entries
+const RuleEffectEntry VersatileReachAura_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, versatile_reach_aura_effect).build();
+const RuleEffectEntry UnpredictableFighterAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, unpredictable_fighter_effect).condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition).build();
+const RuleEffectEntry PointBlankPiercingAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, point_blank_surge_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, shooting_only_condition).build();
+const RuleEffectEntry RangedSlayerAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, melee_slayer_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, shooting_only_condition).build();
+const RuleEffectEntry TargetingVisorBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, targeting_visor_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry PiercingHunterAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_fighter_aura_effect).build();
+const RuleEffectEntry ClanWarriorBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, bloodborn_effect).build();
+const RuleEffectEntry PrecisionFighterAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_fighter_aura_effect).condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition).build();
+const RuleEffectEntry MischievousBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, lacerate_effect).build();
+const RuleEffectEntry QuickShotAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, quick_shot_aura_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry HavocboundBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, havocbound_effect).build();
+const RuleEffectEntry WarboundBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::WOUND_ALLOCATION, warbound_boost_effect).build();
+const RuleEffectEntry InfectedBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::WOUND_ALLOCATION, warbound_boost_effect).build();
+const RuleEffectEntry UnpredictableShooterAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, unpredictable_shooter_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry ScrapperBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, lacerate_effect).build();
+const RuleEffectEntry FerociousBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, ferocious_boost_effect).build();
+const RuleEffectEntry PiercingFighterAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_fighter_aura_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, melee_only_condition).build();
+const RuleEffectEntry PrecisionChargeAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_charge_aura_effect).condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition).build();
+const RuleEffectEntry GroundedPrecisionAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_fighter_aura_effect).build();
+const RuleEffectEntry MeleeSlayerAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, melee_slayer_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, melee_only_condition).build();
+const RuleEffectEntry PiercingShooterAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_shooter_aura_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, shooting_only_condition).build();
+
+// Category J: Buff Effect Entries
+const RuleEffectEntry RighteousFury_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, righteous_fury_effect).build();
+const RuleEffectEntry PrecisionFighterBuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_fighter_buff_effect).condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition).build();
+const RuleEffectEntry PrecisionShooterBuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_shooter_buff_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry BaneInMeleeBuff_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, bane_in_melee_buff_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, melee_only_condition).build();
+const RuleEffectEntry PrimalBoostBuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, primal_boost_buff_effect).build();
+const RuleEffectEntry PrecisionAttacksBuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_attacks_buff_effect).build();
+
+// Category K: Mark Effect Entries
+const RuleEffectEntry UnpredictableFighterMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, unpredictable_fighter_effect).condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition).build();
+const RuleEffectEntry UnstoppableShootingMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, unstoppable_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry ShredMark_Effects = EffectBuilder().combat(CombatSubPhase::WOUND_ALLOCATION, shred_mark_effect).build();
+const RuleEffectEntry PiercingShootingMark_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_shooting_mark_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, shooting_only_condition).build();
+const RuleEffectEntry PrecisionFightingMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_fighting_mark_effect).condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition).build();
+const RuleEffectEntry SlayerMark_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, slayer_mark_effect).build();
+const RuleEffectEntry RelentlessMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, relentless_mark_effect).condition(CombatSubPhase::HIT_BONUSES, shooting_only_condition).build();
+const RuleEffectEntry RendingInMeleeMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_SEPARATION, rending_in_melee_mark_effect).condition(CombatSubPhase::HIT_SEPARATION, melee_only_condition).build();
+const RuleEffectEntry FuriousMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, furious_mark_effect).condition(CombatSubPhase::HIT_BONUSES, melee_only_condition).build();
+const RuleEffectEntry IndirectMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, indirect_mark_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry BaneMark_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, bane_mark_effect).build();
+const RuleEffectEntry PrecisionShootingMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_shooting_mark_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry QuickShotMark_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, quick_shot_mark_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+
+// Category L: Debuff Effect Entries
+const RuleEffectEntry UnwieldyDebuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, unwieldy_debuff_effect).condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition).build();
+const RuleEffectEntry PrecisionDebuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_debuff_effect).build();
+const RuleEffectEntry PiercingShootingDebuff_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_shooting_debuff_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, shooting_only_condition).build();
+
+// Category M: Frenzy/Growth Effect Entries
+const RuleEffectEntry PiercingGrowth_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_growth_effect).build();
+const RuleEffectEntry RuinousFrenzy_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, ruinous_frenzy_effect).build();
+const RuleEffectEntry DevastatingFrenzy_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, devastating_frenzy_effect).build();
+const RuleEffectEntry PrecisionGrowth_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_growth_effect).build();
+const RuleEffectEntry DestructiveFrenzy_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, destructive_frenzy_effect).build();
+
+// Category N: Storm Effect Entries
+const RuleEffectEntry StormOfChange_Effects = EffectBuilder().combat(CombatSubPhase::WOUND_ALLOCATION, storm_of_change_effect).build();
+const RuleEffectEntry StormOfLust_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, storm_of_lust_effect).build();
+const RuleEffectEntry StormOfPlague_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, storm_of_plague_effect).build();
+const RuleEffectEntry StormOfWar_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, storm_of_war_effect).build();
+
+// Category O: Special Combat Effect Entries
+const RuleEffectEntry BreathAttack_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, breath_attack_effect).build();
+const RuleEffectEntry IncreasedShootingRange_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, increased_shooting_range_effect).condition(CombatSubPhase::PRE_ATTACK, shooting_only_condition).build();
+const RuleEffectEntry RegenerativeStrength_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, regenerative_strength_effect).build();
+const RuleEffectEntry Strafing_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, strafing_effect).build();
+const RuleEffectEntry SurpriseAttack_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, surprise_attack_effect).build();
+const RuleEffectEntry TakedownStrike_Effects = EffectBuilder().combat(CombatSubPhase::ROLL_HITS, takedown_strike_effect).build();
+const RuleEffectEntry Instinctive_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, instinctive_effect).build();
+const RuleEffectEntry CrossingAttack_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, crossing_attack_effect).condition(CombatSubPhase::PRE_ATTACK, melee_only_condition).build();
+const RuleEffectEntry QuickReadjustment_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, quick_readjustment_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry CrossingStrike_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, crossing_strike_effect).condition(CombatSubPhase::PRE_ATTACK, melee_only_condition).build();
+const RuleEffectEntry SurprisePiercingShot_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, surprise_piercing_shot_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, shooting_only_condition).build();
+const RuleEffectEntry MindWound_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, mind_wound_effect).build();
+const RuleEffectEntry MobileArtillery_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, mobile_artillery_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
+const RuleEffectEntry Vengeance_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, vengeance_effect).build();
 
 // ==============================================================================
 // Movement Phase Effects
@@ -4346,6 +4918,74 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::Harassing, Harassing_HotData);
     registry.register_hot_data(RuleId::Guerrilla, Guerrilla_HotData);
 
+    // Category I-O: Batch hot data registration
+    registry.register_hot_data(RuleId::VersatileReachAura, VersatileReachAura_HotData);
+    registry.register_hot_data(RuleId::UnpredictableFighterAura, UnpredictableFighterAura_HotData);
+    registry.register_hot_data(RuleId::PointBlankPiercingAura, PointBlankPiercingAura_HotData);
+    registry.register_hot_data(RuleId::RangedSlayerAura, RangedSlayerAura_HotData);
+    registry.register_hot_data(RuleId::TargetingVisorBoostAura, TargetingVisorBoostAura_HotData);
+    registry.register_hot_data(RuleId::PiercingHunterAura, PiercingHunterAura_HotData);
+    registry.register_hot_data(RuleId::ClanWarriorBoostAura, ClanWarriorBoostAura_HotData);
+    registry.register_hot_data(RuleId::PrecisionFighterAura, PrecisionFighterAura_HotData);
+    registry.register_hot_data(RuleId::MischievousBoostAura, MischievousBoostAura_HotData);
+    registry.register_hot_data(RuleId::QuickShotAura, QuickShotAura_HotData);
+    registry.register_hot_data(RuleId::HavocboundBoostAura, HavocboundBoostAura_HotData);
+    registry.register_hot_data(RuleId::WarboundBoostAura, WarboundBoostAura_HotData);
+    registry.register_hot_data(RuleId::InfectedBoostAura, InfectedBoostAura_HotData);
+    registry.register_hot_data(RuleId::UnpredictableShooterAura, UnpredictableShooterAura_HotData);
+    registry.register_hot_data(RuleId::ScrapperBoostAura, ScrapperBoostAura_HotData);
+    registry.register_hot_data(RuleId::FerociousBoostAura, FerociousBoostAura_HotData);
+    registry.register_hot_data(RuleId::PiercingFighterAura, PiercingFighterAura_HotData);
+    registry.register_hot_data(RuleId::PrecisionChargeAura, PrecisionChargeAura_HotData);
+    registry.register_hot_data(RuleId::GroundedPrecisionAura, GroundedPrecisionAura_HotData);
+    registry.register_hot_data(RuleId::MeleeSlayerAura, MeleeSlayerAura_HotData);
+    registry.register_hot_data(RuleId::PiercingShooterAura, PiercingShooterAura_HotData);
+    registry.register_hot_data(RuleId::RighteousFury, RighteousFury_HotData);
+    registry.register_hot_data(RuleId::PrecisionFighterBuff, PrecisionFighterBuff_HotData);
+    registry.register_hot_data(RuleId::PrecisionShooterBuff, PrecisionShooterBuff_HotData);
+    registry.register_hot_data(RuleId::BaneInMeleeBuff, BaneInMeleeBuff_HotData);
+    registry.register_hot_data(RuleId::PrimalBoostBuff, PrimalBoostBuff_HotData);
+    registry.register_hot_data(RuleId::PrecisionAttacksBuff, PrecisionAttacksBuff_HotData);
+    registry.register_hot_data(RuleId::UnpredictableFighterMark, UnpredictableFighterMark_HotData);
+    registry.register_hot_data(RuleId::UnstoppableShootingMark, UnstoppableShootingMark_HotData);
+    registry.register_hot_data(RuleId::ShredMark, ShredMark_HotData);
+    registry.register_hot_data(RuleId::PiercingShootingMark, PiercingShootingMark_HotData);
+    registry.register_hot_data(RuleId::PrecisionFightingMark, PrecisionFightingMark_HotData);
+    registry.register_hot_data(RuleId::SlayerMark, SlayerMark_HotData);
+    registry.register_hot_data(RuleId::RelentlessMark, RelentlessMark_HotData);
+    registry.register_hot_data(RuleId::RendingInMeleeMark, RendingInMeleeMark_HotData);
+    registry.register_hot_data(RuleId::FuriousMark, FuriousMark_HotData);
+    registry.register_hot_data(RuleId::IndirectMark, IndirectMark_HotData);
+    registry.register_hot_data(RuleId::BaneMark, BaneMark_HotData);
+    registry.register_hot_data(RuleId::PrecisionShootingMark, PrecisionShootingMark_HotData);
+    registry.register_hot_data(RuleId::QuickShotMark, QuickShotMark_HotData);
+    registry.register_hot_data(RuleId::UnwieldyDebuff, UnwieldyDebuff_HotData);
+    registry.register_hot_data(RuleId::PrecisionDebuff, PrecisionDebuff_HotData);
+    registry.register_hot_data(RuleId::PiercingShootingDebuff, PiercingShootingDebuff_HotData);
+    registry.register_hot_data(RuleId::PiercingGrowth, PiercingGrowth_HotData);
+    registry.register_hot_data(RuleId::RuinousFrenzy, RuinousFrenzy_HotData);
+    registry.register_hot_data(RuleId::DevastatingFrenzy, DevastatingFrenzy_HotData);
+    registry.register_hot_data(RuleId::PrecisionGrowth, PrecisionGrowth_HotData);
+    registry.register_hot_data(RuleId::DestructiveFrenzy, DestructiveFrenzy_HotData);
+    registry.register_hot_data(RuleId::StormOfChange, StormOfChange_HotData);
+    registry.register_hot_data(RuleId::StormOfLust, StormOfLust_HotData);
+    registry.register_hot_data(RuleId::StormOfPlague, StormOfPlague_HotData);
+    registry.register_hot_data(RuleId::StormOfWar, StormOfWar_HotData);
+    registry.register_hot_data(RuleId::BreathAttack, BreathAttack_HotData);
+    registry.register_hot_data(RuleId::IncreasedShootingRange, IncreasedShootingRange_HotData);
+    registry.register_hot_data(RuleId::RegenerativeStrength, RegenerativeStrength_HotData);
+    registry.register_hot_data(RuleId::Strafing, Strafing_HotData);
+    registry.register_hot_data(RuleId::SurpriseAttack, SurpriseAttack_HotData);
+    registry.register_hot_data(RuleId::TakedownStrike, TakedownStrike_HotData);
+    registry.register_hot_data(RuleId::Instinctive, Instinctive_HotData);
+    registry.register_hot_data(RuleId::CrossingAttack, CrossingAttack_HotData);
+    registry.register_hot_data(RuleId::QuickReadjustment, QuickReadjustment_HotData);
+    registry.register_hot_data(RuleId::CrossingStrike, CrossingStrike_HotData);
+    registry.register_hot_data(RuleId::SurprisePiercingShot, SurprisePiercingShot_HotData);
+    registry.register_hot_data(RuleId::MindWound, MindWound_HotData);
+    registry.register_hot_data(RuleId::MobileArtillery, MobileArtillery_HotData);
+    registry.register_hot_data(RuleId::Vengeance, Vengeance_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -4501,6 +5141,74 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::QuakeWhenShooting, QuakeWhenShooting_ColdData);
     registry.register_cold_data(RuleId::Harassing, Harassing_ColdData);
     registry.register_cold_data(RuleId::Guerrilla, Guerrilla_ColdData);
+
+    // Category I-O: Batch cold data registration
+    registry.register_cold_data(RuleId::VersatileReachAura, VersatileReachAura_ColdData);
+    registry.register_cold_data(RuleId::UnpredictableFighterAura, UnpredictableFighterAura_ColdData);
+    registry.register_cold_data(RuleId::PointBlankPiercingAura, PointBlankPiercingAura_ColdData);
+    registry.register_cold_data(RuleId::RangedSlayerAura, RangedSlayerAura_ColdData);
+    registry.register_cold_data(RuleId::TargetingVisorBoostAura, TargetingVisorBoostAura_ColdData);
+    registry.register_cold_data(RuleId::PiercingHunterAura, PiercingHunterAura_ColdData);
+    registry.register_cold_data(RuleId::ClanWarriorBoostAura, ClanWarriorBoostAura_ColdData);
+    registry.register_cold_data(RuleId::PrecisionFighterAura, PrecisionFighterAura_ColdData);
+    registry.register_cold_data(RuleId::MischievousBoostAura, MischievousBoostAura_ColdData);
+    registry.register_cold_data(RuleId::QuickShotAura, QuickShotAura_ColdData);
+    registry.register_cold_data(RuleId::HavocboundBoostAura, HavocboundBoostAura_ColdData);
+    registry.register_cold_data(RuleId::WarboundBoostAura, WarboundBoostAura_ColdData);
+    registry.register_cold_data(RuleId::InfectedBoostAura, InfectedBoostAura_ColdData);
+    registry.register_cold_data(RuleId::UnpredictableShooterAura, UnpredictableShooterAura_ColdData);
+    registry.register_cold_data(RuleId::ScrapperBoostAura, ScrapperBoostAura_ColdData);
+    registry.register_cold_data(RuleId::FerociousBoostAura, FerociousBoostAura_ColdData);
+    registry.register_cold_data(RuleId::PiercingFighterAura, PiercingFighterAura_ColdData);
+    registry.register_cold_data(RuleId::PrecisionChargeAura, PrecisionChargeAura_ColdData);
+    registry.register_cold_data(RuleId::GroundedPrecisionAura, GroundedPrecisionAura_ColdData);
+    registry.register_cold_data(RuleId::MeleeSlayerAura, MeleeSlayerAura_ColdData);
+    registry.register_cold_data(RuleId::PiercingShooterAura, PiercingShooterAura_ColdData);
+    registry.register_cold_data(RuleId::RighteousFury, RighteousFury_ColdData);
+    registry.register_cold_data(RuleId::PrecisionFighterBuff, PrecisionFighterBuff_ColdData);
+    registry.register_cold_data(RuleId::PrecisionShooterBuff, PrecisionShooterBuff_ColdData);
+    registry.register_cold_data(RuleId::BaneInMeleeBuff, BaneInMeleeBuff_ColdData);
+    registry.register_cold_data(RuleId::PrimalBoostBuff, PrimalBoostBuff_ColdData);
+    registry.register_cold_data(RuleId::PrecisionAttacksBuff, PrecisionAttacksBuff_ColdData);
+    registry.register_cold_data(RuleId::UnpredictableFighterMark, UnpredictableFighterMark_ColdData);
+    registry.register_cold_data(RuleId::UnstoppableShootingMark, UnstoppableShootingMark_ColdData);
+    registry.register_cold_data(RuleId::ShredMark, ShredMark_ColdData);
+    registry.register_cold_data(RuleId::PiercingShootingMark, PiercingShootingMark_ColdData);
+    registry.register_cold_data(RuleId::PrecisionFightingMark, PrecisionFightingMark_ColdData);
+    registry.register_cold_data(RuleId::SlayerMark, SlayerMark_ColdData);
+    registry.register_cold_data(RuleId::RelentlessMark, RelentlessMark_ColdData);
+    registry.register_cold_data(RuleId::RendingInMeleeMark, RendingInMeleeMark_ColdData);
+    registry.register_cold_data(RuleId::FuriousMark, FuriousMark_ColdData);
+    registry.register_cold_data(RuleId::IndirectMark, IndirectMark_ColdData);
+    registry.register_cold_data(RuleId::BaneMark, BaneMark_ColdData);
+    registry.register_cold_data(RuleId::PrecisionShootingMark, PrecisionShootingMark_ColdData);
+    registry.register_cold_data(RuleId::QuickShotMark, QuickShotMark_ColdData);
+    registry.register_cold_data(RuleId::UnwieldyDebuff, UnwieldyDebuff_ColdData);
+    registry.register_cold_data(RuleId::PrecisionDebuff, PrecisionDebuff_ColdData);
+    registry.register_cold_data(RuleId::PiercingShootingDebuff, PiercingShootingDebuff_ColdData);
+    registry.register_cold_data(RuleId::PiercingGrowth, PiercingGrowth_ColdData);
+    registry.register_cold_data(RuleId::RuinousFrenzy, RuinousFrenzy_ColdData);
+    registry.register_cold_data(RuleId::DevastatingFrenzy, DevastatingFrenzy_ColdData);
+    registry.register_cold_data(RuleId::PrecisionGrowth, PrecisionGrowth_ColdData);
+    registry.register_cold_data(RuleId::DestructiveFrenzy, DestructiveFrenzy_ColdData);
+    registry.register_cold_data(RuleId::StormOfChange, StormOfChange_ColdData);
+    registry.register_cold_data(RuleId::StormOfLust, StormOfLust_ColdData);
+    registry.register_cold_data(RuleId::StormOfPlague, StormOfPlague_ColdData);
+    registry.register_cold_data(RuleId::StormOfWar, StormOfWar_ColdData);
+    registry.register_cold_data(RuleId::BreathAttack, BreathAttack_ColdData);
+    registry.register_cold_data(RuleId::IncreasedShootingRange, IncreasedShootingRange_ColdData);
+    registry.register_cold_data(RuleId::RegenerativeStrength, RegenerativeStrength_ColdData);
+    registry.register_cold_data(RuleId::Strafing, Strafing_ColdData);
+    registry.register_cold_data(RuleId::SurpriseAttack, SurpriseAttack_ColdData);
+    registry.register_cold_data(RuleId::TakedownStrike, TakedownStrike_ColdData);
+    registry.register_cold_data(RuleId::Instinctive, Instinctive_ColdData);
+    registry.register_cold_data(RuleId::CrossingAttack, CrossingAttack_ColdData);
+    registry.register_cold_data(RuleId::QuickReadjustment, QuickReadjustment_ColdData);
+    registry.register_cold_data(RuleId::CrossingStrike, CrossingStrike_ColdData);
+    registry.register_cold_data(RuleId::SurprisePiercingShot, SurprisePiercingShot_ColdData);
+    registry.register_cold_data(RuleId::MindWound, MindWound_ColdData);
+    registry.register_cold_data(RuleId::MobileArtillery, MobileArtillery_ColdData);
+    registry.register_cold_data(RuleId::Vengeance, Vengeance_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -4659,6 +5367,86 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::QuakeWhenShooting, QuakeWhenShooting_Effects);
     registry.register_effects(RuleId::Harassing, Harassing_Effects);
     registry.register_effects(RuleId::Guerrilla, Guerrilla_Effects);
+
+    // === Category I: Aura Rules ===
+    registry.register_effects(RuleId::VersatileReachAura, VersatileReachAura_Effects);
+    registry.register_effects(RuleId::UnpredictableFighterAura, UnpredictableFighterAura_Effects);
+    registry.register_effects(RuleId::PointBlankPiercingAura, PointBlankPiercingAura_Effects);
+    registry.register_effects(RuleId::RangedSlayerAura, RangedSlayerAura_Effects);
+    registry.register_effects(RuleId::TargetingVisorBoostAura, TargetingVisorBoostAura_Effects);
+    registry.register_effects(RuleId::PiercingHunterAura, PiercingHunterAura_Effects);
+    registry.register_effects(RuleId::ClanWarriorBoostAura, ClanWarriorBoostAura_Effects);
+    registry.register_effects(RuleId::PrecisionFighterAura, PrecisionFighterAura_Effects);
+    registry.register_effects(RuleId::MischievousBoostAura, MischievousBoostAura_Effects);
+    registry.register_effects(RuleId::QuickShotAura, QuickShotAura_Effects);
+    registry.register_effects(RuleId::HavocboundBoostAura, HavocboundBoostAura_Effects);
+    registry.register_effects(RuleId::WarboundBoostAura, WarboundBoostAura_Effects);
+    registry.register_effects(RuleId::InfectedBoostAura, InfectedBoostAura_Effects);
+    registry.register_effects(RuleId::UnpredictableShooterAura, UnpredictableShooterAura_Effects);
+    registry.register_effects(RuleId::ScrapperBoostAura, ScrapperBoostAura_Effects);
+    registry.register_effects(RuleId::FerociousBoostAura, FerociousBoostAura_Effects);
+    registry.register_effects(RuleId::PiercingFighterAura, PiercingFighterAura_Effects);
+    registry.register_effects(RuleId::PrecisionChargeAura, PrecisionChargeAura_Effects);
+    registry.register_effects(RuleId::GroundedPrecisionAura, GroundedPrecisionAura_Effects);
+    registry.register_effects(RuleId::MeleeSlayerAura, MeleeSlayerAura_Effects);
+    registry.register_effects(RuleId::PiercingShooterAura, PiercingShooterAura_Effects);
+
+    // === Category J: Buff Rules ===
+    registry.register_effects(RuleId::RighteousFury, RighteousFury_Effects);
+    registry.register_effects(RuleId::PrecisionFighterBuff, PrecisionFighterBuff_Effects);
+    registry.register_effects(RuleId::PrecisionShooterBuff, PrecisionShooterBuff_Effects);
+    registry.register_effects(RuleId::BaneInMeleeBuff, BaneInMeleeBuff_Effects);
+    registry.register_effects(RuleId::PrimalBoostBuff, PrimalBoostBuff_Effects);
+    registry.register_effects(RuleId::PrecisionAttacksBuff, PrecisionAttacksBuff_Effects);
+
+    // === Category K: Mark Rules ===
+    registry.register_effects(RuleId::UnpredictableFighterMark, UnpredictableFighterMark_Effects);
+    registry.register_effects(RuleId::UnstoppableShootingMark, UnstoppableShootingMark_Effects);
+    registry.register_effects(RuleId::ShredMark, ShredMark_Effects);
+    registry.register_effects(RuleId::PiercingShootingMark, PiercingShootingMark_Effects);
+    registry.register_effects(RuleId::PrecisionFightingMark, PrecisionFightingMark_Effects);
+    registry.register_effects(RuleId::SlayerMark, SlayerMark_Effects);
+    registry.register_effects(RuleId::RelentlessMark, RelentlessMark_Effects);
+    registry.register_effects(RuleId::RendingInMeleeMark, RendingInMeleeMark_Effects);
+    registry.register_effects(RuleId::FuriousMark, FuriousMark_Effects);
+    registry.register_effects(RuleId::IndirectMark, IndirectMark_Effects);
+    registry.register_effects(RuleId::BaneMark, BaneMark_Effects);
+    registry.register_effects(RuleId::PrecisionShootingMark, PrecisionShootingMark_Effects);
+    registry.register_effects(RuleId::QuickShotMark, QuickShotMark_Effects);
+
+    // === Category L: Debuff Rules ===
+    registry.register_effects(RuleId::UnwieldyDebuff, UnwieldyDebuff_Effects);
+    registry.register_effects(RuleId::PrecisionDebuff, PrecisionDebuff_Effects);
+    registry.register_effects(RuleId::PiercingShootingDebuff, PiercingShootingDebuff_Effects);
+
+    // === Category M: Scaling/Frenzy/Growth Rules ===
+    registry.register_effects(RuleId::PiercingGrowth, PiercingGrowth_Effects);
+    registry.register_effects(RuleId::RuinousFrenzy, RuinousFrenzy_Effects);
+    registry.register_effects(RuleId::DevastatingFrenzy, DevastatingFrenzy_Effects);
+    registry.register_effects(RuleId::PrecisionGrowth, PrecisionGrowth_Effects);
+    registry.register_effects(RuleId::DestructiveFrenzy, DestructiveFrenzy_Effects);
+
+    // === Category N: Storm AoE Rules ===
+    registry.register_effects(RuleId::StormOfChange, StormOfChange_Effects);
+    registry.register_effects(RuleId::StormOfLust, StormOfLust_Effects);
+    registry.register_effects(RuleId::StormOfPlague, StormOfPlague_Effects);
+    registry.register_effects(RuleId::StormOfWar, StormOfWar_Effects);
+
+    // === Category O: Special Combat Rules ===
+    registry.register_effects(RuleId::BreathAttack, BreathAttack_Effects);
+    registry.register_effects(RuleId::IncreasedShootingRange, IncreasedShootingRange_Effects);
+    registry.register_effects(RuleId::RegenerativeStrength, RegenerativeStrength_Effects);
+    registry.register_effects(RuleId::Strafing, Strafing_Effects);
+    registry.register_effects(RuleId::SurpriseAttack, SurpriseAttack_Effects);
+    registry.register_effects(RuleId::TakedownStrike, TakedownStrike_Effects);
+    registry.register_effects(RuleId::Instinctive, Instinctive_Effects);
+    registry.register_effects(RuleId::CrossingAttack, CrossingAttack_Effects);
+    registry.register_effects(RuleId::QuickReadjustment, QuickReadjustment_Effects);
+    registry.register_effects(RuleId::CrossingStrike, CrossingStrike_Effects);
+    registry.register_effects(RuleId::SurprisePiercingShot, SurprisePiercingShot_Effects);
+    registry.register_effects(RuleId::MindWound, MindWound_Effects);
+    registry.register_effects(RuleId::MobileArtillery, MobileArtillery_Effects);
+    registry.register_effects(RuleId::Vengeance, Vengeance_Effects);
 
     // =========================================================================
     // Register Movement effects
