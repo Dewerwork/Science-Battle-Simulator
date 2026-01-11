@@ -193,7 +193,7 @@ Precision Shooter Buff,Buff - Combat,Implemented,Grant +1 to hit shooting to fri
 Precision Target,Targeting,Implemented,Place markers for hit bonus
 Devout Boost Aura,Aura - Faction,Implemented,Unit gets Devout Boost
 Point-Blank Piercing Aura,Aura - Combat,Implemented,Unit gets Point-Blank Piercing
-Hit Hit & Run Shooter,Movement,Not Started Run Shooter,Movement,Implemented,Move 3" after shooting
+Hit & Run Shooter,Movement,Implemented,Move 3" after shooting
 Piercing Target,Targeting,Implemented,Place markers for AP bonus
 Shred Mark,Buff - Combat,Implemented,Grant Shred to friendlies vs target
 Targeting Visor,Combat - Hit Modifier,Implemented,+1 to hit when shooting over 9"
@@ -235,38 +235,38 @@ Retaliate,Combat - Retaliation,Implemented,When wounded in melee attacker takes 
 Mischievous Boost Aura,Aura - Combat,Implemented,Unit gets Mischievous Boost
 Quick Shot Aura,Aura - Combat,Implemented,Unit gets Quick Shot
 Havocbound,Combat - AP Modifier,Implemented,AP(+1) when shooting over 9" or charging
-Steadfast Buff,Buff - Morale,Not Started,Grant Steadfast to friendly
+Steadfast Buff,Buff - Morale,Implemented,Grant Steadfast to friendly
 Unpredictable,Combat - Choice,Implemented,Roll D6: 1-3 = AP+1 4-6 = +1 hit
 Havocbound Boost Aura,Aura - Combat,Implemented,Unit gets Havocbound Boost
-Versatile Defense Aura,Aura - Defense,Not Started,Unit gets Versatile Defense
-Changebound Boost Aura,Aura - Defense,Not Started,Unit gets Changebound Boost
-Lustbound Boost Aura,Aura - Movement,Not Started,Unit gets Lustbound Boost
-Bounding Aura,Aura - Movement,Not Started,Unit gets Bounding
-Plaguebound Boost Aura,Aura - Defense,Not Started,Unit gets Plaguebound Boost
+Versatile Defense Aura,Aura - Defense,Implemented,Unit gets Versatile Defense
+Changebound Boost Aura,Aura - Defense,Implemented,Unit gets Changebound Boost
+Lustbound Boost Aura,Aura - Movement,Implemented,Unit gets Lustbound Boost
+Bounding Aura,Aura - Movement,Implemented,Unit gets Bounding
+Plaguebound Boost Aura,Aura - Defense,Implemented,Unit gets Plaguebound Boost
 Warbound,Combat - Wound Bonus,Implemented,Extra wound on unmodified defense 1
 Warbound Boost Aura,Aura - Combat,Implemented,Unit gets Warbound Boost
 Crossing Attack,Combat - Special,Implemented,Roll X dice moving through enemies for hits
-Piercing Spotter,Targeting,Not Started,Place markers for AP bonus
+Piercing Spotter,Targeting,Implemented,Place markers for AP bonus
 Unwieldy Debuff,Debuff - Combat,Implemented,Grant Unwieldy in melee to enemy
-Highborn Boost Aura,Aura - Movement,Not Started,Unit gets Highborn Boost
+Highborn Boost Aura,Aura - Movement,Implemented,Unit gets Highborn Boost
 Bane in Melee Buff,Buff - Combat,Implemented,Grant Bane in melee to friendly
-Coordinate,Activation,Not Started,Activate another friendly unit after this
-Entrenched Buff,Buff - Defense,Not Started,Grant Entrenched to friendly
-Extended Buff Range,Buff - Range,Not Started,Extend buff ranges to 24"
+Coordinate,Activation,Implemented,Activate another friendly unit after this
+Entrenched Buff,Buff - Defense,Implemented,Grant Entrenched to friendly
+Extended Buff Range,Buff - Range,Implemented,Extend buff ranges to 24"
 Mobile Artillery,Combat - Defense,Implemented,+1 hit from Hold -2 to be hit when still
-Morale Debuff,Debuff - Morale,Not Started,-1 to enemy morale tests
-No Retreat Buff,Buff - Morale,Not Started,Grant No Retreat to friendly
-Rapid Advance Buff,Buff - Movement,Not Started,Grant Rapid Advance to friendly
+Morale Debuff,Debuff - Morale,Implemented,-1 to enemy morale tests
+No Retreat Buff,Buff - Morale,Implemented,Grant No Retreat to friendly
+Rapid Advance Buff,Buff - Movement,Implemented,Grant Rapid Advance to friendly
 Relentless Mark,Buff - Combat,Implemented,Grant Relentless vs target
-Hold the Line Boost Aura,Aura - Morale,Not Started,Unit gets Hold the Line Boost
-Inquisitorial Agent,Activation,Not Started,Activate twice per round (once per game)
+Hold the Line Boost Aura,Aura - Morale,Implemented,Unit gets Hold the Line Boost
+Inquisitorial Agent,Activation,Implemented,Activate twice per round (once per game)
 Brutal Fighter,Combat - Hit Bonus,Implemented,6s to hit deal extra hit in melee
-Delayed Action,Activation,Not Started,Pass turn if opponent has more units
-Piercing Tag,Targeting,Not Started,Place markers for AP bonus (removable)
+Delayed Action,Activation,Implemented,Pass turn if opponent has more units
+Piercing Tag,Targeting,Implemented,Place markers for AP bonus (removable)
 Quick Readjustment,Combat - Modifier,Implemented,Ignore Indirect move penalty
-Spell Accumulator,Spells,Not Started,Token generation for spell casting
+Spell Accumulator,Spells,Implemented,Token generation for spell casting
 Unpredictable Shooter,Combat - Choice,Implemented,Roll D6 when shooting: 1-3 = AP+1 4-6 = +1 hit
-Defensive Growth Aura,Aura - Defense,Not Started,Unit gets Defensive Growth
+Defensive Growth Aura,Aura - Defense,Implemented,Unit gets Defensive Growth
 Infected,Combat - Wound Bonus,Implemented,Extra wound on unmodified defense 1 (maps to Warbound)
 Deathstrike,Combat - Retaliation,Implemented,If killed in melee attacker takes X hits
 Precision Debuff,Debuff - Combat,Implemented,-1 to hit for enemy unit
@@ -274,12 +274,12 @@ Precision Growth,Combat - Scaling,Implemented,Marker-based hit bonus over rounds
 Infected Boost Aura,Aura - Combat,Implemented,Unit gets Infected Boost
 Unpredictable Shooter Aura,Aura - Combat,Implemented,Unit gets Unpredictable Shooter
 Crossing Strike,Combat - Special,Implemented,Once per game attack through movement
-Precision Tag,Targeting,Not Started,Place markers for hit bonus (removable)
+Precision Tag,Targeting,Implemented,Place markers for hit bonus (removable)
 Surprise Piercing Shot,Deployment - Combat,Implemented,AP(+2) when deploying via Ambush
 Scrapper Boost Aura,Aura - Combat,Implemented,Unit gets Scrapper Boost
-Grounded Stealth,Defense - Terrain,Not Started,-1 to be hit when near terrain
+Grounded Stealth,Defense - Terrain,Implemented,-1 to be hit when near terrain
 Piercing Shooting Debuff,Debuff - Combat,Implemented,Remove AP(+1) from enemy shooting
-Machine-Fog Boost Aura,Aura - Defense,Not Started,Unit gets Machine-Fog Boost
+Machine-Fog Boost Aura,Aura - Defense,Implemented,Unit gets Machine-Fog Boost
 Ferocious Boost,Combat - Hit Bonus,Implemented,Extra hits on 5-6 instead of just 6
 Rending in Melee Mark,Buff - Combat,Implemented,Grant Rending in melee vs target
 Ferocious Boost Aura,Aura - Combat,Implemented,Unit gets Ferocious Boost
