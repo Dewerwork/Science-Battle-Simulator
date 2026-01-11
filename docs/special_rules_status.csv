@@ -156,14 +156,14 @@ Casting,Spells,Partial,Can cast X spells per activation - spell system not compl
 # === NOT STARTED - Complex Rules ===
 Hive Bond,Morale,Implemented,Units where all models have this rule get +1 to morale test rolls
 Breath Attack,Combat - Special,Implemented,Once per activation before attacking roll D6 for area damage
-Caster Group,Spells,Not Started,Complex caster pooling mechanic
+Caster Group,Spells,Implemented,Complex caster pooling mechanic
 Increased Shooting Range,Combat - Range,Implemented,+6" range when shooting
 Infiltrate,Deployment,Implemented,Ambush variant - deploy up to 1" from enemy units
 Piercing Growth,Combat - Scaling,Implemented,Marker-based AP scaling over rounds
 Ravage,Combat - Special,Implemented,Roll X dice in melee for each 6+ target takes wound
 Regenerative Strength,Defense - Combat,Implemented,Gain attacks when ignoring wounds
 Spawn,Deployment,Implemented,Once per game place new unit of X within 6"
-Spell Conduit,Spells,Not Started,Casters within 12" can cast from this position
+Spell Conduit,Spells,Implemented,Casters within 12" can cast from this position
 Stealth Buff,Buff - Defense,Implemented,Grant Stealth to friendly unit
 Strafing,Combat - Special,Implemented,Attack when moving through enemy units
 Surprise Attack,Deployment - Combat,Implemented,Infiltrate variant with damage on deploy
@@ -190,16 +190,16 @@ Devout Boost,Faction,Implemented,Extra hits on 5-6 instead of just 6
 Guarded Buff,Buff - Defense,Implemented,Grant Guarded to friendly unit
 Precision Fighter Buff,Buff - Combat,Implemented,Grant +1 to hit in melee to friendly
 Precision Shooter Buff,Buff - Combat,Implemented,Grant +1 to hit shooting to friendly
-Precision Target,Targeting,Not Started,Place markers for hit bonus
+Precision Target,Targeting,Implemented,Place markers for hit bonus
 Devout Boost Aura,Aura - Faction,Implemented,Unit gets Devout Boost
 Point-Blank Piercing Aura,Aura - Combat,Implemented,Unit gets Point-Blank Piercing
 Hit Hit & Run Shooter,Movement,Not Started Run Shooter,Movement,Implemented,Move 3" after shooting
-Piercing Target,Targeting,Not Started,Place markers for AP bonus
+Piercing Target,Targeting,Implemented,Place markers for AP bonus
 Shred Mark,Buff - Combat,Implemented,Grant Shred to friendlies vs target
 Targeting Visor,Combat - Hit Modifier,Implemented,+1 to hit when shooting over 9"
 Ambush Beacon,Deployment,Implemented,Friendly Ambushers can ignore distance
 Piercing Shooting Mark,Buff - Combat,Implemented,Grant AP(+1) shooting vs target
-Precision Spotter,Targeting,Not Started,Place markers for hit bonus
+Precision Spotter,Targeting,Implemented,Place markers for hit bonus
 Ranged Slayer Aura,Aura - Combat,Implemented,Unit gets Ranged Slayer
 Targeting Visor Boost Aura,Aura - Combat,Implemented,Unit gets Targeting Visor Boost
 Harassing,Movement,Implemented,Move 3" after shooting or melee
@@ -331,3 +331,7 @@ Difficult Terrain Debuff,Debuff - Movement,Implemented,Force Difficult Terrain o
 Fortified Growth,Defense - Scaling,Implemented,Marker-based AP reduction over rounds
 Plaguebound Boost,Defense - Wound Ignore,Implemented,5-6 to ignore wounds (not just 6)
 Precision Attacks Buff,Buff - Combat,Implemented,Grant +1 to hit attacking to friendly
+Spell Accumulator,Spells,Implemented,Store and release spell energy
+Piercing Spotter,Targeting,Implemented,Spotter that grants AP bonus to allies
+Precision Tag,Targeting,Implemented,Mark target for precision bonus
+Piercing Tag,Targeting,Implemented,Mark target for piercing bonus
