@@ -133,6 +133,17 @@ struct CombatContextExtended {
     bool knightborn_active = false;      // Knightborn - 6+ ignore wounds (4+ vs spells)
     bool plaguebound_active = false;     // Plaguebound - 6+ ignore wounds
 
+    // Category F: Combat Choice & Retaliation
+    u8 versatile_roll = 0;               // D6 roll for Unpredictable rules (1-3 AP, 4-6 hit)
+    u32 retaliate_hits = 0;              // Accumulated hits from Retaliate
+    u32 deathstrike_hits = 0;            // Accumulated hits from Deathstrike
+
+    // Category G: Enhanced Combat Modifiers & Boost Rules
+    bool ferocious_boost_active = false;   // Ferocious Boost - extra hits on 5-6
+    bool warbound_boost_active = false;    // Warbound Boost - extra wound on 1-2
+    bool plaguebound_boost_active = false; // Plaguebound Boost - 5-6 ignore wounds
+    bool melee_slayer_active = false;      // Melee Slayer - AP+2 vs Tough(3+)
+
     // Rule values
     u8 tough_value = 0;                  // Tough(X) value
     u8 impact_attacks = 0;               // Impact(X) bonus attacks
@@ -178,6 +189,13 @@ struct CombatContextExtended {
         moved_this_activation = false;
         knightborn_active = false;
         plaguebound_active = false;
+        versatile_roll = 0;
+        retaliate_hits = 0;
+        deathstrike_hits = 0;
+        ferocious_boost_active = false;
+        warbound_boost_active = false;
+        plaguebound_boost_active = false;
+        melee_slayer_active = false;
         tough_value = 0;
         impact_attacks = 0;
         smash_bonus_blast = 0;

@@ -257,6 +257,38 @@ enum class RuleId : u16 {
     Plaguebound,    // Plaguebound - 6+ ignore wounds (106)
     Changebound,    // Changebound - Enemies get -1 to hit from >9" (107)
 
+    // === Category E: Extra Attack Generation & Distance-based Combat ===
+    Bloodborn,      // Bloodborn - 6s to hit generate +1 attack (non-recursive) (108)
+    TargetingVisor, // Targeting Visor - +1 to hit when shooting over 9" (109)
+    Havocbound,     // Havocbound - AP(+1) when shooting over 9" or charging (110)
+    Warbound,       // Warbound - Extra wound on defense 1s (like Shred) (111)
+    BrutalFighter,  // Brutal Fighter - 6s to hit deal extra hit in melee (112)
+
+    // === Category F: Combat Choice & Retaliation ===
+    Unpredictable,        // Unpredictable - Roll D6: 1-3 = AP+1, 4-6 = +1 hit (113)
+    UnpredictableFighter, // Unpredictable Fighter - Roll D6 in melee only (114)
+    UnpredictableShooter, // Unpredictable Shooter - Roll D6 when shooting only (115)
+    Retaliate,            // Retaliate - When wounded in melee, attacker takes X hits (116)
+    Deathstrike,          // Deathstrike - If killed in melee, attacker takes X hits (117)
+
+    // === Category G: Enhanced Combat Modifiers & Boost Rules ===
+    FerociousBoost,       // Ferocious Boost - Extra hits on 5-6 to hit (118)
+    ChangeboundBoost,     // Changebound Boost - -1 to hit always (119)
+    WarboundBoost,        // Warbound Boost - Extra wound on defense 1-2 (120)
+    PlaegueboundBoost,    // Plaguebound Boost - 5-6 to ignore wounds (121)
+    LustboundBoost,       // Lustbound Boost - +2/+6" movement (122)
+    MeleeSlayer,          // Melee Slayer - AP(+2) vs Tough(3+) in melee (123)
+    HeavyImpact,          // Heavy Impact - Impact hits get AP(1) (124)
+    Watchborn,            // Watchborn - Pick AP(+1) or +1 to hit (125)
+
+    // === Category H: Dice-Based Special Attacks & Post-Combat Movement ===
+    Crush,                // Crush(X) - Roll X dice in melee, 4+ = AP(2) hit (126)
+    Ravage,               // Ravage(X) - Roll X dice in melee, 6+ = wound (127)
+    Hazardous,            // Hazardous - AP(4) but take wound on hit roll of 1 (128)
+    QuakeWhenShooting,    // Quake when Shooting - Shred effect when shooting (129)
+    Harassing,            // Harassing - Move 3" after shooting or melee (130)
+    Guerrilla,            // Guerrilla - Move 3" after shooting/melee (once/round) (131)
+
     // Future expansion rules go here
     // Each new rule should be categorized as PRIMARY or EXTENDED based on
     // how frequently it's checked during combat resolution
