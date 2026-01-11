@@ -470,6 +470,39 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"infectedboostaura", RuleId::Warbound},
         {"brutal fighter aura", RuleId::BrutalFighter},
         {"brutalfighteraura", RuleId::BrutalFighter},
+
+        // === Category F: Combat Choice & Retaliation ===
+        {"unpredictable", RuleId::Unpredictable},
+        {"unpredictable fighter", RuleId::UnpredictableFighter},
+        {"unpredictablefighter", RuleId::UnpredictableFighter},
+        {"unpredictable shooter", RuleId::UnpredictableShooter},
+        {"unpredictableshooter", RuleId::UnpredictableShooter},
+        {"retaliate", RuleId::Retaliate},
+        {"deathstrike", RuleId::Deathstrike},
+
+        // === Category F: Aliases to existing rules ===
+        {"self-repair", RuleId::Plaguebound},
+        {"selfrepair", RuleId::Plaguebound},
+        {"self repair", RuleId::Plaguebound},
+        {"reinforced", RuleId::Guardian},
+        {"honor code", RuleId::Steadfast},
+        {"honorcode", RuleId::Steadfast},
+
+        // === Category F: Aura Mappings ===
+        {"unpredictable aura", RuleId::Unpredictable},
+        {"unpredictableaura", RuleId::Unpredictable},
+        {"unpredictable fighter aura", RuleId::UnpredictableFighter},
+        {"unpredictablefighteraura", RuleId::UnpredictableFighter},
+        {"unpredictable shooter aura", RuleId::UnpredictableShooter},
+        {"unpredictableshooter aura", RuleId::UnpredictableShooter},
+        {"unpredictableshooterura", RuleId::UnpredictableShooter},
+        {"self-repair aura", RuleId::Plaguebound},
+        {"selfrepair aura", RuleId::Plaguebound},
+        {"selfrepairura", RuleId::Plaguebound},
+        {"self-repair boost aura", RuleId::Plaguebound},
+        {"selfrepairboostaura", RuleId::Plaguebound},
+        {"reinforced aura", RuleId::Guardian},
+        {"reinforcedaura", RuleId::Guardian},
     };
     return map;
 }

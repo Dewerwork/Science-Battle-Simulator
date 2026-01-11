@@ -264,6 +264,13 @@ enum class RuleId : u16 {
     Warbound,       // Warbound - Extra wound on defense 1s (like Shred) (111)
     BrutalFighter,  // Brutal Fighter - 6s to hit deal extra hit in melee (112)
 
+    // === Category F: Combat Choice & Retaliation ===
+    Unpredictable,        // Unpredictable - Roll D6: 1-3 = AP+1, 4-6 = +1 hit (113)
+    UnpredictableFighter, // Unpredictable Fighter - Roll D6 in melee only (114)
+    UnpredictableShooter, // Unpredictable Shooter - Roll D6 when shooting only (115)
+    Retaliate,            // Retaliate - When wounded in melee, attacker takes X hits (116)
+    Deathstrike,          // Deathstrike - If killed in melee, attacker takes X hits (117)
+
     // Future expansion rules go here
     // Each new rule should be categorized as PRIMARY or EXTENDED based on
     // how frequently it's checked during combat resolution

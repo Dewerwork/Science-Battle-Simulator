@@ -208,7 +208,7 @@ Melee Slayer,Combat - AP Modifier,Not Started,AP(+2) vs Tough(3+) in melee
 Precision Fighting Mark,Buff - Combat,Not Started,Grant +1 melee hit vs target
 Regeneration Buff,Buff - Defense,Not Started,Grant Regeneration to friendly
 Ruinous Frenzy,Combat - Scaling,Not Started,Marker-based hit/defense bonus
-Unpredictable Fighter,Combat - Choice,Not Started,Roll D6 for AP+1 or +1 hit in melee
+Unpredictable Fighter,Combat - Choice,Implemented,Roll D6 in melee: 1-3 = AP+1 4-6 = +1 hit
 Harassing Boost Aura,Aura - Movement,Not Started,Unit gets Harassing Boost
 Piercing Hunter Aura,Aura - Combat,Not Started,Unit gets Piercing Hunter
 Devastating Frenzy,Combat - Scaling,Not Started,Marker-based AP/defense bonus
@@ -231,12 +231,12 @@ Precision Fighter Aura,Aura - Combat,Not Started,+1 to hit in melee for unit
 Rapid Advance Aura,Aura - Movement,Not Started,Unit gets Rapid Advance
 Dangerous Terrain Debuff,Debuff - Movement,Not Started,Force Dangerous Terrain test
 Instinctive,Movement - Combat,Not Started,Must attack closest target with +1 hit
-Retaliate,Combat - Retaliation,Not Started,Attacker takes X hits when this model wounded
+Retaliate,Combat - Retaliation,Implemented,When wounded in melee attacker takes X hits
 Mischievous Boost Aura,Aura - Combat,Not Started,Unit gets Mischievous Boost
 Quick Shot Aura,Aura - Combat,Not Started,Unit gets Quick Shot
 Havocbound,Combat - AP Modifier,Implemented,AP(+1) when shooting over 9" or charging
 Steadfast Buff,Buff - Morale,Not Started,Grant Steadfast to friendly
-Unpredictable,Combat - Choice,Not Started,Roll D6 for AP+1 or +1 hit
+Unpredictable,Combat - Choice,Implemented,Roll D6: 1-3 = AP+1 4-6 = +1 hit
 Havocbound Boost Aura,Aura - Combat,Not Started,Unit gets Havocbound Boost
 Versatile Defense Aura,Aura - Defense,Not Started,Unit gets Versatile Defense
 Changebound Boost Aura,Aura - Defense,Not Started,Unit gets Changebound Boost
@@ -265,10 +265,10 @@ Delayed Action,Activation,Not Started,Pass turn if opponent has more units
 Piercing Tag,Targeting,Not Started,Place markers for AP bonus (removable)
 Quick Readjustment,Combat - Modifier,Not Started,Ignore Indirect move penalty
 Spell Accumulator,Spells,Not Started,Token generation for spell casting
-Unpredictable Shooter,Combat - Choice,Not Started,Roll D6 for AP+1 or +1 hit when shooting
+Unpredictable Shooter,Combat - Choice,Implemented,Roll D6 when shooting: 1-3 = AP+1 4-6 = +1 hit
 Defensive Growth Aura,Aura - Defense,Not Started,Unit gets Defensive Growth
 Infected,Combat - Wound Bonus,Implemented,Extra wound on unmodified defense 1 (maps to Warbound)
-Deathstrike,Combat - Retaliation,Not Started,Attacking unit takes X hits when killed
+Deathstrike,Combat - Retaliation,Implemented,If killed in melee attacker takes X hits
 Precision Debuff,Debuff - Combat,Not Started,-1 to hit for enemy unit
 Precision Growth,Combat - Scaling,Not Started,Marker-based hit bonus over rounds
 Infected Boost Aura,Aura - Combat,Not Started,Unit gets Infected Boost
@@ -286,7 +286,7 @@ Ferocious Boost Aura,Aura - Combat,Not Started,Unit gets Ferocious Boost
 Piercing Fighter Aura,Aura - Combat,Not Started,AP(+1) in melee for unit
 Precision Charge Aura,Aura - Combat,Not Started,+1 to hit when charging for unit
 Speed Feat Aura,Aura - Movement,Not Started,Unit gets Speed Feat
-Reinforced,Defense - AP Reduction,Not Started,AP(-1) when shot/charged from over 9"
+Reinforced,Defense - AP Reduction,Implemented,AP(-1) from over 9" (maps to Guardian)
 Mind Wound,Combat - Special,Not Started,Enemy takes 2 hits with Demolish
 Crush,Combat - Special,Not Started,Roll X dice in melee for AP(2) hits
 Defense Debuff,Debuff - Defense,Not Started,-1 to defense for enemy unit
@@ -297,7 +297,7 @@ Scurry Boost Aura,Aura - Movement,Not Started,Unit gets Scurry Boost
 Guerrilla,Movement,Not Started,Move 3" after shooting or melee (once per round)
 Furious Mark,Buff - Combat,Not Started,Grant Furious vs target
 Guerrilla Boost Aura,Aura - Movement,Not Started,Unit gets Guerrilla Boost
-Self-Repair,Defense - Wound Ignore,Not Started,6+ to ignore wounds
+Self-Repair,Defense - Wound Ignore,Implemented,6+ to ignore wounds (maps to Plaguebound)
 Indirect Mark,Buff - Combat,Not Started,Grant Indirect vs target
 Self-Repair Boost Buff,Buff - Defense,Not Started,Grant Self-Repair Boost to friendly
 Swift Buff,Buff - Movement,Not Started,Grant Swift to friendly
@@ -314,7 +314,7 @@ Speed Buff,Buff - Movement,Not Started,Grant +2/+4" movement to friendly
 Grounded Precision Aura,Aura - Combat,Not Started,Unit gets Grounded Precision
 Grounded Reinforcement Aura,Aura - Defense,Not Started,Unit gets Grounded Reinforcement
 Melee Slayer Aura,Aura - Combat,Not Started,Unit gets Melee Slayer
-Honor Code,Morale,Not Started,4+ to stop being Shaken (like Steadfast)
+Honor Code,Morale,Implemented,4+ to stop being Shaken (maps to Steadfast)
 Changebound Boost,Defense - Hit Modifier,Not Started,-1 to hit always (not just over 9")
 Split,Deployment,Not Started,Spawn new unit when destroyed
 Storm of Change,Combat - Special,Not Started,Roll 3 dice for AoE Shred hits

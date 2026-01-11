@@ -815,6 +815,64 @@ void brutal_fighter_effect(CombatContextCore& ctx, CombatContextExtended* ext, u
     }
 }
 
+// ==============================================================================
+// Category F: Combat Choice & Retaliation Effect Implementations
+// ==============================================================================
+
+void unpredictable_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Unpredictable - Roll D6: 1-3 = AP+1, 4-6 = +1 hit
+    // Like VersatileAttack but general purpose
+    if (ext && ext->versatile_roll > 0) {
+        if (ext->versatile_roll <= 3) {
+            ctx.ap_modifier += 1;
+        } else {
+            ctx.hit_modifier += 1;
+        }
+    }
+}
+
+void unpredictable_fighter_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Unpredictable Fighter - Roll D6 in melee: 1-3 = AP+1, 4-6 = +1 hit
+    if (ext && ext->versatile_roll > 0) {
+        if (ext->versatile_roll <= 3) {
+            ctx.ap_modifier += 1;
+        } else {
+            ctx.hit_modifier += 1;
+        }
+    }
+}
+
+void unpredictable_shooter_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Unpredictable Shooter - Roll D6 when shooting: 1-3 = AP+1, 4-6 = +1 hit
+    if (ext && ext->versatile_roll > 0) {
+        if (ext->versatile_roll <= 3) {
+            ctx.ap_modifier += 1;
+        } else {
+            ctx.hit_modifier += 1;
+        }
+    }
+}
+
+bool shooting_only_condition(const CombatContextCore& ctx) {
+    return ctx.combat_type == CombatType::SHOOTING;
+}
+
+void retaliate_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 value) {
+    // Retaliate(X) - When this model takes a wound in melee, attacker takes X hits
+    // This is tracked in extended context for later resolution
+    if (ext) {
+        ext->retaliate_hits += value;
+    }
+}
+
+void deathstrike_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 value) {
+    // Deathstrike(X) - If killed in melee, attacker takes X hits
+    // Similar to SelfDestruct but triggers on model death
+    if (ext) {
+        ext->deathstrike_hits += value;
+    }
+}
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -1891,6 +1949,68 @@ const RuleHotData BrutalFighter_HotData{
 };
 
 // ==============================================================================
+// Category F: Combat Choice & Retaliation Hot Data
+// ==============================================================================
+
+const RuleHotData Unpredictable_HotData{
+    RuleId::Unpredictable,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    CombatType::BOTH,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) |
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData UnpredictableFighter_HotData{
+    RuleId::UnpredictableFighter,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    CombatType::MELEE,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) |
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData UnpredictableShooter_HotData{
+    RuleId::UnpredictableShooter,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    CombatType::SHOOTING,
+    Target::SELF,
+    Trigger::ALWAYS,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) |
+    static_cast<TraitMask>(RuleTrait::MODIFIES_AP)
+};
+
+const RuleHotData Retaliate_HotData{
+    RuleId::Retaliate,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION),
+    CombatType::MELEE,
+    Target::DEFENDER,
+    Trigger::WHEN_WOUNDED,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)
+};
+
+const RuleHotData Deathstrike_HotData{
+    RuleId::Deathstrike,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION),
+    CombatType::MELEE,
+    Target::DEFENDER,
+    Trigger::ON_MODEL_DEATH,
+    RulePriority::NORMAL,
+    static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)
+};
+
+// ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
 
@@ -2565,6 +2685,50 @@ const RuleColdData BrutalFighter_ColdData{
 };
 
 // ==============================================================================
+// Category F: Combat Choice & Retaliation Cold Data
+// ==============================================================================
+
+const RuleColdData Unpredictable_ColdData{
+    "Unpredictable",
+    nullptr,
+    0,
+    "Unpredictable: D6 for AP or hit",
+    "Roll D6: 1-3 = AP(+1), 4-6 = +1 to hit."
+};
+
+const RuleColdData UnpredictableFighter_ColdData{
+    "UnpredictableFighter",
+    nullptr,
+    0,
+    "Unpredictable Fighter: D6 in melee",
+    "Roll D6 in melee: 1-3 = AP(+1), 4-6 = +1 to hit."
+};
+
+const RuleColdData UnpredictableShooter_ColdData{
+    "UnpredictableShooter",
+    nullptr,
+    0,
+    "Unpredictable Shooter: D6 when shooting",
+    "Roll D6 when shooting: 1-3 = AP(+1), 4-6 = +1 to hit."
+};
+
+const RuleColdData Retaliate_ColdData{
+    "Retaliate",
+    nullptr,
+    0,
+    "Retaliate(X): X hits when wounded",
+    "When this model takes a wound in melee, the attacker takes X hits."
+};
+
+const RuleColdData Deathstrike_ColdData{
+    "Deathstrike",
+    nullptr,
+    0,
+    "Deathstrike(X): X hits when killed",
+    "When this model is killed in melee, the attacker takes X hits."
+};
+
+// ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
 
@@ -2985,6 +3149,34 @@ const RuleEffectEntry Warbound_Effects = EffectBuilder()
 const RuleEffectEntry BrutalFighter_Effects = EffectBuilder()
     .combat(CombatSubPhase::HIT_BONUSES, brutal_fighter_effect)
     .condition(CombatSubPhase::HIT_BONUSES, melee_only_condition)
+    .build();
+
+// ==============================================================================
+// Category F: Combat Choice & Retaliation Effect Entries
+// ==============================================================================
+
+const RuleEffectEntry Unpredictable_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, unpredictable_effect)
+    .build();
+
+const RuleEffectEntry UnpredictableFighter_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, unpredictable_fighter_effect)
+    .condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition)
+    .build();
+
+const RuleEffectEntry UnpredictableShooter_Effects = EffectBuilder()
+    .combat(CombatSubPhase::HIT_MODIFIERS, unpredictable_shooter_effect)
+    .condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition)
+    .build();
+
+const RuleEffectEntry Retaliate_Effects = EffectBuilder()
+    .combat(CombatSubPhase::WOUND_ALLOCATION, retaliate_effect)
+    .condition(CombatSubPhase::WOUND_ALLOCATION, melee_only_condition)
+    .build();
+
+const RuleEffectEntry Deathstrike_Effects = EffectBuilder()
+    .combat(CombatSubPhase::WOUND_ALLOCATION, deathstrike_effect)
+    .condition(CombatSubPhase::WOUND_ALLOCATION, melee_only_condition)
     .build();
 
 // ==============================================================================
@@ -3641,6 +3833,13 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::Warbound, Warbound_HotData);
     registry.register_hot_data(RuleId::BrutalFighter, BrutalFighter_HotData);
 
+    // Category F: Combat Choice & Retaliation hot data
+    registry.register_hot_data(RuleId::Unpredictable, Unpredictable_HotData);
+    registry.register_hot_data(RuleId::UnpredictableFighter, UnpredictableFighter_HotData);
+    registry.register_hot_data(RuleId::UnpredictableShooter, UnpredictableShooter_HotData);
+    registry.register_hot_data(RuleId::Retaliate, Retaliate_HotData);
+    registry.register_hot_data(RuleId::Deathstrike, Deathstrike_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -3771,6 +3970,13 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::Havocbound, Havocbound_ColdData);
     registry.register_cold_data(RuleId::Warbound, Warbound_ColdData);
     registry.register_cold_data(RuleId::BrutalFighter, BrutalFighter_ColdData);
+
+    // Category F: Combat Choice & Retaliation cold data
+    registry.register_cold_data(RuleId::Unpredictable, Unpredictable_ColdData);
+    registry.register_cold_data(RuleId::UnpredictableFighter, UnpredictableFighter_ColdData);
+    registry.register_cold_data(RuleId::UnpredictableShooter, UnpredictableShooter_ColdData);
+    registry.register_cold_data(RuleId::Retaliate, Retaliate_ColdData);
+    registry.register_cold_data(RuleId::Deathstrike, Deathstrike_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -3905,6 +4111,13 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::Havocbound, Havocbound_Effects);
     registry.register_effects(RuleId::Warbound, Warbound_Effects);
     registry.register_effects(RuleId::BrutalFighter, BrutalFighter_Effects);
+
+    // Category F: Combat Choice & Retaliation effects
+    registry.register_effects(RuleId::Unpredictable, Unpredictable_Effects);
+    registry.register_effects(RuleId::UnpredictableFighter, UnpredictableFighter_Effects);
+    registry.register_effects(RuleId::UnpredictableShooter, UnpredictableShooter_Effects);
+    registry.register_effects(RuleId::Retaliate, Retaliate_Effects);
+    registry.register_effects(RuleId::Deathstrike, Deathstrike_Effects);
 
     // =========================================================================
     // Register Movement effects
