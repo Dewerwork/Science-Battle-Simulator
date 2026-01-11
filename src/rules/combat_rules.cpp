@@ -1332,6 +1332,96 @@ void vengeance_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8
     ctx.hit_modifier += static_cast<i8>(value);
 }
 
+// === Category P-W: Remaining Rules Effects ===
+// Most of these are handled at activation/deployment/movement phases
+// Stub implementations for combat context compatibility
+
+void martial_prowess_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void coordinate_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void inquisitorial_agent_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void delayed_action_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+
+// Category Q: Boost Auras - using existing CombatContextCore fields
+void sturdy_boost_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.defense_modifier += 1; }
+void versatile_defense_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.defense_modifier += 1; }
+void changebound_boost_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier -= 1; }
+void plaguebound_boost_aura_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) { if (ext) ext->resistance_active = true; }
+void defensive_growth_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) { ctx.ap_modifier -= static_cast<i8>(value); }
+void machine_fog_boost_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier -= 1; }
+void reanimation_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // End round handling
+void grounded_reinforcement_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.ap_modifier -= 1; }
+void devout_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) { if (ext) ext->bonus_hits += 1; }  // Extra hits on 5-6
+void courage_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Morale phase handling
+void hold_the_line_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Morale phase handling
+void rapid_rush_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void harassing_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Post-combat movement
+void swift_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void rapid_blink_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void rapid_advance_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void lustbound_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void bounding_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void highborn_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void speed_feat_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void scurry_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void guerrilla_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Post-combat movement
+
+// Category R: Buffs - using existing CombatContextCore fields
+void stealth_buff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier -= 1; }  // Harder to hit
+void protective_dome_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier -= 1; }  // Evasive
+void guarded_buff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.defense_modifier += 1; }
+void regeneration_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // End round handling
+void entrenched_buff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.defense_modifier += 2; }
+void self_repair_boost_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // End round handling
+void courage_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Morale phase handling
+void steadfast_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Morale phase handling
+void no_retreat_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Morale phase handling
+void rapid_advance_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void swift_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void speed_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void increased_shooting_range_mark_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Range modifier
+void extended_buff_range_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Buff range modifier
+void increased_shooting_range_buff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Range modifier
+void casting_buff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier += 1; }
+
+// Category S: Debuffs - using existing CombatContextCore fields
+void fatigue_debuff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.trait_flags |= CombatContextCore::IS_FATIGUED; }
+void defense_debuff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.defense_modifier -= 1; }
+void morale_debuff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Morale phase handling
+void speed_debuff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void dangerous_terrain_debuff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void mind_control_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Special handling
+void difficult_terrain_debuff_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void casting_debuff_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier -= 1; }
+
+// Category T: Defense/Growth Rules
+void fortified_growth_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) { ctx.ap_modifier -= static_cast<i8>(value); }
+void grounded_stealth_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier -= 1; }
+void protection_feat_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) { if (ext) ext->resistance_active = true; }
+
+void infiltrate_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void spawn_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void re_deployment_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void rapid_ambush_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void ambush_beacon_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void ambush_re_deployment_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void repel_ambushers_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void reinforcement_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void fanatic_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+void split_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}
+
+// Category V: Movement Rules - stubs for movement phase handling
+void teleport_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void wolfborn_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void hit_and_run_shooter_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Post-combat movement
+void rapid_blink_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+void bounding_movement_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+
+// Category W: Faction/Morale/Misc - using existing fields or stubs
+void devout_boost_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) { if (ext) ext->bonus_hits += 1; }  // Extra hits on 5-6
+void mend_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Activation phase handling
+void hive_bond_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Morale phase handling
+void re_position_artillery_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -2718,6 +2808,87 @@ const RuleHotData MindWound_HotData{RuleId::MindWound, GamePhase::COMBAT, static
 const RuleHotData MobileArtillery_HotData{RuleId::MobileArtillery, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL)};
 const RuleHotData Vengeance_HotData{RuleId::Vengeance, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::BOTH, Target::SELF, Trigger::ON_MODEL_DEATH, RulePriority::NORMAL, 0};
 
+// Category P-W: Remaining Rules Hot Data
+const RuleHotData MartialProwess_HotData{RuleId::MartialProwess, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData Coordinate_HotData{RuleId::Coordinate, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData InquisitorialAgent_HotData{RuleId::InquisitorialAgent, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData DelayedAction_HotData{RuleId::DelayedAction, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+
+const RuleHotData SturdyBoostAura_HotData{RuleId::SturdyBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData VersatileDefenseAura_HotData{RuleId::VersatileDefenseAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData ChangeboundBoostAura_HotData{RuleId::ChangeboundBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData PlageboundBoostAura_HotData{RuleId::PlageboundBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData DefensiveGrowthAura_HotData{RuleId::DefensiveGrowthAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData MachineFogBoostAura_HotData{RuleId::MachineFogBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData ReanimationAura_HotData{RuleId::ReanimationAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData GroundedReinforcementAura_HotData{RuleId::GroundedReinforcementAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData DevoutBoostAura_HotData{RuleId::DevoutBoostAura, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_BONUSES), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData CourageAura_HotData{RuleId::CourageAura, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData HoldTheLineBoostAura_HotData{RuleId::HoldTheLineBoostAura, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData RapidRushAura_HotData{RuleId::RapidRushAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData HarassingBoostAura_HotData{RuleId::HarassingBoostAura, GamePhase::MOVEMENT, static_cast<u8>(MoveSubPhase::POST_MOVE), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData SwiftAura_HotData{RuleId::SwiftAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData RapidBlinkBoostAura_HotData{RuleId::RapidBlinkBoostAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData RapidAdvanceAura_HotData{RuleId::RapidAdvanceAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData LustboundBoostAura_HotData{RuleId::LustboundBoostAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData BoundingAura_HotData{RuleId::BoundingAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData HighbornBoostAura_HotData{RuleId::HighbornBoostAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData SpeedFeatAura_HotData{RuleId::SpeedFeatAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData ScurryBoostAura_HotData{RuleId::ScurryBoostAura, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+const RuleHotData GuerrillaBoostAura_HotData{RuleId::GuerrillaBoostAura, GamePhase::MOVEMENT, static_cast<u8>(MoveSubPhase::POST_MOVE), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::AURA_EFFECT)};
+
+const RuleHotData StealthBuff_HotData{RuleId::StealthBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData ProtectiveDome_HotData{RuleId::ProtectiveDome, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData GuardedBuff_HotData{RuleId::GuardedBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData RegenerationBuff_HotData{RuleId::RegenerationBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData EntrenchedBuff_HotData{RuleId::EntrenchedBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData SelfRepairBoostBuff_HotData{RuleId::SelfRepairBoostBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData CourageBuff_HotData{RuleId::CourageBuff, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData SteadfastBuff_HotData{RuleId::SteadfastBuff, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData NoRetreatBuff_HotData{RuleId::NoRetreatBuff, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData RapidAdvanceBuff_HotData{RuleId::RapidAdvanceBuff, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData SwiftBuff_HotData{RuleId::SwiftBuff, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData SpeedBuff_HotData{RuleId::SpeedBuff, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData IncreasedShootingRangeMark_HotData{RuleId::IncreasedShootingRangeMark, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::SHOOTING, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData ExtendedBuffRange_HotData{RuleId::ExtendedBuffRange, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData IncreasedShootingRangeBuff_HotData{RuleId::IncreasedShootingRangeBuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::PRE_ATTACK), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData CastingBuff_HotData{RuleId::CastingBuff, GamePhase::COMBAT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+
+const RuleHotData FatigueDebuff_HotData{RuleId::FatigueDebuff, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData DefenseDebuff_HotData{RuleId::DefenseDebuff, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData MoraleDebuff_HotData{RuleId::MoraleDebuff, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData SpeedDebuff_HotData{RuleId::SpeedDebuff, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData DangerousTerrainDebuff_HotData{RuleId::DangerousTerrainDebuff, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData MindControl_HotData{RuleId::MindControl, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData DifficultTerrainDebuff_HotData{RuleId::DifficultTerrainDebuff, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData CastingDebuff_HotData{RuleId::CastingDebuff, GamePhase::COMBAT, 0, CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+
+const RuleHotData FortifiedGrowth_HotData{RuleId::FortifiedGrowth, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData GroundedStealth_HotData{RuleId::GroundedStealth, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData ProtectionFeat_HotData{RuleId::ProtectionFeat, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::WOUND_ALLOCATION), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+
+const RuleHotData Infiltrate_HotData{RuleId::Infiltrate, GamePhase::DEPLOYMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData Spawn_HotData{RuleId::Spawn, GamePhase::DEPLOYMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData ReDeployment_HotData{RuleId::ReDeployment, GamePhase::DEPLOYMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData RapidAmbush_HotData{RuleId::RapidAmbush, GamePhase::DEPLOYMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData AmbushBeacon_HotData{RuleId::AmbushBeacon, GamePhase::DEPLOYMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData AmbushReDeployment_HotData{RuleId::AmbushReDeployment, GamePhase::DEPLOYMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData RepelAmbushers_HotData{RuleId::RepelAmbushers, GamePhase::DEPLOYMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData Reinforcement_HotData{RuleId::Reinforcement, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData Fanatic_HotData{RuleId::Fanatic, GamePhase::DEPLOYMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData Split_HotData{RuleId::Split, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ON_MODEL_DEATH, RulePriority::NORMAL, 0};
+
+const RuleHotData Teleport_HotData{RuleId::Teleport, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData Wolfborn_HotData{RuleId::Wolfborn, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+// Note: HitAndRunShooter_HotData already defined above
+const RuleHotData RapidBlink_HotData{RuleId::RapidBlink, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData Bounding_HotData{RuleId::Bounding, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+
+const RuleHotData DevoutBoost_HotData{RuleId::DevoutBoost, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_BONUSES), CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)};
+const RuleHotData Mend_HotData{RuleId::Mend, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData HiveBond_HotData{RuleId::HiveBond, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData RePositionArtillery_HotData{RuleId::RePositionArtillery, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+
 // ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
@@ -3641,6 +3812,97 @@ const RuleColdData MobileArtillery_ColdData{"MobileArtillery", nullptr, 0, "Mobi
 const RuleColdData Vengeance_ColdData{"Vengeance", nullptr, 0, "Vengeance", "Markers for hit bonus when destroyed."};
 
 // ==============================================================================
+// Category P-W: Remaining Rules Cold Data
+// ==============================================================================
+
+// Category P: Activation Rules Cold Data
+const RuleColdData MartialProwess_ColdData{"MartialProwess", nullptr, 0, "Martial Prowess", "Activate twice per round (once per game)."};
+const RuleColdData Coordinate_ColdData{"Coordinate", nullptr, 0, "Coordinate", "Activate another friendly unit after this."};
+const RuleColdData InquisitorialAgent_ColdData{"InquisitorialAgent", nullptr, 0, "Inquisitorial Agent", "Activate twice per round (once per game)."};
+const RuleColdData DelayedAction_ColdData{"DelayedAction", nullptr, 0, "Delayed Action", "Pass turn if opponent has more units."};
+
+// Category Q: Remaining Boost Auras Cold Data
+const RuleColdData SturdyBoostAura_ColdData{"SturdyBoostAura", nullptr, 0, "Sturdy Boost Aura", "Unit gets Sturdy Boost."};
+const RuleColdData VersatileDefenseAura_ColdData{"VersatileDefenseAura", nullptr, 0, "Versatile Defense Aura", "Unit gets Versatile Defense."};
+const RuleColdData ChangeboundBoostAura_ColdData{"ChangeboundBoostAura", nullptr, 0, "Changebound Boost Aura", "Unit gets -1 to be hit always."};
+const RuleColdData PlageboundBoostAura_ColdData{"PlageboundBoostAura", nullptr, 0, "Plaguebound Boost Aura", "Unit gets 5-6 wound ignore."};
+const RuleColdData DefensiveGrowthAura_ColdData{"DefensiveGrowthAura", nullptr, 0, "Defensive Growth Aura", "Unit gets scaling defense bonus."};
+const RuleColdData MachineFogBoostAura_ColdData{"MachineFogBoostAura", nullptr, 0, "Machine-Fog Aura", "Unit gets fog obscurement."};
+const RuleColdData ReanimationAura_ColdData{"ReanimationAura", nullptr, 0, "Reanimation Aura", "Unit gets model revival."};
+const RuleColdData LustboundBoostAura_ColdData{"LustboundBoostAura", nullptr, 0, "Lustbound Boost Aura", "Unit gets +2/+6\" movement."};
+const RuleColdData RapidRushAura_ColdData{"RapidRushAura", nullptr, 0, "Unstoppable Aura", "Unit gets Unstoppable."};
+const RuleColdData GroundedReinforcementAura_ColdData{"GroundedReinforcementAura", nullptr, 0, "Grounded Defense Aura", "Unit gets +1 defense near terrain."};
+const RuleColdData HoldTheLineBoostAura_ColdData{"HoldTheLineBoostAura", nullptr, 0, "Guardian Boost Aura", "Unit gets enhanced Guardian."};
+const RuleColdData CourageAura_ColdData{"CourageAura", nullptr, 0, "Shield Wall Aura", "Unit gets Shield Wall."};
+const RuleColdData DevoutBoostAura_ColdData{"DevoutBoostAura", nullptr, 0, "Devout Aura", "Unit gets extra hits on 5-6."};
+const RuleColdData HarassingBoostAura_ColdData{"HarassingBoostAura", nullptr, 0, "Self-Repair Aura", "Unit gets automatic wound healing."};
+const RuleColdData SwiftAura_ColdData{"SwiftAura", nullptr, 0, "Venomous Attack Aura", "Unit gets Poison attacks."};
+const RuleColdData RapidBlinkBoostAura_ColdData{"RapidBlinkBoostAura", nullptr, 0, "Counter Aura", "Unit gets Counter."};
+const RuleColdData RapidAdvanceAura_ColdData{"RapidAdvanceAura", nullptr, 0, "Infiltrate Aura", "Unit gets Infiltrate."};
+const RuleColdData BoundingAura_ColdData{"BoundingAura", nullptr, 0, "Slow Aura", "Unit gets Slow."};
+const RuleColdData HighbornBoostAura_ColdData{"HighbornBoostAura", nullptr, 0, "Takedown Aura", "Unit gets Takedown."};
+const RuleColdData SpeedFeatAura_ColdData{"SpeedFeatAura", nullptr, 0, "Deadly Aura", "Unit gets Deadly attacks."};
+const RuleColdData GuerrillaBoostAura_ColdData{"GuerrillaBoostAura", nullptr, 0, "Guerrilla Boost Aura", "Unit gets enhanced Guerrilla."};
+
+// Category R: Remaining Buffs Cold Data
+const RuleColdData StealthBuff_ColdData{"StealthBuff", nullptr, 0, "Stealth Buff", "Grant Stealth to friendly unit."};
+const RuleColdData ProtectiveDome_ColdData{"ProtectiveDome", nullptr, 0, "Protective Dome Buff", "Grant dome protection to friendlies."};
+const RuleColdData GuardedBuff_ColdData{"GuardedBuff", nullptr, 0, "Guarded Buff", "Grant Guarded to friendly unit."};
+const RuleColdData RegenerationBuff_ColdData{"RegenerationBuff", nullptr, 0, "Regeneration Buff", "Grant Regeneration to friendly unit."};
+const RuleColdData EntrenchedBuff_ColdData{"EntrenchedBuff", nullptr, 0, "Entrenched Buff", "Grant Entrenched to friendly unit."};
+const RuleColdData SelfRepairBoostBuff_ColdData{"SelfRepairBoostBuff", nullptr, 0, "Self-Repair Boost Buff", "Grant enhanced Self-Repair."};
+const RuleColdData CourageBuff_ColdData{"CourageBuff", nullptr, 0, "Courage Buff", "Grant morale immunity to friendlies."};
+const RuleColdData SteadfastBuff_ColdData{"SteadfastBuff", nullptr, 0, "Fearless Buff", "Grant Fearless to friendly unit."};
+const RuleColdData NoRetreatBuff_ColdData{"NoRetreatBuff", nullptr, 0, "Relentless Buff", "Grant Relentless to friendly unit."};
+const RuleColdData RapidAdvanceBuff_ColdData{"RapidAdvanceBuff", nullptr, 0, "Fast Buff", "Grant Fast to friendly unit."};
+const RuleColdData SwiftBuff_ColdData{"SwiftBuff", nullptr, 0, "Furious Buff", "Grant Furious to friendly unit."};
+const RuleColdData SpeedBuff_ColdData{"SpeedBuff", nullptr, 0, "Indirect Buff", "Grant Indirect to friendly unit."};
+const RuleColdData IncreasedShootingRangeMark_ColdData{"IncreasedShootingRangeMark", nullptr, 0, "Versatile Attack Buff", "Grant Versatile Attack to friendly."};
+const RuleColdData ExtendedBuffRange_ColdData{"ExtendedBuffRange", nullptr, 0, "Resistance Buff", "Grant Resistance to friendly unit."};
+const RuleColdData IncreasedShootingRangeBuff_ColdData{"IncreasedShootingRangeBuff", nullptr, 0, "Stride Buff", "Grant Strider to friendly unit."};
+const RuleColdData CastingBuff_ColdData{"CastingBuff", nullptr, 0, "Casting Buff", "Grant casting bonus to friendly unit."};
+
+// Category S: Remaining Debuffs Cold Data
+const RuleColdData FatigueDebuff_ColdData{"FatigueDebuff", nullptr, 0, "Fatigue Debuff", "Force enemy to become fatigued."};
+const RuleColdData DefenseDebuff_ColdData{"DefenseDebuff", nullptr, 0, "Defense Debuff", "-1 defense for enemy unit."};
+const RuleColdData MoraleDebuff_ColdData{"MoraleDebuff", nullptr, 0, "Morale Debuff", "-1 morale for enemy unit."};
+const RuleColdData SpeedDebuff_ColdData{"SpeedDebuff", nullptr, 0, "Speed Debuff", "Halve movement for enemy unit."};
+const RuleColdData DangerousTerrainDebuff_ColdData{"DangerousTerrainDebuff", nullptr, 0, "Dangerous Terrain Debuff", "Enemy treats terrain as dangerous."};
+const RuleColdData MindControl_ColdData{"MindControl", nullptr, 0, "Mind Control", "Control enemy unit for one turn."};
+const RuleColdData DifficultTerrainDebuff_ColdData{"DifficultTerrainDebuff", nullptr, 0, "Difficult Terrain Debuff", "Enemy treats terrain as difficult."};
+const RuleColdData CastingDebuff_ColdData{"CastingDebuff", nullptr, 0, "Casting Debuff", "Reduce casting ability for enemy."};
+
+// Category T: Defense/Growth Rules Cold Data
+const RuleColdData FortifiedGrowth_ColdData{"FortifiedGrowth", nullptr, 0, "Fortified Growth", "Marker-based AP reduction over rounds."};
+const RuleColdData GroundedStealth_ColdData{"GroundedStealth", nullptr, 0, "Grounded Stealth", "-1 to be hit when near terrain."};
+const RuleColdData ProtectionFeat_ColdData{"ProtectionFeat", nullptr, 0, "Protection Feat", "Once per game 4+ to ignore wounds."};
+
+// Category U: Deployment Rules Cold Data
+const RuleColdData Infiltrate_ColdData{"Infiltrate", nullptr, 0, "Infiltrate", "Ambush variant - deploy up to 1\" from enemy."};
+const RuleColdData Spawn_ColdData{"Spawn", nullptr, 0, "Spawn", "Create new unit during game."};
+const RuleColdData ReDeployment_ColdData{"ReDeployment", nullptr, 0, "Re-Deployment", "Move unit to new position."};
+const RuleColdData RapidAmbush_ColdData{"RapidAmbush", nullptr, 0, "Rapid Ambush", "Ambush with immediate charge."};
+const RuleColdData AmbushBeacon_ColdData{"AmbushBeacon", nullptr, 0, "Ambush Beacon", "Allow allies to Ambush near this unit."};
+const RuleColdData AmbushReDeployment_ColdData{"AmbushReDeployment", nullptr, 0, "Ambush Re-Deployment", "Ambush and redeploy combination."};
+const RuleColdData RepelAmbushers_ColdData{"RepelAmbushers", nullptr, 0, "Repel Ambushers", "Force Ambushers further away."};
+const RuleColdData Reinforcement_ColdData{"Reinforcement", nullptr, 0, "Reinforcement", "Bring destroyed unit back at end of round."};
+const RuleColdData Fanatic_ColdData{"Fanatic", nullptr, 0, "Fanatic", "Deploy forward with charge bonus."};
+const RuleColdData Split_ColdData{"Split", nullptr, 0, "Split", "Spawn new units when model dies."};
+
+// Category V: Movement Rules Cold Data
+const RuleColdData Teleport_ColdData{"Teleport", nullptr, 0, "Teleport", "Place model anywhere within 6\" before attacking."};
+const RuleColdData Wolfborn_ColdData{"Wolfborn", nullptr, 0, "Wolfborn", "Enhanced movement through terrain."};
+// Note: HitAndRunShooter_ColdData already defined above
+const RuleColdData RapidBlink_ColdData{"RapidBlink", nullptr, 0, "Rapid Blink", "Short teleport during movement."};
+const RuleColdData Bounding_ColdData{"Bounding", nullptr, 0, "Bounding", "Extra movement during advance."};
+
+// Category W: Faction/Morale/Misc Cold Data
+const RuleColdData DevoutBoost_ColdData{"DevoutBoost", nullptr, 0, "Devout Boost", "Extra hits on 5-6 instead of just 6."};
+const RuleColdData Mend_ColdData{"Mend", nullptr, 0, "Mend", "Remove D3 wounds from Tough model."};
+const RuleColdData HiveBond_ColdData{"HiveBond", nullptr, 0, "Hive Bond", "Units with this rule get +1 morale."};
+const RuleColdData RePositionArtillery_ColdData{"RePositionArtillery", nullptr, 0, "Re-Position Artillery", "Move Artillery model up to 9\"."};
+
+// ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
 
@@ -4238,6 +4500,98 @@ const RuleEffectEntry SurprisePiercingShot_Effects = EffectBuilder().combat(Comb
 const RuleEffectEntry MindWound_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, mind_wound_effect).build();
 const RuleEffectEntry MobileArtillery_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, mobile_artillery_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
 const RuleEffectEntry Vengeance_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, vengeance_effect).build();
+
+// ==============================================================================
+// Category P-W: Remaining Rules Effect Entries
+// ==============================================================================
+
+// Category P: Activation Rules (stub - handled at activation phase level)
+const RuleEffectEntry MartialProwess_Effects = EffectBuilder().build();
+const RuleEffectEntry Coordinate_Effects = EffectBuilder().build();
+const RuleEffectEntry InquisitorialAgent_Effects = EffectBuilder().build();
+const RuleEffectEntry DelayedAction_Effects = EffectBuilder().build();
+
+// Category Q: Remaining Boost Auras Effect Entries - using correct function names
+const RuleEffectEntry SturdyBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, sturdy_boost_aura_effect).build();
+const RuleEffectEntry VersatileDefenseAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, versatile_defense_aura_effect).build();
+const RuleEffectEntry ChangeboundBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, changebound_boost_aura_effect).build();
+const RuleEffectEntry PlageboundBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::WOUND_ALLOCATION, plaguebound_boost_aura_effect).build();
+const RuleEffectEntry DefensiveGrowthAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, defensive_growth_aura_effect).build();
+const RuleEffectEntry MachineFogBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, machine_fog_boost_aura_effect).build();
+const RuleEffectEntry ReanimationAura_Effects = EffectBuilder().build();  // End round handling
+const RuleEffectEntry GroundedReinforcementAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, grounded_reinforcement_aura_effect).build();
+const RuleEffectEntry DevoutBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, devout_boost_aura_effect).build();
+const RuleEffectEntry CourageAura_Effects = EffectBuilder().build();  // Morale handling
+const RuleEffectEntry HoldTheLineBoostAura_Effects = EffectBuilder().build();  // Morale handling
+const RuleEffectEntry RapidRushAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry HarassingBoostAura_Effects = EffectBuilder().build();  // Post-combat movement
+const RuleEffectEntry SwiftAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry RapidBlinkBoostAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry RapidAdvanceAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry LustboundBoostAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry BoundingAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry HighbornBoostAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry SpeedFeatAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry ScurryBoostAura_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry GuerrillaBoostAura_Effects = EffectBuilder().build();  // Post-combat movement
+
+// Category R: Remaining Buffs Effect Entries - using correct function names
+const RuleEffectEntry StealthBuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, stealth_buff_effect).build();
+const RuleEffectEntry ProtectiveDome_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, protective_dome_effect).build();
+const RuleEffectEntry GuardedBuff_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, guarded_buff_effect).build();
+const RuleEffectEntry RegenerationBuff_Effects = EffectBuilder().build();  // End round handling
+const RuleEffectEntry EntrenchedBuff_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, entrenched_buff_effect).build();
+const RuleEffectEntry SelfRepairBoostBuff_Effects = EffectBuilder().build();  // End round handling
+const RuleEffectEntry CourageBuff_Effects = EffectBuilder().build();  // Morale handling
+const RuleEffectEntry SteadfastBuff_Effects = EffectBuilder().build();  // Morale handling
+const RuleEffectEntry NoRetreatBuff_Effects = EffectBuilder().build();  // Morale handling
+const RuleEffectEntry RapidAdvanceBuff_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry SwiftBuff_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry SpeedBuff_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry IncreasedShootingRangeMark_Effects = EffectBuilder().build();  // Range modifier
+const RuleEffectEntry ExtendedBuffRange_Effects = EffectBuilder().build();  // Buff range modifier
+const RuleEffectEntry IncreasedShootingRangeBuff_Effects = EffectBuilder().build();  // Range modifier
+const RuleEffectEntry CastingBuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, casting_buff_effect).build();
+
+// Category S: Remaining Debuffs Effect Entries
+const RuleEffectEntry FatigueDebuff_Effects = EffectBuilder().combat(CombatSubPhase::PRE_ATTACK, fatigue_debuff_effect).build();
+const RuleEffectEntry DefenseDebuff_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, defense_debuff_effect).build();
+const RuleEffectEntry MoraleDebuff_Effects = EffectBuilder().build();  // Morale handling
+const RuleEffectEntry SpeedDebuff_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry DangerousTerrainDebuff_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry MindControl_Effects = EffectBuilder().build();  // Special handling
+const RuleEffectEntry DifficultTerrainDebuff_Effects = EffectBuilder().build();  // Movement handling
+const RuleEffectEntry CastingDebuff_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, casting_debuff_effect).build();
+
+// Category T: Defense/Growth Rules Effect Entries
+const RuleEffectEntry FortifiedGrowth_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, fortified_growth_effect).build();
+const RuleEffectEntry GroundedStealth_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, grounded_stealth_effect).build();
+const RuleEffectEntry ProtectionFeat_Effects = EffectBuilder().combat(CombatSubPhase::WOUND_ALLOCATION, protection_feat_effect).build();
+
+// Category U: Deployment Rules Effect Entries (deployment handled separately)
+const RuleEffectEntry Infiltrate_Effects = EffectBuilder().build();
+const RuleEffectEntry Spawn_Effects = EffectBuilder().build();
+const RuleEffectEntry ReDeployment_Effects = EffectBuilder().build();
+const RuleEffectEntry RapidAmbush_Effects = EffectBuilder().build();
+const RuleEffectEntry AmbushBeacon_Effects = EffectBuilder().build();
+const RuleEffectEntry AmbushReDeployment_Effects = EffectBuilder().build();
+const RuleEffectEntry RepelAmbushers_Effects = EffectBuilder().build();
+const RuleEffectEntry Reinforcement_Effects = EffectBuilder().build();
+const RuleEffectEntry Fanatic_Effects = EffectBuilder().build();
+const RuleEffectEntry Split_Effects = EffectBuilder().build();
+
+// Category V: Movement Rules Effect Entries (stubs - movement phase handled separately)
+const RuleEffectEntry Teleport_Effects = EffectBuilder().build();
+const RuleEffectEntry Wolfborn_Effects = EffectBuilder().build();
+const RuleEffectEntry HitAndRunShooter_Cat_Effects = EffectBuilder().build();
+const RuleEffectEntry RapidBlink_Effects = EffectBuilder().build();
+const RuleEffectEntry Bounding_Effects = EffectBuilder().build();
+
+// Category W: Faction/Morale/Misc Effect Entries
+const RuleEffectEntry DevoutBoost_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, devout_boost_effect).build();
+const RuleEffectEntry Mend_Effects = EffectBuilder().build();  // Activation handling
+const RuleEffectEntry HiveBond_Effects = EffectBuilder().build();  // Morale handling
+const RuleEffectEntry RePositionArtillery_Effects = EffectBuilder().build();  // Movement handling
 
 // ==============================================================================
 // Movement Phase Effects
@@ -4986,6 +5340,93 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::MobileArtillery, MobileArtillery_HotData);
     registry.register_hot_data(RuleId::Vengeance, Vengeance_HotData);
 
+    // === Category P: Activation Rules ===
+    registry.register_hot_data(RuleId::MartialProwess, MartialProwess_HotData);
+    registry.register_hot_data(RuleId::Coordinate, Coordinate_HotData);
+    registry.register_hot_data(RuleId::InquisitorialAgent, InquisitorialAgent_HotData);
+    registry.register_hot_data(RuleId::DelayedAction, DelayedAction_HotData);
+
+    // === Category Q: Remaining Boost Auras ===
+    registry.register_hot_data(RuleId::SturdyBoostAura, SturdyBoostAura_HotData);
+    registry.register_hot_data(RuleId::VersatileDefenseAura, VersatileDefenseAura_HotData);
+    registry.register_hot_data(RuleId::ChangeboundBoostAura, ChangeboundBoostAura_HotData);
+    registry.register_hot_data(RuleId::PlageboundBoostAura, PlageboundBoostAura_HotData);
+    registry.register_hot_data(RuleId::DefensiveGrowthAura, DefensiveGrowthAura_HotData);
+    registry.register_hot_data(RuleId::MachineFogBoostAura, MachineFogBoostAura_HotData);
+    registry.register_hot_data(RuleId::ReanimationAura, ReanimationAura_HotData);
+    registry.register_hot_data(RuleId::LustboundBoostAura, LustboundBoostAura_HotData);
+    registry.register_hot_data(RuleId::RapidRushAura, RapidRushAura_HotData);
+    registry.register_hot_data(RuleId::GroundedReinforcementAura, GroundedReinforcementAura_HotData);
+    registry.register_hot_data(RuleId::HoldTheLineBoostAura, HoldTheLineBoostAura_HotData);
+    registry.register_hot_data(RuleId::CourageAura, CourageAura_HotData);
+    registry.register_hot_data(RuleId::DevoutBoostAura, DevoutBoostAura_HotData);
+    registry.register_hot_data(RuleId::HarassingBoostAura, HarassingBoostAura_HotData);
+    registry.register_hot_data(RuleId::SwiftAura, SwiftAura_HotData);
+    registry.register_hot_data(RuleId::RapidBlinkBoostAura, RapidBlinkBoostAura_HotData);
+    registry.register_hot_data(RuleId::RapidAdvanceAura, RapidAdvanceAura_HotData);
+    registry.register_hot_data(RuleId::BoundingAura, BoundingAura_HotData);
+    registry.register_hot_data(RuleId::HighbornBoostAura, HighbornBoostAura_HotData);
+    registry.register_hot_data(RuleId::SpeedFeatAura, SpeedFeatAura_HotData);
+    registry.register_hot_data(RuleId::GuerrillaBoostAura, GuerrillaBoostAura_HotData);
+
+    // === Category R: Remaining Buffs ===
+    registry.register_hot_data(RuleId::StealthBuff, StealthBuff_HotData);
+    registry.register_hot_data(RuleId::ProtectiveDome, ProtectiveDome_HotData);
+    registry.register_hot_data(RuleId::GuardedBuff, GuardedBuff_HotData);
+    registry.register_hot_data(RuleId::RegenerationBuff, RegenerationBuff_HotData);
+    registry.register_hot_data(RuleId::EntrenchedBuff, EntrenchedBuff_HotData);
+    registry.register_hot_data(RuleId::SelfRepairBoostBuff, SelfRepairBoostBuff_HotData);
+    registry.register_hot_data(RuleId::CourageBuff, CourageBuff_HotData);
+    registry.register_hot_data(RuleId::SteadfastBuff, SteadfastBuff_HotData);
+    registry.register_hot_data(RuleId::NoRetreatBuff, NoRetreatBuff_HotData);
+    registry.register_hot_data(RuleId::RapidAdvanceBuff, RapidAdvanceBuff_HotData);
+    registry.register_hot_data(RuleId::SwiftBuff, SwiftBuff_HotData);
+    registry.register_hot_data(RuleId::SpeedBuff, SpeedBuff_HotData);
+    registry.register_hot_data(RuleId::IncreasedShootingRangeMark, IncreasedShootingRangeMark_HotData);
+    registry.register_hot_data(RuleId::ExtendedBuffRange, ExtendedBuffRange_HotData);
+    registry.register_hot_data(RuleId::IncreasedShootingRangeBuff, IncreasedShootingRangeBuff_HotData);
+    registry.register_hot_data(RuleId::CastingBuff, CastingBuff_HotData);
+
+    // === Category S: Remaining Debuffs ===
+    registry.register_hot_data(RuleId::FatigueDebuff, FatigueDebuff_HotData);
+    registry.register_hot_data(RuleId::DefenseDebuff, DefenseDebuff_HotData);
+    registry.register_hot_data(RuleId::MoraleDebuff, MoraleDebuff_HotData);
+    registry.register_hot_data(RuleId::SpeedDebuff, SpeedDebuff_HotData);
+    registry.register_hot_data(RuleId::DangerousTerrainDebuff, DangerousTerrainDebuff_HotData);
+    registry.register_hot_data(RuleId::MindControl, MindControl_HotData);
+    registry.register_hot_data(RuleId::DifficultTerrainDebuff, DifficultTerrainDebuff_HotData);
+    registry.register_hot_data(RuleId::CastingDebuff, CastingDebuff_HotData);
+
+    // === Category T: Defense/Growth Rules ===
+    registry.register_hot_data(RuleId::FortifiedGrowth, FortifiedGrowth_HotData);
+    registry.register_hot_data(RuleId::GroundedStealth, GroundedStealth_HotData);
+    registry.register_hot_data(RuleId::ProtectionFeat, ProtectionFeat_HotData);
+
+    // === Category U: Deployment Rules ===
+    registry.register_hot_data(RuleId::Infiltrate, Infiltrate_HotData);
+    registry.register_hot_data(RuleId::Spawn, Spawn_HotData);
+    registry.register_hot_data(RuleId::ReDeployment, ReDeployment_HotData);
+    registry.register_hot_data(RuleId::RapidAmbush, RapidAmbush_HotData);
+    registry.register_hot_data(RuleId::AmbushBeacon, AmbushBeacon_HotData);
+    registry.register_hot_data(RuleId::AmbushReDeployment, AmbushReDeployment_HotData);
+    registry.register_hot_data(RuleId::RepelAmbushers, RepelAmbushers_HotData);
+    registry.register_hot_data(RuleId::Reinforcement, Reinforcement_HotData);
+    registry.register_hot_data(RuleId::Fanatic, Fanatic_HotData);
+    registry.register_hot_data(RuleId::Split, Split_HotData);
+
+    // === Category V: Movement Rules ===
+    registry.register_hot_data(RuleId::Teleport, Teleport_HotData);
+    registry.register_hot_data(RuleId::Wolfborn, Wolfborn_HotData);
+    // Note: HitAndRunShooter already registered above
+    registry.register_hot_data(RuleId::RapidBlink, RapidBlink_HotData);
+    registry.register_hot_data(RuleId::Bounding, Bounding_HotData);
+
+    // === Category W: Faction/Morale/Misc ===
+    registry.register_hot_data(RuleId::DevoutBoost, DevoutBoost_HotData);
+    registry.register_hot_data(RuleId::Mend, Mend_HotData);
+    registry.register_hot_data(RuleId::HiveBond, HiveBond_HotData);
+    registry.register_hot_data(RuleId::RePositionArtillery, RePositionArtillery_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -5209,6 +5650,93 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::MindWound, MindWound_ColdData);
     registry.register_cold_data(RuleId::MobileArtillery, MobileArtillery_ColdData);
     registry.register_cold_data(RuleId::Vengeance, Vengeance_ColdData);
+
+    // === Category P: Activation Rules ===
+    registry.register_cold_data(RuleId::MartialProwess, MartialProwess_ColdData);
+    registry.register_cold_data(RuleId::Coordinate, Coordinate_ColdData);
+    registry.register_cold_data(RuleId::InquisitorialAgent, InquisitorialAgent_ColdData);
+    registry.register_cold_data(RuleId::DelayedAction, DelayedAction_ColdData);
+
+    // === Category Q: Remaining Boost Auras ===
+    registry.register_cold_data(RuleId::SturdyBoostAura, SturdyBoostAura_ColdData);
+    registry.register_cold_data(RuleId::VersatileDefenseAura, VersatileDefenseAura_ColdData);
+    registry.register_cold_data(RuleId::ChangeboundBoostAura, ChangeboundBoostAura_ColdData);
+    registry.register_cold_data(RuleId::PlageboundBoostAura, PlageboundBoostAura_ColdData);
+    registry.register_cold_data(RuleId::DefensiveGrowthAura, DefensiveGrowthAura_ColdData);
+    registry.register_cold_data(RuleId::MachineFogBoostAura, MachineFogBoostAura_ColdData);
+    registry.register_cold_data(RuleId::ReanimationAura, ReanimationAura_ColdData);
+    registry.register_cold_data(RuleId::LustboundBoostAura, LustboundBoostAura_ColdData);
+    registry.register_cold_data(RuleId::RapidRushAura, RapidRushAura_ColdData);
+    registry.register_cold_data(RuleId::GroundedReinforcementAura, GroundedReinforcementAura_ColdData);
+    registry.register_cold_data(RuleId::HoldTheLineBoostAura, HoldTheLineBoostAura_ColdData);
+    registry.register_cold_data(RuleId::CourageAura, CourageAura_ColdData);
+    registry.register_cold_data(RuleId::DevoutBoostAura, DevoutBoostAura_ColdData);
+    registry.register_cold_data(RuleId::HarassingBoostAura, HarassingBoostAura_ColdData);
+    registry.register_cold_data(RuleId::SwiftAura, SwiftAura_ColdData);
+    registry.register_cold_data(RuleId::RapidBlinkBoostAura, RapidBlinkBoostAura_ColdData);
+    registry.register_cold_data(RuleId::RapidAdvanceAura, RapidAdvanceAura_ColdData);
+    registry.register_cold_data(RuleId::BoundingAura, BoundingAura_ColdData);
+    registry.register_cold_data(RuleId::HighbornBoostAura, HighbornBoostAura_ColdData);
+    registry.register_cold_data(RuleId::SpeedFeatAura, SpeedFeatAura_ColdData);
+    registry.register_cold_data(RuleId::GuerrillaBoostAura, GuerrillaBoostAura_ColdData);
+
+    // === Category R: Remaining Buffs ===
+    registry.register_cold_data(RuleId::StealthBuff, StealthBuff_ColdData);
+    registry.register_cold_data(RuleId::ProtectiveDome, ProtectiveDome_ColdData);
+    registry.register_cold_data(RuleId::GuardedBuff, GuardedBuff_ColdData);
+    registry.register_cold_data(RuleId::RegenerationBuff, RegenerationBuff_ColdData);
+    registry.register_cold_data(RuleId::EntrenchedBuff, EntrenchedBuff_ColdData);
+    registry.register_cold_data(RuleId::SelfRepairBoostBuff, SelfRepairBoostBuff_ColdData);
+    registry.register_cold_data(RuleId::CourageBuff, CourageBuff_ColdData);
+    registry.register_cold_data(RuleId::SteadfastBuff, SteadfastBuff_ColdData);
+    registry.register_cold_data(RuleId::NoRetreatBuff, NoRetreatBuff_ColdData);
+    registry.register_cold_data(RuleId::RapidAdvanceBuff, RapidAdvanceBuff_ColdData);
+    registry.register_cold_data(RuleId::SwiftBuff, SwiftBuff_ColdData);
+    registry.register_cold_data(RuleId::SpeedBuff, SpeedBuff_ColdData);
+    registry.register_cold_data(RuleId::IncreasedShootingRangeMark, IncreasedShootingRangeMark_ColdData);
+    registry.register_cold_data(RuleId::ExtendedBuffRange, ExtendedBuffRange_ColdData);
+    registry.register_cold_data(RuleId::IncreasedShootingRangeBuff, IncreasedShootingRangeBuff_ColdData);
+    registry.register_cold_data(RuleId::CastingBuff, CastingBuff_ColdData);
+
+    // === Category S: Remaining Debuffs ===
+    registry.register_cold_data(RuleId::FatigueDebuff, FatigueDebuff_ColdData);
+    registry.register_cold_data(RuleId::DefenseDebuff, DefenseDebuff_ColdData);
+    registry.register_cold_data(RuleId::MoraleDebuff, MoraleDebuff_ColdData);
+    registry.register_cold_data(RuleId::SpeedDebuff, SpeedDebuff_ColdData);
+    registry.register_cold_data(RuleId::DangerousTerrainDebuff, DangerousTerrainDebuff_ColdData);
+    registry.register_cold_data(RuleId::MindControl, MindControl_ColdData);
+    registry.register_cold_data(RuleId::DifficultTerrainDebuff, DifficultTerrainDebuff_ColdData);
+    registry.register_cold_data(RuleId::CastingDebuff, CastingDebuff_ColdData);
+
+    // === Category T: Defense/Growth Rules ===
+    registry.register_cold_data(RuleId::FortifiedGrowth, FortifiedGrowth_ColdData);
+    registry.register_cold_data(RuleId::GroundedStealth, GroundedStealth_ColdData);
+    registry.register_cold_data(RuleId::ProtectionFeat, ProtectionFeat_ColdData);
+
+    // === Category U: Deployment Rules ===
+    registry.register_cold_data(RuleId::Infiltrate, Infiltrate_ColdData);
+    registry.register_cold_data(RuleId::Spawn, Spawn_ColdData);
+    registry.register_cold_data(RuleId::ReDeployment, ReDeployment_ColdData);
+    registry.register_cold_data(RuleId::RapidAmbush, RapidAmbush_ColdData);
+    registry.register_cold_data(RuleId::AmbushBeacon, AmbushBeacon_ColdData);
+    registry.register_cold_data(RuleId::AmbushReDeployment, AmbushReDeployment_ColdData);
+    registry.register_cold_data(RuleId::RepelAmbushers, RepelAmbushers_ColdData);
+    registry.register_cold_data(RuleId::Reinforcement, Reinforcement_ColdData);
+    registry.register_cold_data(RuleId::Fanatic, Fanatic_ColdData);
+    registry.register_cold_data(RuleId::Split, Split_ColdData);
+
+    // === Category V: Movement Rules ===
+    registry.register_cold_data(RuleId::Teleport, Teleport_ColdData);
+    registry.register_cold_data(RuleId::Wolfborn, Wolfborn_ColdData);
+    // Note: HitAndRunShooter already registered above
+    registry.register_cold_data(RuleId::RapidBlink, RapidBlink_ColdData);
+    registry.register_cold_data(RuleId::Bounding, Bounding_ColdData);
+
+    // === Category W: Faction/Morale/Misc ===
+    registry.register_cold_data(RuleId::DevoutBoost, DevoutBoost_ColdData);
+    registry.register_cold_data(RuleId::Mend, Mend_ColdData);
+    registry.register_cold_data(RuleId::HiveBond, HiveBond_ColdData);
+    registry.register_cold_data(RuleId::RePositionArtillery, RePositionArtillery_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -5447,6 +5975,93 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::MindWound, MindWound_Effects);
     registry.register_effects(RuleId::MobileArtillery, MobileArtillery_Effects);
     registry.register_effects(RuleId::Vengeance, Vengeance_Effects);
+
+    // === Category P: Activation Rules ===
+    registry.register_effects(RuleId::MartialProwess, MartialProwess_Effects);
+    registry.register_effects(RuleId::Coordinate, Coordinate_Effects);
+    registry.register_effects(RuleId::InquisitorialAgent, InquisitorialAgent_Effects);
+    registry.register_effects(RuleId::DelayedAction, DelayedAction_Effects);
+
+    // === Category Q: Remaining Boost Auras ===
+    registry.register_effects(RuleId::SturdyBoostAura, SturdyBoostAura_Effects);
+    registry.register_effects(RuleId::VersatileDefenseAura, VersatileDefenseAura_Effects);
+    registry.register_effects(RuleId::ChangeboundBoostAura, ChangeboundBoostAura_Effects);
+    registry.register_effects(RuleId::PlageboundBoostAura, PlageboundBoostAura_Effects);
+    registry.register_effects(RuleId::DefensiveGrowthAura, DefensiveGrowthAura_Effects);
+    registry.register_effects(RuleId::MachineFogBoostAura, MachineFogBoostAura_Effects);
+    registry.register_effects(RuleId::ReanimationAura, ReanimationAura_Effects);
+    registry.register_effects(RuleId::LustboundBoostAura, LustboundBoostAura_Effects);
+    registry.register_effects(RuleId::RapidRushAura, RapidRushAura_Effects);
+    registry.register_effects(RuleId::GroundedReinforcementAura, GroundedReinforcementAura_Effects);
+    registry.register_effects(RuleId::HoldTheLineBoostAura, HoldTheLineBoostAura_Effects);
+    registry.register_effects(RuleId::CourageAura, CourageAura_Effects);
+    registry.register_effects(RuleId::DevoutBoostAura, DevoutBoostAura_Effects);
+    registry.register_effects(RuleId::HarassingBoostAura, HarassingBoostAura_Effects);
+    registry.register_effects(RuleId::SwiftAura, SwiftAura_Effects);
+    registry.register_effects(RuleId::RapidBlinkBoostAura, RapidBlinkBoostAura_Effects);
+    registry.register_effects(RuleId::RapidAdvanceAura, RapidAdvanceAura_Effects);
+    registry.register_effects(RuleId::BoundingAura, BoundingAura_Effects);
+    registry.register_effects(RuleId::HighbornBoostAura, HighbornBoostAura_Effects);
+    registry.register_effects(RuleId::SpeedFeatAura, SpeedFeatAura_Effects);
+    registry.register_effects(RuleId::GuerrillaBoostAura, GuerrillaBoostAura_Effects);
+
+    // === Category R: Remaining Buffs ===
+    registry.register_effects(RuleId::StealthBuff, StealthBuff_Effects);
+    registry.register_effects(RuleId::ProtectiveDome, ProtectiveDome_Effects);
+    registry.register_effects(RuleId::GuardedBuff, GuardedBuff_Effects);
+    registry.register_effects(RuleId::RegenerationBuff, RegenerationBuff_Effects);
+    registry.register_effects(RuleId::EntrenchedBuff, EntrenchedBuff_Effects);
+    registry.register_effects(RuleId::SelfRepairBoostBuff, SelfRepairBoostBuff_Effects);
+    registry.register_effects(RuleId::CourageBuff, CourageBuff_Effects);
+    registry.register_effects(RuleId::SteadfastBuff, SteadfastBuff_Effects);
+    registry.register_effects(RuleId::NoRetreatBuff, NoRetreatBuff_Effects);
+    registry.register_effects(RuleId::RapidAdvanceBuff, RapidAdvanceBuff_Effects);
+    registry.register_effects(RuleId::SwiftBuff, SwiftBuff_Effects);
+    registry.register_effects(RuleId::SpeedBuff, SpeedBuff_Effects);
+    registry.register_effects(RuleId::IncreasedShootingRangeMark, IncreasedShootingRangeMark_Effects);
+    registry.register_effects(RuleId::ExtendedBuffRange, ExtendedBuffRange_Effects);
+    registry.register_effects(RuleId::IncreasedShootingRangeBuff, IncreasedShootingRangeBuff_Effects);
+    registry.register_effects(RuleId::CastingBuff, CastingBuff_Effects);
+
+    // === Category S: Remaining Debuffs ===
+    registry.register_effects(RuleId::FatigueDebuff, FatigueDebuff_Effects);
+    registry.register_effects(RuleId::DefenseDebuff, DefenseDebuff_Effects);
+    registry.register_effects(RuleId::MoraleDebuff, MoraleDebuff_Effects);
+    registry.register_effects(RuleId::SpeedDebuff, SpeedDebuff_Effects);
+    registry.register_effects(RuleId::DangerousTerrainDebuff, DangerousTerrainDebuff_Effects);
+    registry.register_effects(RuleId::MindControl, MindControl_Effects);
+    registry.register_effects(RuleId::DifficultTerrainDebuff, DifficultTerrainDebuff_Effects);
+    registry.register_effects(RuleId::CastingDebuff, CastingDebuff_Effects);
+
+    // === Category T: Defense/Growth Rules ===
+    registry.register_effects(RuleId::FortifiedGrowth, FortifiedGrowth_Effects);
+    registry.register_effects(RuleId::GroundedStealth, GroundedStealth_Effects);
+    registry.register_effects(RuleId::ProtectionFeat, ProtectionFeat_Effects);
+
+    // === Category U: Deployment Rules ===
+    registry.register_effects(RuleId::Infiltrate, Infiltrate_Effects);
+    registry.register_effects(RuleId::Spawn, Spawn_Effects);
+    registry.register_effects(RuleId::ReDeployment, ReDeployment_Effects);
+    registry.register_effects(RuleId::RapidAmbush, RapidAmbush_Effects);
+    registry.register_effects(RuleId::AmbushBeacon, AmbushBeacon_Effects);
+    registry.register_effects(RuleId::AmbushReDeployment, AmbushReDeployment_Effects);
+    registry.register_effects(RuleId::RepelAmbushers, RepelAmbushers_Effects);
+    registry.register_effects(RuleId::Reinforcement, Reinforcement_Effects);
+    registry.register_effects(RuleId::Fanatic, Fanatic_Effects);
+    registry.register_effects(RuleId::Split, Split_Effects);
+
+    // === Category V: Movement Rules ===
+    registry.register_effects(RuleId::Teleport, Teleport_Effects);
+    registry.register_effects(RuleId::Wolfborn, Wolfborn_Effects);
+    registry.register_effects(RuleId::HitAndRunShooter, HitAndRunShooter_Cat_Effects);
+    registry.register_effects(RuleId::RapidBlink, RapidBlink_Effects);
+    registry.register_effects(RuleId::Bounding, Bounding_Effects);
+
+    // === Category W: Faction/Morale/Misc ===
+    registry.register_effects(RuleId::DevoutBoost, DevoutBoost_Effects);
+    registry.register_effects(RuleId::Mend, Mend_Effects);
+    registry.register_effects(RuleId::HiveBond, HiveBond_Effects);
+    registry.register_effects(RuleId::RePositionArtillery, RePositionArtillery_Effects);
 
     // =========================================================================
     // Register Movement effects

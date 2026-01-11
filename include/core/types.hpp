@@ -369,9 +369,93 @@ enum class RuleId : u16 {
     MobileArtillery,          // Mobile Artillery - +1 hit Hold, -2 hit (196)
     Vengeance,                // Vengeance - markers on destroy (197)
 
-    // Future expansion rules go here
-    // Each new rule should be categorized as PRIMARY or EXTENDED based on
-    // how frequently it's checked during combat resolution
+    // === Category P: Activation Rules ===
+    MartialProwess,           // Activate twice per round (once per game) (198)
+    Coordinate,               // Activate another friendly unit after this (199)
+    InquisitorialAgent,       // Activate twice per round (once per game) (200)
+    DelayedAction,            // Pass turn if opponent has more units (201)
+
+    // === Category Q: Remaining Boost Auras ===
+    SturdyBoostAura,          // Unit gets Sturdy Boost (202)
+    VersatileDefenseAura,     // Unit gets Versatile Defense (203)
+    ChangeboundBoostAura,     // Unit gets Changebound Boost (204)
+    PlageboundBoostAura,      // Unit gets Plaguebound Boost (205)
+    DefensiveGrowthAura,      // Unit gets Defensive Growth (206)
+    MachineFogBoostAura,      // Unit gets Machine-Fog Boost (207)
+    ReanimationAura,          // Unit gets Reanimation (208)
+    GroundedReinforcementAura,// Unit gets Grounded Reinforcement (209)
+    DevoutBoostAura,          // Unit gets Devout Boost (210)
+    CourageAura,              // +1 to morale test rolls for unit (211)
+    HoldTheLineBoostAura,     // Unit gets Hold the Line Boost (212)
+    RapidRushAura,            // Unit gets Rapid Rush (213)
+    HarassingBoostAura,       // Unit gets Harassing Boost (214)
+    SwiftAura,                // Unit gets Swift (215)
+    RapidBlinkBoostAura,      // Unit gets Rapid Blink Boost (216)
+    RapidAdvanceAura,         // Unit gets Rapid Advance (217)
+    LustboundBoostAura,       // Unit gets Lustbound Boost (218)
+    BoundingAura,             // Unit gets Bounding (219)
+    HighbornBoostAura,        // Unit gets Highborn Boost (220)
+    SpeedFeatAura,            // Unit gets Speed Feat (221)
+    ScurryBoostAura,          // Unit gets Scurry Boost (222)
+    GuerrillaBoostAura,       // Unit gets Guerrilla Boost (223)
+
+    // === Category R: Remaining Buffs ===
+    StealthBuff,              // Grant Stealth to friendly unit (224)
+    ProtectiveDome,           // Grant Evasive to up to three friendly units (225)
+    GuardedBuff,              // Grant Guarded to friendly unit (226)
+    RegenerationBuff,         // Grant Regeneration to friendly (227)
+    EntrenchedBuff,           // Grant Entrenched to friendly (228)
+    SelfRepairBoostBuff,      // Grant Self-Repair Boost to friendly (229)
+    CourageBuff,              // Grant +1 morale to friendly unit (230)
+    SteadfastBuff,            // Grant Steadfast to friendly (231)
+    NoRetreatBuff,            // Grant No Retreat to friendly (232)
+    RapidAdvanceBuff,         // Grant Rapid Advance to friendly (233)
+    SwiftBuff,                // Grant Swift to friendly (234)
+    SpeedBuff,                // Grant +2/+4" movement to friendly (235)
+    IncreasedShootingRangeMark,// Grant +6" range vs target (236)
+    ExtendedBuffRange,        // Extend buff ranges to 24" (237)
+    IncreasedShootingRangeBuff,// Grant +6" range to friendly (238)
+    CastingBuff,              // +1 to casting rolls for friendly caster (239)
+
+    // === Category S: Remaining Debuffs ===
+    FatigueDebuff,            // Force enemy to become fatigued (240)
+    DefenseDebuff,            // -1 to defense for enemy unit (241)
+    MoraleDebuff,             // -1 to enemy morale tests (242)
+    SpeedDebuff,              // Reduce enemy movement (243)
+    DangerousTerrainDebuff,   // Force Dangerous Terrain test (244)
+    MindControl,              // Force enemy move on failed morale (245)
+    DifficultTerrainDebuff,   // Force Difficult Terrain on enemy (246)
+    CastingDebuff,            // -1 to casting rolls for enemy caster (247)
+
+    // === Category T: Defense/Growth Rules ===
+    FortifiedGrowth,          // Marker-based AP reduction over rounds (248)
+    GroundedStealth,          // -1 to be hit when near terrain (249)
+    ProtectionFeat,           // Once per game 4+ to ignore wounds (250)
+
+    // === Category U: Deployment Rules ===
+    Infiltrate,               // Ambush variant - deploy up to 1" from enemy (251)
+    Spawn,                    // Once per game place new unit of X within 6" (252)
+    ReDeployment,             // Remove and redeploy up to two units (253)
+    RapidAmbush,              // Ambush variant - can deploy round 1 (254)
+    AmbushBeacon,             // Friendly Ambushers can ignore distance (255)
+    AmbushReDeployment,       // Remove and redeploy via Ambush (256)
+    RepelAmbushers,           // Enemies must Ambush over 12" away (257)
+    Reinforcement,            // Respawn when shaken/destroyed (258)
+    Fanatic,                  // Place model within 9" after deployment (259)
+    Split,                    // Spawn new unit when destroyed (260)
+
+    // === Category V: Movement Rules ===
+    Teleport,                 // Place model anywhere within 6" before attacking (261)
+    Wolfborn,                 // Place models anywhere within 3" when activated (262)
+    // Note: HitAndRunShooter already defined at line 249
+    RapidBlink,               // Place models within 3" when activated (263)
+    Bounding,                 // Place models within D3+1" when activated (264)
+
+    // === Category W: Faction/Morale/Misc ===
+    DevoutBoost,              // Extra hits on 5-6 instead of just 6 (266)
+    Mend,                     // Remove D3 wounds from Tough model (267)
+    HiveBond,                 // Units with this rule get +1 morale (268)
+    RePositionArtillery,      // Move Artillery model up to 9" (269)
 
     COUNT // Total number of rules
 };
