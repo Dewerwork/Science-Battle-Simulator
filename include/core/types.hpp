@@ -289,6 +289,86 @@ enum class RuleId : u16 {
     Harassing,            // Harassing - Move 3" after shooting or melee (130)
     Guerrilla,            // Guerrilla - Move 3" after shooting/melee (once/round) (131)
 
+    // === Category I: Aura Rules (map to base rules) ===
+    VersatileReachAura,       // Versatile Reach Aura (132)
+    UnpredictableFighterAura, // Unpredictable Fighter Aura (133)
+    PointBlankPiercingAura,   // Point-Blank Piercing Aura (134)
+    RangedSlayerAura,         // Ranged Slayer Aura (135)
+    TargetingVisorBoostAura,  // Targeting Visor Boost Aura (136)
+    PiercingHunterAura,       // Piercing Hunter Aura (137)
+    ClanWarriorBoostAura,     // Clan Warrior Boost Aura (138)
+    PrecisionFighterAura,     // Precision Fighter Aura - +1 to hit melee (139)
+    MischievousBoostAura,     // Mischievous Boost Aura (140)
+    QuickShotAura,            // Quick Shot Aura (141)
+    HavocboundBoostAura,      // Havocbound Boost Aura (142)
+    WarboundBoostAura,        // Warbound Boost Aura (143)
+    InfectedBoostAura,        // Infected Boost Aura (144)
+    UnpredictableShooterAura, // Unpredictable Shooter Aura (145)
+    ScrapperBoostAura,        // Scrapper Boost Aura (146)
+    FerociousBoostAura,       // Ferocious Boost Aura (147)
+    PiercingFighterAura,      // Piercing Fighter Aura - AP+1 melee (148)
+    PrecisionChargeAura,      // Precision Charge Aura - +1 hit charging (149)
+    GroundedPrecisionAura,    // Grounded Precision Aura (150)
+    MeleeSlayerAura,          // Melee Slayer Aura (151)
+    PiercingShooterAura,      // Piercing Shooter Aura - AP+1 shooting (152)
+
+    // === Category J: Buff Rules (grant abilities to friendlies) ===
+    RighteousFury,            // Righteous Fury - Grant Piercing Assault (153)
+    PrecisionFighterBuff,     // Precision Fighter Buff - +1 hit melee (154)
+    PrecisionShooterBuff,     // Precision Shooter Buff - +1 hit shooting (155)
+    BaneInMeleeBuff,          // Bane in Melee Buff (156)
+    PrimalBoostBuff,          // Primal Boost Buff (157)
+    PrecisionAttacksBuff,     // Precision Attacks Buff - +1 hit (158)
+
+    // === Category K: Mark Rules (grant abilities vs targets) ===
+    UnpredictableFighterMark, // Unpredictable Fighter Mark (159)
+    UnstoppableShootingMark,  // Unstoppable Shooting Mark (160)
+    ShredMark,                // Shred Mark (161)
+    PiercingShootingMark,     // Piercing Shooting Mark - AP+1 (162)
+    PrecisionFightingMark,    // Precision Fighting Mark - +1 hit melee (163)
+    SlayerMark,               // Slayer Mark (164)
+    RelentlessMark,           // Relentless Mark (165)
+    RendingInMeleeMark,       // Rending in Melee Mark (166)
+    FuriousMark,              // Furious Mark (167)
+    IndirectMark,             // Indirect Mark (168)
+    BaneMark,                 // Bane Mark (169)
+    PrecisionShootingMark,    // Precision Shooting Mark - +1 hit shooting (170)
+    QuickShotMark,            // Quick Shot Mark (171)
+
+    // === Category L: Debuff Rules ===
+    UnwieldyDebuff,           // Unwieldy Debuff - grant Unwieldy (172)
+    PrecisionDebuff,          // Precision Debuff - -1 hit (173)
+    PiercingShootingDebuff,   // Piercing Shooting Debuff - remove AP+1 (174)
+
+    // === Category M: Scaling/Frenzy/Growth Rules ===
+    PiercingGrowth,           // Piercing Growth - marker AP scaling (175)
+    RuinousFrenzy,            // Ruinous Frenzy - marker hit/def bonus (176)
+    DevastatingFrenzy,        // Devastating Frenzy - marker AP/def bonus (177)
+    PrecisionGrowth,          // Precision Growth - marker hit bonus (178)
+    DestructiveFrenzy,        // Destructive Frenzy - marker hit/AP bonus (179)
+
+    // === Category N: Storm AoE Rules ===
+    StormOfChange,            // Storm of Change - 3 dice AoE Shred (180)
+    StormOfLust,              // Storm of Lust - 3 dice AoE Surge (181)
+    StormOfPlague,            // Storm of Plague - 3 dice AoE Bane (182)
+    StormOfWar,               // Storm of War - 3 dice AoE AP(1) (183)
+
+    // === Category O: Special Combat Rules ===
+    BreathAttack,             // Breath Attack - D6 area damage (184)
+    IncreasedShootingRange,   // Increased Shooting Range - +6" (185)
+    RegenerativeStrength,     // Regenerative Strength - attacks on ignore (186)
+    Strafing,                 // Strafing - attack through movement (187)
+    SurpriseAttack,           // Surprise Attack - infiltrate + damage (188)
+    TakedownStrike,           // Takedown Strike - once/game Quality 2+ (189)
+    Instinctive,              // Instinctive - attack closest +1 hit (190)
+    CrossingAttack,           // Crossing Attack - dice through enemies (191)
+    QuickReadjustment,        // Quick Readjustment - ignore Indirect penalty (192)
+    CrossingStrike,           // Crossing Strike - once/game move attack (193)
+    SurprisePiercingShot,     // Surprise Piercing Shot - AP+2 on Ambush (194)
+    MindWound,                // Mind Wound - 2 Demolish hits (195)
+    MobileArtillery,          // Mobile Artillery - +1 hit Hold, -2 hit (196)
+    Vengeance,                // Vengeance - markers on destroy (197)
+
     // Future expansion rules go here
     // Each new rule should be categorized as PRIMARY or EXTENDED based on
     // how frequently it's checked during combat resolution
