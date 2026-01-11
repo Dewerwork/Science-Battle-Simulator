@@ -1,0 +1,333 @@
+Rule Name,Category,Status,Notes
+# === COMBAT RULES - FULLY IMPLEMENTED ===
+Precise,Combat - Hit Modifier,Implemented,+1 to hit rolls with this weapon
+Reliable,Combat - Hit Modifier,Implemented,Attacks with this weapon always hit on 2+
+Rending,Combat - Hit Modifier,Implemented,Unmodified rolls of 6 to hit get AP(4) and bypass regeneration
+Blast,Combat - Hit Multiplier,Implemented,Multiply the number of hits by X
+Deadly,Combat - Wound Multiplier,Implemented,Multiply the number of wounds by X
+Poison,Combat - Defense,Implemented,Enemy must re-roll successful defense rolls of 6
+Bane,Combat - Defense,Implemented,Attacks bypass regeneration and force defense re-rolls on 6
+AP,Combat - Defense,Implemented,Reduces enemy Defense by X (minimum 6+)
+Lance,Combat - AP Modifier,Implemented,+2 AP when charging in melee
+Impact,Combat - Extra Attacks,Implemented,Get X extra attacks that hit on 2+ when charging
+Surge,Combat - Hit Bonus,Implemented,Unmodified rolls of 6 to hit deal 1 extra hit
+Thrust,Combat - Charge Bonus,Implemented,+1 to hit and AP(+1) when charging in melee
+Relentless,Combat - Hit Bonus,Implemented,When shooting at enemies over 9" away unmodified 6s deal extra hit
+Furious,Combat - Hit Bonus,Implemented,When charging unmodified 6s to hit deal 1 extra hit
+PointBlankSurge,Combat - Hit Bonus,Implemented,When shooting within 9" unmodified 6s deal extra hit
+PredatorFighter,Combat - Hit Bonus,Implemented,In melee unmodified 6s generate additional attacks (recursive)
+Rupture,Combat - Wound Bonus,Implemented,Bypasses regeneration. Unmodified 6s to hit deal +1 wound
+Shred,Combat - Wound Bonus,Implemented,Unmodified 1s on defense rolls deal +1 wound
+Smash,Combat - Wound Bonus,Implemented,Bypasses regeneration. Gets +Blast(3) vs targets with Defense 5+/6+
+Takedown,Combat - Targeting,Implemented,Pick a specific target model. Resolve wounds as if targeting unit of 1
+SelfDestruct,Combat - Retaliation,Implemented,When killed in melee deal X automatic hits to the attacker
+GoodShot,Combat - Hit Modifier,Implemented,+1 to hit when shooting
+BadShot,Combat - Hit Modifier,Implemented,-1 to hit when shooting
+VersatileAttack,Combat - Choice,Implemented,Before attacking roll D6: 1-3 = AP+1 4-6 = +1 to hit
+Purge,Combat - Hit Modifier,Implemented,+1 to hit against targets with Tough(3+)
+PiercingAssault,Combat - AP Modifier,Implemented,When charging in melee attacks have at least AP(1)
+BaneInMelee,Combat - Defense,Implemented,All melee attacks have Bane
+Limited,Combat - Restriction,Implemented,Weapon may only be used once per game
+Counter,Combat - Initiative,Implemented,Strikes first when charged
+Indirect,Combat - Hit Modifier,Implemented,-1 to hit after moving. Ignores cover and LOS
+Sniper,Combat - Targeting,Implemented,Pick a specific target model when shooting
+Lock_On,Combat - Hit Modifier,Implemented,+1 to hit vs vehicles
+Unstoppable,Combat - Modifier,Implemented,Ignores regeneration and all negative hit modifiers
+Ferocious,Combat - Hit Bonus,Implemented,Unmodified 6s to hit generate an extra hit (unit rule)
+Lacerate,Combat - Defense,Implemented,Defender must reroll successful defense rolls of 6
+Mischievous,Combat - Defense,Implemented,Defender must reroll successful defense rolls of 6
+Scrapper,Combat - Defense,Implemented,Defender must reroll successful defense rolls of 6
+# === CONDITIONAL COMBAT RULES - FULLY IMPLEMENTED ===
+Bash,Combat - Conditional,Implemented,Gains Blast(3) vs targets with Defense 5+/6+
+Thrash,Combat - Conditional,Implemented,Gains Blast(3) vs targets with Defense 5+/6+
+Crack,Combat - Conditional,Implemented,Unmodified 6s to hit gain AP(+2)
+Destructive,Combat - Conditional,Implemented,Unmodified 6s to hit gain AP(+4)
+Fracture,Combat - Conditional,Implemented,Unmodified 6s to hit gain AP(+2). Ignores cover
+Break,Combat - Conditional,Implemented,Unmodified 6s to hit gain AP(+2). Bypasses regeneration
+Slash,Combat - Conditional,Implemented,Unmodified 6s to hit generate extra hit. Ignores cover
+Butcher,Combat - Conditional,Implemented,Unmodified 6s to hit generate extra hit. Bypasses regeneration
+Slam,Combat - Conditional,Implemented,Unmodified defense 1 causes extra wound. Ignores cover
+Quake,Combat - Conditional,Implemented,Unmodified defense 1 causes extra wound. Bypasses regeneration
+Tear,Combat - Conditional,Implemented,Gains AP(+4) against targets with Tough(3-9)
+Scratch,Combat - Conditional,Implemented,Gains AP(+2) against targets with Tough(3-9)
+Puncture,Combat - Conditional,Implemented,Gains AP(+4) vs Tough(3-9). Bypasses regeneration
+Shatter,Combat - Conditional,Implemented,Gains AP(+2) vs Tough(3-9). Bypasses regeneration
+Demolish,Combat - Conditional,Implemented,Gains AP(+2) vs Tough(3-9). Ignores cover
+Impale,Combat - Conditional,Implemented,Gains Deadly(+3) against targets with Tough(3-9)
+Skewer,Combat - Conditional,Implemented,Gains Deadly(+3) vs Tough(3-9). Ignores cover
+Reap,Combat - Conditional,Implemented,Gains AP(+2) against targets with Defense 2-3+
+Disintegrate,Combat - Conditional,Implemented,Gains AP(+2) vs Defense 2-3+. Bypasses regeneration
+Decimate,Combat - Conditional,Implemented,Gains AP(+2) vs Defense 2-3+. Ignores cover
+Fragment,Combat - Conditional,Implemented,Gains AP(+1) vs Defense 2-4+. Ignores cover
+Wreck,Combat - Conditional,Implemented,Force reroll of defense 6s. Ignores cover
+# === DEFENSE RULES - FULLY IMPLEMENTED ===
+Regeneration,Defense,Implemented,5+ to ignore each wound (after defense roll)
+Tough,Defense,Implemented,Takes X wounds to kill each model instead of 1
+Stealth,Defense - Hit Modifier,Implemented,-1 to be hit when shot at from more than 9" away
+Protected,Defense,Implemented,On 6+ reduce AP of incoming attacks by half (round up)
+Shielded,Defense,Implemented,+1 to defense rolls vs non-spell attacks
+ShieldWall,Defense,Implemented,+1 to defense rolls in melee
+Resistance,Defense,Implemented,6+ to ignore wounds (after regeneration)
+MeleeEvasion,Defense - Hit Modifier,Implemented,-1 to be hit in melee
+MeleeShrouding,Defense - Hit Modifier,Implemented,-1 to be hit in melee
+RangedShrouding,Defense - Hit Modifier,Implemented,-1 to be hit when shot at
+Hero,Defense - Wound Allocation,Implemented,Takes wounds last in the unit
+Evasive,Defense - Hit Modifier,Implemented,Enemies always get -1 to hit against this unit
+Fortified,Defense - AP Reduction,Implemented,All hits count as AP(-1) to min AP(0)
+Guardian,Defense - AP Reduction,Implemented,When shot/charged from over 9" away hits count as AP(-1)
+GuardianBoost,Defense - AP Reduction,Implemented,All hits count as AP(-1) regardless of distance
+Sturdy,Defense - Defense Bonus,Implemented,When shot/charged from over 9" away +1 to defense rolls
+Knightborn,Defense - Wound Ignore,Implemented,Roll 6+ to ignore each wound (4+ vs spells)
+Plaguebound,Defense - Wound Ignore,Implemented,Roll 6+ to ignore each wound
+Changebound,Defense - Hit Modifier,Implemented,Enemies shooting/charging from over 9" away get -1 to hit
+# === MOVEMENT RULES - FULLY IMPLEMENTED ===
+Fast,Movement,Implemented,+2" Advance +4" Rush/Charge movement
+Slow,Movement,Implemented,-2" to all movement
+Flying,Movement,Implemented,Can fly over terrain and other units
+Strider,Movement,Implemented,Ignores difficult terrain penalties
+Agile,Movement,Implemented,+1" Advance +2" Rush/Charge movement
+RapidCharge,Movement,Implemented,+4" to charge distance
+HitAndRun,Movement,Implemented,May retreat D3" after fighting in melee
+Immobile,Movement - Restriction,Implemented,May only use Hold actions
+Swift,Movement,Implemented,Ignores the Slow rule
+Lustbound,Movement,Implemented,Gains +1" to Advance and +3" to Rush/Charge
+Highborn,Movement,Implemented,Gains +2" to Advance and +2" to Rush/Charge
+Scurry,Movement,Implemented,Gains +2" to Advance and +2" to Rush/Charge
+Darkborn,Movement,Implemented,Gains +3" to weapon range and +3" to Charge
+HitAndRunShooter,Movement,Implemented,Can move 3" after shooting
+# === MORALE RULES - FULLY IMPLEMENTED ===
+Fearless,Morale,Implemented,Re-roll failed morale tests
+NoRetreat,Morale,Implemented,Cannot be shaken or routed. Take wounds instead of fleeing
+MoraleBoost,Morale,Implemented,+1 to morale test rolls
+HoldTheLine,Morale,Implemented,Re-roll failed morale tests
+Fear,Morale,Implemented,Counts as having dealt +X wounds in melee for morale purposes
+Battleborn,Morale,Implemented,At start of each round roll 4+: stop being Shaken
+Steadfast,Morale,Implemented,At start of each round roll 4+ to stop being Shaken
+# === DEPLOYMENT RULES - FULLY IMPLEMENTED ===
+Scout,Deployment,Implemented,Deploy up to 12" further forward than normal deployment zone
+Ambush,Deployment,Implemented,Set aside in reserve. Deploy after round 1 at least 9" from enemies
+Devout,Faction,Implemented,Faction-specific rule
+# === AURA RULES - FULLY IMPLEMENTED (maps to base rules) ===
+Furious Aura,Aura - Combat,Implemented,Maps to Furious
+Relentless Aura,Aura - Combat,Implemented,Maps to Relentless
+Fearless Aura,Aura - Morale,Implemented,Maps to Fearless
+Regeneration Aura,Aura - Defense,Implemented,Maps to Regeneration
+Stealth Aura,Aura - Defense,Implemented,Maps to Stealth
+Shielded Aura,Aura - Defense,Implemented,Maps to Shielded
+Counter-Attack Aura,Aura - Combat,Implemented,Maps to Counter
+Ambush Aura,Aura - Deployment,Implemented,Maps to Ambush
+Scout Aura,Aura - Deployment,Implemented,Maps to Scout
+Strider Aura,Aura - Movement,Implemented,Maps to Strider
+Bane in Melee Aura,Aura - Combat,Implemented,Maps to Bane
+Bane when Shooting Aura,Aura - Combat,Implemented,Maps to Bane
+Rending in Melee Aura,Aura - Combat,Implemented,Maps to Rending
+Rending when Shooting Aura,Aura - Combat,Implemented,Maps to Rending
+Shred in Melee Aura,Aura - Combat,Implemented,Maps to Shred
+Shred when Shooting Aura,Aura - Combat,Implemented,Maps to Shred
+No Retreat Aura,Aura - Morale,Implemented,Maps to NoRetreat
+Resistance Aura,Aura - Defense,Implemented,Maps to Resistance
+Melee Evasion Aura,Aura - Defense,Implemented,Maps to MeleeEvasion
+Melee Shrouding Aura,Aura - Defense,Implemented,Maps to MeleeShrouding
+Ranged Shrouding Aura,Aura - Defense,Implemented,Maps to RangedShrouding
+Piercing Assault Aura,Aura - Combat,Implemented,Maps to PiercingAssault
+Hit & Run Fighter Aura,Aura - Movement,Implemented,Maps to HitAndRun
+Thrust in Melee Aura,Aura - Combat,Implemented,Maps to Thrust
+Unstoppable in Melee Aura,Aura - Combat,Implemented,Maps to Unstoppable
+Unstoppable when Shooting Aura,Aura - Combat,Implemented,Maps to Unstoppable
+Rapid Charge Aura,Aura - Movement,Implemented,Maps to RapidCharge
+Fast Aura,Aura - Movement,Implemented,Maps to Fast
+Ignores Cover Aura,Aura - Combat,Implemented,Maps to Indirect
+Ignores Cover when Shooting Aura,Aura - Combat,Implemented,Maps to Indirect
+Indirect when Shooting Aura,Aura - Combat,Implemented,Maps to Indirect
+Precision Shooter Aura,Aura - Combat,Implemented,Maps to GoodShot
+Evasive Aura,Aura - Defense,Implemented,Maps to Evasive
+Steadfast Aura,Aura - Morale,Implemented,Maps to Steadfast
+Ferocious Aura,Aura - Combat,Implemented,Maps to Ferocious
+Lacerate Aura,Aura - Combat,Implemented,Maps to Lacerate
+Scurry Aura,Aura - Movement,Implemented,Maps to Scurry
+Darkborn Aura,Aura - Movement,Implemented,Maps to Darkborn
+Fortified Aura,Aura - Defense,Implemented,Maps to Fortified
+Guardian Aura,Aura - Defense,Implemented,Maps to Guardian
+Sturdy Aura,Aura - Defense,Implemented,Maps to Sturdy
+Changebound Aura,Aura - Defense,Implemented,Maps to Changebound
+Machine-Fog,Defense - Hit Modifier,Implemented,Alias for Changebound
+# === PARTIAL IMPLEMENTATION ===
+Casting,Spells,Partial,Can cast X spells per activation - spell system not complete
+# === NOT STARTED - Complex Rules ===
+Hive Bond,Morale,Not Started,Units where all models have this rule get +1 to morale test rolls
+Breath Attack,Combat - Special,Not Started,Once per activation before attacking roll D6 for area damage
+Caster Group,Spells,Not Started,Complex caster pooling mechanic
+Increased Shooting Range,Combat - Range,Not Started,+6" range when shooting
+Infiltrate,Deployment,Not Started,Ambush variant - deploy up to 1" from enemy units
+Piercing Growth,Combat - Scaling,Not Started,Marker-based AP scaling over rounds
+Ravage,Combat - Special,Not Started,Roll X dice in melee for each 6+ target takes wound
+Regenerative Strength,Defense - Combat,Not Started,Gain attacks when ignoring wounds
+Spawn,Deployment,Not Started,Once per game place new unit of X within 6"
+Spell Conduit,Spells,Not Started,Casters within 12" can cast from this position
+Stealth Buff,Buff - Defense,Not Started,Grant Stealth to friendly unit
+Strafing,Combat - Special,Not Started,Attack when moving through enemy units
+Surprise Attack,Deployment - Combat,Not Started,Infiltrate variant with damage on deploy
+Takedown Strike,Combat - Special,Not Started,Once per game targeted attack at Quality 2+
+Unpredictable Fighter Mark,Buff - Combat,Not Started,Grant Unpredictable Fighter to friendlies
+Mend,Healing,Not Started,Remove D3 wounds from Tough model
+Re-Deployment,Deployment,Not Started,Remove and redeploy up to two units
+Re-Position Artillery,Movement,Not Started,Move Artillery model up to 9"
+Unstoppable Shooting Mark,Buff - Combat,Not Started,Grant Unstoppable when shooting
+Courage Aura,Aura - Morale,Not Started,+1 to morale test rolls for unit
+Rapid Rush Aura,Aura - Movement,Not Started,Unit gets Rapid Rush
+Versatile Reach Aura,Aura - Combat,Not Started,Unit gets Versatile Reach
+Protective Dome,Buff - Defense,Not Started,Grant Evasive to up to three friendly units
+Bloodborn,Combat - Hit Bonus,Not Started,6s to hit generate +1 attack (non-recursive)
+Rapid Ambush,Deployment,Not Started,Ambush variant - can deploy round 1
+Teleport,Movement,Not Started,Place model anywhere within 6" before attacking
+Unpredictable Fighter Aura,Aura - Combat,Not Started,Unit gets Unpredictable Fighter
+Watchborn,Combat - Choice,Not Started,Pick AP(+1) or +1 to hit when activated
+Wolfborn,Movement,Not Started,Place models anywhere within 3" when activated
+Righteous Fury,Buff - Combat,Not Started,Grant Piercing Assault to friendlies
+Casting Debuff,Debuff - Spells,Not Started,-1 to casting rolls for enemy caster
+Courage Buff,Buff - Morale,Not Started,Grant +1 morale to friendly unit
+Devout Boost,Faction,Not Started,Extra hits on 5-6 instead of just 6
+Guarded Buff,Buff - Defense,Not Started,Grant Guarded to friendly unit
+Precision Fighter Buff,Buff - Combat,Not Started,Grant +1 to hit in melee to friendly
+Precision Shooter Buff,Buff - Combat,Not Started,Grant +1 to hit shooting to friendly
+Precision Target,Targeting,Not Started,Place markers for hit bonus
+Devout Boost Aura,Aura - Faction,Not Started,Unit gets Devout Boost
+Point-Blank Piercing Aura,Aura - Combat,Not Started,Unit gets Point-Blank Piercing
+Hit & Run Shooter,Movement,Not Started,Move 3" after shooting
+Piercing Target,Targeting,Not Started,Place markers for AP bonus
+Shred Mark,Buff - Combat,Not Started,Grant Shred to friendlies vs target
+Targeting Visor,Combat - Hit Modifier,Not Started,+1 to hit when shooting over 9"
+Ambush Beacon,Deployment,Not Started,Friendly Ambushers can ignore distance
+Piercing Shooting Mark,Buff - Combat,Not Started,Grant AP(+1) shooting vs target
+Precision Spotter,Targeting,Not Started,Place markers for hit bonus
+Ranged Slayer Aura,Aura - Combat,Not Started,Unit gets Ranged Slayer
+Targeting Visor Boost Aura,Aura - Combat,Not Started,Unit gets Targeting Visor Boost
+Harassing,Movement,Not Started,Move 3" after shooting or melee
+Martial Prowess,Activation,Not Started,Activate twice per round (once per game)
+Melee Slayer,Combat - AP Modifier,Not Started,AP(+2) vs Tough(3+) in melee
+Precision Fighting Mark,Buff - Combat,Not Started,Grant +1 melee hit vs target
+Regeneration Buff,Buff - Defense,Not Started,Grant Regeneration to friendly
+Ruinous Frenzy,Combat - Scaling,Not Started,Marker-based hit/defense bonus
+Unpredictable Fighter,Combat - Choice,Not Started,Roll D6 for AP+1 or +1 hit in melee
+Harassing Boost Aura,Aura - Movement,Not Started,Unit gets Harassing Boost
+Piercing Hunter Aura,Aura - Combat,Not Started,Unit gets Piercing Hunter
+Devastating Frenzy,Combat - Scaling,Not Started,Marker-based AP/defense bonus
+Quake when Shooting,Combat - Conditional,Not Started,Quake when shooting
+Speed Debuff,Debuff - Movement,Not Started,Reduce enemy movement
+Sturdy Boost Aura,Aura - Defense,Not Started,Unit gets Sturdy Boost
+Swift Aura,Aura - Movement,Not Started,Unit gets Swift
+Rapid Blink,Movement,Not Started,Place models within 3" when activated
+Ambush Re-Deployment,Deployment,Not Started,Remove and redeploy via Ambush
+Slayer Mark,Buff - Combat,Not Started,Grant Slayer vs target
+Rapid Blink Boost Aura,Aura - Movement,Not Started,Unit gets Rapid Blink Boost
+Clan Warrior,Combat - Hit Bonus,Not Started,6s to hit generate +1 attack (non-recursive)
+Bounding,Movement,Not Started,Place models within D3+1" when activated
+Casting Buff,Buff - Spells,Not Started,+1 to casting rolls for friendly caster
+Increased Shooting Range Mark,Buff - Range,Not Started,Grant +6" range vs target
+Repel Ambushers,Deployment,Not Started,Enemies must Ambush over 12" away
+Vengeance,Morale - Combat,Not Started,Markers for hit bonus when destroyed
+Clan Warrior Boost Aura,Aura - Combat,Not Started,Unit gets Clan Warrior Boost
+Precision Fighter Aura,Aura - Combat,Not Started,+1 to hit in melee for unit
+Rapid Advance Aura,Aura - Movement,Not Started,Unit gets Rapid Advance
+Dangerous Terrain Debuff,Debuff - Movement,Not Started,Force Dangerous Terrain test
+Instinctive,Movement - Combat,Not Started,Must attack closest target with +1 hit
+Retaliate,Combat - Retaliation,Not Started,Attacker takes X hits when this model wounded
+Mischievous Boost Aura,Aura - Combat,Not Started,Unit gets Mischievous Boost
+Quick Shot Aura,Aura - Combat,Not Started,Unit gets Quick Shot
+Havocbound,Combat - AP Modifier,Not Started,AP(+1) when shooting over 9" or charging
+Steadfast Buff,Buff - Morale,Not Started,Grant Steadfast to friendly
+Unpredictable,Combat - Choice,Not Started,Roll D6 for AP+1 or +1 hit
+Havocbound Boost Aura,Aura - Combat,Not Started,Unit gets Havocbound Boost
+Versatile Defense Aura,Aura - Defense,Not Started,Unit gets Versatile Defense
+Changebound Boost Aura,Aura - Defense,Not Started,Unit gets Changebound Boost
+Lustbound Boost Aura,Aura - Movement,Not Started,Unit gets Lustbound Boost
+Bounding Aura,Aura - Movement,Not Started,Unit gets Bounding
+Plaguebound Boost Aura,Aura - Defense,Not Started,Unit gets Plaguebound Boost
+Warbound,Combat - Wound Bonus,Not Started,Extra wound on unmodified defense 1
+Warbound Boost Aura,Aura - Combat,Not Started,Unit gets Warbound Boost
+Crossing Attack,Combat - Special,Not Started,Roll X dice moving through enemies for hits
+Piercing Spotter,Targeting,Not Started,Place markers for AP bonus
+Unwieldy Debuff,Debuff - Combat,Not Started,Grant Unwieldy in melee to enemy
+Highborn Boost Aura,Aura - Movement,Not Started,Unit gets Highborn Boost
+Bane in Melee Buff,Buff - Combat,Not Started,Grant Bane in melee to friendly
+Coordinate,Activation,Not Started,Activate another friendly unit after this
+Entrenched Buff,Buff - Defense,Not Started,Grant Entrenched to friendly
+Extended Buff Range,Buff - Range,Not Started,Extend buff ranges to 24"
+Mobile Artillery,Combat - Defense,Not Started,+1 hit from Hold -2 to be hit when still
+Morale Debuff,Debuff - Morale,Not Started,-1 to enemy morale tests
+No Retreat Buff,Buff - Morale,Not Started,Grant No Retreat to friendly
+Rapid Advance Buff,Buff - Movement,Not Started,Grant Rapid Advance to friendly
+Relentless Mark,Buff - Combat,Not Started,Grant Relentless vs target
+Hold the Line Boost Aura,Aura - Morale,Not Started,Unit gets Hold the Line Boost
+Inquisitorial Agent,Activation,Not Started,Activate twice per round (once per game)
+Brutal Fighter,Combat - Hit Bonus,Not Started,6s to hit deal extra hit in melee
+Delayed Action,Activation,Not Started,Pass turn if opponent has more units
+Piercing Tag,Targeting,Not Started,Place markers for AP bonus (removable)
+Quick Readjustment,Combat - Modifier,Not Started,Ignore Indirect move penalty
+Spell Accumulator,Spells,Not Started,Token generation for spell casting
+Unpredictable Shooter,Combat - Choice,Not Started,Roll D6 for AP+1 or +1 hit when shooting
+Defensive Growth Aura,Aura - Defense,Not Started,Unit gets Defensive Growth
+Infected,Combat - Wound Bonus,Not Started,Extra wound on unmodified defense 1
+Deathstrike,Combat - Retaliation,Not Started,Attacking unit takes X hits when killed
+Precision Debuff,Debuff - Combat,Not Started,-1 to hit for enemy unit
+Precision Growth,Combat - Scaling,Not Started,Marker-based hit bonus over rounds
+Infected Boost Aura,Aura - Combat,Not Started,Unit gets Infected Boost
+Unpredictable Shooter Aura,Aura - Combat,Not Started,Unit gets Unpredictable Shooter
+Crossing Strike,Combat - Special,Not Started,Once per game attack through movement
+Precision Tag,Targeting,Not Started,Place markers for hit bonus (removable)
+Surprise Piercing Shot,Deployment - Combat,Not Started,AP(+2) when deploying via Ambush
+Scrapper Boost Aura,Aura - Combat,Not Started,Unit gets Scrapper Boost
+Grounded Stealth,Defense - Terrain,Not Started,-1 to be hit when near terrain
+Piercing Shooting Debuff,Debuff - Combat,Not Started,Remove AP(+1) from enemy shooting
+Machine-Fog Boost Aura,Aura - Defense,Not Started,Unit gets Machine-Fog Boost
+Ferocious Boost,Combat - Hit Bonus,Not Started,Extra hits on 5-6 instead of just 6
+Rending in Melee Mark,Buff - Combat,Not Started,Grant Rending in melee vs target
+Ferocious Boost Aura,Aura - Combat,Not Started,Unit gets Ferocious Boost
+Piercing Fighter Aura,Aura - Combat,Not Started,AP(+1) in melee for unit
+Precision Charge Aura,Aura - Combat,Not Started,+1 to hit when charging for unit
+Speed Feat Aura,Aura - Movement,Not Started,Unit gets Speed Feat
+Reinforced,Defense - AP Reduction,Not Started,AP(-1) when shot/charged from over 9"
+Mind Wound,Combat - Special,Not Started,Enemy takes 2 hits with Demolish
+Crush,Combat - Special,Not Started,Roll X dice in melee for AP(2) hits
+Defense Debuff,Debuff - Defense,Not Started,-1 to defense for enemy unit
+Hazardous,Combat - Self-Damage,Not Started,AP(4) but take wound on hit roll of 1
+Heavy Impact,Combat - Modifier,Not Started,Impact hits get AP(1)
+Reinforcement,Deployment,Not Started,Respawn when shaken/destroyed
+Scurry Boost Aura,Aura - Movement,Not Started,Unit gets Scurry Boost
+Guerrilla,Movement,Not Started,Move 3" after shooting or melee (once per round)
+Furious Mark,Buff - Combat,Not Started,Grant Furious vs target
+Guerrilla Boost Aura,Aura - Movement,Not Started,Unit gets Guerrilla Boost
+Self-Repair,Defense - Wound Ignore,Not Started,6+ to ignore wounds
+Indirect Mark,Buff - Combat,Not Started,Grant Indirect vs target
+Self-Repair Boost Buff,Buff - Defense,Not Started,Grant Self-Repair Boost to friendly
+Swift Buff,Buff - Movement,Not Started,Grant Swift to friendly
+Reanimation Aura,Aura - Defense,Not Started,Unit gets Reanimation
+Primal,Combat - Hit Bonus,Not Started,6s to hit generate +1 attack (non-recursive)
+Bane Mark,Buff - Combat,Not Started,Grant Bane vs target
+Primal Boost Buff,Buff - Combat,Not Started,Grant Primal Boost to friendly
+Protection Feat,Defense - Wound Ignore,Not Started,Once per game 4+ to ignore wounds
+Fanatic,Deployment,Not Started,Place model within 9" after deployment
+Increased Shooting Range Buff,Buff - Range,Not Started,Grant +6" range to friendly
+Mind Control,Debuff - Movement,Not Started,Force enemy move on failed morale
+Precision Shooting Mark,Buff - Combat,Not Started,Grant +1 shooting hit vs target
+Speed Buff,Buff - Movement,Not Started,Grant +2/+4" movement to friendly
+Grounded Precision Aura,Aura - Combat,Not Started,Unit gets Grounded Precision
+Grounded Reinforcement Aura,Aura - Defense,Not Started,Unit gets Grounded Reinforcement
+Melee Slayer Aura,Aura - Combat,Not Started,Unit gets Melee Slayer
+Honor Code,Morale,Not Started,4+ to stop being Shaken (like Steadfast)
+Changebound Boost,Defense - Hit Modifier,Not Started,-1 to hit always (not just over 9")
+Split,Deployment,Not Started,Spawn new unit when destroyed
+Storm of Change,Combat - Special,Not Started,Roll 3 dice for AoE Shred hits
+Storm of Lust,Combat - Special,Not Started,Roll 3 dice for AoE Surge hits
+Lustbound Boost,Movement,Not Started,+2/+6" movement from Lustbound
+Quick Shot Mark,Buff - Combat,Not Started,Grant Quick Shot vs target
+Storm of Plague,Combat - Special,Not Started,Roll 3 dice for AoE Bane hits
+Destructive Frenzy,Combat - Scaling,Not Started,Marker-based hit/AP bonus
+Fatigue Debuff,Debuff - Activation,Not Started,Force enemy to become fatigued
+Storm of War,Combat - Special,Not Started,Roll 3 dice for AoE AP(1) hits
+Warbound Boost,Combat - Wound Bonus,Not Started,Extra wound on defense 1-2 (not just 1)
+Piercing Shooter Aura,Aura - Combat,Not Started,AP(+1) when shooting for unit
+Difficult Terrain Debuff,Debuff - Movement,Not Started,Force Difficult Terrain on enemy
+Fortified Growth,Defense - Scaling,Not Started,Marker-based AP reduction over rounds
+Plaguebound Boost,Defense - Wound Ignore,Not Started,5-6 to ignore wounds (not just 6)
+Precision Attacks Buff,Buff - Combat,Not Started,Grant +1 to hit attacking to friendly

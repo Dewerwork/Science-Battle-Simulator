@@ -126,6 +126,51 @@ inline std::string rule_id_to_string(RuleId id) {
         case RuleId::MeleeEvasion: return "Melee Evasion";
         case RuleId::MeleeShrouding: return "Melee Shrouding";
         case RuleId::RangedShrouding: return "Ranged Shrouding";
+        // Category A: Simple Modifiers
+        case RuleId::Evasive: return "Evasive";
+        case RuleId::Steadfast: return "Steadfast";
+        case RuleId::Swift: return "Swift";
+        case RuleId::Ferocious: return "Ferocious";
+        case RuleId::Lacerate: return "Lacerate";
+        case RuleId::Mischievous: return "Mischievous";
+        case RuleId::Scrapper: return "Scrapper";
+        // Category B: Weapon Conditionals
+        case RuleId::Bash: return "Bash";
+        case RuleId::Thrash: return "Thrash";
+        case RuleId::Crack: return "Crack";
+        case RuleId::Destructive: return "Destructive";
+        case RuleId::Fracture: return "Fracture";
+        case RuleId::Break: return "Break";
+        case RuleId::Slash: return "Slash";
+        case RuleId::Butcher: return "Butcher";
+        case RuleId::Slam: return "Slam";
+        case RuleId::Quake: return "Quake";
+        case RuleId::Tear: return "Tear";
+        case RuleId::Scratch: return "Scratch";
+        case RuleId::Puncture: return "Puncture";
+        case RuleId::Shatter: return "Shatter";
+        case RuleId::Demolish: return "Demolish";
+        case RuleId::Impale: return "Impale";
+        case RuleId::Skewer: return "Skewer";
+        case RuleId::Reap: return "Reap";
+        case RuleId::Disintegrate: return "Disintegrate";
+        case RuleId::Decimate: return "Decimate";
+        case RuleId::Fragment: return "Fragment";
+        case RuleId::Wreck: return "Wreck";
+        // Category C: Movement Bonuses
+        case RuleId::Lustbound: return "Lustbound";
+        case RuleId::Highborn: return "Highborn";
+        case RuleId::Scurry: return "Scurry";
+        case RuleId::Darkborn: return "Darkborn";
+        case RuleId::HitAndRunShooter: return "Hit & Run Shooter";
+        // Category D: Defense Modifiers
+        case RuleId::Fortified: return "Fortified";
+        case RuleId::Guardian: return "Guardian";
+        case RuleId::GuardianBoost: return "Guardian Boost";
+        case RuleId::Sturdy: return "Sturdy";
+        case RuleId::Knightborn: return "Knightborn";
+        case RuleId::Plaguebound: return "Plaguebound";
+        case RuleId::Changebound: return "Changebound";
         default: return "Unknown";
     }
 }
