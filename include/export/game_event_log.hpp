@@ -171,6 +171,8 @@ inline std::string rule_id_to_string(RuleId id) {
         case RuleId::Knightborn: return "Knightborn";
         case RuleId::Plaguebound: return "Plaguebound";
         case RuleId::Changebound: return "Changebound";
+        // Category V: Movement Rules
+        case RuleId::Teleport: return "Teleport";
         default: return "Unknown";
     }
 }
