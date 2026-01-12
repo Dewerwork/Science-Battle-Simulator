@@ -16,7 +16,6 @@ class RuleAwareAI {
 public:
     // Main decision function
     static ActionType decide_action(const GameState& state, bool is_unit_a) {
-        const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
         const UnitSimState& unit_state = is_unit_a ? state.state_a : state.state_b;
         const UnitSimState& enemy_state = is_unit_a ? state.state_b : state.state_a;
 

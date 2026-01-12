@@ -170,6 +170,8 @@ private:
         i8 distance,
         bool is_caster_unit_a
     ) {
+        (void)distance;  // May be used for range checks in future
+
         SpellCastResult result;
 
         // Check if spell was already attempted
@@ -241,6 +243,8 @@ private:
         SpellCastResult& result,
         bool is_caster_unit_a
     ) {
+        (void)is_caster_unit_a;  // May be used for side-specific effects in future
+
         const char* effect_type = "none";
         const char* buff_applied = "";
 
@@ -254,7 +258,6 @@ private:
                     // Roll defense for the hits
                     u8 ap = spell.hit_rules.ap;
                     u8 defense = enemy.defense();
-                    u8 effective_defense = (ap >= defense) ? 7 : defense + ap;
 
                     u32 wounds = dice_.roll_defense_test(
                         spell.hits,
@@ -359,6 +362,8 @@ private:
         SpellCastResult& result,
         const SpellDef& spell
     ) {
+        (void)spell;  // May be used for spell-specific wound effects in future
+
         // Get wound allocation order
         std::array<u8, MAX_MODELS_PER_UNIT> allocation_order;
         u8 allocation_count;

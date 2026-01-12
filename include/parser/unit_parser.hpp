@@ -908,7 +908,8 @@ inline std::optional<CompactRule> UnitParser::parse_rule(std::string_view rule_s
     }
 
     // Normalize to lowercase
-    std::transform(rule_name.begin(), rule_name.end(), rule_name.begin(), ::tolower);
+    std::transform(rule_name.begin(), rule_name.end(), rule_name.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     // Trim trailing spaces
     while (!rule_name.empty() && std::isspace(rule_name.back())) {
         rule_name.pop_back();

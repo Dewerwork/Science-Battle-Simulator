@@ -61,8 +61,6 @@ private:
     static ActionType decide_melee_ai(const GameState& state, bool is_unit_a) {
         const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
         i8 dist = state.distance_between();
-        u8 move_speed = state.get_move_speed(*unit);
-        u8 charge_dist = state.get_charge_distance(*unit);
 
         // Can we charge? (accounts for Fast, Slow, RapidCharge, Agile)
         if (dist <= state.get_charge_distance(*unit)) {
@@ -117,7 +115,6 @@ private:
         i8 my_pos = is_unit_a ? state.pos_a : state.pos_b;
         i8 dist = state.distance_between();
         u8 move_speed = state.get_move_speed(*unit);
-        u8 charge_dist = state.get_charge_distance(*unit);
 
         bool controls = is_unit_a ? state.unit_a_controls_objective() : state.unit_b_controls_objective();
 
@@ -129,11 +126,11 @@ private:
         // Not controlling objective?
         if (!controls) {
             // If we can reach objective quickly, rush
-            i8 dist_to_obj = std::abs(my_pos);
+            i8 dist_to_obj = static_cast<i8>(std::abs(my_pos));
             if (dist_to_obj <= move_speed * 2) {
                 // Can we advance and shoot?
-                i8 new_pos = my_pos + (is_unit_a ? move_speed : -move_speed);
-                i8 new_dist = is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a);
+                i8 new_pos = static_cast<i8>(my_pos + (is_unit_a ? move_speed : -static_cast<i8>(move_speed)));
+                i8 new_dist = static_cast<i8>(is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a));
 
                 if (unit->max_range >= static_cast<u8>(new_dist)) {
                     return ActionType::Advance;

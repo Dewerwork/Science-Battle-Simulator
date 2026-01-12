@@ -727,10 +727,11 @@ void print_merge_usage(const char* prog) {
 // Helper function to merge sample files
 void merge_sample_files(
     const ChunkManifest& manifest,
-    const std::vector<ChunkProgress>& all_status,
+    const std::vector<ChunkProgress>& /*all_status*/,
     const std::string& output_file,
     bool force
 ) {
+    (void)force;
     std::cout << "\n=== Merging Sample Files ===\n";
 
     std::ofstream out(output_file, std::ios::binary | std::ios::trunc);
@@ -802,11 +803,12 @@ void merge_sample_files(
 // Helper function to merge showcase files (selecting best per unit)
 void merge_showcase_files(
     const ChunkManifest& manifest,
-    const std::vector<ChunkProgress>& all_status,
+    const std::vector<ChunkProgress>& /*all_status*/,
     const std::string& output_file,
     ShowcaseStrategy strategy,
     bool force
 ) {
+    (void)force;
     std::cout << "\n=== Merging Showcase Files ===\n";
 
     // Map to store best showcase per unit
@@ -1181,7 +1183,7 @@ int cmd_debug(int argc, char* argv[]) {
     GameRunner runner(dice, &logger);
 
     // Run the match
-    MatchResult result = runner.run_match(*unit_a, *unit_b);
+    runner.run_match(*unit_a, *unit_b);
 
     return 0;
 }

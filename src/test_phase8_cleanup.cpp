@@ -13,7 +13,6 @@
 #include "core/rule_registry.hpp"
 #include "engine/registry_combat_resolver.hpp"
 #include <iostream>
-#include <cstring>
 #include <cassert>
 
 using namespace battle;
@@ -61,8 +60,7 @@ static int tests_failed = 0;
 
 Unit create_test_attacker() {
     Unit unit{};
-    std::strcpy(unit.name.data.data(), "Test Attacker");
-    unit.name.length = 13;
+    unit.name = Name("Test Attacker");
     unit.model_count = 5;
     unit.alive_count = 5;
     unit.quality = 4;
@@ -81,8 +79,7 @@ Unit create_test_attacker() {
 
 Unit create_test_defender() {
     Unit unit{};
-    std::strcpy(unit.name.data.data(), "Test Defender");
-    unit.name.length = 13;
+    unit.name = Name("Test Defender");
     unit.model_count = 5;
     unit.alive_count = 5;
     unit.quality = 4;
@@ -101,8 +98,7 @@ Unit create_test_defender() {
 
 Weapon create_test_weapon() {
     Weapon weapon{};
-    std::strcpy(weapon.name.data.data(), "Test Weapon");
-    weapon.name.length = 11;
+    weapon.name = Name("Test Weapon");
     weapon.attacks = 2;
     weapon.ap = 1;
     weapon.range = 24;

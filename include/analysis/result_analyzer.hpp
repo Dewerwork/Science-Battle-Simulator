@@ -394,8 +394,8 @@ public:
                     if (r.winner == 0) stats.a_wins++;
                     else if (r.winner == 1) stats.b_wins++;
                     else stats.draws++;
-                    stats.games_a += r.games_a;
-                    stats.games_b += r.games_b;
+                    stats.games_a = static_cast<u8>(stats.games_a + r.games_a);
+                    stats.games_b = static_cast<u8>(stats.games_b + r.games_b);
                 }
             }
         }

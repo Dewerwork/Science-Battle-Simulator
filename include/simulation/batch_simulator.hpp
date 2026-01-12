@@ -799,6 +799,8 @@ public:
             case ResultFormat::CompactExtended:
                 compact_extended_results_buffer.reserve(config_.batch_size + 16);
                 break;
+            default:
+                break;
         }
 
         // Calculate starting position if resuming
@@ -806,7 +808,6 @@ public:
         u32 start_j = static_cast<u32>(resume_from % units_b.size());
 
         // Process all matchups
-        u64 current_index = resume_from;
         for (u32 i = start_i; i < units_a.size(); ++i) {
             u32 j_start = (i == start_i) ? start_j : 0;
             for (u32 j = j_start; j < units_b.size(); ++j) {
@@ -844,6 +845,8 @@ public:
                                 completed += compact_extended_results_buffer.size();
                                 compact_extended_results_buffer.clear();
                             }
+                            break;
+                        default:
                             break;
                     }
 
@@ -892,6 +895,8 @@ public:
                     out.write(reinterpret_cast<const char*>(compact_extended_results_buffer.data()),
                              compact_extended_results_buffer.size() * sizeof(CompactExtendedMatchResult));
                     completed += compact_extended_results_buffer.size();
+                    break;
+                default:
                     break;
             }
             out.flush();

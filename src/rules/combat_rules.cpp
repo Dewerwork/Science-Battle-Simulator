@@ -1345,7 +1345,7 @@ void delayed_action_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*
 void sturdy_boost_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.defense_modifier += 1; }
 void versatile_defense_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.defense_modifier += 1; }
 void changebound_boost_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier -= 1; }
-void plaguebound_boost_aura_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) { if (ext) ext->resistance_active = true; }
+void plaguebound_boost_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* ext, u8 /*value*/) { if (ext) ext->resistance_active = true; }
 void defensive_growth_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 value) { ctx.ap_modifier -= static_cast<i8>(value); }
 void machine_fog_boost_aura_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier -= 1; }
 void reanimation_aura_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // End round handling

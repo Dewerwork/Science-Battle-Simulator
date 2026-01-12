@@ -188,8 +188,14 @@ inline std::string format_rule(const CompactRule& rule) {
 inline std::string get_current_timestamp() {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
+    std::tm tm_buf;
+#ifdef _MSC_VER
+    gmtime_s(&tm_buf, &time);
+#else
+    gmtime_r(&time, &tm_buf);
+#endif
     std::stringstream ss;
-    ss << std::put_time(std::gmtime(&time), "%Y-%m-%dT%H:%M:%SZ");
+    ss << std::put_time(&tm_buf, "%Y-%m-%dT%H:%M:%SZ");
     return ss.str();
 }
 
