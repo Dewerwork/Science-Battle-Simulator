@@ -47,6 +47,9 @@ public:
         bool success = true;
         success &= export_matchups(results, output_dir + "/matchups.csv");
         success &= export_iterations(results, output_dir + "/iterations.csv");
+        success &= export_rounds(results, output_dir + "/rounds.csv");
+        success &= export_movements(results, output_dir + "/movements.csv");
+        success &= export_morale(results, output_dir + "/morale.csv");
         success &= export_attacks(results, output_dir + "/attacks.csv");
         success &= export_rule_triggers(results, output_dir + "/rule_triggers.csv");
         success &= export_rolls(results, output_dir + "/rolls.csv");
@@ -229,6 +232,155 @@ private:
                      << match.total_wounds_dealt_b << ","
                      << match.total_models_killed_a << ","
                      << match.total_models_killed_b << "\n";
+            }
+        }
+
+        return true;
+    }
+
+    // Export rounds.csv - round-level data including objective control
+    static bool export_rounds(const std::vector<MatchupResult>& results,
+                              const std::string& filepath) {
+        std::ofstream file(filepath);
+        if (!file.is_open()) return false;
+
+        // Header
+        file << "matchup_id,iteration,game,round,"
+             << "initiative_roll,unit_a_first,initiative_reason,"
+             << "a_controls_objective,b_controls_objective,control_reason,"
+             << "unit_a_models_remaining,unit_b_models_remaining,"
+             << "unit_a_status,unit_b_status\n";
+
+        for (const auto& result : results) {
+            for (const auto& iter : result.iterations) {
+                const auto& match = iter.match_data;
+
+                for (size_t game_idx = 0; game_idx < match.games.size(); ++game_idx) {
+                    const auto& game = match.games[game_idx];
+
+                    for (const auto& round : game.rounds) {
+                        file << iter.matchup_id << ","
+                             << iter.iteration << ","
+                             << (game_idx + 1) << ","
+                             << static_cast<int>(round.round_number) << ","
+                             << static_cast<int>(round.initiative_roll) << ","
+                             << (round.unit_a_first ? 1 : 0) << ","
+                             << escape_csv(round.initiative_reason) << ","
+                             << (round.a_controls ? 1 : 0) << ","
+                             << (round.b_controls ? 1 : 0) << ","
+                             << escape_csv(round.control_reason) << ","
+                             << static_cast<int>(round.unit_a_models) << ","
+                             << static_cast<int>(round.unit_b_models) << ","
+                             << escape_csv(round.unit_a_status) << ","
+                             << escape_csv(round.unit_b_status) << "\n";
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // Export movements.csv - movement events
+    static bool export_movements(const std::vector<MatchupResult>& results,
+                                 const std::string& filepath) {
+        std::ofstream file(filepath);
+        if (!file.is_open()) return false;
+
+        // Header
+        file << "matchup_id,iteration,game,round,unit,move_seq,"
+             << "move_type,from_pos,to_pos,distance_moved,reason\n";
+
+        for (const auto& result : results) {
+            for (const auto& iter : result.iterations) {
+                const auto& match = iter.match_data;
+
+                for (size_t game_idx = 0; game_idx < match.games.size(); ++game_idx) {
+                    const auto& game = match.games[game_idx];
+
+                    for (const auto& round : game.rounds) {
+                        for (const auto& activation : round.activations) {
+                            int move_seq = 0;
+                            std::string unit = activation.is_unit_a ? "A" : "B";
+
+                            for (const auto& movement : activation.movements) {
+                                file << iter.matchup_id << ","
+                                     << iter.iteration << ","
+                                     << (game_idx + 1) << ","
+                                     << static_cast<int>(round.round_number) << ","
+                                     << unit << ","
+                                     << move_seq << ","
+                                     << escape_csv(movement.move_type) << ","
+                                     << static_cast<int>(movement.from_pos) << ","
+                                     << static_cast<int>(movement.to_pos) << ","
+                                     << static_cast<int>(movement.distance_moved) << ","
+                                     << escape_csv(movement.reason) << "\n";
+                                move_seq++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // Export morale.csv - morale check details
+    static bool export_morale(const std::vector<MatchupResult>& results,
+                              const std::string& filepath) {
+        std::ofstream file(filepath);
+        if (!file.is_open()) return false;
+
+        // Header
+        file << "matchup_id,iteration,game,round,unit,morale_seq,"
+             << "unit_name,trigger_reason,models_remaining,models_total,"
+             << "wounds_taken,wounds_dealt,"
+             << "morale_roll,morale_target,morale_passed,"
+             << "had_fearless_reroll,fearless_roll,fearless_target,fearless_passed,"
+             << "final_passed,old_status,new_status,result_description\n";
+
+        for (const auto& result : results) {
+            for (const auto& iter : result.iterations) {
+                const auto& match = iter.match_data;
+
+                for (size_t game_idx = 0; game_idx < match.games.size(); ++game_idx) {
+                    const auto& game = match.games[game_idx];
+
+                    for (const auto& round : game.rounds) {
+                        for (const auto& activation : round.activations) {
+                            int morale_seq = 0;
+                            std::string unit = activation.is_unit_a ? "A" : "B";
+
+                            for (const auto& morale : activation.morale_checks) {
+                                file << iter.matchup_id << ","
+                                     << iter.iteration << ","
+                                     << (game_idx + 1) << ","
+                                     << static_cast<int>(round.round_number) << ","
+                                     << unit << ","
+                                     << morale_seq << ","
+                                     << escape_csv(morale.unit_name) << ","
+                                     << escape_csv(morale.trigger_reason) << ","
+                                     << static_cast<int>(morale.models_remaining) << ","
+                                     << static_cast<int>(morale.models_total) << ","
+                                     << morale.wounds_taken << ","
+                                     << morale.wounds_dealt << ","
+                                     << static_cast<int>(morale.morale_roll) << ","
+                                     << static_cast<int>(morale.morale_target) << ","
+                                     << (morale.morale_passed ? 1 : 0) << ","
+                                     << (morale.had_fearless_reroll ? 1 : 0) << ","
+                                     << static_cast<int>(morale.fearless_roll) << ","
+                                     << static_cast<int>(morale.fearless_target) << ","
+                                     << (morale.fearless_passed ? 1 : 0) << ","
+                                     << (morale.final_passed ? 1 : 0) << ","
+                                     << escape_csv(morale.old_status) << ","
+                                     << escape_csv(morale.new_status) << ","
+                                     << escape_csv(morale.result_description) << "\n";
+                                morale_seq++;
+                            }
+                        }
+                    }
+                }
             }
         }
 
