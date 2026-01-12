@@ -75,6 +75,14 @@ void effect_hit_and_run(MovementContext& ctx) {
     ctx.hit_and_run_pending = true;
 }
 
+// Teleport - Once per activation, before attacking, place model within 6" of position
+// In 1D sim: adds +6" to charge range (can teleport closer before engaging)
+void effect_teleport(MovementContext& ctx) {
+    if (ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.charge_bonus += 6;  // +6" from teleport repositioning
+    }
+}
+
 // ==============================================================================
 // Movement Rules Registry
 // ==============================================================================
@@ -141,6 +149,14 @@ void init_movement_rules() {
         MovementSubPhase::POST_MOVE,
         effect_hit_and_run,
         {0.5f, 0.7f, false, true}  // Prefers hit-and-run tactics
+    };
+
+    // Teleport - Can charge from any distance
+    g_movement_rules[static_cast<u16>(RuleId::Teleport)] = {
+        RuleId::Teleport,
+        MovementSubPhase::CHARGE_DECLARE,
+        effect_teleport,
+        {1.0f, 0.0f, true, false}  // Maximum charge preference
     };
 
     g_movement_rules_initialized = true;
