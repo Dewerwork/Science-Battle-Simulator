@@ -269,7 +269,7 @@ private:
         // Log AI decision with context
         if (logger_) {
             i8 dist_to_enemy = state_.distance_between();
-            i8 dist_to_objective = std::abs(my_pos);
+            i8 dist_to_objective = static_cast<i8>(std::abs(my_pos));
             bool controls = is_unit_a ? state_.unit_a_controls_objective() : state_.unit_b_controls_objective();
 
             const char* reasoning = get_ai_reasoning(action, state_, is_unit_a);

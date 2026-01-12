@@ -188,7 +188,6 @@ int main(int argc, char* argv[]) {
     }
 
     // Track if we resumed for final stats
-    u64 started_from = 0;
     bool did_resume = false;
 
     // Progress callback

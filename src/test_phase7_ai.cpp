@@ -11,7 +11,6 @@
 #include "core/rule_registry.hpp"
 #include "engine/game_state.hpp"
 #include <iostream>
-#include <cstring>
 #include <cassert>
 
 using namespace battle;
@@ -65,8 +64,7 @@ static int tests_failed = 0;
 
 Unit create_melee_unit() {
     Unit unit{};
-    std::strcpy(unit.name.data.data(), "Melee Unit");
-    unit.name.length = 10;
+    unit.name = Name("Melee Unit");
     unit.model_count = 10;
     unit.alive_count = 10;
     unit.quality = 4;
@@ -87,8 +85,7 @@ Unit create_melee_unit() {
 
 Unit create_shooting_unit() {
     Unit unit{};
-    std::strcpy(unit.name.data.data(), "Shooting Unit");
-    unit.name.length = 13;
+    unit.name = Name("Shooting Unit");
     unit.model_count = 10;
     unit.alive_count = 10;
     unit.quality = 4;
@@ -109,8 +106,7 @@ Unit create_shooting_unit() {
 
 Unit create_defensive_unit() {
     Unit unit{};
-    std::strcpy(unit.name.data.data(), "Defensive Unit");
-    unit.name.length = 14;
+    unit.name = Name("Defensive Unit");
     unit.model_count = 5;
     unit.alive_count = 5;
     unit.quality = 4;
@@ -131,8 +127,7 @@ Unit create_defensive_unit() {
 
 Unit create_charge_specialist_unit() {
     Unit unit{};
-    std::strcpy(unit.name.data.data(), "Charge Specialist");
-    unit.name.length = 17;
+    unit.name = Name("Charge Specialist");
     unit.model_count = 5;
     unit.alive_count = 5;
     unit.quality = 3;

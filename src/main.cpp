@@ -311,7 +311,7 @@ void run_matchup(const Unit& unit_a, const Unit& unit_b, u64 num_games, bool ver
               << games_per_sec << " games/second" << std::endl;
 }
 
-void run_all_matchups(const std::vector<Unit>& units, u64 games_per_matchup, bool verbose) {
+void run_all_matchups(const std::vector<Unit>& units, u64 games_per_matchup, bool /*verbose*/) {
     std::cout << "\nRunning all matchups (" << units.size() << " units, "
               << (units.size() * units.size()) << " total matchups)..." << std::endl;
 

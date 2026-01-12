@@ -268,6 +268,11 @@ public:
         u32 total_hits,
         u32 natural_sixes
     ) {
+        // Suppress unused parameter warnings - these may be used for future rules
+        (void)attacker;
+        (void)defender;
+        (void)combat_type;
+
         HitSeparationResult result;
         result.normal_hits = total_hits;
 
@@ -920,6 +925,7 @@ private:
         u8 models_attacking,
         bool moved = false  // Did unit move before attacking (for Indirect penalty)
     ) {
+        (void)weapon_index;  // Currently unused, may be used for logging
         WeaponAttackResult result;
 
         // Build unified context - use const_cast because effects need non-const
@@ -1005,7 +1011,6 @@ private:
         // ============================================
         // Phase 5: HIT_BONUSES
         // ============================================
-        u32 hits_before_bonus = ctx.hits;
         apply_all_phase_effects(CombatSubPhase::HIT_BONUSES, ctx);
         ctx.hits += ctx.bonus_hits;
 
@@ -1670,8 +1675,8 @@ public:
                 moved   // did unit move before shooting
             );
 
-            result.wounds_dealt += weapon_result.wounds_dealt;
-            result.models_killed += weapon_result.models_killed;
+            result.wounds_dealt = static_cast<u16>(result.wounds_dealt + weapon_result.wounds_dealt);
+            result.models_killed = static_cast<u8>(result.models_killed + weapon_result.models_killed);
             result.self_destruct_hits += weapon_result.self_destruct_hits;
         }
 
@@ -1782,8 +1787,8 @@ public:
                 models_with_weapon
             );
 
-            result.wounds_dealt += weapon_result.wounds_dealt;
-            result.models_killed += weapon_result.models_killed;
+            result.wounds_dealt = static_cast<u16>(result.wounds_dealt + weapon_result.wounds_dealt);
+            result.models_killed = static_cast<u8>(result.models_killed + weapon_result.models_killed);
             result.self_destruct_hits += weapon_result.self_destruct_hits;
         }
 
@@ -2133,6 +2138,9 @@ inline HitSeparationResult compute_hit_separation_old_style(
     u32 total_hits,
     u32 natural_sixes
 ) {
+    (void)attacker;
+    (void)defender;
+
     HitSeparationResult result;
     result.normal_hits = total_hits;
 
@@ -2164,6 +2172,8 @@ inline HitBonusesResult compute_hit_bonuses_old_style(
     i8 hit_modifier,
     DiceRoller& dice
 ) {
+    (void)defender;
+
     HitBonusesResult result;
     result.total_hits = current_hits;
 

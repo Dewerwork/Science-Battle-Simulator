@@ -54,12 +54,12 @@ public:
     // GAME LIFECYCLE
     // =========================================================================
 
-    void on_game_start(const Unit& unit_a, const Unit& unit_b, i8 pos_a, i8 pos_b) override {
+    void on_game_start(const Unit& /*unit_a*/, const Unit& /*unit_b*/, i8 pos_a, i8 pos_b) override {
         out_ << ind() << "Game Start: Unit A at " << (int)pos_a << "\", Unit B at " << (int)pos_b << "\"\n";
         out_ << ind() << "Distance between units: " << (int)(pos_b - pos_a) << "\"\n\n";
     }
 
-    void on_game_end(const GameResult& result, const GameState& state) override {
+    void on_game_end(const GameResult& result, const GameState& /*state*/) override {
         out_ << "\n" << ind() << "Game End:\n";
         out_ << ind() << "  Rounds played: " << (int)result.rounds_played << "\n";
         out_ << ind() << "  Winner: ";
@@ -80,12 +80,12 @@ public:
     // ROUND LIFECYCLE
     // =========================================================================
 
-    void on_round_start(u8 round_number, const GameState& state) override {
+    void on_round_start(u8 round_number, const GameState& /*state*/) override {
         out_ << "\n" << ind() << "=== ROUND " << (int)round_number << " ===\n";
         indent_++;
     }
 
-    void on_initiative(u8 round_number, u8 roll, bool unit_a_first, const char* reason) override {
+    void on_initiative(u8 /*round_number*/, u8 roll, bool unit_a_first, const char* reason) override {
         if (roll > 0) {
             out_ << ind() << "Initiative roll: " << (int)roll << " - ";
         } else {
@@ -94,7 +94,7 @@ public:
         out_ << (unit_a_first ? "Unit A" : "Unit B") << " goes first (" << reason << ")\n";
     }
 
-    void on_round_end(u8 round_number, const GameState& state) override {
+    void on_round_end(u8 round_number, const GameState& /*state*/) override {
         indent_--;
         out_ << ind() << "=== END ROUND " << (int)round_number << " ===\n";
     }
@@ -103,8 +103,8 @@ public:
     // OBJECTIVE CONTROL
     // =========================================================================
 
-    void on_objective_control_check(i8 pos_a, i8 pos_b, bool a_in_range, bool b_in_range,
-                                     bool a_shaken, bool b_shaken, bool a_ooa, bool b_ooa,
+    void on_objective_control_check(i8 /*pos_a*/, i8 /*pos_b*/, bool /*a_in_range*/, bool /*b_in_range*/,
+                                     bool /*a_shaken*/, bool /*b_shaken*/, bool /*a_ooa*/, bool /*b_ooa*/,
                                      bool a_controls, bool b_controls, const char* reason) override {
         out_ << ind() << "Objective Check: ";
         if (a_controls) out_ << "Unit A controls";
@@ -117,12 +117,12 @@ public:
     // ACTIVATION LIFECYCLE
     // =========================================================================
 
-    void on_activation_start(bool is_unit_a, const GameState& state) override {
+    void on_activation_start(bool is_unit_a, const GameState& /*state*/) override {
         out_ << "\n" << ind() << "--- " << (is_unit_a ? "UNIT A" : "UNIT B") << " ACTIVATION ---\n";
         indent_++;
     }
 
-    void on_activation_end(bool is_unit_a, const GameState& state) override {
+    void on_activation_end(bool /*is_unit_a*/, const GameState& /*state*/) override {
         indent_--;
     }
 
@@ -130,10 +130,10 @@ public:
     // AI DECISION
     // =========================================================================
 
-    void on_ai_decision(bool is_unit_a, AIType ai_type, ActionType action, i8 position,
-                        i8 distance_to_enemy, i8 distance_to_objective, bool controls_objective,
-                        bool in_melee, bool is_shaken, bool is_fatigued, bool enemy_destroyed,
-                        u8 max_weapon_range, u8 move_speed, const char* reasoning) override {
+    void on_ai_decision(bool /*is_unit_a*/, AIType /*ai_type*/, ActionType action, i8 position,
+                        i8 distance_to_enemy, i8 /*distance_to_objective*/, bool /*controls_objective*/,
+                        bool /*in_melee*/, bool /*is_shaken*/, bool /*is_fatigued*/, bool /*enemy_destroyed*/,
+                        u8 /*max_weapon_range*/, u8 /*move_speed*/, const char* reasoning) override {
         out_ << ind() << "AI Decision: ";
         switch (action) {
             case ActionType::Hold: out_ << "HOLD"; break;
@@ -151,8 +151,8 @@ public:
     // MOVEMENT
     // =========================================================================
 
-    void on_movement(bool is_unit_a, const char* move_type, i8 from_pos, i8 to_pos,
-                     i8 distance_moved, const char* reason) override {
+    void on_movement(bool /*is_unit_a*/, const char* move_type, i8 from_pos, i8 to_pos,
+                     i8 distance_moved, const char* /*reason*/) override {
         out_ << ind() << "Movement (" << move_type << "): " << (int)from_pos << "\" -> "
              << (int)to_pos << "\" (" << (int)distance_moved << "\" moved)\n";
     }
@@ -170,14 +170,14 @@ public:
     // SHOOTING COMBAT
     // =========================================================================
 
-    void on_shooting_start(bool attacker_is_a, const char* attacker_name, const char* defender_name,
+    void on_shooting_start(bool /*attacker_is_a*/, const char* attacker_name, const char* defender_name,
                            i8 distance, u8 models_shooting) override {
         out_ << ind() << "SHOOTING: " << attacker_name << " -> " << defender_name
              << " at " << (int)distance << "\" with " << (int)models_shooting << " models\n";
         indent_++;
     }
 
-    void on_shooting_end(bool attacker_is_a, u16 total_wounds, u8 total_models_killed,
+    void on_shooting_end(bool /*attacker_is_a*/, u16 total_wounds, u8 total_models_killed,
                          bool defender_destroyed) override {
         indent_--;
         out_ << ind() << "Shooting Result: " << total_wounds << " wounds, "
@@ -189,7 +189,7 @@ public:
     // MELEE COMBAT
     // =========================================================================
 
-    void on_melee_start(bool attacker_is_a, const char* attacker_name, const char* defender_name,
+    void on_melee_start(bool /*attacker_is_a*/, const char* attacker_name, const char* defender_name,
                         bool is_charging, bool attacker_fatigued) override {
         out_ << ind() << "MELEE: " << attacker_name << " vs " << defender_name;
         if (is_charging) out_ << " (CHARGING)";
@@ -204,8 +204,8 @@ public:
         }
     }
 
-    void on_melee_end(bool attacker_is_a, u16 attacker_wounds_dealt, u16 defender_wounds_dealt,
-                      bool attacker_destroyed, bool defender_destroyed) override {
+    void on_melee_end(bool /*attacker_is_a*/, u16 attacker_wounds_dealt, u16 defender_wounds_dealt,
+                      bool /*attacker_destroyed*/, bool /*defender_destroyed*/) override {
         indent_--;
         out_ << ind() << "Melee Result: Attacker dealt " << attacker_wounds_dealt
              << " wounds, Defender dealt " << defender_wounds_dealt << " wounds\n";
@@ -215,7 +215,7 @@ public:
     // IMPACT ATTACKS
     // =========================================================================
 
-    void on_impact_start(bool attacker_is_a, u8 base_impact_value, u8 counter_reduction,
+    void on_impact_start(bool /*attacker_is_a*/, u8 base_impact_value, u8 counter_reduction,
                          u8 effective_impact) override {
         out_ << ind() << "Impact: " << (int)base_impact_value;
         if (counter_reduction > 0) {
@@ -229,7 +229,7 @@ public:
              << " = " << hits << " hits\n";
     }
 
-    void on_impact_defense(const std::vector<u8>& rolls, u8 defense, u8 effective_defense,
+    void on_impact_defense(const std::vector<u8>& rolls, u8 /*defense*/, u8 effective_defense,
                            u32 saves, u32 wounds) override {
         out_ << ind() << "  Defense rolls (need " << (int)effective_defense << "+): "
              << format_rolls(rolls) << " = " << saves << " saves, " << wounds << " wounds\n";
@@ -244,7 +244,7 @@ public:
     // WEAPON ATTACKS
     // =========================================================================
 
-    void on_weapon_attack_start(const char* weapon_name, bool is_melee, u8 range, u8 base_attacks,
+    void on_weapon_attack_start(const char* weapon_name, bool /*is_melee*/, u8 /*range*/, u8 base_attacks,
                                 u8 ap, const char* weapon_rules) override {
         out_ << ind() << "Weapon: " << weapon_name << " (A" << (int)base_attacks
              << " AP" << (int)ap;
@@ -257,7 +257,7 @@ public:
              << " attacks = " << total_attacks << " total\n";
     }
 
-    void on_weapon_attack_end(const char* weapon_name, u32 total_wounds, u8 models_killed) override {
+    void on_weapon_attack_end(const char* /*weapon_name*/, u32 total_wounds, u8 models_killed) override {
         out_ << ind() << "  Result: " << total_wounds << " wounds, "
              << (int)models_killed << " models killed\n";
     }
@@ -275,7 +275,7 @@ public:
         }
     }
 
-    void on_hit_rolls(u8 base_quality, i8 total_modifier, u8 effective_target,
+    void on_hit_rolls(u8 /*base_quality*/, i8 /*total_modifier*/, u8 effective_target,
                       const std::vector<u8>& rolls, u32 hits, u32 sixes) override {
         out_ << ind() << "  Hit rolls (need " << (int)effective_target << "+): "
              << format_rolls(rolls) << " = " << hits << " hits";
@@ -309,16 +309,16 @@ public:
              << " (" << source << ": " << reason << ")\n";
     }
 
-    void on_defense_rolls(u8 base_defense, u8 total_ap, u8 effective_target, bool reroll_sixes,
+    void on_defense_rolls(u8 /*base_defense*/, u8 /*total_ap*/, u8 effective_target, bool reroll_sixes,
                           const std::vector<u8>& rolls, u32 saves, u32 wounds,
-                          u32 sixes_rerolled, const std::vector<u8>& rerolls, u32 reroll_saves) override {
+                          u32 /*sixes_rerolled*/, const std::vector<u8>& /*rerolls*/, u32 /*reroll_saves*/) override {
         out_ << ind() << "  Defense rolls (need " << (int)effective_target << "+): "
              << format_rolls(rolls) << " = " << saves << " saves, " << wounds << " wounds";
         if (reroll_sixes) out_ << " (poison/bane)";
         out_ << "\n";
     }
 
-    void on_defense_rolls_rending(u8 base_defense, u8 rending_ap, u8 effective_target,
+    void on_defense_rolls_rending(u8 /*base_defense*/, u8 /*rending_ap*/, u8 effective_target,
                                   const std::vector<u8>& rolls, u32 saves, u32 wounds) override {
         out_ << ind() << "  Rending defense (need " << (int)effective_target << "+): "
              << format_rolls(rolls) << " = " << saves << " saves, " << wounds << " wounds\n";
@@ -328,7 +328,7 @@ public:
     // REGENERATION
     // =========================================================================
 
-    void on_regeneration(u32 wounds_before, u8 target, const std::vector<u8>& rolls,
+    void on_regeneration(u32 /*wounds_before*/, u8 target, const std::vector<u8>& rolls,
                          u32 wounds_saved, u32 wounds_after, bool was_bypassed,
                          const char* bypass_reason) override {
         if (was_bypassed) {
@@ -344,19 +344,19 @@ public:
     // WOUND ALLOCATION
     // =========================================================================
 
-    void on_wound_allocation_start(u32 wounds_to_allocate, const char* allocation_order) override {
+    void on_wound_allocation_start(u32 wounds_to_allocate, const char* /*allocation_order*/) override {
         out_ << ind() << "  Allocating " << wounds_to_allocate << " wounds\n";
     }
 
-    void on_wound_allocated(u8 model_index, const char* model_name, u8 model_tough,
-                            u8 wounds_before, u8 wounds_applied, u8 wounds_after,
+    void on_wound_allocated(u8 /*model_index*/, const char* model_name, u8 /*model_tough*/,
+                            u8 /*wounds_before*/, u8 wounds_applied, u8 /*wounds_after*/,
                             bool model_killed) override {
         out_ << ind() << "    " << model_name << ": " << (int)wounds_applied << " wound(s)";
         if (model_killed) out_ << " - KILLED";
         out_ << "\n";
     }
 
-    void on_deadly_wound(u8 model_index, const char* model_name, u8 deadly_value,
+    void on_deadly_wound(u8 /*model_index*/, const char* model_name, u8 deadly_value,
                          u8 wounds_applied, u8 wounds_wasted, bool model_killed) override {
         out_ << ind() << "    " << model_name << ": Deadly(" << (int)deadly_value << ") = "
              << (int)wounds_applied << " wounds";
@@ -365,8 +365,8 @@ public:
         out_ << "\n";
     }
 
-    void on_wound_allocation_end(u32 total_wounds_dealt, u8 total_models_killed,
-                                 u32 overkill_wounds) override {
+    void on_wound_allocation_end(u32 /*total_wounds_dealt*/, u8 /*total_models_killed*/,
+                                 u32 /*overkill_wounds*/) override {
         // Summary already provided by weapon/combat end
     }
 
@@ -374,9 +374,9 @@ public:
     // MORALE
     // =========================================================================
 
-    void on_morale_check_start(bool is_unit_a, const char* unit_name, const char* trigger_reason,
-                               u8 models_remaining, u8 models_total, u16 wounds_taken,
-                               u16 wounds_dealt) override {
+    void on_morale_check_start(bool /*is_unit_a*/, const char* unit_name, const char* trigger_reason,
+                               u8 /*models_remaining*/, u8 /*models_total*/, u16 /*wounds_taken*/,
+                               u16 /*wounds_dealt*/) override {
         out_ << ind() << "MORALE CHECK: " << unit_name << " (" << trigger_reason << ")\n";
         indent_++;
     }
@@ -391,7 +391,7 @@ public:
              << (passed ? "PASS" : "FAIL") << "\n";
     }
 
-    void on_morale_check_end(bool final_passed, UnitStatus old_status, UnitStatus new_status,
+    void on_morale_check_end(bool /*final_passed*/, UnitStatus /*old_status*/, UnitStatus /*new_status*/,
                              const char* result_description) override {
         indent_--;
         out_ << ind() << "Morale Result: " << result_description << "\n";
@@ -420,7 +420,7 @@ public:
     // FATIGUE
     // =========================================================================
 
-    void on_fatigue_changed(bool is_unit_a, bool now_fatigued, const char* reason) override {
+    void on_fatigue_changed(bool /*is_unit_a*/, bool /*now_fatigued*/, const char* /*reason*/) override {
         // Fatigue is common, only log when notable
     }
 
@@ -439,7 +439,7 @@ public:
     // MOVEMENT RULES
     // =========================================================================
 
-    void on_movement_rule_applied(bool is_unit_a, const char* rule_name, i8 modifier,
+    void on_movement_rule_applied(bool /*is_unit_a*/, const char* rule_name, i8 modifier,
                                   const char* effect) override {
         out_ << ind() << "  [MOVEMENT RULE] " << rule_name << ": ";
         if (modifier != 0) {
@@ -472,7 +472,7 @@ public:
     }
 
     void on_spell_cast_attempt(bool is_unit_a, const char* spell_name, u8 spell_cost,
-                               u8 tokens_remaining, i8 range, const char* target_type) override {
+                               u8 /*tokens_remaining*/, i8 range, const char* target_type) override {
         out_ << ind() << "[SPELL CAST] " << (is_unit_a ? "Unit A" : "Unit B")
              << ": Casting \"" << spell_name << "\" (cost " << (int)spell_cost
              << ", " << target_type << ", range " << (int)range << "\")\n";
@@ -486,7 +486,7 @@ public:
              << (int)modifier_applied << " to cast roll\n";
     }
 
-    void on_spell_roll(u8 roll, u8 target_number, i8 modifier, bool success) override {
+    void on_spell_roll(u8 roll, u8 target_number, i8 /*modifier*/, bool success) override {
         out_ << ind() << "Cast roll: " << (int)roll << " vs " << (int)target_number << "+ = "
              << (success ? "SUCCESS" : "FAILED") << "\n";
         indent_--;

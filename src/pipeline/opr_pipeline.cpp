@@ -437,7 +437,8 @@ std::optional<std::string> OprPipeline::clean_rule(const std::string& rule) {
 
     // Filter instruction keywords
     std::string r_lower = r;
-    std::transform(r_lower.begin(), r_lower.end(), r_lower.begin(), ::tolower);
+    std::transform(r_lower.begin(), r_lower.end(), r_lower.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
     static const std::vector<std::string> instruction_keywords = {
         "upgrade", "replace", "any model", "one model", "all models"
@@ -472,7 +473,8 @@ std::vector<std::string> OprPipeline::normalize_rules(const std::vector<std::str
         auto cleaned = clean_rule(r);
         if (cleaned) {
             std::string key = *cleaned;
-            std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+            std::transform(key.begin(), key.end(), key.begin(),
+                           [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
             if (seen_lower.find(key) == seen_lower.end()) {
                 seen_lower.insert(key);
                 out.push_back(*cleaned);
@@ -482,8 +484,10 @@ std::vector<std::string> OprPipeline::normalize_rules(const std::vector<std::str
 
     std::sort(out.begin(), out.end(), [](const std::string& a, const std::string& b) {
         std::string la = a, lb = b;
-        std::transform(la.begin(), la.end(), la.begin(), ::tolower);
-        std::transform(lb.begin(), lb.end(), lb.begin(), ::tolower);
+        std::transform(la.begin(), la.end(), la.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        std::transform(lb.begin(), lb.end(), lb.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         return la < lb;
     });
 
@@ -507,7 +511,8 @@ bool looks_like_weapon_profile(const std::string& inside) {
 // Returns weapon key string: N=name|R=range|A=attacks|AP=ap|T=tags
 std::string parse_weapon_key_from_profile(const std::string& name, const std::string& profile_text) {
     std::string normalized_name = OprPipeline::normalize_whitespace(name);
-    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
     std::string range_str;
     int attacks = 1;  // Default to 1 attack if not found
@@ -615,14 +620,16 @@ std::vector<std::string> extract_rules_from_choice(const std::string& choice_tex
 
 int guess_upgrade_multiplier(const std::string& header, int unit_size) {
     std::string h = header;
-    std::transform(h.begin(), h.end(), h.begin(), ::tolower);
+    std::transform(h.begin(), h.end(), h.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     if (h.find("all models") != std::string::npos) return unit_size;
     return 1;
 }
 
 std::optional<int> header_pick_limit(const std::string& header) {
     std::string h = header;
-    std::transform(h.begin(), h.end(), h.begin(), ::tolower);
+    std::transform(h.begin(), h.end(), h.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
     static const std::map<std::string, int> word_to_int = {
         {"one", 1}, {"two", 2}, {"three", 3}, {"four", 4}, {"five", 5},
@@ -677,7 +684,8 @@ std::vector<Variant> OprPipeline::generate_group_variants(
 {
     std::vector<Variant> out;
     std::string h = group.header;
-    std::transform(h.begin(), h.end(), h.begin(), ::tolower);
+    std::transform(h.begin(), h.end(), h.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
     bool is_upgrade = h.find("upgrade") == 0;
     bool is_replace = (h.find("replace") == 0) ||
@@ -848,12 +856,12 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                 }
 
                 // Build weapon keys - use structured weapon data if available
-                bool has_weapon_to_add = false;
                 if (!opt.weapons.empty()) {
                     // Use structured weapon data (most reliable)
                     for (const auto& w : opt.weapons) {
                         std::string normalized_name = normalize_whitespace(w.name);
-                        std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+                        std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(),
+                                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
                         std::string rng_str = (w.range == "-" || w.range.empty()) ? "" : w.range.substr(0, w.range.size() - 1);  // Remove trailing "
                         std::string ap_str = w.ap.has_value() ? std::to_string(*w.ap) : "";
                         std::string add_key = "N=" + normalized_name + "|R=" + rng_str + "|A=" + std::to_string(w.attacks) + "|AP=" + ap_str;
@@ -870,7 +878,6 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                         if (add_key != target_key) {  // Skip self-replacement
                             weapon_delta[add_key] += w.count;
                         }
-                        has_weapon_to_add = true;
                     }
                 } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
                     // Parse profile from text (fallback)
@@ -878,7 +885,6 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                     if (add_key != target_key) {
                         weapon_delta[add_key] += c;
                     }
-                    has_weapon_to_add = true;
                 }
                 // If no weapon data and doesn't look like a weapon profile,
                 // this is a rule-only upgrade (e.g., "Killing Scream (Breath Attack)")
@@ -921,12 +927,12 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                         }
 
                         // Build weapon keys - use structured weapon data if available
-                        bool has_weapon_to_add = false;
                         if (!pick->weapons.empty()) {
                             // Use structured weapon data (most reliable)
                             for (const auto& w : pick->weapons) {
                                 std::string normalized_name = normalize_whitespace(w.name);
-                                std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+                                std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(),
+                                               [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
                                 std::string rng_str = (w.range == "-" || w.range.empty()) ? "" : w.range.substr(0, w.range.size() - 1);
                                 std::string ap_str = w.ap.has_value() ? std::to_string(*w.ap) : "";
                                 std::string add_key = "N=" + normalized_name + "|R=" + rng_str + "|A=" + std::to_string(w.attacks) + "|AP=" + ap_str;
@@ -941,13 +947,11 @@ std::vector<Variant> OprPipeline::generate_group_variants(
                                     add_key += "|T=" + tags;
                                 }
                                 weapon_delta[add_key] += w.count;
-                                has_weapon_to_add = true;
                             }
                         } else if (!inside.empty() && looks_like_weapon_profile(inside)) {
                             // Parse profile from text (fallback for legacy data)
                             std::string add_key = parse_weapon_key_from_profile(item_name, inside);
                             weapon_delta[add_key] += c;
-                            has_weapon_to_add = true;
                         }
                         // If no weapon data and doesn't look like a weapon profile,
                         // this is a rule-only upgrade - don't add a weapon entry
@@ -2018,7 +2022,8 @@ std::vector<FactionPipelineResult> OprPipeline::run() {
 
     if (std::filesystem::is_regular_file(config_.input_path)) {
         std::string ext = config_.input_path.extension().string();
-        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+        std::transform(ext.begin(), ext.end(), ext.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         if (ext == ".json") {
             input_files.push_back(config_.input_path);
         }

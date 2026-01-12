@@ -88,7 +88,7 @@ public:
                         ActiveModifier mod(aura.grants_rule, aura.grants_value);
                         mod.source = ModifierSource::AURA;
                         mod.duration = ModifierDuration::UNTIL_END_OF_PHASE;
-                        mod.source_unit_id = unit_a.unit_id;
+                        mod.source_unit_id = static_cast<u16>(unit_a.unit_id);
                         mod.condition = aura.condition;
                         mods_b.add_modifier(mod);
                         ++applied;
@@ -100,7 +100,7 @@ public:
                     ActiveModifier mod(aura.grants_rule, aura.grants_value);
                     mod.source = ModifierSource::AURA;
                     mod.duration = ModifierDuration::UNTIL_END_OF_PHASE;
-                    mod.source_unit_id = unit_a.unit_id;
+                    mod.source_unit_id = static_cast<u16>(unit_a.unit_id);
                     mod.condition = aura.condition;
                     mods_a.add_modifier(mod);
                     ++applied;
@@ -124,7 +124,7 @@ public:
                         ActiveModifier mod(aura.grants_rule, aura.grants_value);
                         mod.source = ModifierSource::AURA;
                         mod.duration = ModifierDuration::UNTIL_END_OF_PHASE;
-                        mod.source_unit_id = unit_b.unit_id;
+                        mod.source_unit_id = static_cast<u16>(unit_b.unit_id);
                         mod.condition = aura.condition;
                         mods_a.add_modifier(mod);
                         ++applied;
@@ -136,7 +136,7 @@ public:
                     ActiveModifier mod(aura.grants_rule, aura.grants_value);
                     mod.source = ModifierSource::AURA;
                     mod.duration = ModifierDuration::UNTIL_END_OF_PHASE;
-                    mod.source_unit_id = unit_b.unit_id;
+                    mod.source_unit_id = static_cast<u16>(unit_b.unit_id);
                     mod.condition = aura.condition;
                     mods_b.add_modifier(mod);
                     ++applied;

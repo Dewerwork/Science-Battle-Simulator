@@ -462,8 +462,6 @@ private:
     }
 
     void execute_charge(bool is_unit_a, i8 original_pos) {
-        UnitView unit = state_.view(is_unit_a);
-        UnitView enemy = state_.view(!is_unit_a);
         i8& my_pos = is_unit_a ? state_.pos_a : state_.pos_b;
         i8& enemy_pos = is_unit_a ? state_.pos_b : state_.pos_a;
 
@@ -592,7 +590,7 @@ private:
     }
 
     // Resolve shooting with full logging
-    CombatEvent resolve_shooting_logged(UnitView attacker, UnitView defender, i8 distance, bool moved, bool attacker_is_a) {
+    CombatEvent resolve_shooting_logged(UnitView attacker, UnitView defender, i8 distance, bool /*moved*/, bool /*attacker_is_a*/) {
         CombatEvent event;
         event.phase = "shooting";
         event.attacker_name = std::string(attacker.name().view());
@@ -637,7 +635,7 @@ private:
     }
 
     // Resolve melee with full logging
-    CombatEvent resolve_melee_logged(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models, bool attacker_is_a) {
+    CombatEvent resolve_melee_logged(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models, bool /*attacker_is_a*/) {
         CombatEvent event;
         event.phase = "melee";
         event.attacker_name = std::string(attacker.name().view());
@@ -744,7 +742,7 @@ private:
     // Resolve a single weapon's attacks
     AttackSequence resolve_weapon_attack_logged(
         UnitView attacker, UnitView defender, const Weapon& weapon,
-        u8 weapon_idx, i8 distance, bool is_melee, bool is_charging, u8 counter_models
+        u8 /*weapon_idx*/, i8 distance, bool is_melee, bool is_charging, u8 /*counter_models*/
     ) {
         AttackSequence attack;
         attack.attacker_model_name = std::string(attacker.name().view());
@@ -1000,7 +998,7 @@ private:
     }
 
     // Check morale with logging
-    void check_morale_logged(UnitView unit, bool is_from_melee, bool is_unit_a, u32 wounds_taken = 0, u32 wounds_dealt = 0) {
+    void check_morale_logged(UnitView unit, bool is_from_melee, bool /*is_unit_a*/, u32 wounds_taken = 0, u32 wounds_dealt = 0) {
         bool needs_test = false;
 
         if (unit.is_at_half_strength() && !unit.is_shaken() && !unit.is_routed()) {

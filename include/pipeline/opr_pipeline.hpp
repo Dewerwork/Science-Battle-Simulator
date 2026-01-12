@@ -427,7 +427,8 @@ inline std::string OprPipeline::normalize_whitespace(const std::string& s) {
 
 inline std::string OprPipeline::normalize_name(const std::string& s) {
     std::string result = normalize_whitespace(s);
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     // Remove trailing 's' for plurals (unless it ends in 'ss')
     if (result.size() > 2 && result.back() == 's' && result[result.size()-2] != 's') {
         result.pop_back();
@@ -532,7 +533,8 @@ inline std::vector<size_t> OprPipeline::index_to_choice_indices(size_t idx, cons
 
 inline std::string WeaponData::to_key() const {
     std::string normalized_name = OprPipeline::normalize_whitespace(name);
-    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(), ::tolower);
+    std::transform(normalized_name.begin(), normalized_name.end(), normalized_name.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
     std::string rng_str;
     if (range != "-" && !range.empty()) {
@@ -550,8 +552,10 @@ inline std::string WeaponData::to_key() const {
     std::sort(sorted_rules.begin(), sorted_rules.end(),
               [](const std::string& a, const std::string& b) {
                   std::string la = a, lb = b;
-                  std::transform(la.begin(), la.end(), la.begin(), ::tolower);
-                  std::transform(lb.begin(), lb.end(), lb.begin(), ::tolower);
+                  std::transform(la.begin(), la.end(), la.begin(),
+                                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+                  std::transform(lb.begin(), lb.end(), lb.begin(),
+                                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
                   return la < lb;
               });
 
