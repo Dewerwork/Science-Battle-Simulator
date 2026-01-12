@@ -102,6 +102,44 @@ struct MovementData {
     std::string reason;
 };
 
+struct SpellCastData {
+    bool is_unit_a = false;
+    std::string spell_name;
+    u8 spell_cost = 0;
+    u8 tokens_before = 0;
+    u8 tokens_after = 0;
+    i8 range = 0;
+    std::string target_type;  // "enemy_direct", "enemy_debuff", "self_buff"
+
+    // Interference
+    bool was_interfered = false;
+    u8 interference_tokens = 0;
+    i8 interference_modifier = 0;
+
+    // Roll
+    u8 roll = 0;
+    u8 target_number = 0;
+    i8 total_modifier = 0;
+    bool success = false;
+
+    // Effect (if successful)
+    std::string effect_type;  // "direct_damage", "buff", "debuff", "morale", "movement"
+    u32 hits_dealt = 0;
+    u32 wounds_dealt = 0;
+    u8 models_killed = 0;
+    std::string buff_applied;
+};
+
+struct SpellTokenData {
+    bool is_unit_a = false;
+    std::string event_type;  // "granted", "spent_cast", "spent_interference"
+    u8 tokens_changed = 0;
+    u8 tokens_before = 0;
+    u8 tokens_after = 0;
+    u8 caster_value = 0;  // only for "granted"
+    std::string spell_name;  // only for spending
+};
+
 struct AIDecisionData {
     bool is_unit_a = false;
     std::string ai_type;
@@ -126,6 +164,8 @@ struct ActivationData {
     std::vector<AttackSequenceData> attack_sequences;
     std::vector<MoraleCheckData> morale_checks;
     std::vector<RuleTriggerData> rule_triggers;
+    std::vector<SpellCastData> spell_casts;
+    std::vector<SpellTokenData> spell_tokens;
 };
 
 struct RoundData {
@@ -779,31 +819,88 @@ public:
     // SPELL CASTING
     // =========================================================================
 
-    void on_spell_tokens_granted(bool /*is_unit_a*/, u8 /*tokens_gained*/,
-                                 u8 /*tokens_total*/, u8 /*caster_value*/) override {
-        // Spell tokens tracked implicitly
+    void on_spell_tokens_granted(bool is_unit_a, u8 tokens_gained,
+                                 u8 tokens_total, u8 caster_value) override {
+        if (current_activation_) {
+            SpellTokenData token_data;
+            token_data.is_unit_a = is_unit_a;
+            token_data.event_type = "granted";
+            token_data.tokens_changed = tokens_gained;
+            token_data.tokens_before = tokens_total - tokens_gained;
+            token_data.tokens_after = tokens_total;
+            token_data.caster_value = caster_value;
+            current_activation_->spell_tokens.push_back(token_data);
+        }
     }
 
-    void on_spell_cast_attempt(bool /*is_unit_a*/, const char* /*spell_name*/,
-                               u8 /*spell_cost*/, u8 /*tokens_remaining*/,
-                               i8 /*range*/, const char* /*target_type*/) override {
-        // Spell casting tracked implicitly
+    void on_spell_cast_attempt(bool is_unit_a, const char* spell_name,
+                               u8 spell_cost, u8 tokens_remaining,
+                               i8 range, const char* target_type) override {
+        if (current_activation_) {
+            // Record token spending
+            SpellTokenData token_data;
+            token_data.is_unit_a = is_unit_a;
+            token_data.event_type = "spent_cast";
+            token_data.tokens_changed = spell_cost;
+            token_data.tokens_before = tokens_remaining + spell_cost;
+            token_data.tokens_after = tokens_remaining;
+            token_data.spell_name = spell_name ? spell_name : "";
+            current_activation_->spell_tokens.push_back(token_data);
+
+            // Start new spell cast record
+            current_activation_->spell_casts.emplace_back();
+            current_spell_ = &current_activation_->spell_casts.back();
+            current_spell_->is_unit_a = is_unit_a;
+            current_spell_->spell_name = spell_name ? spell_name : "";
+            current_spell_->spell_cost = spell_cost;
+            current_spell_->tokens_before = tokens_remaining + spell_cost;
+            current_spell_->tokens_after = tokens_remaining;
+            current_spell_->range = range;
+            current_spell_->target_type = target_type ? target_type : "";
+        }
     }
 
-    void on_spell_interference(bool /*interferer_is_a*/, u8 /*tokens_spent*/,
-                               i8 /*modifier_applied*/) override {
-        // Spell interference tracked implicitly
+    void on_spell_interference(bool interferer_is_a, u8 tokens_spent,
+                               i8 modifier_applied) override {
+        if (current_spell_) {
+            current_spell_->was_interfered = true;
+            current_spell_->interference_tokens = tokens_spent;
+            current_spell_->interference_modifier = modifier_applied;
+        }
+        if (current_activation_) {
+            // Record token spending by interferer
+            SpellTokenData token_data;
+            token_data.is_unit_a = interferer_is_a;
+            token_data.event_type = "spent_interference";
+            token_data.tokens_changed = tokens_spent;
+            // Note: we don't have exact before/after counts here
+            current_activation_->spell_tokens.push_back(token_data);
+        }
     }
 
-    void on_spell_roll(u8 /*roll*/, u8 /*target_number*/, i8 /*modifier*/,
-                       bool /*success*/) override {
-        // Spell rolls tracked implicitly
+    void on_spell_roll(u8 roll, u8 target_number, i8 modifier,
+                       bool success) override {
+        if (current_spell_) {
+            current_spell_->roll = roll;
+            current_spell_->target_number = target_number;
+            current_spell_->total_modifier = modifier;
+            current_spell_->success = success;
+        }
     }
 
     void on_spell_effect(const char* spell_name, const char* effect_type,
                          u32 hits_dealt, u32 wounds_dealt, u8 models_killed,
-                         const char* /*buff_applied*/) override {
+                         const char* buff_applied) override {
+        if (current_spell_) {
+            current_spell_->effect_type = effect_type ? effect_type : "";
+            current_spell_->hits_dealt = hits_dealt;
+            current_spell_->wounds_dealt = wounds_dealt;
+            current_spell_->models_killed = models_killed;
+            current_spell_->buff_applied = buff_applied ? buff_applied : "";
+        }
+
         if (current_activation_) {
+            // Also record as rule trigger for backward compatibility
             RuleTriggerData trigger;
             trigger.rule_name = std::string("Spell: ") + (spell_name ? spell_name : "");
             trigger.effect = effect_type ? effect_type : "";
@@ -823,11 +920,13 @@ public:
                 atk.models_killed = models_killed;
             }
         }
+        current_spell_ = nullptr;  // Spell cast complete
     }
 
     void on_spell_phase_end(bool /*is_unit_a*/, u8 /*spells_cast*/,
                             u8 /*spells_succeeded*/, u8 /*tokens_remaining*/) override {
-        // Spell phase end tracked implicitly
+        // Spell phase end - ensure current_spell_ is cleared
+        current_spell_ = nullptr;
     }
 
 private:
@@ -837,6 +936,7 @@ private:
     ActivationData* current_activation_ = nullptr;
     AttackSequenceData* current_attack_ = nullptr;
     MoraleCheckData* current_morale_ = nullptr;
+    SpellCastData* current_spell_ = nullptr;
 
     static std::string status_to_string(UnitStatus status) {
         switch (status) {

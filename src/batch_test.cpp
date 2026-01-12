@@ -263,6 +263,8 @@ int main(int argc, char* argv[]) {
         std::cout << "  " << output_dir << "/attacks.csv\n";
         std::cout << "  " << output_dir << "/rule_triggers.csv\n";
         std::cout << "  " << output_dir << "/rolls.csv\n";
+        std::cout << "  " << output_dir << "/spells.csv\n";
+        std::cout << "  " << output_dir << "/spell_tokens.csv\n";
     }
 
     std::cout << "Results exported to: " << output_dir << "\n";

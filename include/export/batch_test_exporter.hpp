@@ -53,6 +53,8 @@ public:
         success &= export_attacks(results, output_dir + "/attacks.csv");
         success &= export_rule_triggers(results, output_dir + "/rule_triggers.csv");
         success &= export_rolls(results, output_dir + "/rolls.csv");
+        success &= export_spells(results, output_dir + "/spells.csv");
+        success &= export_spell_tokens(results, output_dir + "/spell_tokens.csv");
 
         return success;
     }
@@ -636,6 +638,119 @@ private:
                                 }
 
                                 attack_seq++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // Export spells.csv - individual spell cast attempts
+    static bool export_spells(const std::vector<MatchupResult>& results,
+                              const std::string& filepath) {
+        std::ofstream file(filepath);
+        if (!file.is_open()) return false;
+
+        // Header
+        file << "matchup_id,iteration,game,round,caster,spell_seq,"
+             << "spell_name,spell_cost,tokens_before,tokens_after,range,target_type,"
+             << "was_interfered,interference_tokens,interference_modifier,"
+             << "roll,target_number,total_modifier,success,"
+             << "effect_type,hits_dealt,wounds_dealt,models_killed,buff_applied\n";
+
+        for (const auto& result : results) {
+            for (const auto& iter : result.iterations) {
+                const auto& match = iter.match_data;
+
+                for (size_t game_idx = 0; game_idx < match.games.size(); ++game_idx) {
+                    const auto& game = match.games[game_idx];
+
+                    for (const auto& round : game.rounds) {
+                        for (const auto& activation : round.activations) {
+                            std::string caster = activation.is_unit_a ? "A" : "B";
+                            int spell_seq = 0;
+
+                            for (const auto& spell : activation.spell_casts) {
+                                file << iter.matchup_id << ","
+                                     << iter.iteration << ","
+                                     << (game_idx + 1) << ","
+                                     << static_cast<int>(round.round_number) << ","
+                                     << caster << ","
+                                     << spell_seq << ","
+                                     << escape_csv(spell.spell_name) << ","
+                                     << static_cast<int>(spell.spell_cost) << ","
+                                     << static_cast<int>(spell.tokens_before) << ","
+                                     << static_cast<int>(spell.tokens_after) << ","
+                                     << static_cast<int>(spell.range) << ","
+                                     << escape_csv(spell.target_type) << ","
+                                     << (spell.was_interfered ? 1 : 0) << ","
+                                     << static_cast<int>(spell.interference_tokens) << ","
+                                     << static_cast<int>(spell.interference_modifier) << ","
+                                     << static_cast<int>(spell.roll) << ","
+                                     << static_cast<int>(spell.target_number) << ","
+                                     << static_cast<int>(spell.total_modifier) << ","
+                                     << (spell.success ? 1 : 0) << ","
+                                     << escape_csv(spell.effect_type) << ","
+                                     << spell.hits_dealt << ","
+                                     << spell.wounds_dealt << ","
+                                     << static_cast<int>(spell.models_killed) << ","
+                                     << escape_csv(spell.buff_applied) << "\n";
+
+                                spell_seq++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // Export spell_tokens.csv - spell token grant/spend events
+    static bool export_spell_tokens(const std::vector<MatchupResult>& results,
+                                    const std::string& filepath) {
+        std::ofstream file(filepath);
+        if (!file.is_open()) return false;
+
+        // Header
+        file << "matchup_id,iteration,game,round,unit,token_seq,"
+             << "event_type,tokens_changed,tokens_before,tokens_after,"
+             << "caster_value,spell_name\n";
+
+        for (const auto& result : results) {
+            for (const auto& iter : result.iterations) {
+                const auto& match = iter.match_data;
+
+                for (size_t game_idx = 0; game_idx < match.games.size(); ++game_idx) {
+                    const auto& game = match.games[game_idx];
+
+                    for (const auto& round : game.rounds) {
+                        for (const auto& activation : round.activations) {
+                            std::string unit = activation.is_unit_a ? "A" : "B";
+                            int token_seq = 0;
+
+                            for (const auto& token : activation.spell_tokens) {
+                                // Token events may belong to either unit
+                                std::string token_unit = token.is_unit_a ? "A" : "B";
+
+                                file << iter.matchup_id << ","
+                                     << iter.iteration << ","
+                                     << (game_idx + 1) << ","
+                                     << static_cast<int>(round.round_number) << ","
+                                     << token_unit << ","
+                                     << token_seq << ","
+                                     << escape_csv(token.event_type) << ","
+                                     << static_cast<int>(token.tokens_changed) << ","
+                                     << static_cast<int>(token.tokens_before) << ","
+                                     << static_cast<int>(token.tokens_after) << ","
+                                     << static_cast<int>(token.caster_value) << ","
+                                     << escape_csv(token.spell_name) << "\n";
+
+                                token_seq++;
                             }
                         }
                     }
