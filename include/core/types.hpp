@@ -457,6 +457,17 @@ enum class RuleId : u16 {
     HiveBond,                 // Units with this rule get +1 morale (268)
     RePositionArtillery,      // Move Artillery model up to 9" (269)
 
+    // === Category X: Spell & Targeting Rules ===
+    CasterGroup,              // Complex caster pooling mechanic (270)
+    SpellConduit,             // Casters within 12" can cast from this position (271)
+    SpellAccumulator,         // Store and release spell energy (272)
+    PrecisionTarget,          // Place markers for hit bonus vs target (273)
+    PiercingTarget,           // Place markers for AP bonus vs target (274)
+    PrecisionSpotter,         // Spotter that grants hit bonus to allies (275)
+    PiercingSpotter,          // Spotter that grants AP bonus to allies (276)
+    PrecisionTag,             // Mark target for precision bonus (277)
+    PiercingTag,              // Mark target for piercing bonus (278)
+
     COUNT // Total number of rules
 };
 

@@ -859,6 +859,26 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"hivebond", RuleId::HiveBond},
         {"re-position artillery", RuleId::RePositionArtillery},
         {"repositionartillery", RuleId::RePositionArtillery},
+
+        // === Category X: Spell & Targeting Rules ===
+        {"caster group", RuleId::CasterGroup},
+        {"castergroup", RuleId::CasterGroup},
+        {"spell conduit", RuleId::SpellConduit},
+        {"spellconduit", RuleId::SpellConduit},
+        {"spell accumulator", RuleId::SpellAccumulator},
+        {"spellaccumulator", RuleId::SpellAccumulator},
+        {"precision target", RuleId::PrecisionTarget},
+        {"precisiontarget", RuleId::PrecisionTarget},
+        {"piercing target", RuleId::PiercingTarget},
+        {"piercingtarget", RuleId::PiercingTarget},
+        {"precision spotter", RuleId::PrecisionSpotter},
+        {"precisionspotter", RuleId::PrecisionSpotter},
+        {"piercing spotter", RuleId::PiercingSpotter},
+        {"piercingspotter", RuleId::PiercingSpotter},
+        {"precision tag", RuleId::PrecisionTag},
+        {"precisiontag", RuleId::PrecisionTag},
+        {"piercing tag", RuleId::PiercingTag},
+        {"piercingtag", RuleId::PiercingTag},
     };
     return map;
 }

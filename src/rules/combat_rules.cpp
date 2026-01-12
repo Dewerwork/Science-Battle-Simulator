@@ -1422,6 +1422,17 @@ void mend_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 
 void hive_bond_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Morale phase handling
 void re_position_artillery_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Movement phase handling
 
+// Category X: Spell & Targeting Rules - stub implementations
+void caster_group_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Caster pooling mechanic
+void spell_conduit_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Cast from this position
+void spell_accumulator_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {}  // Store spell energy
+void precision_target_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier += 1; }  // Hit bonus vs target
+void piercing_target_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.ap_modifier += 1; }  // AP bonus vs target
+void precision_spotter_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier += 1; }  // Spotter hit bonus
+void piercing_spotter_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.ap_modifier += 1; }  // Spotter AP bonus
+void precision_tag_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.hit_modifier += 1; }  // Tagged for precision
+void piercing_tag_effect(CombatContextCore& ctx, CombatContextExtended* /*ext*/, u8 /*value*/) { ctx.ap_modifier += 1; }  // Tagged for piercing
+
 // === END_ROUND Phase Effects ===
 
 void fear_effect(EndRoundContext& /*ctx*/, Unit& /*unit*/, u8 /*value*/) {
@@ -2889,6 +2900,17 @@ const RuleHotData Mend_HotData{RuleId::Mend, GamePhase::PASSIVE, 0, CombatType::
 const RuleHotData HiveBond_HotData{RuleId::HiveBond, GamePhase::END_ROUND, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
 const RuleHotData RePositionArtillery_HotData{RuleId::RePositionArtillery, GamePhase::MOVEMENT, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
 
+// Category X: Spell & Targeting Rules Hot Data
+const RuleHotData CasterGroup_HotData{RuleId::CasterGroup, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData SpellConduit_HotData{RuleId::SpellConduit, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData SpellAccumulator_HotData{RuleId::SpellAccumulator, GamePhase::PASSIVE, 0, CombatType::BOTH, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData PrecisionTarget_HotData{RuleId::PrecisionTarget, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData PiercingTarget_HotData{RuleId::PiercingTarget, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData PrecisionSpotter_HotData{RuleId::PrecisionSpotter, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData PiercingSpotter_HotData{RuleId::PiercingSpotter, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::SHOOTING, Target::SELF, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+const RuleHotData PrecisionTag_HotData{RuleId::PrecisionTag, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::HIT_MODIFIERS), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, 0};
+const RuleHotData PiercingTag_HotData{RuleId::PiercingTag, GamePhase::COMBAT, static_cast<u8>(CombatSubPhase::DEFENSE_RESOLUTION), CombatType::BOTH, Target::DEFENDER, Trigger::ALWAYS, RulePriority::NORMAL, static_cast<TraitMask>(RuleTrait::MODIFIES_AP)};
+
 // ==============================================================================
 // Cold Data Definitions
 // ==============================================================================
@@ -3902,6 +3924,17 @@ const RuleColdData Mend_ColdData{"Mend", nullptr, 0, "Mend", "Remove D3 wounds f
 const RuleColdData HiveBond_ColdData{"HiveBond", nullptr, 0, "Hive Bond", "Units with this rule get +1 morale."};
 const RuleColdData RePositionArtillery_ColdData{"RePositionArtillery", nullptr, 0, "Re-Position Artillery", "Move Artillery model up to 9\"."};
 
+// Category X: Spell & Targeting Rules Cold Data
+const RuleColdData CasterGroup_ColdData{"CasterGroup", nullptr, 0, "Caster Group", "Complex caster pooling mechanic."};
+const RuleColdData SpellConduit_ColdData{"SpellConduit", nullptr, 0, "Spell Conduit", "Casters within 12\" can cast from this position."};
+const RuleColdData SpellAccumulator_ColdData{"SpellAccumulator", nullptr, 0, "Spell Accumulator", "Store and release spell energy."};
+const RuleColdData PrecisionTarget_ColdData{"PrecisionTarget", nullptr, 0, "Precision Target", "Place markers for hit bonus vs target."};
+const RuleColdData PiercingTarget_ColdData{"PiercingTarget", nullptr, 0, "Piercing Target", "Place markers for AP bonus vs target."};
+const RuleColdData PrecisionSpotter_ColdData{"PrecisionSpotter", nullptr, 0, "Precision Spotter", "Spotter that grants hit bonus to allies."};
+const RuleColdData PiercingSpotter_ColdData{"PiercingSpotter", nullptr, 0, "Piercing Spotter", "Spotter that grants AP bonus to allies."};
+const RuleColdData PrecisionTag_ColdData{"PrecisionTag", nullptr, 0, "Precision Tag", "Mark target for precision bonus."};
+const RuleColdData PiercingTag_ColdData{"PiercingTag", nullptr, 0, "Piercing Tag", "Mark target for piercing bonus."};
+
 // ==============================================================================
 // Effect Entry Definitions
 // ==============================================================================
@@ -4592,6 +4625,17 @@ const RuleEffectEntry DevoutBoost_Effects = EffectBuilder().combat(CombatSubPhas
 const RuleEffectEntry Mend_Effects = EffectBuilder().build();  // Activation handling
 const RuleEffectEntry HiveBond_Effects = EffectBuilder().build();  // Morale handling
 const RuleEffectEntry RePositionArtillery_Effects = EffectBuilder().build();  // Movement handling
+
+// Category X: Spell & Targeting Rules Effect Entries
+const RuleEffectEntry CasterGroup_Effects = EffectBuilder().build();  // Caster pooling mechanic
+const RuleEffectEntry SpellConduit_Effects = EffectBuilder().build();  // Cast from this position
+const RuleEffectEntry SpellAccumulator_Effects = EffectBuilder().build();  // Store spell energy
+const RuleEffectEntry PrecisionTarget_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_target_effect).build();
+const RuleEffectEntry PiercingTarget_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_target_effect).build();
+const RuleEffectEntry PrecisionSpotter_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_spotter_effect).build();
+const RuleEffectEntry PiercingSpotter_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_spotter_effect).build();
+const RuleEffectEntry PrecisionTag_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_tag_effect).build();
+const RuleEffectEntry PiercingTag_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_tag_effect).build();
 
 // ==============================================================================
 // Movement Phase Effects
@@ -5427,6 +5471,17 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::HiveBond, HiveBond_HotData);
     registry.register_hot_data(RuleId::RePositionArtillery, RePositionArtillery_HotData);
 
+    // === Category X: Spell & Targeting Rules ===
+    registry.register_hot_data(RuleId::CasterGroup, CasterGroup_HotData);
+    registry.register_hot_data(RuleId::SpellConduit, SpellConduit_HotData);
+    registry.register_hot_data(RuleId::SpellAccumulator, SpellAccumulator_HotData);
+    registry.register_hot_data(RuleId::PrecisionTarget, PrecisionTarget_HotData);
+    registry.register_hot_data(RuleId::PiercingTarget, PiercingTarget_HotData);
+    registry.register_hot_data(RuleId::PrecisionSpotter, PrecisionSpotter_HotData);
+    registry.register_hot_data(RuleId::PiercingSpotter, PiercingSpotter_HotData);
+    registry.register_hot_data(RuleId::PrecisionTag, PrecisionTag_HotData);
+    registry.register_hot_data(RuleId::PiercingTag, PiercingTag_HotData);
+
     // =========================================================================
     // Register Movement hot data
     // =========================================================================
@@ -5737,6 +5792,17 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_cold_data(RuleId::Mend, Mend_ColdData);
     registry.register_cold_data(RuleId::HiveBond, HiveBond_ColdData);
     registry.register_cold_data(RuleId::RePositionArtillery, RePositionArtillery_ColdData);
+
+    // === Category X: Spell & Targeting Rules ===
+    registry.register_cold_data(RuleId::CasterGroup, CasterGroup_ColdData);
+    registry.register_cold_data(RuleId::SpellConduit, SpellConduit_ColdData);
+    registry.register_cold_data(RuleId::SpellAccumulator, SpellAccumulator_ColdData);
+    registry.register_cold_data(RuleId::PrecisionTarget, PrecisionTarget_ColdData);
+    registry.register_cold_data(RuleId::PiercingTarget, PiercingTarget_ColdData);
+    registry.register_cold_data(RuleId::PrecisionSpotter, PrecisionSpotter_ColdData);
+    registry.register_cold_data(RuleId::PiercingSpotter, PiercingSpotter_ColdData);
+    registry.register_cold_data(RuleId::PrecisionTag, PrecisionTag_ColdData);
+    registry.register_cold_data(RuleId::PiercingTag, PiercingTag_ColdData);
 
     // =========================================================================
     // Register Movement cold data
@@ -6062,6 +6128,17 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::Mend, Mend_Effects);
     registry.register_effects(RuleId::HiveBond, HiveBond_Effects);
     registry.register_effects(RuleId::RePositionArtillery, RePositionArtillery_Effects);
+
+    // === Category X: Spell & Targeting Rules ===
+    registry.register_effects(RuleId::CasterGroup, CasterGroup_Effects);
+    registry.register_effects(RuleId::SpellConduit, SpellConduit_Effects);
+    registry.register_effects(RuleId::SpellAccumulator, SpellAccumulator_Effects);
+    registry.register_effects(RuleId::PrecisionTarget, PrecisionTarget_Effects);
+    registry.register_effects(RuleId::PiercingTarget, PiercingTarget_Effects);
+    registry.register_effects(RuleId::PrecisionSpotter, PrecisionSpotter_Effects);
+    registry.register_effects(RuleId::PiercingSpotter, PiercingSpotter_Effects);
+    registry.register_effects(RuleId::PrecisionTag, PrecisionTag_Effects);
+    registry.register_effects(RuleId::PiercingTag, PiercingTag_Effects);
 
     // =========================================================================
     // Register Movement effects
