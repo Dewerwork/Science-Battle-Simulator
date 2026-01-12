@@ -998,6 +998,29 @@ inline std::optional<Weapon> UnitParser::parse_weapon(std::string_view weapon_st
         auto stat_trimmed = trim(stat);
         if (stat_trimmed.empty()) continue;
 
+        // Check for range inside parentheses: "24"", "12""
+        // This handles formats like "WeaponName (24", A4, AP(1))"
+        if (stat_trimmed.size() >= 2 && std::isdigit(stat_trimmed[0])) {
+            // Look for the " (inch) marker
+            auto quote_pos = stat_trimmed.find('"');
+            if (quote_pos != std::string_view::npos && quote_pos > 0) {
+                // All characters before the quote should be digits
+                bool all_digits = true;
+                for (size_t i = 0; i < quote_pos; ++i) {
+                    if (!std::isdigit(stat_trimmed[i])) {
+                        all_digits = false;
+                        break;
+                    }
+                }
+                if (all_digits) {
+                    try {
+                        weapon.range = static_cast<u8>(std::stoi(std::string(stat_trimmed.substr(0, quote_pos))));
+                    } catch (...) {}
+                    continue;
+                }
+            }
+        }
+
         // Check for attacks: "A3", "A10"
         if (stat_trimmed[0] == 'A' && stat_trimmed.size() > 1 && std::isdigit(stat_trimmed[1])) {
             try {
