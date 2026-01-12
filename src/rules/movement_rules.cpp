@@ -75,11 +75,17 @@ void effect_hit_and_run(MovementContext& ctx) {
     ctx.hit_and_run_pending = true;
 }
 
-// Teleport - Once per activation, before attacking, place model within 6" of position
-// In 1D sim: adds +6" to charge range (can teleport closer before engaging)
+// Teleport - Once per activation, place model within 6" of position before moving
+// This is bonus movement that happens before the normal action (advance/rush/charge)
+// Teleport 6" + Advance 6" = 12", Teleport 6" + Rush 12" = 18", Teleport 6" + Charge 12" = 18"
 void effect_teleport(MovementContext& ctx) {
     if (ctx.move_type == MovementContext::MoveType::CHARGE) {
-        ctx.charge_bonus += 6;  // +6" from teleport repositioning
+        ctx.charge_bonus += 6;  // +6" to charge range
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH) {
+        // For rush, add +3 before doubling so result is +6 after: (6+3)*2 = 18
+        ctx.distance_modifier += 3;
+    } else {
+        ctx.distance_modifier += 6;  // +6" to advance
     }
 }
 
@@ -151,12 +157,12 @@ void init_movement_rules() {
         {0.5f, 0.7f, false, true}  // Prefers hit-and-run tactics
     };
 
-    // Teleport - Can charge from any distance
+    // Teleport - +6" bonus movement before normal action
     g_movement_rules[static_cast<u16>(RuleId::Teleport)] = {
         RuleId::Teleport,
-        MovementSubPhase::CHARGE_DECLARE,
+        MovementSubPhase::CALCULATE_DISTANCE,
         effect_teleport,
-        {1.0f, 0.0f, true, false}  // Maximum charge preference
+        {0.8f, 0.2f, true, false}  // Strong mobility preference
     };
 
     g_movement_rules_initialized = true;
