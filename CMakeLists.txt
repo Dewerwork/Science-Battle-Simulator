@@ -119,6 +119,12 @@ target_include_directories(chunk_sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(chunk_sim PRIVATE battle_core Threads::Threads)
 target_compile_options(chunk_sim PRIVATE ${COMMON_FLAGS})
 
+# batch_test - run multiple matchups with detailed logging for rule validation
+add_executable(batch_test src/batch_test.cpp)
+target_include_directories(batch_test PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(batch_test PRIVATE battle_core Threads::Threads)
+target_compile_options(batch_test PRIVATE ${COMMON_FLAGS})
+
 # ==============================================================================
 # Tests
 # ==============================================================================
