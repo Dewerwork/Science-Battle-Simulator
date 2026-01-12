@@ -462,6 +462,50 @@ TEST(unified_melee_rules_dont_apply_to_shooting) {
 }
 
 //==============================================================================
+// AP Modifier Tests (PiercingTag, PiercingTarget, etc.)
+//==============================================================================
+
+TEST(unified_piercing_tag_ap_bonus) {
+    // PiercingTag on defender should give attacker +1 AP
+    auto registry = create_default_registry();
+    DiceRoller dice(12345);
+    RegistryCombatResolver resolver(registry, dice);
+
+    auto attacker = create_unit_with_models("Shooters", 4, 4, 5, 1, {});
+    auto defender = create_unit_with_models("Tagged Target", 4, 4, 5, 1, {
+        CompactRule(RuleId::PiercingTag, 0)  // Target has been marked for piercing
+    });
+    auto weapon = create_weapon("Basic Gun", 2, 24, 1, {});  // Base AP 1
+
+    auto result = resolver.resolve_combat(
+        attacker, defender, weapon, CombatType::SHOOTING, 12, false);
+
+    assert(result.attacks == 10);
+    // PiercingTag should add +1 AP: base 1 + 1 = 2
+    assert(result.ap_used == 2);
+}
+
+TEST(unified_piercing_target_ap_bonus) {
+    // PiercingTarget on defender should give attacker +1 AP
+    auto registry = create_default_registry();
+    DiceRoller dice(12345);
+    RegistryCombatResolver resolver(registry, dice);
+
+    auto attacker = create_unit_with_models("Shooters", 4, 4, 5, 1, {});
+    auto defender = create_unit_with_models("Marked Target", 4, 4, 5, 1, {
+        CompactRule(RuleId::PiercingTarget, 0)  // Target has piercing markers
+    });
+    auto weapon = create_weapon("Basic Gun", 2, 24, 0, {});  // Base AP 0
+
+    auto result = resolver.resolve_combat(
+        attacker, defender, weapon, CombatType::SHOOTING, 12, false);
+
+    assert(result.attacks == 10);
+    // PiercingTarget should add +1 AP: base 0 + 1 = 1
+    assert(result.ap_used == 1);
+}
+
+//==============================================================================
 // Main
 //==============================================================================
 
@@ -501,6 +545,10 @@ int main() {
     std::cout << "\nCombat Type Verification Tests:\n";
     RUN_TEST(unified_shooting_rules_dont_apply_to_melee);
     RUN_TEST(unified_melee_rules_dont_apply_to_shooting);
+
+    std::cout << "\nAP Modifier Tests:\n";
+    RUN_TEST(unified_piercing_tag_ap_bonus);
+    RUN_TEST(unified_piercing_target_ap_bonus);
 
     std::cout << "\n=== All Phase 5 Tests Passed ===\n";
     return 0;

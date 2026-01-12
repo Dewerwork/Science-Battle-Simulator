@@ -161,6 +161,12 @@ target_include_directories(test_phase5_unified_combat PRIVATE ${CMAKE_SOURCE_DIR
 target_link_libraries(test_phase5_unified_combat PRIVATE battle_core)
 target_compile_options(test_phase5_unified_combat PRIVATE ${COMMON_FLAGS})
 
+# PiercingTag AP modifier test
+add_executable(test_piercing_tag src/test_piercing_tag.cpp)
+target_include_directories(test_piercing_tag PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(test_piercing_tag PRIVATE battle_core)
+target_compile_options(test_piercing_tag PRIVATE ${COMMON_FLAGS})
+
 # Phase 6 movement/deployment/endround test
 add_executable(test_phase6_movement_deploy src/test_phase6_movement_deploy.cpp)
 target_include_directories(test_phase6_movement_deploy PRIVATE ${CMAKE_SOURCE_DIR}/include)

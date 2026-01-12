@@ -690,6 +690,12 @@ private:
         uctx.hits = ctx.hits;
         uctx.natural_sixes = ctx.natural_sixes;
 
+        // Apply AP modifier to effective_ap (from PiercingTag, PiercingTarget, etc.)
+        if (ctx.ap_modifier != 0) {
+            i16 new_ap = static_cast<i16>(uctx.effective_ap) + ctx.ap_modifier;
+            uctx.effective_ap = static_cast<u8>(std::max(i16(0), new_ap));
+        }
+
         // Copy trait flags back
         uctx.bypasses_regeneration = ctx.bypasses_regeneration();
         uctx.bypasses_resistance = ctx.bypasses_resistance();
@@ -787,6 +793,9 @@ private:
         if (ctx.is_charge && ctx.weapon->has_rule(RuleId::Thrust)) {
             ctx.effective_ap += 1;
         }
+
+        // Apply registry-based AP modifiers (PiercingTag, PiercingTarget, etc.)
+        apply_all_phase_effects(CombatSubPhase::DEFENSE_RESOLUTION, ctx);
 
         // Process normal hits
         u32 normal_wounds = 0;
