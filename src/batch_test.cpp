@@ -257,6 +257,9 @@ int main(int argc, char* argv[]) {
         std::cout << "Exported files:\n";
         std::cout << "  " << output_dir << "/matchups.csv\n";
         std::cout << "  " << output_dir << "/iterations.csv\n";
+        std::cout << "  " << output_dir << "/rounds.csv\n";
+        std::cout << "  " << output_dir << "/movements.csv\n";
+        std::cout << "  " << output_dir << "/morale.csv\n";
         std::cout << "  " << output_dir << "/attacks.csv\n";
         std::cout << "  " << output_dir << "/rule_triggers.csv\n";
         std::cout << "  " << output_dir << "/rolls.csv\n";
