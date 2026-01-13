@@ -1034,6 +1034,9 @@ private:
         // ============================================
         apply_all_phase_effects(CombatSubPhase::HIT_MULTIPLICATION, ctx);
 
+        // Recalculate normal_hits after blast multiplication
+        ctx.normal_hits = ctx.hits - ctx.rending_hits;
+
         // Log hits after modifiers
         if (logger_) {
             logger_->on_hits_after_modifiers(ctx.normal_hits, ctx.rending_hits, ctx.hits);
