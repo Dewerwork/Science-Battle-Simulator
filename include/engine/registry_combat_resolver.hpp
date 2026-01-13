@@ -680,6 +680,18 @@ private:
                 app.value = rule.value;
                 app.effect_description = cold.description;
                 ext.applied_rules.push_back(app);
+
+                // Emit on_rule_triggered for trait-based effects
+                const auto& hot = registry_.get_hot_data(rule.id);
+                if (hot.has_trait(RuleTrait::FORCES_DEFENSE_REROLL)) {
+                    logger_->on_rule_triggered(cold.name, "defense_reroll_6s", 1);
+                }
+                if (hot.has_trait(RuleTrait::BYPASSES_REGENERATION)) {
+                    logger_->on_rule_triggered(cold.name, "bypasses_regeneration", 1);
+                }
+                if (hot.has_trait(RuleTrait::GENERATES_EXTRA_HITS) && ext.bonus_hits > 0) {
+                    logger_->on_rule_triggered(cold.name, "extra_hits", ext.bonus_hits);
+                }
             }
         }
 
@@ -1234,6 +1246,10 @@ public:
             u32 rending_hits = has_rending ? sixes : 0;
             u32 normal_hits = hits - rending_hits;
 
+            // Log Rending/Rupture triggers
+            if (logger_ && has_rending && sixes > 0) logger_->on_rule_triggered("Rending", "ap+4_on_6s", sixes);
+            if (logger_ && has_rupture && sixes > 0) logger_->on_rule_triggered("Rupture", "bonus_wounds_on_6s", sixes);
+
             // Apply hit bonuses (Relentless, Surge, etc.)
             u32 bonus_hits = 0;
             if (attacker.has_rule(RuleId::Relentless) && distance > 9) {
@@ -1282,6 +1298,12 @@ public:
                                 w.has_rule(RuleId::Bane) || w.has_rule(RuleId::Shred) ||
                                 w.has_rule(RuleId::Unstoppable);
             bool force_reroll = w.has_rule(RuleId::Poison) || w.has_rule(RuleId::Bane);
+
+            // Log reroll rule triggers
+            if (force_reroll && logger_) {
+                if (w.has_rule(RuleId::Poison)) logger_->on_rule_triggered("Poison", "defense_reroll_6s", 1);
+                if (w.has_rule(RuleId::Bane)) logger_->on_rule_triggered("Bane", "defense_reroll_6s", 1);
+            }
 
             // Calculate defense modifiers
             u8 effective_defense = defender.defense();
@@ -1499,6 +1521,10 @@ public:
             u32 rending_hits = has_rending ? sixes : 0;
             u32 normal_hits = hits - rending_hits;
 
+            // Log Rending/Rupture triggers
+            if (logger_ && has_rending && sixes > 0) logger_->on_rule_triggered("Rending", "ap+4_on_6s", sixes);
+            if (logger_ && has_rupture && sixes > 0) logger_->on_rule_triggered("Rupture", "bonus_wounds_on_6s", sixes);
+
             // Apply hit bonuses (Furious)
             u32 bonus_hits = 0;
             if (is_charging && attacker.has_rule(RuleId::Furious)) {
@@ -1553,6 +1579,13 @@ public:
                                 attacker.has_rule(RuleId::BaneInMelee);
             bool force_reroll = w.has_rule(RuleId::Poison) || w.has_rule(RuleId::Bane) ||
                                 attacker.has_rule(RuleId::BaneInMelee);
+
+            // Log reroll rule triggers
+            if (force_reroll && logger_) {
+                if (w.has_rule(RuleId::Poison)) logger_->on_rule_triggered("Poison", "defense_reroll_6s", 1);
+                if (w.has_rule(RuleId::Bane)) logger_->on_rule_triggered("Bane", "defense_reroll_6s", 1);
+                if (attacker.has_rule(RuleId::BaneInMelee)) logger_->on_rule_triggered("BaneInMelee", "defense_reroll_6s", 1);
+            }
 
             // Calculate defense modifiers
             i8 defense_mod = 0;
