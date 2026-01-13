@@ -1055,16 +1055,36 @@ private:
 
         // Log defense rolls
         if (logger_) {
-            std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+            std::vector<u8> all_rolls = dice_.take_recorded_rolls();
             i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(ctx.effective_ap) - ctx.defense_modifier;
             effective_target = std::max(i8(2), std::min(i8(6), effective_target));
             u32 saves = ctx.normal_hits - wounds_from_normal;
             if (ctx.defense_modifier != 0 && logger_) {
                 logger_->on_defense_modifier("Shielded", ctx.defense_modifier, "easier_saves");
             }
+
+            // Split recorded rolls into initial rolls and rerolls
+            // First normal_hits rolls are initial, rest are rerolls of 6s
+            std::vector<u8> def_rolls;
+            std::vector<u8> rerolls;
+            u32 sixes_count = 0;
+
+            if (ctx.forces_defense_reroll && all_rolls.size() > ctx.normal_hits) {
+                def_rolls.assign(all_rolls.begin(), all_rolls.begin() + ctx.normal_hits);
+                rerolls.assign(all_rolls.begin() + ctx.normal_hits, all_rolls.end());
+                sixes_count = static_cast<u32>(rerolls.size());
+            } else {
+                def_rolls = std::move(all_rolls);
+            }
+
+            u32 reroll_saves = 0;
+            for (u8 r : rerolls) {
+                reroll_saves += (r >= static_cast<u8>(effective_target));
+            }
+
             logger_->on_defense_rolls(defense_target, ctx.effective_ap,
                 static_cast<u8>(effective_target), ctx.forces_defense_reroll,
-                def_rolls, saves, wounds_from_normal, 0, {}, 0);
+                def_rolls, saves, wounds_from_normal, sixes_count, rerolls, reroll_saves);
         }
 
         // Roll defense for rending hits (AP+4)
@@ -1318,12 +1338,31 @@ public:
 
             // Log defense rolls
             if (logger_) {
-                std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                std::vector<u8> all_rolls = dice_.take_recorded_rolls();
                 i8 effective_target = static_cast<i8>(effective_defense) + static_cast<i8>(effective_ap);
                 effective_target = std::max(i8(2), std::min(i8(6), effective_target));
                 u32 saves = normal_hits - wounds_from_normal;
+
+                // Split recorded rolls into initial rolls and rerolls
+                std::vector<u8> def_rolls;
+                std::vector<u8> rerolls;
+                u32 sixes_count = 0;
+
+                if (force_reroll && all_rolls.size() > normal_hits) {
+                    def_rolls.assign(all_rolls.begin(), all_rolls.begin() + normal_hits);
+                    rerolls.assign(all_rolls.begin() + normal_hits, all_rolls.end());
+                    sixes_count = static_cast<u32>(rerolls.size());
+                } else {
+                    def_rolls = std::move(all_rolls);
+                }
+
+                u32 reroll_saves = 0;
+                for (u8 r : rerolls) {
+                    reroll_saves += (r >= static_cast<u8>(effective_target));
+                }
+
                 logger_->on_defense_rolls(effective_defense, effective_ap, static_cast<u8>(effective_target), force_reroll,
-                                          def_rolls, saves, wounds_from_normal, 0, {}, 0);
+                                          def_rolls, saves, wounds_from_normal, sixes_count, rerolls, reroll_saves);
             }
 
             // Roll defense for rending hits (AP+4)
@@ -1601,12 +1640,31 @@ public:
 
             // Log defense rolls
             if (logger_) {
-                std::vector<u8> def_rolls = dice_.take_recorded_rolls();
+                std::vector<u8> all_rolls = dice_.take_recorded_rolls();
                 i8 effective_target = static_cast<i8>(defender.defense()) + static_cast<i8>(effective_ap);
                 effective_target = std::max(i8(2), std::min(i8(6), effective_target));
                 u32 saves = normal_hits - wounds_from_normal;
+
+                // Split recorded rolls into initial rolls and rerolls
+                std::vector<u8> def_rolls;
+                std::vector<u8> rerolls;
+                u32 sixes_count = 0;
+
+                if (force_reroll && all_rolls.size() > normal_hits) {
+                    def_rolls.assign(all_rolls.begin(), all_rolls.begin() + normal_hits);
+                    rerolls.assign(all_rolls.begin() + normal_hits, all_rolls.end());
+                    sixes_count = static_cast<u32>(rerolls.size());
+                } else {
+                    def_rolls = std::move(all_rolls);
+                }
+
+                u32 reroll_saves = 0;
+                for (u8 r : rerolls) {
+                    reroll_saves += (r >= static_cast<u8>(effective_target));
+                }
+
                 logger_->on_defense_rolls(defender.defense(), effective_ap, static_cast<u8>(effective_target), force_reroll,
-                                          def_rolls, saves, wounds_from_normal, 0, {}, 0);
+                                          def_rolls, saves, wounds_from_normal, sixes_count, rerolls, reroll_saves);
             }
 
             // Roll defense for rending hits (AP+4)
