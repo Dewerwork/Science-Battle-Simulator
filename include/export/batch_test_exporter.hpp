@@ -557,9 +557,9 @@ private:
         std::ofstream file(filepath);
         if (!file.is_open()) return false;
 
-        // Header
+        // Header - added reroll_value column
         file << "matchup_id,iteration,game,round,attacker,attack_seq,"
-             << "phase,roll_index,roll_value,target,success\n";
+             << "phase,roll_index,roll_value,reroll_value,target,success\n";
 
         for (const auto& result : results) {
             for (const auto& iter : result.iterations) {
@@ -574,7 +574,7 @@ private:
                             int attack_seq = 0;
 
                             for (const auto& attack : activation.attack_sequences) {
-                                // Hit rolls
+                                // Hit rolls (no rerolls)
                                 for (size_t i = 0; i < attack.hit_rolls.rolls.size(); ++i) {
                                     u8 roll = attack.hit_rolls.rolls[i];
                                     bool success = roll >= attack.hit_rolls.target;
@@ -586,14 +586,24 @@ private:
                                          << attack_seq << ","
                                          << "hit," << i << ","
                                          << static_cast<int>(roll) << ","
+                                         << ","  // No reroll for hit rolls
                                          << static_cast<int>(attack.hit_rolls.target) << ","
                                          << (success ? 1 : 0) << "\n";
                                 }
 
-                                // Defense rolls
+                                // Defense rolls (with rerolls for 6s when Poison/Bane active)
+                                size_t reroll_idx = 0;
                                 for (size_t i = 0; i < attack.defense_rolls.rolls.size(); ++i) {
                                     u8 roll = attack.defense_rolls.rolls[i];
                                     bool success = roll >= attack.defense_rolls.target;
+
+                                    // If this roll was a 6 and we have rerolls, get the reroll value
+                                    std::string reroll_str;
+                                    if (roll == 6 && reroll_idx < attack.defense_rolls.rerolls.size()) {
+                                        reroll_str = std::to_string(static_cast<int>(attack.defense_rolls.rerolls[reroll_idx]));
+                                        reroll_idx++;
+                                    }
+
                                     file << iter.matchup_id << ","
                                          << iter.iteration << ","
                                          << (game_idx + 1) << ","
@@ -602,11 +612,12 @@ private:
                                          << attack_seq << ","
                                          << "defense," << i << ","
                                          << static_cast<int>(roll) << ","
+                                         << reroll_str << ","
                                          << static_cast<int>(attack.defense_rolls.target) << ","
                                          << (success ? 1 : 0) << "\n";
                                 }
 
-                                // Rending defense rolls
+                                // Rending defense rolls (no rerolls)
                                 for (size_t i = 0; i < attack.rending_defense_rolls.rolls.size(); ++i) {
                                     u8 roll = attack.rending_defense_rolls.rolls[i];
                                     bool success = roll >= attack.rending_defense_rolls.target;
@@ -618,11 +629,12 @@ private:
                                          << attack_seq << ","
                                          << "rending_defense," << i << ","
                                          << static_cast<int>(roll) << ","
+                                         << ","  // No reroll for rending defense
                                          << static_cast<int>(attack.rending_defense_rolls.target) << ","
                                          << (success ? 1 : 0) << "\n";
                                 }
 
-                                // Regeneration rolls
+                                // Regeneration rolls (no rerolls)
                                 for (size_t i = 0; i < attack.regen_rolls.rolls.size(); ++i) {
                                     u8 roll = attack.regen_rolls.rolls[i];
                                     bool success = roll >= attack.regen_rolls.target;
@@ -634,6 +646,7 @@ private:
                                          << attack_seq << ","
                                          << "regeneration," << i << ","
                                          << static_cast<int>(roll) << ","
+                                         << ","  // No reroll for regeneration
                                          << static_cast<int>(attack.regen_rolls.target) << ","
                                          << (success ? 1 : 0) << "\n";
                                 }
