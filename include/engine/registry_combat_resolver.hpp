@@ -495,6 +495,9 @@ public:
         // Blast - multiply hits
         apply_all_phase_effects(CombatSubPhase::HIT_MULTIPLICATION, ctx);
 
+        // Recalculate normal_hits after blast multiplication
+        ctx.normal_hits = ctx.hits - ctx.rending_hits;
+
         // ============================================
         // Phase 7: DEFENSE_RESOLUTION
         // ============================================
