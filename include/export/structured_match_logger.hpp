@@ -14,6 +14,7 @@ namespace battle {
 
 struct RollData {
     std::vector<u8> rolls;
+    std::vector<u8> rerolls;  // Reroll results (e.g., when 6s are rerolled for Poison/Bane)
     u8 target = 0;
     u32 successes = 0;
     u32 sixes = 0;
@@ -634,9 +635,10 @@ public:
     void on_defense_rolls(u8 /*base_defense*/, u8 total_ap, u8 effective_target,
                           bool /*reroll_sixes*/, const std::vector<u8>& rolls,
                           u32 saves, u32 wounds, u32 /*sixes_rerolled*/,
-                          const std::vector<u8>& /*rerolls*/, u32 /*reroll_saves*/) override {
+                          const std::vector<u8>& rerolls, u32 /*reroll_saves*/) override {
         if (current_attack_) {
             current_attack_->defense_rolls.rolls.assign(rolls.begin(), rolls.end());
+            current_attack_->defense_rolls.rerolls.assign(rerolls.begin(), rerolls.end());
             current_attack_->defense_rolls.target = effective_target;
             current_attack_->defense_rolls.successes = saves;
             current_attack_->total_ap = total_ap;
