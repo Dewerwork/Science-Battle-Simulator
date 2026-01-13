@@ -7,6 +7,102 @@ from typing import Callable, Optional, List
 
 from ..database import DatabaseManager, TableInfo
 from ..utils.config import Config
+from ..utils.data_dictionary import (
+    get_column_description,
+    get_table_description,
+    is_known_table
+)
+
+
+class TreeviewTooltip:
+    """Tooltip widget for Treeview items."""
+
+    def __init__(self, treeview: ttk.Treeview, delay: int = 500):
+        """Initialize tooltip.
+
+        Args:
+            treeview: The treeview widget to attach to.
+            delay: Delay in milliseconds before showing tooltip.
+        """
+        self._tree = treeview
+        self._delay = delay
+        self._tooltip_window: Optional[tk.Toplevel] = None
+        self._after_id: Optional[str] = None
+        self._last_item: Optional[str] = None
+        self._tooltip_getter: Optional[Callable[[str], Optional[str]]] = None
+
+        # Bind events
+        self._tree.bind("<Motion>", self._on_motion)
+        self._tree.bind("<Leave>", self._hide_tooltip)
+        self._tree.bind("<Button-1>", self._hide_tooltip)
+
+    def set_tooltip_getter(self, getter: Callable[[str], Optional[str]]) -> None:
+        """Set the function that returns tooltip text for an item.
+
+        Args:
+            getter: Function that takes item ID and returns tooltip text.
+        """
+        self._tooltip_getter = getter
+
+    def _on_motion(self, event) -> None:
+        """Handle mouse motion over treeview."""
+        item = self._tree.identify_row(event.y)
+
+        if item != self._last_item:
+            self._hide_tooltip()
+            self._last_item = item
+
+            if item and self._tooltip_getter:
+                # Schedule tooltip display
+                self._after_id = self._tree.after(
+                    self._delay, lambda: self._show_tooltip(event, item)
+                )
+
+    def _show_tooltip(self, event, item: str) -> None:
+        """Show tooltip for the given item."""
+        if self._tooltip_window or not self._tooltip_getter:
+            return
+
+        tooltip_text = self._tooltip_getter(item)
+        if not tooltip_text:
+            return
+
+        # Create tooltip window
+        self._tooltip_window = tk.Toplevel(self._tree)
+        self._tooltip_window.wm_overrideredirect(True)
+
+        # Position tooltip near cursor
+        x = self._tree.winfo_rootx() + event.x + 20
+        y = self._tree.winfo_rooty() + event.y + 10
+
+        self._tooltip_window.wm_geometry(f"+{x}+{y}")
+
+        # Create tooltip content
+        frame = ttk.Frame(self._tooltip_window, relief=tk.SOLID, borderwidth=1)
+        frame.pack(fill=tk.BOTH, expand=True)
+
+        label = ttk.Label(
+            frame,
+            text=tooltip_text,
+            justify=tk.LEFT,
+            wraplength=300,
+            padding=(5, 3)
+        )
+        label.pack()
+
+        # Style the tooltip
+        self._tooltip_window.configure(background="#ffffe0")
+        frame.configure(style="Tooltip.TFrame")
+
+    def _hide_tooltip(self, event=None) -> None:
+        """Hide the tooltip."""
+        if self._after_id:
+            self._tree.after_cancel(self._after_id)
+            self._after_id = None
+
+        if self._tooltip_window:
+            self._tooltip_window.destroy()
+            self._tooltip_window = None
 
 
 class FilePanel(ttk.Frame):
@@ -51,11 +147,17 @@ class FilePanel(ttk.Frame):
         self._recent_menu.bind("<<ComboboxSelected>>", self._on_recent_selected)
         self._update_recent_menu()
 
-        # Refresh button
+        # Refresh button (refresh table list from DB)
         self._refresh_btn = ttk.Button(
             btn_frame, text="Refresh", command=self._refresh_tables
         )
         self._refresh_btn.pack(side=tk.LEFT, padx=2)
+
+        # Refresh All CSVs button (reload all CSV files from disk)
+        self._refresh_all_btn = ttk.Button(
+            btn_frame, text="Reload All", command=self._reload_all_csvs
+        )
+        self._refresh_all_btn.pack(side=tk.LEFT, padx=2)
 
         # Tables label
         tables_label = ttk.Label(self, text="Tables & Columns:")
@@ -72,6 +174,10 @@ class FilePanel(ttk.Frame):
 
         self._tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Set up tooltips for data dictionary
+        self._tooltip = TreeviewTooltip(self._tree)
+        self._tooltip.set_tooltip_getter(self._get_item_tooltip)
 
         # Bind events
         self._tree.bind("<Button-3>", self._show_context_menu)
@@ -102,6 +208,44 @@ class FilePanel(ttk.Frame):
             callback: Function that takes a string to insert.
         """
         self._insert_callback = callback
+
+    def _get_item_tooltip(self, item_id: str) -> Optional[str]:
+        """Get tooltip text for a treeview item.
+
+        Args:
+            item_id: The treeview item ID.
+
+        Returns:
+            Tooltip text or None.
+        """
+        if not item_id:
+            return None
+
+        tags = self._tree.item(item_id, "tags")
+        values = self._tree.item(item_id, "values")
+
+        if not values:
+            return None
+
+        if "table" in tags:
+            # Table node - show table description
+            table_name = values[0]
+            table_desc = get_table_description(table_name)
+            if table_desc:
+                return f"{table_name}\n\n{table_desc}"
+            return None
+
+        elif "column" in tags and len(values) >= 3:
+            # Column node - show column description
+            table_name = values[0]
+            col_name = values[1]
+            col_type = values[2]
+            col_desc = get_column_description(table_name, col_name)
+            if col_desc:
+                return f"{col_name} ({col_type})\n\n{col_desc}"
+            return None
+
+        return None
 
     def _load_csv(self) -> None:
         """Open file dialog and load selected CSV."""
@@ -169,6 +313,71 @@ class FilePanel(ttk.Frame):
         self._update_tables_list()
         if self._on_table_change:
             self._on_table_change()
+
+    def _reload_all_csvs(self) -> None:
+        """Reload all CSV files from their original paths."""
+        tables = self._db.get_tables()
+
+        # Find tables that were loaded from CSV files
+        csv_tables = [
+            t for t in tables
+            if t.path and t.path != "(database)" and t.path.lower().endswith(".csv")
+        ]
+
+        if not csv_tables:
+            messagebox.showinfo(
+                "Reload All CSVs",
+                "No CSV files to reload.\n\n"
+                "Only tables loaded from CSV files can be reloaded."
+            )
+            return
+
+        # Check which files still exist
+        valid_tables = []
+        missing_files = []
+        for table in csv_tables:
+            if Path(table.path).exists():
+                valid_tables.append(table)
+            else:
+                missing_files.append(table.name)
+
+        if missing_files:
+            msg = f"The following files no longer exist and will be skipped:\n\n"
+            msg += "\n".join(f"  - {name}" for name in missing_files)
+            messagebox.showwarning("Missing Files", msg)
+
+        if not valid_tables:
+            messagebox.showwarning(
+                "Reload All CSVs",
+                "No valid CSV files to reload."
+            )
+            return
+
+        # Confirm reload
+        if not messagebox.askyesno(
+            "Reload All CSVs",
+            f"Reload {len(valid_tables)} CSV file(s)?\n\n"
+            "This will re-import the data from disk,\n"
+            "replacing the current table contents."
+        ):
+            return
+
+        # Reload each CSV
+        reloaded = 0
+        for table in valid_tables:
+            result = self._db.import_csv_to_table(table.path, table.name)
+            if result:
+                reloaded += 1
+
+        # Update UI
+        self._update_tables_list()
+        if self._on_table_change:
+            self._on_table_change()
+
+        messagebox.showinfo(
+            "Reload Complete",
+            f"Successfully reloaded {reloaded} of {len(valid_tables)} CSV file(s)."
+        )
 
     def _update_tables_list(self) -> None:
         """Update the tables tree with tables and their columns."""

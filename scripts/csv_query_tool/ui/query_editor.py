@@ -2,10 +2,11 @@
 
 import tkinter as tk
 from tkinter import ttk, simpledialog, messagebox
-from typing import Callable, Optional, List
+from typing import Callable, Optional, List, Dict, Tuple
 
 from ..utils.query_history import QueryHistory
 from ..utils.favorites import QueryFavorites
+from ..utils.autocomplete import QueryAutocomplete
 
 
 class QueryEditor(ttk.Frame):
@@ -13,7 +14,8 @@ class QueryEditor(ttk.Frame):
 
     def __init__(self, parent: tk.Widget, history: QueryHistory,
                  favorites: Optional[QueryFavorites] = None,
-                 on_execute: Optional[Callable[[str], None]] = None):
+                 on_execute: Optional[Callable[[str], None]] = None,
+                 autocomplete_enabled: Optional[tk.BooleanVar] = None):
         """Initialize query editor.
 
         Args:
@@ -21,11 +23,14 @@ class QueryEditor(ttk.Frame):
             history: Query history manager.
             favorites: Optional favorites manager.
             on_execute: Callback when query should be executed.
+            autocomplete_enabled: Optional BooleanVar to control autocomplete.
         """
         super().__init__(parent)
         self._history = history
         self._favorites = favorites or QueryFavorites()
         self._on_execute = on_execute
+        self._autocomplete_enabled = autocomplete_enabled
+        self._autocomplete: Optional[QueryAutocomplete] = None
 
         self._setup_ui()
 
@@ -70,6 +75,9 @@ class QueryEditor(ttk.Frame):
 
         editor_frame.grid_rowconfigure(0, weight=1)
         editor_frame.grid_columnconfigure(0, weight=1)
+
+        # Initialize autocomplete
+        self._autocomplete = QueryAutocomplete(self._text, self._autocomplete_enabled)
 
         # Bind keyboard shortcuts
         self._text.bind("<Control-Return>", self._on_run)
@@ -346,3 +354,14 @@ class QueryEditor(ttk.Frame):
             QueryFavorites instance.
         """
         return self._favorites
+
+    def update_table_columns(
+        self, table_columns: Dict[str, List[Tuple[str, str]]]
+    ) -> None:
+        """Update the available table columns for autocomplete.
+
+        Args:
+            table_columns: Dict mapping table_name -> [(col_name, col_type), ...]
+        """
+        if self._autocomplete:
+            self._autocomplete.update_table_columns(table_columns)

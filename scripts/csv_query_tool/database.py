@@ -320,6 +320,8 @@ class DatabaseManager:
 
     def _refresh_tables_from_db(self) -> None:
         """Refresh table list from the database."""
+        # Keep track of existing paths so we don't lose CSV source info
+        existing_paths = {name: info.path for name, info in self._tables.items()}
         self._tables.clear()
 
         try:
@@ -341,15 +343,25 @@ class DatabaseManager:
                 # Get columns
                 columns = self._get_table_columns(table_name)
 
+                # Preserve original path if available
+                path = existing_paths.get(table_name, "(database)")
+
                 self._tables[table_name] = TableInfo(
                     name=table_name,
-                    path="(database)",
+                    path=path,
                     row_count=row_count,
                     columns=columns
                 )
 
         except Exception as e:
             self._error_handler.handle_query_error(e, "refresh tables")
+
+    def refresh_tables(self) -> None:
+        """Public method to refresh the table list from the database.
+
+        Call this after DDL operations that create/drop tables.
+        """
+        self._refresh_tables_from_db()
 
     def load_csv(self, path: str, alias: Optional[str] = None) -> Optional[TableInfo]:
         """Load a CSV file as a table (legacy method, uses import_csv_to_table).

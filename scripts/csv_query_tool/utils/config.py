@@ -27,6 +27,9 @@ class Config:
     font_family: str = "Consolas"
     font_size: int = 11
 
+    # Editor settings
+    autocomplete_enabled: bool = True
+
     # Recent files
     recent_files: List[str] = field(default_factory=list)
     max_recent_files: int = 10
