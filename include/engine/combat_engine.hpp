@@ -85,7 +85,7 @@ public:
             // Log weapon attack start
             if (logger_) {
                 std::string rules_str = get_weapon_rules_str(w);
-                logger_->on_weapon_attack_start(w.name.c_str(), false, w.range, w.attacks, w.ap, rules_str.c_str());
+                logger_->on_weapon_attack_start(w.name.c_str(), false, w.range, static_cast<u8>(distance), w.attacks, w.ap, rules_str.c_str());
                 logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
             }
 
@@ -484,7 +484,7 @@ public:
             // Log weapon attack start
             if (logger_) {
                 std::string rules_str = get_weapon_rules_str(w);
-                logger_->on_weapon_attack_start(w.name.c_str(), true, 0, w.attacks, w.ap, rules_str.c_str());
+                logger_->on_weapon_attack_start(w.name.c_str(), true, 0, 0, w.attacks, w.ap, rules_str.c_str());
                 logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
             }
 

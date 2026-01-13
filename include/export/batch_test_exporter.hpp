@@ -397,7 +397,7 @@ private:
 
         // Header
         file << "matchup_id,iteration,game,round,attacker,attack_seq,"
-             << "weapon,is_melee,models_attacking,total_attacks,"
+             << "weapon,is_melee,distance,models_attacking,total_attacks,"
              << "hit_target,hits,hit_sixes,"
              << "ap_applied,defense_target,saves,wounds,"
              << "wounds_allocated,models_killed,overkill\n";
@@ -423,6 +423,7 @@ private:
                                      << attack_seq << ","
                                      << escape_csv(attack.weapon_name) << ","
                                      << (attack.is_melee ? 1 : 0) << ","
+                                     << static_cast<int>(attack.distance) << ","
                                      << static_cast<int>(attack.models_attacking) << ","
                                      << attack.total_attacks << ","
                                      << static_cast<int>(attack.hit_rolls.target) << ","

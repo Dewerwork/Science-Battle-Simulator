@@ -30,6 +30,7 @@ struct AttackSequenceData {
     std::string weapon_name;
     bool is_melee = false;
     u8 range = 0;
+    u8 distance = 0;  // Distance to enemy when attack occurred
     u8 base_attacks = 0;
     u8 ap = 0;
     std::string weapon_rules;
@@ -525,7 +526,7 @@ public:
     // WEAPON ATTACKS
     // =========================================================================
 
-    void on_weapon_attack_start(const char* weapon_name, bool is_melee, u8 range,
+    void on_weapon_attack_start(const char* weapon_name, bool is_melee, u8 range, u8 distance,
                                 u8 base_attacks, u8 ap, const char* weapon_rules) override {
         if (current_activation_) {
             current_activation_->attack_sequences.emplace_back();
@@ -533,6 +534,7 @@ public:
             current_attack_->weapon_name = weapon_name ? weapon_name : "";
             current_attack_->is_melee = is_melee;
             current_attack_->range = range;
+            current_attack_->distance = distance;
             current_attack_->base_attacks = base_attacks;
             current_attack_->ap = ap;
             current_attack_->weapon_rules = weapon_rules ? weapon_rules : "";

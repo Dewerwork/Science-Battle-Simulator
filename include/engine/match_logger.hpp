@@ -175,6 +175,7 @@ public:
         const char* weapon_name,
         bool is_melee,
         u8 range,
+        u8 distance,
         u8 base_attacks,
         u8 ap,
         const char* weapon_rules) = 0;

@@ -244,12 +244,12 @@ public:
     // WEAPON ATTACKS
     // =========================================================================
 
-    void on_weapon_attack_start(const char* weapon_name, bool /*is_melee*/, u8 /*range*/, u8 base_attacks,
-                                u8 ap, const char* weapon_rules) override {
+    void on_weapon_attack_start(const char* weapon_name, bool is_melee, u8 /*range*/, u8 distance,
+                                u8 base_attacks, u8 ap, const char* weapon_rules) override {
         out_ << ind() << "Weapon: " << weapon_name << " (A" << (int)base_attacks
              << " AP" << (int)ap;
         if (weapon_rules && weapon_rules[0]) out_ << " " << weapon_rules;
-        out_ << ")\n";
+        out_ << ") at " << (int)distance << "\" " << (is_melee ? "[melee]" : "[ranged]") << "\n";
     }
 
     void on_attack_count(u8 models_attacking, u8 attacks_per_model, u32 total_attacks) override {
