@@ -5,7 +5,7 @@ from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 from typing import Callable, Optional, List
 
-from ..database import DatabaseManager, TableInfo
+from ..database import DatabaseManager, TableInfo, ViewInfo
 from ..utils.config import Config
 from ..utils.data_dictionary import (
     get_column_description,
@@ -184,7 +184,7 @@ class FilePanel(ttk.Frame):
         self._tree.bind("<Double-1>", self._on_double_click)
         self._tree.bind("<<TreeviewSelect>>", self._on_select)
 
-        # Context menu
+        # Context menu for tables
         self._context_menu = tk.Menu(self, tearoff=0)
         self._context_menu.add_command(label="Insert SELECT *", command=self._insert_select_all)
         self._context_menu.add_command(label="Insert Column Name", command=self._insert_column)
@@ -193,6 +193,16 @@ class FilePanel(ttk.Frame):
         self._context_menu.add_command(label="Show Full Schema", command=self._show_schema)
         self._context_menu.add_separator()
         self._context_menu.add_command(label="Drop Table", command=self._unload_selected)
+
+        # Context menu for views/stored queries
+        self._view_context_menu = tk.Menu(self, tearoff=0)
+        self._view_context_menu.add_command(label="Insert SELECT *", command=self._insert_select_all)
+        self._view_context_menu.add_command(label="Insert Column Name", command=self._insert_column)
+        self._view_context_menu.add_separator()
+        self._view_context_menu.add_command(label="Preview Data", command=self._preview_view_data)
+        self._view_context_menu.add_command(label="Show SQL Definition", command=self._show_view_sql)
+        self._view_context_menu.add_separator()
+        self._view_context_menu.add_command(label="Drop Stored Query", command=self._drop_selected_view)
 
         # Info label
         self._info_label = ttk.Label(self, text="No tables loaded", foreground="gray")
@@ -380,13 +390,15 @@ class FilePanel(ttk.Frame):
         )
 
     def _update_tables_list(self) -> None:
-        """Update the tables tree with tables and their columns."""
+        """Update the tables tree with tables, views, and their columns."""
         # Clear existing items
         for item in self._tree.get_children():
             self._tree.delete(item)
 
         tables = self._db.get_tables()
+        views = self._db.get_views()
 
+        # Add tables section
         for table_info in tables:
             # Add table as parent node with icon indicator
             table_display = f"📊 {table_info.name} ({table_info.row_count:,} rows)"
@@ -406,11 +418,46 @@ class FilePanel(ttk.Frame):
                     values=(table_info.name, col_name, col_type)
                 )
 
+        # Add stored queries section if there are any views
+        if views:
+            # Add section header
+            section_id = self._tree.insert(
+                "", "end", text="── Stored Queries ──",
+                open=True,
+                tags=("section_header",),
+                values=()
+            )
+
+            for view_info in views:
+                # Add view as parent node with different icon
+                view_display = f"📝 {view_info.name}"
+                view_id = self._tree.insert(
+                    section_id, "end", text=view_display,
+                    open=False,
+                    tags=("view",),
+                    values=(view_info.name,)
+                )
+
+                # Add columns as children
+                for col_name, col_type in view_info.columns:
+                    col_display = f"  📋 {col_name} ({col_type})"
+                    self._tree.insert(
+                        view_id, "end", text=col_display,
+                        tags=("view_column",),
+                        values=(view_info.name, col_name, col_type)
+                    )
+
         # Update info label
+        info_parts = []
         if tables:
             total_rows = sum(t.row_count for t in tables)
+            info_parts.append(f"{len(tables)} table(s), {total_rows:,} rows")
+        if views:
+            info_parts.append(f"{len(views)} stored query(ies)")
+
+        if info_parts:
             self._info_label.config(
-                text=f"{len(tables)} table(s), {total_rows:,} total rows",
+                text=" | ".join(info_parts),
                 foreground="black"
             )
         else:
@@ -432,11 +479,19 @@ class FilePanel(ttk.Frame):
         if not self._insert_callback:
             return
 
+        # Skip section headers
+        if "section_header" in tags:
+            return
+
         if "table" in tags and values:
             # Insert table name
             table_name = values[0]
             self._insert_callback(f'"{table_name}"')
-        elif "column" in tags and len(values) >= 2:
+        elif "view" in tags and values:
+            # Insert view name (can be used like a table)
+            view_name = values[0]
+            self._insert_callback(f'"{view_name}"')
+        elif ("column" in tags or "view_column" in tags) and len(values) >= 2:
             # Insert column name
             col_name = values[1]
             self._insert_callback(f'"{col_name}"')
@@ -448,7 +503,18 @@ class FilePanel(ttk.Frame):
         if item:
             self._tree.selection_set(item)
             self._tree.focus(item)
-            self._context_menu.post(event.x_root, event.y_root)
+
+            tags = self._tree.item(item, "tags")
+
+            # Don't show menu for section headers
+            if "section_header" in tags:
+                return
+
+            # Show appropriate context menu based on item type
+            if "view" in tags or "view_column" in tags:
+                self._view_context_menu.post(event.x_root, event.y_root)
+            else:
+                self._context_menu.post(event.x_root, event.y_root)
 
     def _get_selected_table(self) -> Optional[TableInfo]:
         """Get the table info for the selected item (table or column).
@@ -471,11 +537,27 @@ class FilePanel(ttk.Frame):
         return self._db.get_table(table_name)
 
     def _insert_select_all(self) -> None:
-        """Insert SELECT * FROM table query."""
-        table_info = self._get_selected_table()
-        if table_info and self._insert_callback:
-            query = f'SELECT * FROM "{table_info.name}" LIMIT 100'
-            self._insert_callback(query)
+        """Insert SELECT * FROM table/view query."""
+        item = self._tree.focus()
+        if not item or not self._insert_callback:
+            return
+
+        tags = self._tree.item(item, "tags")
+        values = self._tree.item(item, "values")
+
+        if not values:
+            return
+
+        # Get the name (works for table, column, view, or view_column)
+        name = values[0]
+
+        # Check if it's a view or table
+        if "view" in tags or "view_column" in tags:
+            query = f'SELECT * FROM "{name}" LIMIT 100'
+        else:
+            query = f'SELECT * FROM "{name}" LIMIT 100'
+
+        self._insert_callback(query)
 
     def _insert_column(self) -> None:
         """Insert the selected column name."""
@@ -486,12 +568,15 @@ class FilePanel(ttk.Frame):
         tags = self._tree.item(item, "tags")
         values = self._tree.item(item, "values")
 
-        if "column" in tags and len(values) >= 2 and self._insert_callback:
+        if ("column" in tags or "view_column" in tags) and len(values) >= 2 and self._insert_callback:
             col_name = values[1]
             self._insert_callback(f'"{col_name}"')
         elif "table" in tags and values and self._insert_callback:
             table_name = values[0]
             self._insert_callback(f'"{table_name}"')
+        elif "view" in tags and values and self._insert_callback:
+            view_name = values[0]
+            self._insert_callback(f'"{view_name}"')
 
     def _show_schema(self) -> None:
         """Show schema for selected table."""
@@ -566,3 +651,106 @@ class FilePanel(ttk.Frame):
             List of table names.
         """
         return [t.name for t in self._db.get_tables()]
+
+    # =========================================================================
+    # View (Stored Query) Methods
+    # =========================================================================
+
+    def _get_selected_view(self) -> Optional[ViewInfo]:
+        """Get the view info for the selected item (view or view_column).
+
+        Returns:
+            ViewInfo or None if nothing valid selected.
+        """
+        item = self._tree.focus()
+        if not item:
+            return None
+
+        tags = self._tree.item(item, "tags")
+        values = self._tree.item(item, "values")
+
+        if not values:
+            return None
+
+        if "view" not in tags and "view_column" not in tags:
+            return None
+
+        # Get view name (first value for both view and column items)
+        view_name = values[0]
+        return self._db.get_view(view_name)
+
+    def _preview_view_data(self) -> None:
+        """Preview data from the selected view."""
+        view_info = self._get_selected_view()
+        if view_info:
+            result = self._db.execute(f'SELECT * FROM "{view_info.name}" LIMIT 10')
+            if result.success and result.data is not None:
+                preview = result.data.to_string()
+                self._show_preview_dialog(view_info.name, preview)
+            else:
+                messagebox.showerror(
+                    "Preview Error",
+                    f"Could not preview view:\n{result.error.message if result.error else 'Unknown error'}"
+                )
+
+    def _show_view_sql(self) -> None:
+        """Show the SQL definition of the selected view."""
+        view_info = self._get_selected_view()
+        if view_info:
+            # Create a dialog to show the SQL
+            dialog = tk.Toplevel(self)
+            dialog.title(f"SQL Definition: {view_info.name}")
+            dialog.geometry("700x400")
+
+            # Info frame
+            info_frame = ttk.Frame(dialog)
+            info_frame.pack(fill=tk.X, padx=10, pady=5)
+
+            ttk.Label(info_frame, text=f"Stored Query: {view_info.name}",
+                      font=("TkDefaultFont", 10, "bold")).pack(anchor=tk.W)
+            ttk.Label(info_frame, text=f"Columns: {len(view_info.columns)}").pack(anchor=tk.W)
+
+            # SQL text area
+            sql_frame = ttk.LabelFrame(dialog, text="SQL Definition", padding=5)
+            sql_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+            sql_text = tk.Text(sql_frame, wrap=tk.WORD, font=("Consolas", 10))
+            sql_text.insert("1.0", view_info.sql or "(SQL not available)")
+            sql_text.config(state=tk.DISABLED)
+
+            scroll_y = ttk.Scrollbar(sql_frame, orient=tk.VERTICAL,
+                                     command=sql_text.yview)
+            sql_text.configure(yscrollcommand=scroll_y.set)
+
+            sql_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
+
+            # Buttons
+            btn_frame = ttk.Frame(dialog)
+            btn_frame.pack(fill=tk.X, padx=10, pady=10)
+
+            def copy_sql():
+                dialog.clipboard_clear()
+                dialog.clipboard_append(view_info.sql or "")
+                messagebox.showinfo("Copied", "SQL copied to clipboard.")
+
+            ttk.Button(btn_frame, text="Copy SQL", command=copy_sql).pack(
+                side=tk.LEFT, padx=5
+            )
+            ttk.Button(btn_frame, text="Close", command=dialog.destroy).pack(
+                side=tk.RIGHT, padx=5
+            )
+
+    def _drop_selected_view(self) -> None:
+        """Drop the selected view."""
+        view_info = self._get_selected_view()
+        if view_info:
+            if messagebox.askyesno(
+                "Confirm Drop",
+                f"Drop stored query '{view_info.name}'?\n\n"
+                "This cannot be undone."
+            ):
+                if self._db.drop_view(view_info.name):
+                    self._update_tables_list()
+                    if self._on_table_change:
+                        self._on_table_change()

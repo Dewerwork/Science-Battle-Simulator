@@ -219,6 +219,9 @@ class CSVQueryApp:
         db_menu.add_command(label="Create Custom Table...",
                             command=self._create_custom_table)
         db_menu.add_separator()
+        db_menu.add_command(label="Create Stored Query...",
+                            command=self._create_stored_query)
+        db_menu.add_separator()
         db_menu.add_command(label="Create Index...", command=self._show_create_index)
         db_menu.add_command(label="Manage Indexes...", command=self._show_manage_indexes)
         db_menu.add_separator()
@@ -367,8 +370,8 @@ LIMIT 20'''),
         self._update_autocomplete_columns()
 
     def _update_autocomplete_columns(self) -> None:
-        """Update the autocomplete with current table columns."""
-        table_columns = self._db.get_all_columns()
+        """Update the autocomplete with current table and view columns."""
+        table_columns = self._db.get_all_columns_including_views()
         self._query_editor.update_table_columns(table_columns)
 
     def _execute_query(self, query: str) -> None:
@@ -1333,6 +1336,101 @@ Features:
                 messagebox.showerror("Error", f"Failed to create table:\n{str(e)}")
 
         ttk.Button(btn_frame, text="Create Table", command=create_table).pack(
+            side=tk.RIGHT, padx=5
+        )
+        ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(
+            side=tk.RIGHT, padx=5
+        )
+
+    def _create_stored_query(self) -> None:
+        """Create a stored query (view) from the current SELECT statement."""
+        # Get current query
+        query = self._query_editor.get_query()
+
+        # Create dialog
+        dialog = tk.Toplevel(self._root)
+        dialog.title("Create Stored Query")
+        dialog.geometry("600x450")
+        dialog.transient(self._root)
+        dialog.grab_set()
+
+        # Query name input
+        name_frame = ttk.Frame(dialog)
+        name_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        ttk.Label(name_frame, text="Query Name:").pack(side=tk.LEFT)
+        name_var = tk.StringVar(value="my_query")
+        name_entry = ttk.Entry(name_frame, textvariable=name_var, width=30)
+        name_entry.pack(side=tk.LEFT, padx=5)
+
+        # Query text
+        query_frame = ttk.LabelFrame(dialog, text="SELECT Query", padding=10)
+        query_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        query_text = tk.Text(query_frame, wrap=tk.NONE, font=("Consolas", 10))
+        query_scroll_y = ttk.Scrollbar(query_frame, orient=tk.VERTICAL,
+                                       command=query_text.yview)
+        query_scroll_x = ttk.Scrollbar(query_frame, orient=tk.HORIZONTAL,
+                                       command=query_text.xview)
+        query_text.configure(yscrollcommand=query_scroll_y.set,
+                            xscrollcommand=query_scroll_x.set)
+
+        query_text.grid(row=0, column=0, sticky="nsew")
+        query_scroll_y.grid(row=0, column=1, sticky="ns")
+        query_scroll_x.grid(row=1, column=0, sticky="ew")
+
+        query_frame.grid_rowconfigure(0, weight=1)
+        query_frame.grid_columnconfigure(0, weight=1)
+
+        # Pre-fill with current query if it's a SELECT
+        if query and query.strip().upper().startswith("SELECT"):
+            query_text.insert("1.0", query)
+
+        # Help text
+        help_label = ttk.Label(
+            dialog,
+            text="Stored queries can be used in other queries like tables.\n"
+                 "Example: SELECT * FROM my_query WHERE column > 10",
+            foreground="gray"
+        )
+        help_label.pack(padx=10, pady=5, anchor=tk.W)
+
+        # Buttons
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        def create_view():
+            view_name = name_var.get().strip()
+            select_query = query_text.get("1.0", tk.END).strip()
+
+            if not view_name:
+                messagebox.showwarning("Invalid Name", "Please enter a query name.")
+                return
+
+            if not select_query:
+                messagebox.showwarning("No Query", "Please enter a SELECT query.")
+                return
+
+            # Validate query starts with SELECT
+            if not select_query.upper().startswith("SELECT"):
+                messagebox.showwarning(
+                    "Invalid Query",
+                    "Stored queries must be SELECT statements."
+                )
+                return
+
+            # Create the view
+            if self._db.create_view(view_name, select_query):
+                dialog.destroy()
+                self._on_table_change()
+                messagebox.showinfo(
+                    "Stored Query Created",
+                    f"Created stored query '{view_name}'.\n\n"
+                    f"You can now use it in queries like:\n"
+                    f'SELECT * FROM "{view_name}"'
+                )
+
+        ttk.Button(btn_frame, text="Create Stored Query", command=create_view).pack(
             side=tk.RIGHT, padx=5
         )
         ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(
