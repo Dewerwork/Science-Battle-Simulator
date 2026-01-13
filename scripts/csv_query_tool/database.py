@@ -44,6 +44,14 @@ class IndexInfo:
 
 
 @dataclass
+class ViewInfo:
+    """Information about a stored view/query."""
+    name: str
+    sql: str
+    columns: List[Tuple[str, str]]  # (name, type)
+
+
+@dataclass
 class QueryResult:
     """Result of a query execution."""
     success: bool
@@ -674,6 +682,138 @@ class DatabaseManager:
         except Exception as e:
             self._error_handler.handle_query_error(e, "VACUUM")
             return False
+
+    # =========================================================================
+    # View (Stored Query) Management
+    # =========================================================================
+
+    def create_view(self, name: str, sql: str) -> bool:
+        """Create a view (stored query) from a SELECT statement.
+
+        Args:
+            name: Name for the view.
+            sql: SELECT statement for the view.
+
+        Returns:
+            True if successful.
+        """
+        # Validate that SQL is a SELECT statement
+        sql_stripped = sql.strip()
+        if not sql_stripped.upper().startswith("SELECT"):
+            self._error_handler.warning(
+                "Views must be SELECT statements",
+                suggestion="Enter a SELECT query to create the view."
+            )
+            return False
+
+        try:
+            # Drop existing view if it exists
+            self._conn.execute(f'DROP VIEW IF EXISTS "{name}"')
+
+            # Create the view
+            self._conn.execute(f'CREATE VIEW "{name}" AS {sql_stripped}')
+
+            self._error_handler.success(f"Created stored query '{name}'")
+            return True
+
+        except Exception as e:
+            self._error_handler.handle_query_error(e, f"CREATE VIEW {name}")
+            return False
+
+    def drop_view(self, name: str) -> bool:
+        """Drop a view.
+
+        Args:
+            name: Name of the view to drop.
+
+        Returns:
+            True if successful.
+        """
+        try:
+            self._conn.execute(f'DROP VIEW IF EXISTS "{name}"')
+            self._error_handler.success(f"Dropped stored query '{name}'")
+            return True
+        except Exception as e:
+            self._error_handler.handle_query_error(e, f"DROP VIEW {name}")
+            return False
+
+    def get_views(self) -> List[ViewInfo]:
+        """Get list of all views in the database.
+
+        Returns:
+            List of ViewInfo objects.
+        """
+        views = []
+        try:
+            # Get all views from information_schema
+            result = self._conn.execute("""
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE table_schema = 'main'
+                  AND table_type = 'VIEW'
+                ORDER BY table_name
+            """).fetchall()
+
+            for (view_name,) in result:
+                # Get the view definition
+                try:
+                    def_result = self._conn.execute(f"""
+                        SELECT sql FROM duckdb_views()
+                        WHERE view_name = '{view_name}'
+                    """).fetchone()
+                    sql = def_result[0] if def_result else ""
+                except Exception:
+                    sql = ""
+
+                # Get columns by describing the view
+                columns = self._get_view_columns(view_name)
+
+                views.append(ViewInfo(
+                    name=view_name,
+                    sql=sql,
+                    columns=columns
+                ))
+
+        except Exception as e:
+            self._error_handler.handle_query_error(e, "get views")
+
+        return views
+
+    def get_view(self, name: str) -> Optional[ViewInfo]:
+        """Get info for a specific view.
+
+        Args:
+            name: Name of the view.
+
+        Returns:
+            ViewInfo if found, None otherwise.
+        """
+        for view in self.get_views():
+            if view.name == name:
+                return view
+        return None
+
+    def _get_view_columns(self, view_name: str) -> List[Tuple[str, str]]:
+        """Get column information for a view."""
+        try:
+            result = self._conn.execute(f'DESCRIBE "{view_name}"').fetchall()
+            return [(row[0], row[1]) for row in result]
+        except Exception:
+            return []
+
+    def get_all_columns_including_views(self) -> Dict[str, List[Tuple[str, str]]]:
+        """Get columns for all tables and views.
+
+        Returns:
+            Dict mapping table/view name to list of (column_name, column_type).
+        """
+        result = self.get_all_columns()
+
+        # Add views
+        for view in self.get_views():
+            result[view.name] = view.columns
+
+        return result
 
     def _get_table_columns(self, table_name: str) -> List[Tuple[str, str]]:
         """Get column information for a table."""
