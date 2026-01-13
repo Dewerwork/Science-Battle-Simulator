@@ -948,7 +948,7 @@ private:
             std::string rules_str = get_weapon_rules_str(weapon);
             bool is_melee = (combat_type == CombatType::MELEE);
             logger_->on_weapon_attack_start(weapon.name.c_str(), is_melee,
-                is_melee ? 0 : weapon.range, weapon.attacks, weapon.ap, rules_str.c_str());
+                is_melee ? 0 : weapon.range, distance, weapon.attacks, weapon.ap, rules_str.c_str());
             logger_->on_attack_count(models_attacking, weapon.attacks, ctx.attacks);
         }
 
@@ -1160,7 +1160,7 @@ public:
             // Log weapon attack start
             if (logger_) {
                 std::string rules_str = get_weapon_rules_str(w);
-                logger_->on_weapon_attack_start(w.name.c_str(), false, w.range, w.attacks, w.ap, rules_str.c_str());
+                logger_->on_weapon_attack_start(w.name.c_str(), false, w.range, static_cast<u8>(distance), w.attacks, w.ap, rules_str.c_str());
                 logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
             }
 
@@ -1429,7 +1429,7 @@ public:
             // Log weapon attack start
             if (logger_) {
                 std::string rules_str = get_weapon_rules_str(w);
-                logger_->on_weapon_attack_start(w.name.c_str(), true, 0, w.attacks, w.ap, rules_str.c_str());
+                logger_->on_weapon_attack_start(w.name.c_str(), true, 0, 0, w.attacks, w.ap, rules_str.c_str());
                 logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
             }
 
