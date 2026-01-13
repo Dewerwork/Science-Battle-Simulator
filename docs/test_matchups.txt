@@ -1,0 +1,545 @@
+Matchup_name: Ambush_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Ambush
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1))
+
+
+Matchup_name: Artillery_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Artillery
+Twin Spine Guns (24", A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Twin Spine Guns (24", A4, AP(1))
+
+Matchup_name: Bane_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1), Bane)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(3)
+Stomp (A4, AP(1))
+
+Matchup_name: Blast_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1), Blast(3))
+
+Hive Lord [6] Q3+ D2+ | 525pts | Tough(3)
+Stomp (A4, AP(1))
+
+Matchup_name: Counter_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1), Counter)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Impact(3)
+Stomp (A4, AP(1))
+
+Matchup_name: Deadly_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1), Deadly(3))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Fast_V_Teleport_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Fast
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18), Teleport
+Stomp (A4, AP(1))
+
+Matchup_name: Fear_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Fear(3)
+Stomp (A15, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Fearless_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Fearless
+Stomp (A15, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Furious_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Furious
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Immobile_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Immobile
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Impact_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Impact(30)
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Indirect_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Indirect
+Twin Spine Guns (24", A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Limited_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Furious
+Stomp (A4, AP(1), Limited)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Regen_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Regeneration
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Relentless_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Relentless
+Twin Spine Guns (24", A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Reliable_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q6+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1), Reliable)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Rending_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1), Rending)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Scout_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Scout
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Slow_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Slow
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18), Slow, Fast
+Stomp (A4, AP(1))
+
+Matchup_name: Stealth_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Twin Spine Guns (24", A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18), Stealth
+Stomp (A4, AP(1))
+
+Matchup_name: Surge_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A10, AP(1), Surge)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Takedown_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Takedown
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Thrust_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Thrust
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Unstoppable_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1), Unstoppable)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18), Regeneration
+Stomp (A4, AP(1))
+
+Matchup_name: Infitrate_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Infiltrate
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Retaliate_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Retaliate
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Lustbound_Boost_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Lustbound Boost
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Ignores_Cover_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Ignores Cover Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+
+Matchup_name: Wreck_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30) 
+Stomp (A4, AP(1), Wreck)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Infected_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Infected
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Grounded_Reinforcement_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Grounded Reinforcement Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Piercing_Shooting_Debuff_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Piercing Shooting Debuff
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Infected_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Infected
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Breath_Attack_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Breath Attack
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Precision_Spotter_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Precision Spotter
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Clan_Warrior_Boost_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Clan Warrior Boost Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Precision_Spotter_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Precision Shooter Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Re-Deployment_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Re-Deployment
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Regeneration_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Regeneration Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Guardian_Boost_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Guardian Boost
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Quake_when_Shooting_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Quake when Shooting
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Good_Shot_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Good Shot
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Changebound_Boost_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Changebound Boost Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Swift_Buff_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Swift Buff
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Rapid_Charge_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Rapid Charge
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+
+Matchup_name: Machine-Fog_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Machine-Fog
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+
+Matchup_name: Counter-Attack_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Counter-Attack Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Thrust_in_Melee_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Thrust in Melee Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+
+Matchup_name: Mind_Control_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Mind Control
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Speed_Feat_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Speed Feat Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+
+Matchup_name: Unpredictable_Fighter_Aura_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Unpredictable Fighter Aura
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Fragment_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30)
+Stomp (A4, AP(1), Fragment)
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
+
+Matchup_name: Self-Repair_Boost_Buff_Test
+iterations: 1
+seed: 12345 
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(30), Self-Repair Boost Buff
+Stomp (A4, AP(1))
+
+Hive Lord [1] Q3+ D2+ | 525pts | Tough(18)
+Stomp (A4, AP(1))
