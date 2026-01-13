@@ -595,13 +595,17 @@ private:
                                 size_t reroll_idx = 0;
                                 for (size_t i = 0; i < attack.defense_rolls.rolls.size(); ++i) {
                                     u8 roll = attack.defense_rolls.rolls[i];
-                                    bool success = roll >= attack.defense_rolls.target;
-
-                                    // If this roll was a 6 and we have rerolls, get the reroll value
+                                    bool success;
                                     std::string reroll_str;
+
+                                    // If this roll was a 6 and we have rerolls, success is based on reroll
                                     if (roll == 6 && reroll_idx < attack.defense_rolls.rerolls.size()) {
-                                        reroll_str = std::to_string(static_cast<int>(attack.defense_rolls.rerolls[reroll_idx]));
+                                        u8 reroll_value = attack.defense_rolls.rerolls[reroll_idx];
+                                        reroll_str = std::to_string(static_cast<int>(reroll_value));
+                                        success = reroll_value >= attack.defense_rolls.target;
                                         reroll_idx++;
+                                    } else {
+                                        success = roll >= attack.defense_rolls.target;
                                     }
 
                                     file << iter.matchup_id << ","
