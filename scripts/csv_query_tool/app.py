@@ -54,6 +54,7 @@ class CSVQueryApp:
 
         # Query settings (must be after tk.Tk())
         self._query_timeout = tk.IntVar(value=self._config.query_timeout_seconds)
+        self._autocomplete_enabled = tk.BooleanVar(value=self._config.autocomplete_enabled)
 
         # Set minimum window size
         self._root.minsize(800, 600)
@@ -105,7 +106,8 @@ class CSVQueryApp:
 
         self._query_editor = QueryEditor(
             editor_frame, self._history, self._favorites,
-            on_execute=self._execute_query
+            on_execute=self._execute_query,
+            autocomplete_enabled=self._autocomplete_enabled
         )
         self._query_editor.pack(fill=tk.BOTH, expand=True)
 
@@ -211,6 +213,11 @@ class CSVQueryApp:
         db_menu.add_separator()
         db_menu.add_command(label="Import CSVs...", command=self._import_csvs)
         db_menu.add_command(label="Import Parquet...", command=self._import_parquet)
+        db_menu.add_separator()
+        db_menu.add_command(label="Create Table from Query...",
+                            command=self._create_table_from_query)
+        db_menu.add_command(label="Create Custom Table...",
+                            command=self._create_custom_table)
         db_menu.add_separator()
         db_menu.add_command(label="Create Index...", command=self._show_create_index)
         db_menu.add_command(label="Manage Indexes...", command=self._show_manage_indexes)
@@ -352,9 +359,17 @@ LIMIT 20'''),
 
     def _on_table_change(self) -> None:
         """Handle table changes."""
+        # Refresh table list from database to catch DDL changes
+        self._db.refresh_tables()
         self._schema_panel.refresh()
         self._file_panel._update_tables_list()
         self._update_db_status()
+        self._update_autocomplete_columns()
+
+    def _update_autocomplete_columns(self) -> None:
+        """Update the autocomplete with current table columns."""
+        table_columns = self._db.get_all_columns()
+        self._query_editor.update_table_columns(table_columns)
 
     def _execute_query(self, query: str) -> None:
         """Execute a SQL query.
@@ -541,11 +556,11 @@ LIMIT 20'''),
         """Show settings dialog."""
         dialog = tk.Toplevel(self._root)
         dialog.title("Settings")
-        dialog.geometry("400x300")
+        dialog.geometry("400x350")
         dialog.transient(self._root)
         dialog.grab_set()
 
-        # Settings frame
+        # Query Settings frame
         settings_frame = ttk.LabelFrame(dialog, text="Query Settings", padding=10)
         settings_frame.pack(fill=tk.X, padx=10, pady=10)
 
@@ -582,6 +597,19 @@ LIMIT 20'''),
                                    textvariable=history_var, width=10)
         history_spin.pack(side=tk.RIGHT)
 
+        # Editor Settings frame
+        editor_frame = ttk.LabelFrame(dialog, text="Editor Settings", padding=10)
+        editor_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        # Autocomplete toggle
+        autocomplete_var = tk.BooleanVar(value=self._config.autocomplete_enabled)
+        autocomplete_check = ttk.Checkbutton(
+            editor_frame,
+            text="Enable SQL autocomplete (type alias. for column suggestions)",
+            variable=autocomplete_var
+        )
+        autocomplete_check.pack(anchor=tk.W, pady=5)
+
         # Buttons
         btn_frame = ttk.Frame(dialog)
         btn_frame.pack(fill=tk.X, padx=10, pady=10)
@@ -590,7 +618,9 @@ LIMIT 20'''),
             self._config.query_timeout_seconds = timeout_var.get()
             self._config.results_page_size = page_var.get()
             self._config.max_history_size = history_var.get()
+            self._config.autocomplete_enabled = autocomplete_var.get()
             self._query_timeout.set(timeout_var.get())
+            self._autocomplete_enabled.set(autocomplete_var.get())
             self._config.save()
             dialog.destroy()
             messagebox.showinfo("Settings", "Settings saved.")
@@ -1058,6 +1088,256 @@ Features:
                     f"Database compacted.\nSize: {size_mb:.2f} MB"
                 )
             self._update_db_status()
+
+    def _create_table_from_query(self) -> None:
+        """Create a new table from a SELECT query result."""
+        # Get current query
+        query = self._query_editor.get_query()
+
+        # Create dialog
+        dialog = tk.Toplevel(self._root)
+        dialog.title("Create Table from Query")
+        dialog.geometry("600x450")
+        dialog.transient(self._root)
+        dialog.grab_set()
+
+        # Table name input
+        name_frame = ttk.Frame(dialog)
+        name_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        ttk.Label(name_frame, text="Table Name:").pack(side=tk.LEFT)
+        name_var = tk.StringVar(value="custom_table")
+        name_entry = ttk.Entry(name_frame, textvariable=name_var, width=30)
+        name_entry.pack(side=tk.LEFT, padx=5)
+
+        # Query text
+        query_frame = ttk.LabelFrame(dialog, text="SELECT Query", padding=10)
+        query_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        query_text = tk.Text(query_frame, wrap=tk.NONE, font=("Consolas", 10))
+        query_scroll_y = ttk.Scrollbar(query_frame, orient=tk.VERTICAL,
+                                       command=query_text.yview)
+        query_scroll_x = ttk.Scrollbar(query_frame, orient=tk.HORIZONTAL,
+                                       command=query_text.xview)
+        query_text.configure(yscrollcommand=query_scroll_y.set,
+                            xscrollcommand=query_scroll_x.set)
+
+        query_text.grid(row=0, column=0, sticky="nsew")
+        query_scroll_y.grid(row=0, column=1, sticky="ns")
+        query_scroll_x.grid(row=1, column=0, sticky="ew")
+
+        query_frame.grid_rowconfigure(0, weight=1)
+        query_frame.grid_columnconfigure(0, weight=1)
+
+        # Pre-fill with current query if it's a SELECT
+        if query and query.strip().upper().startswith("SELECT"):
+            query_text.insert("1.0", query)
+
+        # Help text
+        help_label = ttk.Label(
+            dialog,
+            text="Enter a SELECT query. The result will be stored as a new table.",
+            foreground="gray"
+        )
+        help_label.pack(padx=10, pady=5, anchor=tk.W)
+
+        # Buttons
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        def create_table():
+            table_name = name_var.get().strip()
+            select_query = query_text.get("1.0", tk.END).strip()
+
+            if not table_name:
+                messagebox.showwarning("Invalid Name", "Please enter a table name.")
+                return
+
+            if not select_query:
+                messagebox.showwarning("No Query", "Please enter a SELECT query.")
+                return
+
+            # Validate query starts with SELECT
+            if not select_query.upper().startswith("SELECT"):
+                messagebox.showwarning(
+                    "Invalid Query",
+                    "Query must be a SELECT statement."
+                )
+                return
+
+            # Create the table using CREATE TABLE AS
+            create_sql = f'CREATE TABLE "{table_name}" AS {select_query}'
+
+            try:
+                # Drop existing table if it exists
+                self._db.execute_non_query(f'DROP TABLE IF EXISTS "{table_name}"')
+
+                # Create the new table
+                if self._db.execute_non_query(create_sql):
+                    dialog.destroy()
+                    self._on_table_change()
+
+                    # Get row count
+                    result = self._db.execute(f'SELECT COUNT(*) FROM "{table_name}"')
+                    row_count = result.data.iloc[0, 0] if result.success else 0
+
+                    messagebox.showinfo(
+                        "Table Created",
+                        f"Created table '{table_name}' with {row_count:,} rows."
+                    )
+                else:
+                    messagebox.showerror(
+                        "Error",
+                        "Failed to create table. Check the query syntax."
+                    )
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to create table:\n{str(e)}")
+
+        ttk.Button(btn_frame, text="Create Table", command=create_table).pack(
+            side=tk.RIGHT, padx=5
+        )
+        ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(
+            side=tk.RIGHT, padx=5
+        )
+
+    def _create_custom_table(self) -> None:
+        """Create a custom table with user-defined columns."""
+        # Create dialog
+        dialog = tk.Toplevel(self._root)
+        dialog.title("Create Custom Table")
+        dialog.geometry("500x500")
+        dialog.transient(self._root)
+        dialog.grab_set()
+
+        # Table name input
+        name_frame = ttk.Frame(dialog)
+        name_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        ttk.Label(name_frame, text="Table Name:").pack(side=tk.LEFT)
+        name_var = tk.StringVar(value="my_table")
+        name_entry = ttk.Entry(name_frame, textvariable=name_var, width=30)
+        name_entry.pack(side=tk.LEFT, padx=5)
+
+        # Columns definition
+        col_frame = ttk.LabelFrame(dialog, text="Columns", padding=10)
+        col_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        # Columns list
+        columns_list = tk.Listbox(col_frame, selectmode=tk.SINGLE)
+        col_scrollbar = ttk.Scrollbar(col_frame, orient=tk.VERTICAL,
+                                      command=columns_list.yview)
+        columns_list.configure(yscrollcommand=col_scrollbar.set)
+
+        columns_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        col_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Column management buttons
+        col_btn_frame = ttk.Frame(dialog)
+        col_btn_frame.pack(fill=tk.X, padx=10, pady=5)
+
+        # Column input frame
+        input_frame = ttk.Frame(col_btn_frame)
+        input_frame.pack(fill=tk.X)
+
+        ttk.Label(input_frame, text="Name:").pack(side=tk.LEFT)
+        col_name_var = tk.StringVar()
+        col_name_entry = ttk.Entry(input_frame, textvariable=col_name_var, width=15)
+        col_name_entry.pack(side=tk.LEFT, padx=2)
+
+        ttk.Label(input_frame, text="Type:").pack(side=tk.LEFT, padx=(10, 0))
+        col_type_var = tk.StringVar(value="VARCHAR")
+        col_type_combo = ttk.Combobox(
+            input_frame, textvariable=col_type_var,
+            values=["VARCHAR", "INTEGER", "BIGINT", "DOUBLE", "BOOLEAN",
+                   "DATE", "TIMESTAMP", "DECIMAL(10,2)"],
+            state="readonly", width=15
+        )
+        col_type_combo.pack(side=tk.LEFT, padx=2)
+
+        def add_column():
+            col_name = col_name_var.get().strip()
+            col_type = col_type_var.get()
+            if col_name:
+                columns_list.insert(tk.END, f"{col_name} ({col_type})")
+                col_name_var.set("")
+
+        def remove_column():
+            selection = columns_list.curselection()
+            if selection:
+                columns_list.delete(selection[0])
+
+        ttk.Button(input_frame, text="Add", command=add_column).pack(side=tk.LEFT, padx=5)
+        ttk.Button(input_frame, text="Remove", command=remove_column).pack(side=tk.LEFT, padx=2)
+
+        # Help text
+        help_label = ttk.Label(
+            dialog,
+            text="Define columns for your custom table. Use INSERT to add data later.",
+            foreground="gray"
+        )
+        help_label.pack(padx=10, pady=5, anchor=tk.W)
+
+        # Buttons
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        def create_table():
+            table_name = name_var.get().strip()
+            columns = list(columns_list.get(0, tk.END))
+
+            if not table_name:
+                messagebox.showwarning("Invalid Name", "Please enter a table name.")
+                return
+
+            if not columns:
+                messagebox.showwarning("No Columns", "Please add at least one column.")
+                return
+
+            # Parse columns
+            col_defs = []
+            for col in columns:
+                # Parse "col_name (TYPE)"
+                match = col.rsplit(" (", 1)
+                if len(match) == 2:
+                    c_name = match[0]
+                    c_type = match[1].rstrip(")")
+                    col_defs.append(f'"{c_name}" {c_type}')
+
+            if not col_defs:
+                messagebox.showerror("Error", "Could not parse column definitions.")
+                return
+
+            # Create the table
+            create_sql = f'CREATE TABLE "{table_name}" ({", ".join(col_defs)})'
+
+            try:
+                # Drop existing table if it exists
+                self._db.execute_non_query(f'DROP TABLE IF EXISTS "{table_name}"')
+
+                # Create the new table
+                if self._db.execute_non_query(create_sql):
+                    dialog.destroy()
+                    self._on_table_change()
+
+                    messagebox.showinfo(
+                        "Table Created",
+                        f"Created empty table '{table_name}' with {len(col_defs)} column(s).\n\n"
+                        "Use INSERT statements to add data."
+                    )
+                else:
+                    messagebox.showerror(
+                        "Error",
+                        "Failed to create table. Check the column definitions."
+                    )
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to create table:\n{str(e)}")
+
+        ttk.Button(btn_frame, text="Create Table", command=create_table).pack(
+            side=tk.RIGHT, padx=5
+        )
+        ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(
+            side=tk.RIGHT, padx=5
+        )
 
     def _switch_to_memory(self) -> None:
         """Switch back to in-memory database."""
