@@ -179,6 +179,12 @@ struct RoundData {
     std::vector<ActivationData> activations;
     std::vector<RuleTriggerData> end_round_rules;
 
+    // Positions
+    i8 unit_a_start_pos = 0;
+    i8 unit_a_end_pos = 0;
+    i8 unit_b_start_pos = 0;
+    i8 unit_b_end_pos = 0;
+
     // Objective control
     bool a_controls = false;
     bool b_controls = false;
@@ -332,11 +338,13 @@ public:
     // ROUND LIFECYCLE
     // =========================================================================
 
-    void on_round_start(u8 round_number, const GameState& /*state*/) override {
+    void on_round_start(u8 round_number, const GameState& state) override {
         if (current_game_) {
             current_game_->rounds.emplace_back();
             current_round_ = &current_game_->rounds.back();
             current_round_->round_number = round_number;
+            current_round_->unit_a_start_pos = state.pos_a;
+            current_round_->unit_b_start_pos = state.pos_b;
         }
     }
 
@@ -351,6 +359,8 @@ public:
 
     void on_round_end(u8 /*round_number*/, const GameState& state) override {
         if (current_round_) {
+            current_round_->unit_a_end_pos = state.pos_a;
+            current_round_->unit_b_end_pos = state.pos_b;
             current_round_->unit_a_models = state.state_a.alive_count;
             current_round_->unit_b_models = state.state_b.alive_count;
             current_round_->unit_a_status = status_to_string(state.state_a.status);
