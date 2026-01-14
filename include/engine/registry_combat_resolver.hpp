@@ -486,8 +486,8 @@ public:
         // Phase 5: HIT_BONUSES
         // ============================================
         // Surge, Relentless, Furious, PredatorFighter - extra hits on 6s
+        // Note: Phase effects update ctx.hits directly
         apply_all_phase_effects(CombatSubPhase::HIT_BONUSES, ctx);
-        ctx.hits += ctx.bonus_hits;
 
         // ============================================
         // Phase 6: HIT_MULTIPLICATION
@@ -1026,8 +1026,8 @@ private:
         // ============================================
         // Phase 5: HIT_BONUSES
         // ============================================
+        // Note: Phase effects (Surge, Furious, etc.) update ctx.hits directly
         apply_all_phase_effects(CombatSubPhase::HIT_BONUSES, ctx);
-        ctx.hits += ctx.bonus_hits;
 
         // ============================================
         // Phase 6: HIT_MULTIPLICATION
