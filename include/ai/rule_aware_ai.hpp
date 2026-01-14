@@ -141,6 +141,11 @@ public:
             return ActionType::Rally;
         }
 
+        // Immobile units can only Hold
+        if (unit->has_rule(RuleId::Immobile)) {
+            return ActionType::Hold;
+        }
+
         // Already in melee - must hold
         if (state.in_melee) {
             return ActionType::Hold;
