@@ -396,7 +396,7 @@ private:
         if (!file.is_open()) return false;
 
         // Header
-        file << "matchup_id,iteration,game,round,attacker,attack_seq,"
+        file << "matchup_id,iteration,game,round,attacker,attack_seq,attack_order,"
              << "weapon,is_melee,distance,models_attacking,total_attacks,"
              << "hit_target,hits,hit_sixes,normal_hits,rending_hits,total_hits,"
              << "ap_applied,defense_target,saves,wounds,"
@@ -421,6 +421,7 @@ private:
                                      << static_cast<int>(round.round_number) << ","
                                      << attacker << ","
                                      << attack_seq << ","
+                                     << attack.attack_order << ","
                                      << escape_csv(attack.weapon_name) << ","
                                      << (attack.is_melee ? 1 : 0) << ","
                                      << static_cast<int>(attack.distance) << ","

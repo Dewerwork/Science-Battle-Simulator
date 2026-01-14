@@ -28,6 +28,7 @@ struct RuleTriggerData {
 };
 
 struct AttackSequenceData {
+    u32 attack_order = 0;  // Global order of this attack within the round (1-based)
     std::string weapon_name;
     bool is_melee = false;
     u8 range = 0;
@@ -176,6 +177,7 @@ struct RoundData {
     bool unit_a_first = false;
     std::string initiative_reason;
 
+    u32 attack_order_counter = 0;  // Tracks global attack order within the round
     std::vector<ActivationData> activations;
     std::vector<RuleTriggerData> end_round_rules;
 
@@ -532,6 +534,13 @@ public:
         if (current_activation_) {
             current_activation_->attack_sequences.emplace_back();
             current_attack_ = &current_activation_->attack_sequences.back();
+
+            // Set global attack order within the round
+            if (current_round_) {
+                current_round_->attack_order_counter++;
+                current_attack_->attack_order = current_round_->attack_order_counter;
+            }
+
             current_attack_->weapon_name = weapon_name ? weapon_name : "";
             current_attack_->is_melee = is_melee;
             current_attack_->range = range;
