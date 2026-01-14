@@ -249,6 +249,7 @@ private:
         // Header
         file << "matchup_id,iteration,game,round,"
              << "initiative_roll,unit_a_first,initiative_reason,"
+             << "unit_a_start_pos,unit_a_end_pos,unit_b_start_pos,unit_b_end_pos,"
              << "a_controls_objective,b_controls_objective,control_reason,"
              << "unit_a_models_remaining,unit_b_models_remaining,"
              << "unit_a_status,unit_b_status\n";
@@ -268,6 +269,10 @@ private:
                              << static_cast<int>(round.initiative_roll) << ","
                              << (round.unit_a_first ? 1 : 0) << ","
                              << escape_csv(round.initiative_reason) << ","
+                             << static_cast<int>(round.unit_a_start_pos) << ","
+                             << static_cast<int>(round.unit_a_end_pos) << ","
+                             << static_cast<int>(round.unit_b_start_pos) << ","
+                             << static_cast<int>(round.unit_b_end_pos) << ","
                              << (round.a_controls ? 1 : 0) << ","
                              << (round.b_controls ? 1 : 0) << ","
                              << escape_csv(round.control_reason) << ","
