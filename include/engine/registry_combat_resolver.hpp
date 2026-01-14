@@ -1123,14 +1123,16 @@ private:
 
         // Apply wounds to defender
         if (total_wounds > 0) {
-            auto wound_result = apply_wounds(defender, total_wounds, ctx.bypasses_regeneration);
+            u8 deadly_value = weapon.get_rule_value(RuleId::Deadly);
+            if (deadly_value == 0) deadly_value = 1;  // No Deadly = 1 damage per wound
+            auto wound_result = apply_wounds(defender, total_wounds, ctx.bypasses_regeneration, -1, deadly_value);
             result.wounds_dealt = wound_result.wounds_dealt;
             result.models_killed = wound_result.models_killed;
             result.self_destruct_hits = wound_result.self_destruct_hits;
         }
 
         if (logger_) {
-            logger_->on_weapon_attack_end(weapon.name.c_str(), total_wounds, result.models_killed);
+            logger_->on_weapon_attack_end(weapon.name.c_str(), result.wounds_dealt, result.models_killed);
         }
 
         return result;
@@ -1392,10 +1394,14 @@ public:
 
             u32 total_wounds = wounds_from_normal + wounds_from_rending;
             u8 weapon_models_killed = 0;
+            u16 actual_wounds_dealt = 0;
 
             // Apply wounds
             if (total_wounds > 0) {
-                auto wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                u8 deadly_value = w.get_rule_value(RuleId::Deadly);
+                if (deadly_value == 0) deadly_value = 1;
+                auto wound_result = apply_wounds(defender, total_wounds, bypass_regen, -1, deadly_value);
+                actual_wounds_dealt = wound_result.wounds_dealt;
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
                 weapon_models_killed = wound_result.models_killed;
@@ -1403,7 +1409,7 @@ public:
             }
 
             if (logger_) {
-                logger_->on_weapon_attack_end(w.name.c_str(), total_wounds, weapon_models_killed);
+                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed);
             }
         }
 
@@ -1694,10 +1700,14 @@ public:
 
             u32 total_wounds = wounds_from_normal + wounds_from_rending;
             u8 weapon_models_killed = 0;
+            u16 actual_wounds_dealt = 0;
 
             // Apply wounds
             if (total_wounds > 0) {
-                auto wound_result = apply_wounds(defender, total_wounds, bypass_regen);
+                u8 deadly_value = w.get_rule_value(RuleId::Deadly);
+                if (deadly_value == 0) deadly_value = 1;
+                auto wound_result = apply_wounds(defender, total_wounds, bypass_regen, -1, deadly_value);
+                actual_wounds_dealt = wound_result.wounds_dealt;
                 result.wounds_dealt += wound_result.wounds_dealt;
                 result.models_killed += wound_result.models_killed;
                 weapon_models_killed = wound_result.models_killed;
@@ -1705,7 +1715,7 @@ public:
             }
 
             if (logger_) {
-                logger_->on_weapon_attack_end(w.name.c_str(), total_wounds, weapon_models_killed);
+                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed);
             }
         }
 
@@ -1897,10 +1907,11 @@ public:
     }
 
     // Apply wounds to a unit with proper wound allocation
-    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false, i8 takedown_target = -1) {
+    // deadly_value: each unsaved wound deals this much damage (no carry-over between models)
+    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false, i8 takedown_target = -1, u8 deadly_value = 1) {
         WoundResult result;
 
-        // Regeneration check
+        // Regeneration check (before Deadly multiplication)
         if (!bypass_regeneration && unit.has_rule(RuleId::Regeneration)) {
             u32 original_wounds = wounds;
             wounds = dice_.roll_regeneration(wounds, 5);
@@ -1920,16 +1931,14 @@ public:
             }
         }
 
-        result.wounds_dealt = static_cast<u16>(wounds);
-
-        // Takedown: apply wounds to specific target first
-        u32 remaining_wounds = wounds;
+        // Takedown: apply wounds to specific target first (Deadly not compatible with Takedown)
         if (takedown_target >= 0 && unit.model_is_alive(static_cast<u8>(takedown_target))) {
             u8 model_idx = static_cast<u8>(takedown_target);
             u8 wounds_to_kill = unit.model_remaining_wounds(model_idx);
-            u8 wounds_applied = static_cast<u8>(std::min(remaining_wounds, static_cast<u32>(wounds_to_kill)));
+            u8 wounds_applied = static_cast<u8>(std::min(wounds, static_cast<u32>(wounds_to_kill)));
 
-            for (u8 w = 0; w < wounds_applied && remaining_wounds > 0; ++w) {
+            result.wounds_dealt = wounds_applied;
+            for (u8 w = 0; w < wounds_applied; ++w) {
                 if (unit.apply_wound_to_model(model_idx)) {
                     result.models_killed++;
                     // SelfDestruct: when model dies, queue hits for attacker
@@ -1940,7 +1949,6 @@ public:
                     }
                     break;
                 }
-                remaining_wounds--;
             }
             return result;
         }
@@ -1950,7 +1958,46 @@ public:
         u8 order_count = 0;
         unit.get_wound_allocation_order(order, order_count);
 
-        // Apply wounds in order
+        // Deadly(X): each wound deals X damage, but doesn't carry over between models
+        if (deadly_value > 1) {
+            if (logger_) logger_->on_rule_triggered("Deadly", "damage_per_wound", deadly_value);
+
+            u8 order_idx = 0;
+            for (u32 w = 0; w < wounds && order_idx < order_count; ++w) {
+                // Find next alive model
+                while (order_idx < order_count && !unit.model_is_alive(order[order_idx])) {
+                    order_idx++;
+                }
+                if (order_idx >= order_count) break;
+
+                u8 model_idx = order[order_idx];
+                u8 model_wounds_remaining = unit.model_remaining_wounds(model_idx);
+
+                // Apply up to deadly_value wounds to this model (capped at what kills it)
+                u8 damage_to_apply = std::min(deadly_value, model_wounds_remaining);
+                result.wounds_dealt += damage_to_apply;
+
+                for (u8 d = 0; d < damage_to_apply; ++d) {
+                    if (unit.apply_wound_to_model(model_idx)) {
+                        result.models_killed++;
+                        if (unit.has_rule(RuleId::SelfDestruct)) {
+                            u8 destruct_value = unit.get_rule_value(RuleId::SelfDestruct);
+                            result.self_destruct_hits += destruct_value;
+                            if (logger_) logger_->on_rule_triggered("SelfDestruct", "queued_hits_for_attacker", destruct_value);
+                        }
+                        order_idx++;  // Move to next model for next wound
+                        break;
+                    }
+                }
+                // Note: excess damage from Deadly is lost (doesn't carry over)
+            }
+            return result;
+        }
+
+        // Normal wound allocation (no Deadly)
+        result.wounds_dealt = static_cast<u16>(wounds);
+        u32 remaining_wounds = wounds;
+
         for (u8 i = 0; i < order_count && remaining_wounds > 0; ++i) {
             u8 model_idx = order[i];
             if (!unit.model_is_alive(model_idx)) continue;
