@@ -800,6 +800,34 @@ private:
             ctx.effective_ap += 1;
         }
 
+        // Fragment: +1 AP against Defense 2+ to 4+ (defense values 2, 3, or 4)
+        if (ctx.weapon->has_rule(RuleId::Fragment)) {
+            u8 def = ctx.defender->defense;
+            if (def >= 2 && def <= 4) {
+                ctx.effective_ap += 1;
+                if (logger_) logger_->on_rule_triggered("Fragment", "ap_bonus_vs_defense", def);
+            }
+        }
+
+        // Decimate: +2 AP against Defense 2+ to 3+ (defense values 2 or 3)
+        if (ctx.weapon->has_rule(RuleId::Decimate)) {
+            u8 def = ctx.defender->defense;
+            if (def >= 2 && def <= 3) {
+                ctx.effective_ap += 2;
+                if (logger_) logger_->on_rule_triggered("Decimate", "ap_bonus_vs_defense", def);
+            }
+        }
+
+        // Disintegrate: +2 AP against Defense 2+ to 3+ (defense values 2 or 3)
+        if (ctx.weapon->has_rule(RuleId::Disintegrate)) {
+            u8 def = ctx.defender->defense;
+            if (def >= 2 && def <= 3) {
+                ctx.effective_ap += 2;
+                if (logger_) logger_->on_rule_triggered("Disintegrate", "ap_bonus_vs_defense", def);
+            }
+            // Note: Disintegrate also bypasses regeneration (handled in trait aggregation)
+        }
+
         // Process normal hits
         u32 normal_wounds = 0;
         if (ctx.normal_hits > 0) {
