@@ -357,9 +357,11 @@ private:
                     for (const auto& round : game.rounds) {
                         for (const auto& activation : round.activations) {
                             int morale_seq = 0;
-                            std::string unit = activation.is_unit_a ? "A" : "B";
 
                             for (const auto& morale : activation.morale_checks) {
+                                // Use morale.is_unit_a (which unit is taking the test),
+                                // not activation.is_unit_a (whose turn it is)
+                                std::string unit = morale.is_unit_a ? "A" : "B";
                                 file << iter.matchup_id << ","
                                      << iter.iteration << ","
                                      << (game_idx + 1) << ","
