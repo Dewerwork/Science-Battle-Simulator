@@ -39,7 +39,15 @@ struct alignas(32) Weapon {
     }
 
     bool has_rule(RuleId id) const {
-        return (rule_mask & rule_bit(id)) != 0;
+        // Fast path: check primary rule mask for rules 0-63
+        if (is_primary_rule(id)) {
+            return (rule_mask & rule_bit(id)) != 0;
+        }
+        // Slow path: search rules array for extended rules (64+)
+        for (u8 i = 0; i < rule_count; ++i) {
+            if (rules[i].id == id) return true;
+        }
+        return false;
     }
 
     u8 get_rule_value(RuleId id) const {
