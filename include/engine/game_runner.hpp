@@ -614,14 +614,20 @@ private:
         }
 
         // Apply Fear(X) to wound totals for morale comparison
-        u16 attacker_effective_wounds = attacker_wounds + attacker.get_rule_value(RuleId::Fear);
-        u16 defender_effective_wounds = defender_wounds + defender.get_rule_value(RuleId::Fear);
+        // Fear(X) counts as dealing X extra wounds (added to wounds dealt TO opponent)
+        // attacker_wounds = wounds attacker received = wounds defender dealt
+        // defender_wounds = wounds defender received = wounds attacker dealt
+        u16 attacker_effective_wounds = attacker_wounds + defender.get_rule_value(RuleId::Fear);
+        u16 defender_effective_wounds = defender_wounds + attacker.get_rule_value(RuleId::Fear);
 
         // Morale checks for melee loser (compare effective wounds with Fear)
-        if (defender_effective_wounds > attacker_effective_wounds && !attacker.is_out_of_action()) {
-            combat_.check_morale(attacker, true, attacker_wounds, defender_wounds, is_unit_a);
-        } else if (attacker_effective_wounds > defender_effective_wounds && !defender.is_out_of_action()) {
+        // The unit that took more effective damage is the LOSER and must take morale
+        if (defender_effective_wounds > attacker_effective_wounds && !defender.is_out_of_action()) {
+            // Defender took more damage = defender lost = defender takes morale
             combat_.check_morale(defender, true, defender_wounds, attacker_wounds, !is_unit_a);
+        } else if (attacker_effective_wounds > defender_effective_wounds && !attacker.is_out_of_action()) {
+            // Attacker took more damage = attacker lost = attacker takes morale
+            combat_.check_morale(attacker, true, attacker_wounds, defender_wounds, is_unit_a);
         }
 
         // Consolidation moves (after morale resolution)
