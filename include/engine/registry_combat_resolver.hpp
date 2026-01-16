@@ -2034,8 +2034,8 @@ public:
             trigger_reason = "half_strength";
         }
 
-        // Lost melee
-        if (is_from_melee && melee_wounds_taken > melee_wounds_dealt) {
+        // Lost melee - caller already determined this unit lost (including Fear adjustment)
+        if (is_from_melee) {
             needs_test = true;
             trigger_reason = "lost_melee";
         }
