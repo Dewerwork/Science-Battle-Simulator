@@ -74,6 +74,7 @@ struct AttackSequenceData {
 };
 
 struct MoraleCheckData {
+    bool is_unit_a = false;  // Which unit is taking the morale test
     std::string unit_name;
     std::string trigger_reason;
     u8 models_remaining = 0;
@@ -735,6 +736,7 @@ public:
         if (current_activation_) {
             current_activation_->morale_checks.emplace_back();
             current_morale_ = &current_activation_->morale_checks.back();
+            current_morale_->is_unit_a = is_unit_a;  // Track which unit is actually taking the test
             current_morale_->unit_name = unit_name ? unit_name : (is_unit_a ? "Unit A" : "Unit B");
             current_morale_->trigger_reason = trigger_reason ? trigger_reason : "";
             current_morale_->models_remaining = models_remaining;
