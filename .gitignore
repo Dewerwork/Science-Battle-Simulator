@@ -26,3 +26,6 @@ __pycache__/
 
 # Generated loadout files
 *.reduced.txt
+
+# Batch test output
+batch_test_results/
