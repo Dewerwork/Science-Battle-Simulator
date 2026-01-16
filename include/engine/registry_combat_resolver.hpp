@@ -1081,6 +1081,45 @@ private:
             if (logger_) logger_->on_rule_triggered("VersatileAttack", "ap+1_bonus_applied", 1);
         }
 
+        // Lance: +2 AP when charging
+        if (ctx.is_charge && ctx.weapon->has_rule(RuleId::Lance)) {
+            ctx.effective_ap += 2;
+            if (logger_) logger_->on_rule_triggered("Lance", "ap_bonus_on_charge", 2);
+        }
+
+        // Thrust: +1 AP when charging
+        if (ctx.is_charge && ctx.weapon->has_rule(RuleId::Thrust)) {
+            ctx.effective_ap += 1;
+            if (logger_) logger_->on_rule_triggered("Thrust", "ap_bonus_on_charge", 1);
+        }
+
+        // Fragment: +1 AP against Defense 2+ to 4+
+        if (ctx.weapon->has_rule(RuleId::Fragment)) {
+            u8 def = defender.defense();
+            if (def >= 2 && def <= 4) {
+                ctx.effective_ap += 1;
+                if (logger_) logger_->on_rule_triggered("Fragment", "ap_bonus_vs_defense", def);
+            }
+        }
+
+        // Decimate: +2 AP against Defense 2+ to 3+
+        if (ctx.weapon->has_rule(RuleId::Decimate)) {
+            u8 def = defender.defense();
+            if (def >= 2 && def <= 3) {
+                ctx.effective_ap += 2;
+                if (logger_) logger_->on_rule_triggered("Decimate", "ap_bonus_vs_defense", def);
+            }
+        }
+
+        // Disintegrate: +2 AP against Defense 2+ to 3+
+        if (ctx.weapon->has_rule(RuleId::Disintegrate)) {
+            u8 def = defender.defense();
+            if (def >= 2 && def <= 3) {
+                ctx.effective_ap += 2;
+                if (logger_) logger_->on_rule_triggered("Disintegrate", "ap_bonus_vs_defense", def);
+            }
+        }
+
         // Roll defense for normal hits
         u8 defense_target = defender.defense();
         if (logger_) dice_.enable_roll_recording(true);
