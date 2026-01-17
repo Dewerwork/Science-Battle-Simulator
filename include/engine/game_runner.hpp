@@ -263,6 +263,9 @@ private:
         if (is_unit_a) state_.unit_a_activated = true;
         else state_.unit_b_activated = true;
 
+        // Reset activation-specific state (Breath Attack can be used again)
+        unit.reset_activation_state();
+
         // Get AI decision using rule-aware AI
         ActionType action = RuleAwareAI::decide_action(state_, is_unit_a);
 
@@ -363,6 +366,9 @@ private:
         i8 dist = state_.distance_between();
         spell_caster_.process_spell_phase(unit, enemy, dist, is_unit_a);
 
+        // Breath Attack: Once per activation, before attacking
+        process_breath_attack(is_unit_a);
+
         if (state_.in_melee) {
             // Fight in melee
             execute_melee_round(is_unit_a, false);
@@ -390,6 +396,8 @@ private:
             // Spell phase: Cast spells before melee
             i8 dist = state_.distance_between();
             spell_caster_.process_spell_phase(unit, enemy, dist, is_unit_a);
+            // Breath Attack: Once per activation, before attacking
+            process_breath_attack(is_unit_a);
             execute_melee_round(is_unit_a, false);
             return;
         }
@@ -411,6 +419,9 @@ private:
         // Spell phase: Cast spells after movement, before shooting
         i8 dist = state_.distance_between();
         spell_caster_.process_spell_phase(unit, enemy, dist, is_unit_a);
+
+        // Breath Attack: Once per activation, before attacking
+        process_breath_attack(is_unit_a);
 
         // Shoot if possible
         if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
@@ -477,6 +488,9 @@ private:
         // Spell phase: Cast spells after movement, before melee
         i8 dist = state_.distance_between();
         spell_caster_.process_spell_phase(unit, enemy, dist, is_unit_a);
+
+        // Breath Attack: Once per activation, before attacking
+        process_breath_attack(is_unit_a);
 
         // Resolve charge (attacker strikes first)
         execute_melee_round(is_unit_a, true);
@@ -761,6 +775,61 @@ private:
             unit.rally();
             if (logger_) {
                 logger_->on_status_changed(is_unit_a, UnitStatus::Shaken, UnitStatus::Normal, "battleborn_rallied");
+            }
+        }
+    }
+
+    // Breath Attack: Once per activation, before attacking, roll 2+ to deal Blast(3) AP(1) within 6"
+    void process_breath_attack(bool is_unit_a) {
+        UnitView unit = state_.view(is_unit_a);
+        UnitView enemy = state_.view(!is_unit_a);
+
+        // Check if unit has Breath Attack
+        if (!unit.has_rule(RuleId::BreathAttack)) return;
+
+        // Check if already used this activation
+        if (unit.is_breath_attack_used()) return;
+
+        // Mark as used (even if it fails the roll)
+        unit.mark_breath_attack_used();
+
+        // Check if enemy is valid target
+        if (enemy.is_out_of_action()) return;
+
+        // Check range (6")
+        i8 distance = state_.distance_between();
+        if (distance > 6) return;
+
+        // Roll to activate (2+)
+        u8 roll = dice_.roll_d6();
+        bool success = roll >= 2;
+
+        if (logger_) {
+            logger_->on_rule_triggered("BreathAttack", "activation_roll", roll);
+        }
+
+        if (!success) return;
+
+        // Apply Blast(3) AP(1) hits
+        constexpr u8 BREATH_HITS = 3;  // Blast(3)
+        constexpr u8 BREATH_AP = 1;    // AP(1)
+
+        // Roll defense saves
+        u32 failed_saves = dice_.roll_defense_test(BREATH_HITS, enemy.defense(), BREATH_AP, 0, false);
+
+        if (logger_) {
+            logger_->on_rule_triggered("BreathAttack", "hits_applied", BREATH_HITS);
+            logger_->on_rule_triggered("BreathAttack", "wounds_dealt", static_cast<u8>(failed_saves));
+        }
+
+        // Apply wounds
+        if (failed_saves > 0) {
+            auto wound_result = combat_.apply_wounds(enemy, failed_saves, false);
+            state_.stats.record_wounds(is_unit_a, wound_result.wounds_dealt, wound_result.models_killed);
+
+            // Check morale if took wounds
+            if (wound_result.wounds_dealt > 0) {
+                combat_.check_morale(enemy, false, 0, 0, !is_unit_a);
             }
         }
     }

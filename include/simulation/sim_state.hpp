@@ -39,6 +39,9 @@ struct UnitSimState {
     u8 caster_value = 0;           // X from Caster(X) - tokens gained per round
     u8 spells_attempted = 0;       // Bitmask of spell indices attempted this round (max 8)
 
+    // Once-per-activation abilities
+    bool breath_attack_used = false;  // Breath Attack used this activation
+
     // Active modifiers from auras, buffs, faction rules
     UnitModifiers modifiers;
 
@@ -144,6 +147,15 @@ struct UnitSimState {
         is_fatigued = false;
         reset_spell_attempts();  // Spells can be attempted again each round
     }
+
+    // Reset state at start of each activation
+    void reset_activation_state() {
+        breath_attack_used = false;  // Can use Breath Attack again
+    }
+
+    // Breath Attack tracking
+    bool is_breath_attack_used() const { return breath_attack_used; }
+    void mark_breath_attack_used() { breath_attack_used = true; }
 };
 
 // ==============================================================================
@@ -200,6 +212,11 @@ struct UnitView {
     void mark_spell_attempted(u8 spell_idx) { state->mark_spell_attempted(spell_idx); }
     bool spend_spell_tokens(u8 amount) { return state->spend_spell_tokens(amount); }
     void reset_spell_attempts() { state->reset_spell_attempts(); }
+
+    // Breath Attack tracking
+    bool is_breath_attack_used() const { return state->is_breath_attack_used(); }
+    void mark_breath_attack_used() { state->mark_breath_attack_used(); }
+    void reset_activation_state() { state->reset_activation_state(); }
 
     // Modifier access
     UnitModifiers& modifiers() { return state->modifiers; }

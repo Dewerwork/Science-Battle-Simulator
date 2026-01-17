@@ -1235,12 +1235,10 @@ void storm_of_war_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 
 }
 
 // --- Category O: Special Combat Effects ---
-void breath_attack_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
-    // Once per activation roll D6 for area damage
-    ctx.hits += 3;  // Average D6 result
-    if (ext) {
-        ext->bonus_hits += 3;
-    }
+void breath_attack_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {
+    // Breath Attack is handled separately in game_runner.hpp (process_breath_attack)
+    // It's a once-per-activation ability that happens BEFORE attacks, not during weapon attacks
+    // No-op here to avoid double-application
 }
 
 void increased_shooting_range_effect(CombatContextCore& /*ctx*/, CombatContextExtended* /*ext*/, u8 /*value*/) {
