@@ -1193,7 +1193,8 @@ private:
         }
 
         if (logger_) {
-            logger_->on_weapon_attack_end(weapon.name.c_str(), result.wounds_dealt, result.models_killed);
+            logger_->on_weapon_attack_end(weapon.name.c_str(), result.wounds_dealt, result.models_killed,
+                                          attacker.total_wounds_remaining(), defender.total_wounds_remaining());
         }
 
         return result;
@@ -1470,7 +1471,8 @@ public:
             }
 
             if (logger_) {
-                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed);
+                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed,
+                                              attacker.total_wounds_remaining(), defender.total_wounds_remaining());
             }
         }
 
@@ -1776,7 +1778,8 @@ public:
             }
 
             if (logger_) {
-                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed);
+                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed,
+                                              attacker.total_wounds_remaining(), defender.total_wounds_remaining());
             }
         }
 
@@ -1915,7 +1918,8 @@ public:
                             result.self_destruct_hits += wound_result.self_destruct_hits;
 
                             if (logger_) {
-                                logger_->on_weapon_attack_end("Impact", impact_wounds, wound_result.models_killed);
+                                logger_->on_weapon_attack_end("Impact", impact_wounds, wound_result.models_killed,
+                                                              attacker.total_wounds_remaining(), defender.total_wounds_remaining());
                             }
                         }
                     }

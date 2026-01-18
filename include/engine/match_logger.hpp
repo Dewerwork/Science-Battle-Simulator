@@ -188,7 +188,9 @@ public:
     virtual void on_weapon_attack_end(
         const char* weapon_name,
         u32 total_wounds,
-        u8 models_killed) = 0;
+        u8 models_killed,
+        u16 attacker_wounds_remaining = 0,
+        u16 defender_wounds_remaining = 0) = 0;
 
     // =========================================================================
     // HIT ROLLS
