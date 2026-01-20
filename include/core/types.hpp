@@ -468,6 +468,9 @@ enum class RuleId : u16 {
     PrecisionTag,             // Mark target for precision bonus (277)
     PiercingTag,              // Mark target for piercing bonus (278)
 
+    // === Category Y: Unit Combat Order Rules ===
+    CounterAttack,            // Counter-Attack - Unit strikes first when charged (no Impact reduction) (279)
+
     COUNT // Total number of rules
 };
 
