@@ -1834,6 +1834,18 @@ const RuleHotData Counter_HotData{
     static_cast<TraitMask>(RuleTrait::MELEE_ONLY)
 };
 
+// Counter-Attack: Unit rule that makes ALL weapons strike first when charged (no Impact reduction)
+const RuleHotData CounterAttack_HotData{
+    RuleId::CounterAttack,
+    GamePhase::COMBAT,
+    static_cast<u8>(CombatSubPhase::PRE_ATTACK),
+    CombatType::MELEE,
+    Target::ATTACKER,  // The unit with Counter-Attack (defender when charged)
+    Trigger::ALWAYS,
+    RulePriority::FIRST,
+    static_cast<TraitMask>(RuleTrait::MELEE_ONLY)
+};
+
 const RuleHotData Sniper_HotData{
     RuleId::Sniper,
     GamePhase::COMBAT,
@@ -5221,6 +5233,7 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_hot_data(RuleId::SelfDestruct, SelfDestruct_HotData);
     registry.register_hot_data(RuleId::PredatorFighter, PredatorFighter_HotData);
     registry.register_hot_data(RuleId::Counter, Counter_HotData);
+    registry.register_hot_data(RuleId::CounterAttack, CounterAttack_HotData);
     registry.register_hot_data(RuleId::Sniper, Sniper_HotData);
     registry.register_hot_data(RuleId::Indirect, Indirect_HotData);
     registry.register_hot_data(RuleId::Lock_On, Lock_On_HotData);

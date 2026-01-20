@@ -513,19 +513,28 @@ private:
                                     defender.unit->name.c_str(), is_charging, attacker.is_fatigued());
         }
 
-        // Check if defender has any melee weapon with Counter (for strike order)
+        // Check if defender has Counter-Attack unit rule (ALL weapons strike first, no Impact reduction)
+        bool defender_has_counter_attack = defender.has_rule(RuleId::CounterAttack);
+
+        // Check if defender has any melee weapon with Counter (for strike order and Impact reduction)
         bool defender_has_counter_weapon = combat_.has_counter_weapon(defender);
 
         // Count models with Counter weapons in defender (for Impact reduction)
+        // Counter-Attack does NOT reduce Impact, only Counter (weapon) does
         // If any weapon has Counter, all alive models count for Impact reduction
         u8 counter_models = defender_has_counter_weapon ? defender.alive_count() : 0;
 
-        // Counter weapons strike first when defender is charged and not shaken
-        bool use_counter_order = is_charging && defender_has_counter_weapon && !defender.is_shaken();
+        // Determine strike order:
+        // - Counter-Attack (unit rule): ALL defender weapons strike first when charged
+        // - Counter (weapon rule): Only Counter weapons strike first when charged
+        bool use_counter_attack_order = is_charging && defender_has_counter_attack && !defender.is_shaken();
+        bool use_counter_weapon_order = is_charging && defender_has_counter_weapon && !defender.is_shaken() && !use_counter_attack_order;
 
         if (logger_) {
-            const char* strike_reason = use_counter_order ? "counter_weapon_strikes_first" : "normal_strike_order";
-            logger_->on_melee_strike_order(use_counter_order, strike_reason);
+            const char* strike_reason = use_counter_attack_order ? "counter_attack_all_weapons_first" :
+                                       use_counter_weapon_order ? "counter_weapon_strikes_first" :
+                                       "normal_strike_order";
+            logger_->on_melee_strike_order(use_counter_attack_order || use_counter_weapon_order, strike_reason);
         }
 
         u16 attacker_wounds = 0;
@@ -534,10 +543,47 @@ private:
         u32 self_destruct_hits_to_attacker = 0;
         u32 self_destruct_hits_to_defender = 0;
 
-        if (use_counter_order) {
-            // Three-phase Counter ordering:
-            // 1. Defender's Counter weapons strike first
+        if (use_counter_attack_order) {
+            // Counter-Attack ordering (unit rule):
+            // 1. ALL defender weapons strike first (no Impact reduction)
             // 2. Attacker's all weapons strike
+
+            // Phase 1: ALL defender weapons strike first
+            CombatResult def_result = combat_.resolve_melee_phased(
+                defender, attacker, false, 0, WeaponFilter::ALL);
+            state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
+            attacker_wounds += def_result.wounds_dealt;
+            self_destruct_hits_to_defender += def_result.self_destruct_hits;
+
+            if (logger_ && def_result.wounds_dealt > 0) {
+                logger_->on_rule_triggered("Counter-Attack", "all_weapons_struck_first", def_result.wounds_dealt);
+            }
+
+            // Mark defender as fatigued after striking
+            defender.set_fatigued(true);
+            if (logger_) {
+                logger_->on_fatigue_changed(!is_unit_a, true, "struck_in_melee");
+            }
+
+            // Phase 2: Attacker's all weapons (if not destroyed)
+            // Note: Counter-Attack does NOT reduce Impact
+            if (!attacker.is_out_of_action()) {
+                CombatResult atk_result = combat_.resolve_melee_phased(
+                    attacker, defender, is_charging, 0, WeaponFilter::ALL);  // 0 counter_models = no Impact reduction
+                state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
+                defender_wounds += atk_result.wounds_dealt;
+                self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
+
+                // Mark attacker as fatigued after striking
+                attacker.set_fatigued(true);
+                if (logger_) {
+                    logger_->on_fatigue_changed(is_unit_a, true, "struck_in_melee");
+                }
+            }
+        } else if (use_counter_weapon_order) {
+            // Three-phase Counter ordering (weapon rule):
+            // 1. Defender's Counter weapons strike first
+            // 2. Attacker's all weapons strike (with Impact reduction)
             // 3. Defender's remaining (non-Counter) weapons strike
 
             // Phase 1: Defender's Counter weapons
