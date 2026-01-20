@@ -257,7 +257,8 @@ public:
              << " attacks = " << total_attacks << " total\n";
     }
 
-    void on_weapon_attack_end(const char* /*weapon_name*/, u32 total_wounds, u8 models_killed) override {
+    void on_weapon_attack_end(const char* /*weapon_name*/, u32 total_wounds, u8 models_killed,
+                              u16 /*attacker_wounds_remaining*/, u16 /*defender_wounds_remaining*/) override {
         out_ << ind() << "  Result: " << total_wounds << " wounds, "
              << (int)models_killed << " models killed\n";
     }
