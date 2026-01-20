@@ -161,6 +161,16 @@ struct UnifiedCombatContext {
 };
 
 // ==============================================================================
+// Weapon Filter - For Counter weapon ordering in melee
+// ==============================================================================
+
+enum class WeaponFilter : u8 {
+    ALL,           // Use all weapons (default)
+    COUNTER_ONLY,  // Only weapons with Counter rule
+    SKIP_COUNTER   // Only weapons WITHOUT Counter rule
+};
+
+// ==============================================================================
 // Registry Combat Resolver
 // ==============================================================================
 
@@ -1199,7 +1209,8 @@ private:
         }
 
         if (logger_) {
-            logger_->on_weapon_attack_end(weapon.name.c_str(), result.wounds_dealt, result.models_killed);
+            logger_->on_weapon_attack_end(weapon.name.c_str(), result.wounds_dealt, result.models_killed,
+                                          attacker.total_wounds_remaining(), defender.total_wounds_remaining());
         }
 
         return result;
@@ -1476,7 +1487,8 @@ public:
             }
 
             if (logger_) {
-                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed);
+                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed,
+                                              attacker.total_wounds_remaining(), defender.total_wounds_remaining());
             }
         }
 
@@ -1782,7 +1794,8 @@ public:
             }
 
             if (logger_) {
-                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed);
+                logger_->on_weapon_attack_end(w.name.c_str(), actual_wounds_dealt, weapon_models_killed,
+                                              attacker.total_wounds_remaining(), defender.total_wounds_remaining());
             }
         }
 
@@ -1865,8 +1878,21 @@ public:
         return result;
     }
 
+    // Check if a unit has any melee weapon with the Counter rule
+    static bool has_counter_weapon(const UnitView& unit) {
+        for (u8 i = 0; i < unit.weapon_count(); ++i) {
+            const Weapon& w = unit.get_weapon(i);
+            if (w.is_melee() && w.has_rule(RuleId::Counter)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Resolve melee using phase-based effect dispatch
-    CombatResult resolve_melee_phased(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models = 0) {
+    // weapon_filter: controls which weapons participate (for Counter ordering)
+    CombatResult resolve_melee_phased(UnitView attacker, UnitView defender, bool is_charging,
+                                      u8 counter_models = 0, WeaponFilter weapon_filter = WeaponFilter::ALL) {
         CombatResult result;
 
         u8 models_fighting = attacker.alive_count();
@@ -1921,7 +1947,8 @@ public:
                             result.self_destruct_hits += wound_result.self_destruct_hits;
 
                             if (logger_) {
-                                logger_->on_weapon_attack_end("Impact", impact_wounds, wound_result.models_killed);
+                                logger_->on_weapon_attack_end("Impact", impact_wounds, wound_result.models_killed,
+                                                              attacker.total_wounds_remaining(), defender.total_wounds_remaining());
                             }
                         }
                     }
@@ -1939,6 +1966,11 @@ public:
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
             if (!w.is_melee()) continue;
+
+            // Apply weapon filter for Counter ordering
+            bool has_counter = w.has_rule(RuleId::Counter);
+            if (weapon_filter == WeaponFilter::COUNTER_ONLY && !has_counter) continue;
+            if (weapon_filter == WeaponFilter::SKIP_COUNTER && has_counter) continue;
 
             // Limited: skip if already used
             if (w.has_rule(RuleId::Limited)) {

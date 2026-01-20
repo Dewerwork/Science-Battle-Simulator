@@ -513,19 +513,19 @@ private:
                                     defender.unit->name.c_str(), is_charging, attacker.is_fatigued());
         }
 
-        // Count models with Counter rule in defender (for Impact reduction)
-        u8 counter_models = 0;
-        if (defender.has_rule(RuleId::Counter)) {
-            // If the unit has Counter, all alive models count
-            counter_models = defender.alive_count();
-        }
+        // Check if defender has any melee weapon with Counter (for strike order)
+        bool defender_has_counter_weapon = combat_.has_counter_weapon(defender);
 
-        // Counter: defender strikes first when charged (and not shaken)
-        bool defender_strikes_first = is_charging && defender.has_rule(RuleId::Counter) && !defender.is_shaken();
+        // Count models with Counter weapons in defender (for Impact reduction)
+        // If any weapon has Counter, all alive models count for Impact reduction
+        u8 counter_models = defender_has_counter_weapon ? defender.alive_count() : 0;
+
+        // Counter weapons strike first when defender is charged and not shaken
+        bool use_counter_order = is_charging && defender_has_counter_weapon && !defender.is_shaken();
 
         if (logger_) {
-            const char* strike_reason = defender_strikes_first ? "counter_rule_active" : "normal_strike_order";
-            logger_->on_melee_strike_order(defender_strikes_first, strike_reason);
+            const char* strike_reason = use_counter_order ? "counter_weapon_strikes_first" : "normal_strike_order";
+            logger_->on_melee_strike_order(use_counter_order, strike_reason);
         }
 
         u16 attacker_wounds = 0;
@@ -534,24 +534,29 @@ private:
         u32 self_destruct_hits_to_attacker = 0;
         u32 self_destruct_hits_to_defender = 0;
 
-        if (defender_strikes_first) {
-            // Defender with Counter strikes first
-            CombatResult def_result = combat_.resolve_melee_phased(defender, attacker, false, 0);
-            state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
-            attacker_wounds = def_result.wounds_dealt;
-            self_destruct_hits_to_defender += def_result.self_destruct_hits;
+        if (use_counter_order) {
+            // Three-phase Counter ordering:
+            // 1. Defender's Counter weapons strike first
+            // 2. Attacker's all weapons strike
+            // 3. Defender's remaining (non-Counter) weapons strike
 
-            // Mark defender as fatigued after striking
-            defender.set_fatigued(true);
-            if (logger_) {
-                logger_->on_fatigue_changed(!is_unit_a, true, "struck_in_melee");
+            // Phase 1: Defender's Counter weapons
+            CombatResult counter_result = combat_.resolve_melee_phased(
+                defender, attacker, false, 0, WeaponFilter::COUNTER_ONLY);
+            state_.stats.record_wounds(!is_unit_a, counter_result.wounds_dealt, counter_result.models_killed);
+            attacker_wounds += counter_result.wounds_dealt;
+            self_destruct_hits_to_defender += counter_result.self_destruct_hits;
+
+            if (logger_ && counter_result.wounds_dealt > 0) {
+                logger_->on_rule_triggered("Counter", "struck_before_charge", counter_result.wounds_dealt);
             }
 
+            // Phase 2: Attacker's all weapons (if not destroyed)
             if (!attacker.is_out_of_action()) {
-                // Attacker strikes back (pass counter_models for Impact reduction)
-                CombatResult atk_result = combat_.resolve_melee_phased(attacker, defender, is_charging, counter_models);
+                CombatResult atk_result = combat_.resolve_melee_phased(
+                    attacker, defender, is_charging, counter_models, WeaponFilter::ALL);
                 state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
-                defender_wounds = atk_result.wounds_dealt;
+                defender_wounds += atk_result.wounds_dealt;
                 self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
 
                 // Mark attacker as fatigued after striking
@@ -560,9 +565,25 @@ private:
                     logger_->on_fatigue_changed(is_unit_a, true, "struck_in_melee");
                 }
             }
+
+            // Phase 3: Defender's non-Counter weapons (if not destroyed)
+            if (!defender.is_out_of_action()) {
+                CombatResult def_result = combat_.resolve_melee_phased(
+                    defender, attacker, false, 0, WeaponFilter::SKIP_COUNTER);
+                state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
+                attacker_wounds += def_result.wounds_dealt;
+                self_destruct_hits_to_defender += def_result.self_destruct_hits;
+
+                // Mark defender as fatigued after striking
+                defender.set_fatigued(true);
+                if (logger_) {
+                    logger_->on_fatigue_changed(!is_unit_a, true, "struck_in_melee");
+                }
+            }
         } else {
             // Normal order: attacker first (pass counter_models for Impact reduction)
-            CombatResult atk_result = combat_.resolve_melee_phased(attacker, defender, is_charging, counter_models);
+            CombatResult atk_result = combat_.resolve_melee_phased(
+                attacker, defender, is_charging, counter_models, WeaponFilter::ALL);
             state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
             defender_wounds = atk_result.wounds_dealt;
             self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
@@ -583,7 +604,8 @@ private:
                         logger_->on_fatigue_changed(!is_unit_a, true, "shaken_unit_strikes_back");
                     }
                 }
-                CombatResult def_result = combat_.resolve_melee_phased(defender, attacker, false, 0);
+                CombatResult def_result = combat_.resolve_melee_phased(
+                    defender, attacker, false, 0, WeaponFilter::ALL);
                 state_.stats.record_wounds(!is_unit_a, def_result.wounds_dealt, def_result.models_killed);
                 attacker_wounds = def_result.wounds_dealt;
                 self_destruct_hits_to_defender += def_result.self_destruct_hits;

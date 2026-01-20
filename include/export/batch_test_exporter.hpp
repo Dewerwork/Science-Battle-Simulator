@@ -252,6 +252,7 @@ private:
              << "unit_a_start_pos,unit_a_end_pos,unit_b_start_pos,unit_b_end_pos,"
              << "a_controls_objective,b_controls_objective,control_reason,"
              << "unit_a_models_remaining,unit_b_models_remaining,"
+             << "unit_a_wounds_remaining,unit_b_wounds_remaining,"
              << "unit_a_status,unit_b_status\n";
 
         for (const auto& result : results) {
@@ -278,6 +279,8 @@ private:
                              << escape_csv(round.control_reason) << ","
                              << static_cast<int>(round.unit_a_models) << ","
                              << static_cast<int>(round.unit_b_models) << ","
+                             << round.unit_a_wounds_remaining << ","
+                             << round.unit_b_wounds_remaining << ","
                              << escape_csv(round.unit_a_status) << ","
                              << escape_csv(round.unit_b_status) << "\n";
                     }
@@ -407,7 +410,8 @@ private:
              << "weapon,is_melee,distance,models_attacking,total_attacks,"
              << "hit_target,hits,hit_sixes,normal_hits,rending_hits,total_hits,"
              << "ap_applied,defense_target,saves,wounds,"
-             << "wounds_allocated,models_killed,overkill\n";
+             << "wounds_allocated,models_killed,overkill,"
+             << "attacker_wounds_remaining,defender_wounds_remaining\n";
 
         for (const auto& result : results) {
             for (const auto& iter : result.iterations) {
@@ -446,7 +450,9 @@ private:
                                      << attack.wounds << ","
                                      << attack.wounds_allocated << ","
                                      << attack.models_killed << ","
-                                     << attack.overkill_wounds << "\n";
+                                     << attack.overkill_wounds << ","
+                                     << attack.attacker_wounds_remaining << ","
+                                     << attack.defender_wounds_remaining << "\n";
 
                                 attack_seq++;
                             }

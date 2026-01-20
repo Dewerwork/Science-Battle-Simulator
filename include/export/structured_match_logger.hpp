@@ -69,6 +69,10 @@ struct AttackSequenceData {
     u32 models_killed = 0;
     u32 overkill_wounds = 0;
 
+    // Wounds remaining after this attack
+    u16 attacker_wounds_remaining = 0;
+    u16 defender_wounds_remaining = 0;
+
     // Rule triggers during this attack
     std::vector<RuleTriggerData> rule_triggers;
 };
@@ -196,6 +200,8 @@ struct RoundData {
     // End state
     u8 unit_a_models = 0;
     u8 unit_b_models = 0;
+    u16 unit_a_wounds_remaining = 0;
+    u16 unit_b_wounds_remaining = 0;
     std::string unit_a_status;
     std::string unit_b_status;
 };
@@ -368,6 +374,12 @@ public:
             current_round_->unit_b_models = state.state_b.alive_count;
             current_round_->unit_a_status = status_to_string(state.state_a.status);
             current_round_->unit_b_status = status_to_string(state.state_b.status);
+
+            // Calculate wounds remaining for each unit
+            current_round_->unit_a_wounds_remaining = calculate_wounds_remaining(
+                *state.unit_a_ptr, state.state_a);
+            current_round_->unit_b_wounds_remaining = calculate_wounds_remaining(
+                *state.unit_b_ptr, state.state_b);
         }
         current_round_ = nullptr;
     }
@@ -571,10 +583,14 @@ public:
     }
 
     void on_weapon_attack_end(const char* /*weapon_name*/, u32 total_wounds,
-                              u8 models_killed) override {
+                              u8 models_killed,
+                              u16 attacker_wounds_remaining,
+                              u16 defender_wounds_remaining) override {
         if (current_attack_) {
             current_attack_->wounds_allocated = total_wounds;
             current_attack_->models_killed = models_killed;
+            current_attack_->attacker_wounds_remaining = attacker_wounds_remaining;
+            current_attack_->defender_wounds_remaining = defender_wounds_remaining;
         }
         current_attack_ = nullptr;
     }
@@ -970,6 +986,16 @@ private:
             case UnitStatus::Routed: return "routed";
             default: return "unknown";
         }
+    }
+
+    static u16 calculate_wounds_remaining(const Unit& unit, const UnitSimState& state) {
+        u16 total = 0;
+        for (u8 i = 0; i < unit.model_count; ++i) {
+            if (state.models[i].is_alive()) {
+                total += unit.models[i].tough - state.models[i].wounds_taken;
+            }
+        }
+        return total;
     }
 
     static std::string ai_type_to_string(AIType type) {
