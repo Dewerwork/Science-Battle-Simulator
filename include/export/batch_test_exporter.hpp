@@ -172,6 +172,9 @@ private:
             case RuleId::HiveBond: return "HiveBond";
             case RuleId::Teleport: return "Teleport";
             case RuleId::PiercingTag: return "PiercingTag";
+            case RuleId::CounterAttack: return "Counter-Attack";
+            case RuleId::Changebound: return "Changebound";
+            case RuleId::ChangeboundBoost: return "Changebound Boost";
             default: return "Unknown(" + std::to_string(static_cast<int>(id)) + ")";
         }
     }

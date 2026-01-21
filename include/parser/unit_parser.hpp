@@ -426,8 +426,7 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"sturdyboostaura", RuleId::Sturdy},
         {"changebound aura", RuleId::Changebound},
         {"changeboundaura", RuleId::Changebound},
-        {"changebound boost aura", RuleId::Changebound},
-        {"changeboundboostaura", RuleId::Changebound},
+        // Note: "changebound boost aura" maps to ChangeboundBoostAura in Category R
         {"machine-fog", RuleId::Changebound},
         {"machinefog", RuleId::Changebound},
         {"machine-fog aura", RuleId::Changebound},
