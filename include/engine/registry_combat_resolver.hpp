@@ -650,7 +650,11 @@ private:
         ctx.hit_modifier = uctx.hit_modifier;
         ctx.quality_used = uctx.quality_used;
         ctx.defense_modifier = 0;  // Will be set by effects
-        ctx.ap_modifier = 0;       // Will be set by effects
+        // Initialize ap_modifier from effective_ap for DEFENSE_RESOLUTION phase
+        // so Guardian/GuardianBoost can reduce it (they check if ap_modifier > 0)
+        ctx.ap_modifier = (phase == CombatSubPhase::DEFENSE_RESOLUTION)
+            ? static_cast<i8>(uctx.effective_ap)
+            : static_cast<i8>(0);
         ctx.attacks = uctx.attacks;
         ctx.hits = uctx.hits;
         ctx.natural_sixes = uctx.natural_sixes;
@@ -718,6 +722,11 @@ private:
         uctx.hit_modifier = ctx.hit_modifier;
         uctx.quality_used = ctx.quality_used;
         uctx.defense_modifier = ctx.defense_modifier;
+        // Apply ap_modifier back to effective_ap for DEFENSE_RESOLUTION phase
+        // Guardian/GuardianBoost reduce ap_modifier, which should reduce effective_ap
+        if (phase == CombatSubPhase::DEFENSE_RESOLUTION) {
+            uctx.effective_ap = static_cast<u8>(std::max(static_cast<i8>(0), ctx.ap_modifier));
+        }
         uctx.hits = ctx.hits;
         uctx.natural_sixes = ctx.natural_sixes;
         uctx.natural_fives = ctx.natural_fives;
@@ -810,6 +819,10 @@ private:
 
         // Calculate effective AP
         ctx.effective_ap = ctx.base_ap;
+
+        // Apply Guardian/GuardianBoost AP reduction via phase effects
+        // This handles defender abilities that reduce incoming AP
+        apply_all_phase_effects(CombatSubPhase::DEFENSE_RESOLUTION, ctx);
 
         // Lance: +2 AP when charging
         if (ctx.is_charge && ctx.weapon->has_rule(RuleId::Lance)) {

@@ -874,6 +874,19 @@ private:
             attack.ap_modifiers.push_back({"Piercing Assault", 0});
         }
 
+        // Guardian Boost: Always reduces AP by 1 (regardless of distance)
+        if (defender.has_rule(RuleId::GuardianBoost) && ap > 0) {
+            ap -= 1;
+            attack.ap_modifiers.push_back({"Guardian Boost", -1});
+            attack.triggered_rules.push_back("Guardian Boost");
+        }
+        // Guardian: Reduces AP by 1 when shot/charged from over 9"
+        else if (defender.has_rule(RuleId::Guardian) && distance > 9 && ap > 0) {
+            ap -= 1;
+            attack.ap_modifiers.push_back({"Guardian (>9\")", -1});
+            attack.triggered_rules.push_back("Guardian");
+        }
+
         attack.effective_ap = ap;
 
         // Defense rolls
