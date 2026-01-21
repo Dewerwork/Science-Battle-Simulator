@@ -450,8 +450,6 @@ inline const std::unordered_map<std::string, RuleId>& UnitParser::get_rule_map()
         {"bloodbornaura", RuleId::Bloodborn},
         {"clan warrior aura", RuleId::Bloodborn},
         {"clanwarrioraura", RuleId::Bloodborn},
-        {"clan warrior boost aura", RuleId::Bloodborn},
-        {"clanwarriorboostaura", RuleId::Bloodborn},
         {"primal aura", RuleId::Bloodborn},
         {"primalaura", RuleId::Bloodborn},
         {"targeting visor aura", RuleId::TargetingVisor},

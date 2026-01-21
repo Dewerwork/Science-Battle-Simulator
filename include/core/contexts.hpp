@@ -39,10 +39,11 @@ struct CombatContextCore {
     i8 defense_modifier = 0;            // 1 byte - Accumulated defense modifier
     i8 ap_modifier = 0;                 // 1 byte - Accumulated AP modifier
 
-    // Hit tracking - 12 bytes
+    // Hit tracking - 16 bytes
     u32 attacks = 0;                    // 4 bytes - Total attacks made
     u32 hits = 0;                       // 4 bytes - Hits after dice rolls
     u32 natural_sixes = 0;              // 4 bytes - Unmodified 6s rolled
+    u32 natural_fives = 0;              // 4 bytes - Unmodified 5s rolled
 
     // Wound tracking - 8 bytes
     u32 wounds_to_allocate = 0;         // 4 bytes - Wounds pending allocation
@@ -62,8 +63,8 @@ struct CombatContextCore {
     static constexpr u8 HAS_TAKEDOWN = 0x08;    // Takedown active
     static constexpr u8 IS_FATIGUED = 0x10;     // Attacker is fatigued/shaken
 
-    // Padding to exactly 64 bytes - 8 bytes
-    u8 _reserved[8] = {};
+    // Padding to exactly 64 bytes - 4 bytes
+    u8 _reserved[4] = {};
 
     // ==============================================================================
     // Trait flag helpers

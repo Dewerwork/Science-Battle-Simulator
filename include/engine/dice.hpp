@@ -121,10 +121,11 @@ public:
     }
 
     // Roll quality test (hits on quality+ with modifier)
-    // Returns (successes, sixes_count) for Furious/Rending
+    // Returns (successes, sixes_count, fives_count) for Furious/Rending/ClanWarriorBoost
     struct QualityResult {
         u32 hits;
         u32 sixes;
+        u32 fives;
     };
 
     // Defense test result (for Shred tracking)
@@ -134,7 +135,7 @@ public:
     };
 
     QualityResult roll_quality_test(u32 attacks, u8 quality, i8 modifier = 0) {
-        if (attacks == 0) return {0, 0};
+        if (attacks == 0) return {0, 0, 0};
 
         // Calculate effective target (clamped 2-6)
         i8 effective = static_cast<i8>(quality) - modifier;
@@ -145,16 +146,19 @@ public:
         if (record_rolls_) [[unlikely]] {
             u32 hits = 0;
             u32 sixes = 0;
+            u32 fives = 0;
             for (u32 i = 0; i < attacks; ++i) {
                 u8 die = roll_d6();
                 hits += (die >= eff_target);
                 sixes += (die == 6);
+                fives += (die == 5);
             }
-            return {hits, sixes};
+            return {hits, sixes, fives};
         }
 
         u32 hits = 0;
         u32 sixes = 0;
+        u32 fives = 0;
         u32 remaining = attacks;
 
         // Process 8 dice at a time using Lemire's fast reduction and branchless counting
@@ -175,6 +179,9 @@ public:
             // Branchless six counting
             sixes += (d0 == 6) + (d1 == 6) + (d2 == 6) + (d3 == 6)
                    + (d4 == 6) + (d5 == 6) + (d6 == 6) + (d7 == 6);
+            // Branchless five counting
+            fives += (d0 == 5) + (d1 == 5) + (d2 == 5) + (d3 == 5)
+                   + (d4 == 5) + (d5 == 5) + (d6 == 5) + (d7 == 5);
             remaining -= 8;
         }
 
@@ -184,9 +191,10 @@ public:
             u8 die = static_cast<u8>(((r & 0xFF) * 6) >> 8) + 1;
             hits += (die >= eff_target);
             sixes += (die == 6);
+            fives += (die == 5);
         }
 
-        return {hits, sixes};
+        return {hits, sixes, fives};
     }
 
     // Roll defense test

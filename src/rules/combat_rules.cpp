@@ -775,6 +775,17 @@ void bloodborn_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*v
     }
 }
 
+void clan_warrior_boost_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
+    // Clan Warrior Boost - 5s AND 6s to hit generate +1 attack (non-recursive)
+    // Unlike Bloodborn which only triggers on 6s, this triggers on both 5s and 6s
+    u32 bonus = ctx.natural_sixes + ctx.natural_fives;
+    ctx.hits += bonus;
+    if (ext) {
+        ext->bonus_hits += bonus;
+        // Note: These bonus attacks don't trigger more attacks
+    }
+}
+
 bool shooting_over_9_condition(const CombatContextCore& ctx) {
     // Only when shooting from >9"
     return ctx.combat_type == CombatType::SHOOTING && ctx.distance > 9;
@@ -4471,7 +4482,7 @@ const RuleEffectEntry PointBlankPiercingAura_Effects = EffectBuilder().combat(Co
 const RuleEffectEntry RangedSlayerAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, melee_slayer_effect).condition(CombatSubPhase::DEFENSE_RESOLUTION, shooting_only_condition).build();
 const RuleEffectEntry TargetingVisorBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, targeting_visor_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();
 const RuleEffectEntry PiercingHunterAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, piercing_fighter_aura_effect).build();
-const RuleEffectEntry ClanWarriorBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, bloodborn_effect).build();
+const RuleEffectEntry ClanWarriorBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_BONUSES, clan_warrior_boost_effect).build();
 const RuleEffectEntry PrecisionFighterAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, precision_fighter_aura_effect).condition(CombatSubPhase::HIT_MODIFIERS, melee_only_condition).build();
 const RuleEffectEntry MischievousBoostAura_Effects = EffectBuilder().combat(CombatSubPhase::DEFENSE_RESOLUTION, lacerate_effect).build();
 const RuleEffectEntry QuickShotAura_Effects = EffectBuilder().combat(CombatSubPhase::HIT_MODIFIERS, quick_shot_aura_effect).condition(CombatSubPhase::HIT_MODIFIERS, shooting_only_condition).build();

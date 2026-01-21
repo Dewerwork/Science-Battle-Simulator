@@ -76,6 +76,7 @@ struct DetailedCombatResult {
     u32 attacks = 0;             // Total attacks made
     u32 hits = 0;                // Total hits scored
     u32 natural_sixes = 0;       // Natural 6s rolled (for bonus effects)
+    u32 natural_fives = 0;       // Natural 5s rolled (for ClanWarriorBoost)
     u32 rending_hits = 0;        // Hits with AP+4
     u32 rupture_hits = 0;        // Hits that bypass regen
 
@@ -121,6 +122,7 @@ struct UnifiedCombatContext {
     u32 attacks = 0;
     u32 hits = 0;
     u32 natural_sixes = 0;
+    u32 natural_fives = 0;
 
     // Hit separation state
     u32 normal_hits = 0;
@@ -478,6 +480,7 @@ public:
         auto hit_result = dice_.roll_quality_test(ctx.attacks, ctx.quality_used, ctx.hit_modifier);
         ctx.hits = hit_result.hits;
         ctx.natural_sixes = hit_result.sixes;
+        ctx.natural_fives = hit_result.fives;
 
         // ============================================
         // Phase 4: HIT_SEPARATION
@@ -545,6 +548,7 @@ public:
         result.attacks = ctx.attacks;
         result.hits = ctx.hits;
         result.natural_sixes = ctx.natural_sixes;
+        result.natural_fives = ctx.natural_fives;
         result.rending_hits = ctx.rending_hits;
         result.rupture_hits = ctx.rupture_hits;
         result.wounds_dealt = ctx.wounds;
@@ -610,6 +614,7 @@ private:
         result.attacks = ctx.attacks;
         result.hits = ctx.hits + ctx.bonus_hits;
         result.natural_sixes = ctx.natural_sixes;
+        result.natural_fives = ctx.natural_fives;
         result.rending_hits = ctx.rending_hits;
         result.rupture_hits = ctx.rupture_hits;
         result.wounds_dealt = ctx.wounds;
@@ -649,6 +654,7 @@ private:
         ctx.attacks = uctx.attacks;
         ctx.hits = uctx.hits;
         ctx.natural_sixes = uctx.natural_sixes;
+        ctx.natural_fives = uctx.natural_fives;
 
         // Set trait flags
         if (uctx.bypasses_regeneration) ctx.set_bypass_regen(true);
@@ -714,6 +720,7 @@ private:
         uctx.defense_modifier = ctx.defense_modifier;
         uctx.hits = ctx.hits;
         uctx.natural_sixes = ctx.natural_sixes;
+        uctx.natural_fives = ctx.natural_fives;
 
         // Copy trait flags back
         uctx.bypasses_regeneration = ctx.bypasses_regeneration();
@@ -758,6 +765,7 @@ private:
 
         ctx.hits = roll_result.hits;
         ctx.natural_sixes = roll_result.sixes;
+        ctx.natural_fives = roll_result.fives;
         ctx.normal_hits = ctx.hits;
     }
 
@@ -1041,6 +1049,7 @@ private:
         auto hit_result = dice_.roll_quality_test(ctx.attacks, ctx.quality_used, ctx.hit_modifier);
         ctx.hits = hit_result.hits;
         ctx.natural_sixes = hit_result.sixes;
+        ctx.natural_fives = hit_result.fives;
 
         // Log hit rolls
         if (logger_) {
