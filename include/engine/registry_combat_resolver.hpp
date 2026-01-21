@@ -1057,7 +1057,7 @@ private:
             i8 effective = static_cast<i8>(ctx.quality_used) - ctx.hit_modifier;
             effective = std::max(i8(2), std::min(i8(6), effective));
             logger_->on_hit_rolls(attacker.quality(), ctx.hit_modifier,
-                static_cast<u8>(effective), hit_rolls, ctx.hits, ctx.natural_sixes);
+                static_cast<u8>(effective), hit_rolls, ctx.hits, ctx.natural_sixes, ctx.natural_fives);
         }
 
         // ============================================
@@ -1346,13 +1346,14 @@ public:
             auto hit_result = dice_.roll_quality_test(attacks, quality, hit_modifier);
             u32 hits = hit_result.hits;
             u32 sixes = hit_result.sixes;
+            u32 fives = hit_result.fives;
 
             // Log hit rolls
             if (logger_) {
                 std::vector<u8> hit_rolls = dice_.take_recorded_rolls();
                 i8 effective = static_cast<i8>(quality) - hit_modifier;
                 effective = std::max(i8(2), std::min(i8(6), effective));
-                logger_->on_hit_rolls(base_quality, hit_modifier, static_cast<u8>(effective), hit_rolls, hits, sixes);
+                logger_->on_hit_rolls(base_quality, hit_modifier, static_cast<u8>(effective), hit_rolls, hits, sixes, fives);
             }
 
             // Apply hit separation (Rending/Rupture)
@@ -1645,13 +1646,14 @@ public:
             auto hit_result = dice_.roll_quality_test(attacks, quality, hit_modifier);
             u32 hits = hit_result.hits;
             u32 sixes = hit_result.sixes;
+            u32 fives = hit_result.fives;
 
             // Log hit rolls
             if (logger_) {
                 std::vector<u8> hit_rolls = dice_.take_recorded_rolls();
                 i8 effective = static_cast<i8>(quality) - hit_modifier;
                 effective = std::max(i8(2), std::min(i8(6), effective));
-                logger_->on_hit_rolls(base_quality, hit_modifier, static_cast<u8>(effective), hit_rolls, hits, sixes);
+                logger_->on_hit_rolls(base_quality, hit_modifier, static_cast<u8>(effective), hit_rolls, hits, sixes, fives);
             }
 
             // Apply hit separation (Rending/Rupture)

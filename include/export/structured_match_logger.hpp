@@ -18,6 +18,7 @@ struct RollData {
     u8 target = 0;
     u32 successes = 0;
     u32 sixes = 0;
+    u32 fives = 0;
 };
 
 struct RuleTriggerData {
@@ -612,12 +613,13 @@ public:
     }
 
     void on_hit_rolls(u8 /*base_quality*/, i8 /*total_modifier*/, u8 effective_target,
-                      const std::vector<u8>& rolls, u32 hits, u32 sixes) override {
+                      const std::vector<u8>& rolls, u32 hits, u32 sixes, u32 fives = 0) override {
         if (current_attack_) {
             current_attack_->hit_rolls.rolls.assign(rolls.begin(), rolls.end());
             current_attack_->hit_rolls.target = effective_target;
             current_attack_->hit_rolls.successes = hits;
             current_attack_->hit_rolls.sixes = sixes;
+            current_attack_->hit_rolls.fives = fives;
         }
     }
 

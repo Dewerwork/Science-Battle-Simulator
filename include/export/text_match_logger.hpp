@@ -277,10 +277,16 @@ public:
     }
 
     void on_hit_rolls(u8 /*base_quality*/, i8 /*total_modifier*/, u8 effective_target,
-                      const std::vector<u8>& rolls, u32 hits, u32 sixes) override {
+                      const std::vector<u8>& rolls, u32 hits, u32 sixes, u32 fives = 0) override {
         out_ << ind() << "  Hit rolls (need " << (int)effective_target << "+): "
              << format_rolls(rolls) << " = " << hits << " hits";
-        if (sixes > 0) out_ << " (" << sixes << " sixes)";
+        if (sixes > 0 || fives > 0) {
+            out_ << " (";
+            if (sixes > 0) out_ << sixes << " sixes";
+            if (sixes > 0 && fives > 0) out_ << ", ";
+            if (fives > 0) out_ << fives << " fives";
+            out_ << ")";
+        }
         out_ << "\n";
     }
 
