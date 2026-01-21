@@ -207,7 +207,8 @@ public:
         u8 effective_target,
         const std::vector<u8>& rolls,
         u32 hits,
-        u32 sixes) = 0;
+        u32 sixes,
+        u32 fives = 0) = 0;
 
     // =========================================================================
     // HIT MODIFIERS (bonus hits, rending, etc.)
