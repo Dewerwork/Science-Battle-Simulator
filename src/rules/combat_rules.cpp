@@ -6282,6 +6282,11 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_alias("Relentless", RuleId::Relentless);
     registry.register_alias("furious", RuleId::Furious);
     registry.register_alias("Furious", RuleId::Furious);
+    registry.register_alias("warbound", RuleId::Warbound);
+    registry.register_alias("Warbound", RuleId::Warbound);
+    // Infected has the same effect as Warbound (extra wound on defense 1s)
+    registry.register_alias("infected", RuleId::Warbound);
+    registry.register_alias("Infected", RuleId::Warbound);
 
     // =========================================================================
     // Register Movement aliases for parsing

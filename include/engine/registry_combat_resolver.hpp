@@ -524,19 +524,44 @@ public:
         i8 effective_target = static_cast<i8>(defense_target) + static_cast<i8>(ctx.effective_ap);
         effective_target = std::max(i8(2), std::min(i8(6), effective_target));
 
+        // Check if attacker has Warbound/Infected (extra wound on defense 1s)
+        bool warbound_active = attacker.has_rule(RuleId::Warbound);
+
         // Roll defense for normal hits
-        u32 wounds_from_normal = dice_.roll_defense_test(
-            ctx.normal_hits, defense_target, ctx.effective_ap, 0, ctx.forces_defense_reroll);
+        u32 wounds_from_normal = 0;
+        u32 extra_wounds_from_ones = 0;
+        if (warbound_active) {
+            auto result = dice_.roll_defense_test_with_ones(
+                ctx.normal_hits, defense_target, ctx.effective_ap, 0, ctx.forces_defense_reroll);
+            wounds_from_normal = result.wounds;
+            extra_wounds_from_ones = result.ones;
+            if (logger_ && result.ones > 0) {
+                logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s", result.ones);
+            }
+        } else {
+            wounds_from_normal = dice_.roll_defense_test(
+                ctx.normal_hits, defense_target, ctx.effective_ap, 0, ctx.forces_defense_reroll);
+        }
 
         // Roll defense for rending hits (AP+4)
         u32 wounds_from_rending = 0;
         if (ctx.rending_hits > 0) {
             u8 rending_ap = ctx.effective_ap + 4;
-            wounds_from_rending = dice_.roll_defense_test(
-                ctx.rending_hits, defense_target, rending_ap, 0, ctx.forces_defense_reroll);
+            if (warbound_active) {
+                auto result = dice_.roll_defense_test_with_ones(
+                    ctx.rending_hits, defense_target, rending_ap, 0, ctx.forces_defense_reroll);
+                wounds_from_rending = result.wounds;
+                extra_wounds_from_ones += result.ones;
+                if (logger_ && result.ones > 0) {
+                    logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s_rending", result.ones);
+                }
+            } else {
+                wounds_from_rending = dice_.roll_defense_test(
+                    ctx.rending_hits, defense_target, rending_ap, 0, ctx.forces_defense_reroll);
+            }
         }
 
-        ctx.wounds = wounds_from_normal + wounds_from_rending;
+        ctx.wounds = wounds_from_normal + wounds_from_rending + extra_wounds_from_ones;
 
         // ============================================
         // Phase 8: WOUND_ALLOCATION
@@ -863,24 +888,44 @@ private:
             // Note: Disintegrate also bypasses regeneration (handled in trait aggregation)
         }
 
+        // Check if attacker has Warbound/Infected (extra wound on defense 1s)
+        bool warbound_active = ctx.attacker->has_rule(RuleId::Warbound);
+
         // Process normal hits
         u32 normal_wounds = 0;
+        u32 extra_wounds_from_ones = 0;
         if (ctx.normal_hits > 0) {
-            normal_wounds = dice_.roll_defense_test(
-                ctx.normal_hits, ctx.defender->defense, ctx.effective_ap,
-                0, ctx.forces_defense_reroll);
+            if (warbound_active) {
+                auto result = dice_.roll_defense_test_with_ones(
+                    ctx.normal_hits, ctx.defender->defense, ctx.effective_ap,
+                    0, ctx.forces_defense_reroll);
+                normal_wounds = result.wounds;
+                extra_wounds_from_ones = result.ones;
+            } else {
+                normal_wounds = dice_.roll_defense_test(
+                    ctx.normal_hits, ctx.defender->defense, ctx.effective_ap,
+                    0, ctx.forces_defense_reroll);
+            }
         }
 
         // Process rending hits (AP+4)
         u32 rending_wounds = 0;
         if (ctx.rending_hits > 0) {
             u8 rending_ap = ctx.effective_ap + 4;
-            rending_wounds = dice_.roll_defense_test(
-                ctx.rending_hits, ctx.defender->defense, rending_ap,
-                0, ctx.forces_defense_reroll);
+            if (warbound_active) {
+                auto result = dice_.roll_defense_test_with_ones(
+                    ctx.rending_hits, ctx.defender->defense, rending_ap,
+                    0, ctx.forces_defense_reroll);
+                rending_wounds = result.wounds;
+                extra_wounds_from_ones += result.ones;
+            } else {
+                rending_wounds = dice_.roll_defense_test(
+                    ctx.rending_hits, ctx.defender->defense, rending_ap,
+                    0, ctx.forces_defense_reroll);
+            }
         }
 
-        ctx.wounds = normal_wounds + rending_wounds;
+        ctx.wounds = normal_wounds + rending_wounds + extra_wounds_from_ones;
 
         // Rupture adds +1 wound per wound from rupture hits
         // (simplified - in full implementation would track which wounds came from rupture)
