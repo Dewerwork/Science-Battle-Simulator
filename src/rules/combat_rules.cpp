@@ -1874,7 +1874,7 @@ const RuleHotData Indirect_HotData{
     GamePhase::COMBAT,
     static_cast<u8>(CombatSubPhase::PRE_ATTACK),
     CombatType::SHOOTING,
-    Target::WEAPON,
+    Target::ATTACKER,  // Indirect is a unit rule, not a weapon rule
     Trigger::ALWAYS,
     RulePriority::NORMAL,
     static_cast<TraitMask>(RuleTrait::IGNORES_COVER) |
