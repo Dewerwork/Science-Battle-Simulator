@@ -75,6 +75,7 @@ public:
         u32 saves;
         u32 wounds;
         u32 sixes;
+        u32 ones;  // For Warbound/Infected - extra wound on defense 1s
         u8 defense;
         u8 ap;
         u8 effective_target;
@@ -96,12 +97,16 @@ public:
 
         result.saves = 0;
         result.sixes = 0;
+        result.ones = 0;
         result.reroll_saves = 0;
 
         for (u32 i = 0; i < hits; ++i) {
             u8 roll = dice_.roll_d6();
             result.rolls.push_back(roll);
 
+            if (roll == 1) {
+                result.ones++;
+            }
             if (roll == 6 && reroll_sixes) {
                 result.sixes++;
             } else if (roll >= result.effective_target) {
@@ -114,6 +119,9 @@ public:
             for (u32 i = 0; i < result.sixes; ++i) {
                 u8 roll = dice_.roll_d6();
                 result.rerolls.push_back(roll);
+                if (roll == 1) {
+                    result.ones++;
+                }
                 if (roll >= result.effective_target) {
                     result.reroll_saves++;
                 }
@@ -906,6 +914,10 @@ private:
             effective_defense = std::max(u8(2), static_cast<u8>(effective_defense - 1));
         }
 
+        // Check if attacker has Warbound/Infected (extra wound on defense 1s)
+        bool warbound_active = attacker.has_rule(RuleId::Warbound);
+        u32 extra_wounds_from_ones = 0;
+
         // Roll defense for normal hits
         attack.wounds_from_normal_hits = 0;
         if (normal_hits > 0) {
@@ -932,6 +944,10 @@ private:
             }
             attack.defense_roll.reroll_successes = def_result.reroll_saves;
             attack.wounds_from_normal_hits = def_result.wounds;
+            if (warbound_active && def_result.ones > 0) {
+                extra_wounds_from_ones += def_result.ones;
+                attack.triggered_rules.push_back("Infected");
+            }
         }
 
         // Roll defense for rending hits (AP+4)
@@ -952,9 +968,12 @@ private:
                 attack.rending_defense_roll.dice.push_back(die);
             }
             attack.wounds_from_rending_hits = def_result.wounds;
+            if (warbound_active && def_result.ones > 0) {
+                extra_wounds_from_ones += def_result.ones;
+            }
         }
 
-        attack.total_wounds = attack.wounds_from_normal_hits + attack.wounds_from_rending_hits;
+        attack.total_wounds = attack.wounds_from_normal_hits + attack.wounds_from_rending_hits + extra_wounds_from_ones;
 
         return attack;
     }
