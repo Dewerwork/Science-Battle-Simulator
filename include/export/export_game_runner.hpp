@@ -590,7 +590,7 @@ private:
     }
 
     // Resolve shooting with full logging
-    CombatEvent resolve_shooting_logged(UnitView attacker, UnitView defender, i8 distance, bool /*moved*/, bool /*attacker_is_a*/) {
+    CombatEvent resolve_shooting_logged(UnitView attacker, UnitView defender, i8 distance, bool moved, bool /*attacker_is_a*/) {
         CombatEvent event;
         event.phase = "shooting";
         event.attacker_name = std::string(attacker.name().view());
@@ -607,7 +607,7 @@ private:
             if (!weapon.is_ranged() || weapon.range < static_cast<u8>(distance)) continue;
 
             AttackSequence attack = resolve_weapon_attack_logged(
-                attacker, defender, weapon, w_idx, distance, false, false, 0
+                attacker, defender, weapon, w_idx, distance, false, false, 0, moved
             );
 
             if (attack.total_attacks > 0) {
@@ -710,7 +710,7 @@ private:
             if (!weapon.is_melee()) continue;
 
             AttackSequence attack = resolve_weapon_attack_logged(
-                attacker, defender, weapon, w_idx, 0, true, is_charging, counter_models
+                attacker, defender, weapon, w_idx, 0, true, is_charging, counter_models, false
             );
 
             if (attack.total_attacks > 0) {
@@ -742,7 +742,7 @@ private:
     // Resolve a single weapon's attacks
     AttackSequence resolve_weapon_attack_logged(
         UnitView attacker, UnitView defender, const Weapon& weapon,
-        u8 /*weapon_idx*/, i8 distance, bool is_melee, bool is_charging, u8 /*counter_models*/
+        u8 /*weapon_idx*/, i8 distance, bool is_melee, bool is_charging, u8 /*counter_models*/, bool moved = false
     ) {
         AttackSequence attack;
         attack.attacker_model_name = std::string(attacker.name().view());
@@ -778,6 +778,13 @@ private:
         if (!is_melee && defender.has_rule(RuleId::Stealth) && distance > 9) {
             hit_modifier -= 1;
             attack.hit_modifiers.push_back({"Stealth (>9\")", -1});
+        }
+
+        // Indirect: -1 to hit when shooting after moving
+        if (!is_melee && moved && attacker.has_rule(RuleId::Indirect)) {
+            hit_modifier -= 1;
+            attack.hit_modifiers.push_back({"Indirect (moved)", -1});
+            attack.triggered_rules.push_back("Indirect");
         }
 
         if (is_melee && is_charging && weapon.has_rule(RuleId::Thrust)) {

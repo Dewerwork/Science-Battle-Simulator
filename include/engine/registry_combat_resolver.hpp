@@ -671,6 +671,7 @@ private:
         ext.rending_hits = uctx.rending_hits;
         ext.rupture_hits = uctx.rupture_hits;
         ext.bonus_hits = uctx.bonus_hits;
+        ext.moved_this_activation = uctx.moved_this_activation;  // For Indirect penalty
         ext.logger = logger_;
         ext.dice = &dice_;
 
@@ -1036,9 +1037,9 @@ private:
         // ============================================
         apply_all_phase_effects(CombatSubPhase::HIT_MODIFIERS, ctx);
 
-        // Indirect: -1 to hit when shooting after moving
+        // Indirect: -1 to hit when shooting after moving (check attacker, not weapon)
         if (combat_type == CombatType::SHOOTING && ctx.moved_this_activation &&
-            weapon.has_rule(RuleId::Indirect)) {
+            attacker.has_rule(RuleId::Indirect)) {
             ctx.hit_modifier -= 1;
             if (logger_) logger_->on_hit_modifier("Indirect", -1, "moved_before_shooting");
         }
