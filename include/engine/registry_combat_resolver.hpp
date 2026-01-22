@@ -1198,11 +1198,27 @@ private:
             }
         }
 
+        // Check if attacker has Warbound/Infected (extra wound on defense 1s)
+        bool warbound_active = attacker.has_rule(RuleId::Warbound);
+        u32 extra_wounds_from_ones = 0;
+
         // Roll defense for normal hits
         u8 defense_target = defender.defense();
+        u32 wounds_from_normal = 0;
         if (logger_) dice_.enable_roll_recording(true);
-        u32 wounds_from_normal = dice_.roll_defense_test(
-            ctx.normal_hits, defense_target, ctx.effective_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
+
+        if (warbound_active) {
+            auto def_result = dice_.roll_defense_test_with_ones(
+                ctx.normal_hits, defense_target, ctx.effective_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
+            wounds_from_normal = def_result.wounds;
+            extra_wounds_from_ones = def_result.ones;
+            if (def_result.ones > 0 && logger_) {
+                logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s", def_result.ones);
+            }
+        } else {
+            wounds_from_normal = dice_.roll_defense_test(
+                ctx.normal_hits, defense_target, ctx.effective_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
+        }
 
         // Log defense rolls
         if (logger_) {
@@ -1243,8 +1259,19 @@ private:
         if (ctx.rending_hits > 0) {
             u8 rending_ap = ctx.effective_ap + 4;
             if (logger_) dice_.enable_roll_recording(true);
-            wounds_from_rending = dice_.roll_defense_test(
-                ctx.rending_hits, defense_target, rending_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
+
+            if (warbound_active) {
+                auto def_result = dice_.roll_defense_test_with_ones(
+                    ctx.rending_hits, defense_target, rending_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
+                wounds_from_rending = def_result.wounds;
+                extra_wounds_from_ones += def_result.ones;
+                if (def_result.ones > 0 && logger_) {
+                    logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s_rending", def_result.ones);
+                }
+            } else {
+                wounds_from_rending = dice_.roll_defense_test(
+                    ctx.rending_hits, defense_target, rending_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
+            }
 
             if (logger_) {
                 std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
@@ -1258,7 +1285,7 @@ private:
 
         if (logger_) dice_.enable_roll_recording(false);
 
-        u32 total_wounds = wounds_from_normal + wounds_from_rending;
+        u32 total_wounds = wounds_from_normal + wounds_from_rending + extra_wounds_from_ones;
         ctx.wounds = total_wounds;
 
         // ============================================
@@ -1795,9 +1822,24 @@ public:
                 if (logger_) logger_->on_defense_modifier("Shielded", -1, "easier_saves_vs_melee");
             }
 
+            // Check if attacker has Warbound/Infected (extra wound on defense 1s)
+            bool warbound_active = attacker.has_rule(RuleId::Warbound);
+            u32 extra_wounds_from_ones = 0;
+
             // Roll defense for normal hits
+            u32 wounds_from_normal = 0;
             if (logger_) dice_.enable_roll_recording(true);
-            u32 wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), effective_ap, defense_mod, force_reroll);
+
+            if (warbound_active) {
+                auto def_result = dice_.roll_defense_test_with_ones(normal_hits, defender.defense(), effective_ap, defense_mod, force_reroll);
+                wounds_from_normal = def_result.wounds;
+                extra_wounds_from_ones = def_result.ones;
+                if (def_result.ones > 0 && logger_) {
+                    logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s", def_result.ones);
+                }
+            } else {
+                wounds_from_normal = dice_.roll_defense_test(normal_hits, defender.defense(), effective_ap, defense_mod, force_reroll);
+            }
 
             // Log defense rolls
             if (logger_) {
@@ -1833,7 +1875,17 @@ public:
             if (rending_hits > 0) {
                 u8 rending_ap = effective_ap + 4;
                 if (logger_) dice_.enable_roll_recording(true);
-                wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), rending_ap, defense_mod, force_reroll);
+
+                if (warbound_active) {
+                    auto def_result = dice_.roll_defense_test_with_ones(rending_hits, defender.defense(), rending_ap, defense_mod, force_reroll);
+                    wounds_from_rending = def_result.wounds;
+                    extra_wounds_from_ones += def_result.ones;
+                    if (def_result.ones > 0 && logger_) {
+                        logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s_rending", def_result.ones);
+                    }
+                } else {
+                    wounds_from_rending = dice_.roll_defense_test(rending_hits, defender.defense(), rending_ap, defense_mod, force_reroll);
+                }
 
                 if (logger_) {
                     std::vector<u8> rend_rolls = dice_.take_recorded_rolls();
@@ -1847,7 +1899,7 @@ public:
 
             if (logger_) dice_.enable_roll_recording(false);
 
-            u32 total_wounds = wounds_from_normal + wounds_from_rending;
+            u32 total_wounds = wounds_from_normal + wounds_from_rending + extra_wounds_from_ones;
             u8 weapon_models_killed = 0;
             u16 actual_wounds_dealt = 0;
 
