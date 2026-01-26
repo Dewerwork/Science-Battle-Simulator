@@ -474,9 +474,12 @@ private:
             my_pos = state_.pos_a;
         }
 
+        // Calculate charge distance for rules like Reinforced/Guardian
+        u8 charge_dist = static_cast<u8>(std::abs(my_pos - from_pos));
+
         if (logger_) {
             logger_->on_movement(is_unit_a, "charge", from_pos, my_pos,
-                                 static_cast<i8>(std::abs(my_pos - from_pos)), "charging_into_melee");
+                                 static_cast<i8>(charge_dist), "charging_into_melee");
         }
 
         state_.in_melee = true;
@@ -492,11 +495,11 @@ private:
         // Breath Attack: Once per activation, before attacking
         process_breath_attack(is_unit_a);
 
-        // Resolve charge (attacker strikes first)
-        execute_melee_round(is_unit_a, true);
+        // Resolve charge (attacker strikes first), passing charge distance for Reinforced rule
+        execute_melee_round(is_unit_a, true, charge_dist);
     }
 
-    void execute_melee_round(bool is_unit_a, bool is_charging) {
+    void execute_melee_round(bool is_unit_a, bool is_charging, u8 charge_distance = 0) {
         UnitView attacker = state_.view(is_unit_a);
         UnitView defender = state_.view(!is_unit_a);
 
@@ -569,7 +572,7 @@ private:
             // Note: Counter-Attack does NOT reduce Impact
             if (!attacker.is_out_of_action()) {
                 CombatResult atk_result = combat_.resolve_melee_phased(
-                    attacker, defender, is_charging, 0, WeaponFilter::ALL);  // 0 counter_models = no Impact reduction
+                    attacker, defender, is_charging, 0, WeaponFilter::ALL, charge_distance);  // 0 counter_models = no Impact reduction
                 state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
                 defender_wounds += atk_result.wounds_dealt;
                 self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
@@ -600,7 +603,7 @@ private:
             // Phase 2: Attacker's all weapons (if not destroyed)
             if (!attacker.is_out_of_action()) {
                 CombatResult atk_result = combat_.resolve_melee_phased(
-                    attacker, defender, is_charging, counter_models, WeaponFilter::ALL);
+                    attacker, defender, is_charging, counter_models, WeaponFilter::ALL, charge_distance);
                 state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
                 defender_wounds += atk_result.wounds_dealt;
                 self_destruct_hits_to_attacker += atk_result.self_destruct_hits;
@@ -629,7 +632,7 @@ private:
         } else {
             // Normal order: attacker first (pass counter_models for Impact reduction)
             CombatResult atk_result = combat_.resolve_melee_phased(
-                attacker, defender, is_charging, counter_models, WeaponFilter::ALL);
+                attacker, defender, is_charging, counter_models, WeaponFilter::ALL, charge_distance);
             state_.stats.record_wounds(is_unit_a, atk_result.wounds_dealt, atk_result.models_killed);
             defender_wounds = atk_result.wounds_dealt;
             self_destruct_hits_to_attacker += atk_result.self_destruct_hits;

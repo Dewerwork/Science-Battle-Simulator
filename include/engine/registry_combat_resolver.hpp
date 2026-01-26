@@ -2013,8 +2013,10 @@ public:
 
     // Resolve melee using phase-based effect dispatch
     // weapon_filter: controls which weapons participate (for Counter ordering)
+    // charge_distance: distance the attacker charged from (for Reinforced/Guardian rule)
     CombatResult resolve_melee_phased(UnitView attacker, UnitView defender, bool is_charging,
-                                      u8 counter_models = 0, WeaponFilter weapon_filter = WeaponFilter::ALL) {
+                                      u8 counter_models = 0, WeaponFilter weapon_filter = WeaponFilter::ALL,
+                                      u8 charge_distance = 0) {
         CombatResult result;
 
         u8 models_fighting = attacker.alive_count();
@@ -2108,9 +2110,10 @@ public:
             if (models_with_weapon == 0) continue;
 
             // Use phased weapon attack resolution
+            // For charging attacks, use charge_distance for rules like Reinforced/Guardian
             auto weapon_result = resolve_weapon_attack_phased(
                 attacker, defender, w, i,
-                CombatType::MELEE, 0,  // distance 0 for melee
+                CombatType::MELEE, charge_distance,
                 is_charging,
                 models_with_weapon
             );
