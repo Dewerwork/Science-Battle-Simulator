@@ -33,6 +33,7 @@ void print_usage(const char* prog) {
     std::cout << "  -A            Aggregated format - per-unit summary stats (128 bytes/unit)\n";
     std::cout << "                Massive file size reduction: ~5MB vs ~5GB for extended\n";
     std::cout << "                Default compact format uses 8 bytes/result\n";
+    std::cout << "  -t <threads>  Number of threads (default: auto-detect)\n";
     std::cout << "  -r            Resume from checkpoint if available\n";
     std::cout << "  -q            Quiet mode (no progress output)\n";
     std::cout << "  -h            Show this help\n\n";
@@ -82,6 +83,8 @@ int main(int argc, char* argv[]) {
             config.format = ResultFormat::CompactExtended;
         } else if (arg == "-A") {
             config.format = ResultFormat::Aggregated;
+        } else if (arg == "-t" && i + 1 < argc) {
+            config.num_threads = std::stoul(argv[++i]);
         } else if (arg == "-r") {
             try_resume = true;
         } else if (arg == "-q") {

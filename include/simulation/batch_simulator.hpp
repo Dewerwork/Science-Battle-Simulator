@@ -36,6 +36,7 @@ static constexpr size_t AGGREGATED_MUTEX_SHARDS = 65536;
 struct BatchConfig {
     u32 batch_size = 10000;          // Matchups per batch
     u32 checkpoint_interval = 1000000; // Save progress every N matchups
+    u32 num_threads = 0;             // Number of threads (0 = auto-detect)
     bool enable_progress = true;
     ResultFormat format = ResultFormat::Compact;  // Output format
     std::string output_file = "results.bin";
@@ -678,7 +679,7 @@ using ProgressCallback = std::function<void(const ProgressInfo&)>;
 class BatchSimulator {
 public:
     explicit BatchSimulator(const BatchConfig& config = BatchConfig())
-        : config_(config), pool_() {}
+        : config_(config), pool_(config.num_threads) {}
 
     // Get aggregate game stats (for display after simulation)
     const AggregateGameStats& game_stats() const { return game_stats_; }
