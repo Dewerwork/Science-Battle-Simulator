@@ -479,13 +479,16 @@ private:
             my_pos = state_.pos_a;
         }
 
+        // Calculate charge distance for rules like Reinforced/Guardian
+        u8 charge_dist = static_cast<u8>(std::abs(my_pos - original_pos));
+
         log_.log_movement("charge", original_pos, my_pos, "Charging into melee");
 
         state_.in_melee = true;
-        execute_melee_round(is_unit_a, true);
+        execute_melee_round(is_unit_a, true, charge_dist);
     }
 
-    void execute_melee_round(bool is_unit_a, bool is_charging) {
+    void execute_melee_round(bool is_unit_a, bool is_charging, u8 charge_distance = 0) {
         UnitView attacker = state_.view(is_unit_a);
         UnitView defender = state_.view(!is_unit_a);
 
@@ -513,7 +516,7 @@ private:
             defender.set_fatigued(true);
 
             if (!attacker.is_out_of_action()) {
-                CombatEvent atk_combat = resolve_melee_logged(attacker, defender, is_charging, counter_models, is_unit_a);
+                CombatEvent atk_combat = resolve_melee_logged(attacker, defender, is_charging, counter_models, is_unit_a, charge_distance);
                 log_.log_counter_attack(atk_combat);
                 state_.stats.record_wounds(is_unit_a, atk_combat.total_wounds_dealt, atk_combat.total_models_killed);
                 defender_wounds = atk_combat.total_wounds_dealt;
@@ -521,7 +524,7 @@ private:
             }
         } else {
             // Normal order: attacker first
-            CombatEvent atk_combat = resolve_melee_logged(attacker, defender, is_charging, counter_models, is_unit_a);
+            CombatEvent atk_combat = resolve_melee_logged(attacker, defender, is_charging, counter_models, is_unit_a, charge_distance);
             log_.log_combat(atk_combat);
             state_.stats.record_wounds(is_unit_a, atk_combat.total_wounds_dealt, atk_combat.total_models_killed);
             defender_wounds = atk_combat.total_wounds_dealt;
@@ -643,7 +646,7 @@ private:
     }
 
     // Resolve melee with full logging
-    CombatEvent resolve_melee_logged(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models, bool /*attacker_is_a*/) {
+    CombatEvent resolve_melee_logged(UnitView attacker, UnitView defender, bool is_charging, u8 counter_models, bool /*attacker_is_a*/, u8 charge_distance = 0) {
         CombatEvent event;
         event.phase = "melee";
         event.attacker_name = std::string(attacker.name().view());
@@ -717,8 +720,9 @@ private:
             const Weapon& weapon = attacker.get_weapon(w_idx);
             if (!weapon.is_melee()) continue;
 
+            // Use charge_distance for rules like Reinforced/Guardian
             AttackSequence attack = resolve_weapon_attack_logged(
-                attacker, defender, weapon, w_idx, 0, true, is_charging, counter_models, false
+                attacker, defender, weapon, w_idx, charge_distance, true, is_charging, counter_models, false
             );
 
             if (attack.total_attacks > 0) {
