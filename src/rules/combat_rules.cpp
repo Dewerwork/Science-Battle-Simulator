@@ -2479,7 +2479,7 @@ const RuleHotData Bloodborn_HotData{
     GamePhase::COMBAT,
     static_cast<u8>(CombatSubPhase::HIT_BONUSES),
     CombatType::BOTH,
-    Target::WEAPON,
+    Target::ATTACKER,  // Unit rule like Furious, not weapon rule
     Trigger::ON_HIT_ROLL_6,
     RulePriority::NORMAL,
     static_cast<TraitMask>(RuleTrait::GENERATES_EXTRA_HITS)
