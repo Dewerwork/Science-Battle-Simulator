@@ -426,7 +426,8 @@ private:
             execute_melee_round(is_unit_a, false);
         } else {
             i8 dist = state_.distance_between();
-            if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
+            // Use effective_max_range for Darkborn bonus
+            if (unit.effective_max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
                 CombatEvent combat = resolve_shooting_logged(unit, enemy, dist, false, is_unit_a);
                 log_.log_combat(combat);
                 state_.stats.record_wounds(is_unit_a, combat.total_wounds_dealt, combat.total_models_killed);
@@ -458,7 +459,8 @@ private:
         log_.log_movement("advance", original_pos, my_pos, "Moving toward objective/enemy");
 
         i8 dist = state_.distance_between();
-        if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
+        // Use effective_max_range for Darkborn bonus
+        if (unit.effective_max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
             CombatEvent combat = resolve_shooting_logged(unit, enemy, dist, true, is_unit_a);
             log_.log_combat(combat);
             state_.stats.record_wounds(is_unit_a, combat.total_wounds_dealt, combat.total_models_killed);

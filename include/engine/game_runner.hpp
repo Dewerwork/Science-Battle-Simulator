@@ -289,7 +289,7 @@ private:
                 unit.is_shaken(),
                 unit.is_fatigued(),
                 enemy.is_out_of_action(),
-                unit.max_range(),
+                unit.effective_max_range(),  // Use effective range (includes Darkborn bonus)
                 state_.get_move_speed(*unit.unit),
                 reasoning);
         }
@@ -368,11 +368,11 @@ private:
                 if (can_charge) return "melee_ai_in_charge_range";
                 return "melee_ai_closing_distance";
             case AIType::Shooting:
-                if (unit.max_range() >= static_cast<u8>(dist)) return "shooting_ai_in_range_hold";
+                if (unit.effective_max_range() >= static_cast<u8>(dist)) return "shooting_ai_in_range_hold";
                 return "shooting_ai_advancing_to_range";
             case AIType::Hybrid:
                 if (can_charge) return "hybrid_ai_charge_preferred";
-                if (unit.max_range() >= static_cast<u8>(dist)) return "hybrid_ai_shooting";
+                if (unit.effective_max_range() >= static_cast<u8>(dist)) return "hybrid_ai_shooting";
                 return "hybrid_ai_closing_distance";
             default:
                 return "default_behavior";
@@ -394,8 +394,8 @@ private:
             // Fight in melee
             execute_melee_round(is_unit_a, false);
         } else {
-            // Shoot if possible
-            if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
+            // Shoot if possible (use effective_max_range for Darkborn bonus)
+            if (unit.effective_max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
                 CombatResult result = combat_.resolve_shooting_phased(unit, enemy, dist, false);
                 state_.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
 
@@ -444,8 +444,8 @@ private:
         // Breath Attack: Once per activation, before attacking
         process_breath_attack(is_unit_a);
 
-        // Shoot if possible
-        if (unit.max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
+        // Shoot if possible (use effective_max_range for Darkborn bonus)
+        if (unit.effective_max_range() >= static_cast<u8>(dist) && !enemy.is_out_of_action()) {
             CombatResult result = combat_.resolve_shooting_phased(unit, enemy, dist, true);
             state_.stats.record_wounds(is_unit_a, result.wounds_dealt, result.models_killed);
 

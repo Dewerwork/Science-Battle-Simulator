@@ -176,6 +176,14 @@ struct UnitView {
     u8 quality() const { return unit->quality; }
     u8 defense() const { return unit->defense; }
     u8 max_range() const { return unit->max_range; }
+    // Effective max range includes Darkborn bonus (+3" when shooting)
+    u8 effective_max_range() const {
+        u8 range = unit->max_range;
+        if (unit->has_rule(RuleId::Darkborn)) {
+            range += 3;
+        }
+        return range;
+    }
     AIType ai_type() const { return unit->ai_type; }
 
     const Name& name() const { return unit->name; }
