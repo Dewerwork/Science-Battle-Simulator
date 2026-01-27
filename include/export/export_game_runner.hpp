@@ -303,6 +303,26 @@ private:
         log_.begin_activation(is_unit_a, *unit_ptr, action);
         log_.log_ai_decision(ai_decision);
 
+        // Pre-movement: Wolfborn - place models within 3" before normal action
+        // Only applies if unit is going to move (not Hold, Rally, or already in melee)
+        if (unit.has_rule(RuleId::Wolfborn) && !state_.in_melee &&
+            (action == ActionType::Advance || action == ActionType::Rush || action == ActionType::Charge)) {
+            i8& enemy_pos = is_unit_a ? state_.pos_b : state_.pos_a;
+            i8 wolfborn_from = my_pos;
+
+            // Move 3" toward enemy
+            if (is_unit_a) {
+                my_pos = std::min(static_cast<i8>(my_pos + 3), enemy_pos);
+            } else {
+                my_pos = std::max(static_cast<i8>(my_pos - 3), state_.pos_a);
+            }
+
+            if (my_pos != wolfborn_from) {
+                log_.log_movement("wolfborn", wolfborn_from, my_pos, "Pre-movement placement (3\")");
+                original_pos = my_pos;  // Update original_pos for subsequent movement logging
+            }
+        }
+
         // Execute action
         switch (action) {
             case ActionType::Hold:

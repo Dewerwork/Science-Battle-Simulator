@@ -89,6 +89,14 @@ void effect_teleport(MovementContext& ctx) {
     }
 }
 
+// Wolfborn - When activated, place models within 3" of their position before moving
+// NOTE: This is now handled as a pre-movement step in game_runner.hpp, not as a movement bonus.
+// The effect function is kept empty but registered for rule detection purposes.
+void effect_wolfborn(MovementContext& /*ctx*/) {
+    // Pre-movement placement is handled in game_runner.hpp before the action switch
+    // This provides a separate logged movement step as per rule specification
+}
+
 // ==============================================================================
 // Movement Rules Registry
 // ==============================================================================
@@ -163,6 +171,14 @@ void init_movement_rules() {
         MovementSubPhase::CALCULATE_DISTANCE,
         effect_teleport,
         {0.8f, 0.2f, true, false}  // Strong mobility preference
+    };
+
+    // Wolfborn - +3" bonus movement before normal action
+    g_movement_rules[static_cast<u16>(RuleId::Wolfborn)] = {
+        RuleId::Wolfborn,
+        MovementSubPhase::CALCULATE_DISTANCE,
+        effect_wolfborn,
+        {0.7f, 0.3f, true, false}  // Good mobility preference
     };
 
     g_movement_rules_initialized = true;

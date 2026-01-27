@@ -173,6 +173,7 @@ inline std::string rule_id_to_string(RuleId id) {
         case RuleId::Changebound: return "Changebound";
         // Category V: Movement Rules
         case RuleId::Teleport: return "Teleport";
+        case RuleId::Wolfborn: return "Wolfborn";
         // Category E: Extra Attack Generation
         case RuleId::Bloodborn: return "Bloodborn";
         case RuleId::BrutalFighter: return "Brutal Fighter";
