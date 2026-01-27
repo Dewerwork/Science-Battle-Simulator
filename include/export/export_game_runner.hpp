@@ -862,6 +862,14 @@ private:
             attack.triggered_rules.push_back("Furious");
         }
 
+        // Bloodborn: 6s to hit generate +1 attack (works in all combat, no charge required)
+        if (attacker.has_rule(RuleId::Bloodborn)) {
+            hits += sixes;
+            normal_hits = hits - rending_hits;
+            attack.bonus_hits.push_back({"Bloodborn", sixes});
+            attack.triggered_rules.push_back("Bloodborn");
+        }
+
         // Blast
         u8 blast_value = weapon.get_rule_value(RuleId::Blast);
         if (blast_value > 0) {
