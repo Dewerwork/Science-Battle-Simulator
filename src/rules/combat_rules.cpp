@@ -953,13 +953,22 @@ void heavy_impact_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 
 
 void watchborn_effect(CombatContextCore& ctx, CombatContextExtended* ext, u8 /*value*/) {
     // Watchborn - Pick AP(+1) or +1 to hit when activated
-    // Unlike Unpredictable, this is player choice not dice roll
-    // For simulation, use same versatile_roll logic
-    if (ext && ext->versatile_roll > 0) {
-        if (ext->versatile_roll <= 3) {
-            ctx.ap_modifier += 1;
+    // For simulation, roll d6: 1-3 = AP+1, 4-6 = +1 hit
+    if (ext && ext->dice) {
+        u8 roll = ext->dice->roll_d6();
+        if (roll <= 3) {
+            // AP+1 bonus - tracked for later application in DEFENSE_RESOLUTION
+            ext->versatile_ap_chosen = true;
+            if (ext->logger) {
+                ext->logger->on_rule_triggered("Watchborn", "chose_ap+1", roll);
+            }
         } else {
+            // +1 hit bonus - applied immediately
             ctx.hit_modifier += 1;
+            ext->versatile_ap_chosen = false;
+            if (ext->logger) {
+                ext->logger->on_hit_modifier("Watchborn", +1, "chose_+1_hit");
+            }
         }
     }
 }
@@ -2675,9 +2684,9 @@ const RuleHotData HeavyImpact_HotData{
 const RuleHotData Watchborn_HotData{
     RuleId::Watchborn,
     GamePhase::COMBAT,
-    static_cast<u8>(CombatSubPhase::HIT_MODIFIERS),
+    static_cast<u8>(CombatSubPhase::PRE_ATTACK),
     CombatType::BOTH,
-    Target::SELF,
+    Target::ATTACKER,
     Trigger::ALWAYS,
     RulePriority::NORMAL,
     static_cast<TraitMask>(RuleTrait::MODIFIES_HIT_ROLL) |
@@ -4437,7 +4446,7 @@ const RuleEffectEntry HeavyImpact_Effects = EffectBuilder()
     .build();
 
 const RuleEffectEntry Watchborn_Effects = EffectBuilder()
-    .combat(CombatSubPhase::HIT_MODIFIERS, watchborn_effect)
+    .combat(CombatSubPhase::PRE_ATTACK, watchborn_effect)
     .build();
 
 // ==============================================================================
@@ -5974,7 +5983,8 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::PlaegueboundBoost, PlaegueboundBoost_Effects);
     registry.register_effects(RuleId::MeleeSlayer, MeleeSlayer_Effects);
     registry.register_effects(RuleId::HeavyImpact, HeavyImpact_Effects);
-    registry.register_effects(RuleId::Watchborn, Watchborn_Effects);
+    // Watchborn handled inline in registry_combat_resolver.hpp
+    // registry.register_effects(RuleId::Watchborn, Watchborn_Effects);
 
     // Category H: Dice-Based Special Attacks effects
     registry.register_effects(RuleId::Crush, Crush_Effects);
