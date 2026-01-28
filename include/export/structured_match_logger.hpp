@@ -843,6 +843,22 @@ public:
     }
 
     // =========================================================================
+    // ROUND-START RULES
+    // =========================================================================
+
+    void on_round_start_rule(bool is_unit_a, const char* rule_name, const char* effect,
+                             u32 value) override {
+        if (current_round_) {
+            RuleTriggerData trigger;
+            trigger.rule_name = rule_name ? rule_name : "";
+            trigger.effect = effect ? effect : "";
+            trigger.value = static_cast<i32>(value);
+            trigger.phase = is_unit_a ? "round_start_a" : "round_start_b";
+            current_round_->end_round_rules.push_back(trigger);
+        }
+    }
+
+    // =========================================================================
     // END-ROUND RULES
     // =========================================================================
 
