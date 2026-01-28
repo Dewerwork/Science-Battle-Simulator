@@ -860,7 +860,7 @@ private:
         bool rallied = roll >= 4;
 
         if (logger_) {
-            logger_->on_rule_triggered("Battleborn", "rally_attempt", roll);
+            logger_->on_round_start_rule(is_unit_a, "Battleborn", rallied ? "rallied" : "failed", roll);
         }
 
         if (rallied) {
