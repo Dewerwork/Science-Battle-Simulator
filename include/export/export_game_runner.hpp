@@ -390,7 +390,8 @@ private:
                     }
                     break;
                 case AIType::Shooting:
-                    if (event.controls_objective && unit->max_range >= static_cast<u8>(state_.distance_between())) {
+                    // Use effective range for Darkborn bonus
+                    if (event.controls_objective && state_.get_effective_shooting_range(*unit) >= static_cast<u8>(state_.distance_between())) {
                         reasoning = "Shooting AI: Controls objective and in range - Hold and shoot";
                     } else {
                         reasoning = "Shooting AI: Move to get in range or reach objective";
@@ -399,7 +400,8 @@ private:
                 case AIType::Hybrid:
                     if (state_.distance_between() <= state_.get_charge_distance(*unit)) {
                         reasoning = "Hybrid AI: In charge range - Charge!";
-                    } else if (unit->max_range >= static_cast<u8>(state_.distance_between())) {
+                    } else if (state_.get_effective_shooting_range(*unit) >= static_cast<u8>(state_.distance_between())) {
+                        // Use effective range for Darkborn bonus
                         reasoning = "Hybrid AI: In shooting range - Advance and shoot";
                     } else {
                         reasoning = "Hybrid AI: Rush toward enemy";
@@ -409,9 +411,9 @@ private:
         }
         event.reasoning = reasoning;
 
-        // Add factors
+        // Add factors (use effective range which includes Darkborn bonus)
         event.factors_considered.push_back({"distance_to_enemy", std::to_string(event.distance_to_enemy) + "\"", ""});
-        event.factors_considered.push_back({"max_weapon_range", std::to_string(unit->max_range) + "\"", ""});
+        event.factors_considered.push_back({"effective_weapon_range", std::to_string(state_.get_effective_shooting_range(*unit)) + "\"", ""});
         event.factors_considered.push_back({"controls_objective", event.controls_objective ? "yes" : "no", ""});
         event.factors_considered.push_back({"in_melee", event.in_melee ? "yes" : "no", ""});
 

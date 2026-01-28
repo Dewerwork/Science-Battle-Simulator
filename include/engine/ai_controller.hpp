@@ -93,15 +93,16 @@ private:
             i8 new_pos = my_pos + (is_unit_a ? move_speed : -move_speed);
             i8 new_dist = is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a);
 
-            if (unit->max_range >= static_cast<u8>(new_dist)) {
+            // Use effective range (includes Darkborn +3" bonus)
+            if (state.get_effective_shooting_range(*unit) >= static_cast<u8>(new_dist)) {
                 return ActionType::Advance;  // Advance + shoot
             } else {
                 return ActionType::Rush;  // Rush to get in range
             }
         }
 
-        // Controlling objective - try to shoot
-        if (unit->max_range >= static_cast<u8>(dist)) {
+        // Controlling objective - try to shoot (use effective range for Darkborn)
+        if (state.get_effective_shooting_range(*unit) >= static_cast<u8>(dist)) {
             return ActionType::Hold;  // Hold and shoot (Relentless bonus)
         }
 
@@ -128,11 +129,11 @@ private:
             // If we can reach objective quickly, rush
             i8 dist_to_obj = static_cast<i8>(std::abs(my_pos));
             if (dist_to_obj <= move_speed * 2) {
-                // Can we advance and shoot?
+                // Can we advance and shoot? (use effective range for Darkborn)
                 i8 new_pos = static_cast<i8>(my_pos + (is_unit_a ? move_speed : -static_cast<i8>(move_speed)));
                 i8 new_dist = static_cast<i8>(is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a));
 
-                if (unit->max_range >= static_cast<u8>(new_dist)) {
+                if (state.get_effective_shooting_range(*unit) >= static_cast<u8>(new_dist)) {
                     return ActionType::Advance;
                 }
             }
@@ -140,13 +141,13 @@ private:
         }
 
         // Controlling objective
-        // Can we shoot?
-        if (unit->max_range >= static_cast<u8>(dist)) {
+        // Can we shoot? (use effective range for Darkborn)
+        if (state.get_effective_shooting_range(*unit) >= static_cast<u8>(dist)) {
             // Advance toward enemy to get closer for potential charge next turn
             i8 new_pos = my_pos + (is_unit_a ? move_speed : -move_speed);
             i8 new_dist = is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a);
 
-            if (unit->max_range >= static_cast<u8>(new_dist)) {
+            if (state.get_effective_shooting_range(*unit) >= static_cast<u8>(new_dist)) {
                 return ActionType::Advance;  // Advance + shoot
             }
             return ActionType::Hold;  // Hold + shoot
