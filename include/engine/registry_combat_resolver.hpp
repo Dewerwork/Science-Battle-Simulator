@@ -1398,6 +1398,18 @@ public:
                 }
             }
 
+            // Watchborn: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
+            if (attacker.has_rule(RuleId::Watchborn)) {
+                u8 watchborn_roll = dice_.roll_d6();
+                if (watchborn_roll <= 3) {
+                    versatile_ap_bonus = true;
+                    if (logger_) logger_->on_rule_triggered("Watchborn", "chose_ap+1", watchborn_roll);
+                } else {
+                    hit_modifier += 1;
+                    if (logger_) logger_->on_hit_modifier("Watchborn", +1, "chose_+1_hit");
+                }
+            }
+
             // Apply hit modifiers and log each one
             if (w.has_rule(RuleId::Reliable)) {
                 quality = 2;
@@ -1699,6 +1711,18 @@ public:
                 } else {
                     hit_modifier += 1;
                     if (logger_) logger_->on_hit_modifier("VersatileAttack", +1, "rolled_+1_hit");
+                }
+            }
+
+            // Watchborn: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
+            if (attacker.has_rule(RuleId::Watchborn)) {
+                u8 watchborn_roll = dice_.roll_d6();
+                if (watchborn_roll <= 3) {
+                    versatile_ap_bonus = true;
+                    if (logger_) logger_->on_rule_triggered("Watchborn", "chose_ap+1", watchborn_roll);
+                } else {
+                    hit_modifier += 1;
+                    if (logger_) logger_->on_hit_modifier("Watchborn", +1, "chose_+1_hit");
                 }
             }
 
