@@ -364,6 +364,16 @@ private:
     ) {
         (void)spell;  // May be used for spell-specific wound effects in future
 
+        // Knightborn: 4+ to ignore spell wounds
+        if (target.has_rule(RuleId::Knightborn) && wounds > 0) {
+            u32 original_wounds = wounds;
+            wounds = dice_.roll_regeneration(wounds, 4);  // 4+ vs spells
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Knightborn", "blocked_spell_wounds", blocked);
+            }
+        }
+
         // Get wound allocation order
         std::array<u8, MAX_MODELS_PER_UNIT> allocation_order;
         u8 allocation_count;

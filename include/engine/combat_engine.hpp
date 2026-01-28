@@ -858,7 +858,8 @@ public:
     };
 
     // takedown_target: -1 = normal allocation, >= 0 = specific model index (Takedown rule)
-    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false, i8 takedown_target = -1) {
+    // from_spell: if true, Knightborn blocks on 4+ instead of 6+
+    WoundResult apply_wounds(UnitView unit, u32 wounds, bool bypass_regeneration = false, i8 takedown_target = -1, bool from_spell = false) {
         WoundResult result;
 
         // Regeneration check
@@ -878,6 +879,18 @@ public:
             if (logger_) {
                 u32 blocked = original_wounds - wounds;
                 logger_->on_rule_triggered("Resistance", "resisted_wounds", blocked);
+            }
+        }
+
+        // Knightborn: 6+ to ignore wounds (4+ vs spells)
+        if (unit.has_rule(RuleId::Knightborn) && wounds > 0) {
+            u32 original_wounds = wounds;
+            u8 target = from_spell ? 4 : 6;
+            wounds = dice_.roll_regeneration(wounds, target);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                const char* action = from_spell ? "blocked_spell_wounds" : "blocked_wounds";
+                logger_->on_rule_triggered("Knightborn", action, blocked);
             }
         }
 
@@ -942,7 +955,8 @@ public:
 
     // Apply wounds with Deadly - wounds don't carry over to other models
     // Each wound is multiplied by deadly_value and assigned to one model
-    WoundResult apply_wounds_deadly(UnitView unit, u32 wounds, u8 deadly_value, bool bypass_regeneration = false) {
+    // from_spell: if true, Knightborn blocks on 4+ instead of 6+
+    WoundResult apply_wounds_deadly(UnitView unit, u32 wounds, u8 deadly_value, bool bypass_regeneration = false, bool from_spell = false) {
         WoundResult result;
 
         // Get wound allocation order
@@ -967,6 +981,18 @@ public:
             if (logger_) {
                 u32 blocked = original_wounds - wounds;
                 logger_->on_rule_triggered("Resistance", "resisted_wounds", blocked);
+            }
+        }
+
+        // Knightborn: 6+ to ignore wounds (4+ vs spells)
+        if (unit.has_rule(RuleId::Knightborn) && wounds > 0) {
+            u32 original_wounds = wounds;
+            u8 target = from_spell ? 4 : 6;
+            wounds = dice_.roll_regeneration(wounds, target);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                const char* action = from_spell ? "blocked_spell_wounds" : "blocked_wounds";
+                logger_->on_rule_triggered("Knightborn", action, blocked);
             }
         }
 
