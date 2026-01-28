@@ -204,6 +204,15 @@ struct GameState {
         return MovementCalculator::calculate_charge_range(unit, nullptr);
     }
 
+    // Calculate effective shooting range based on unit rules (Darkborn: +3")
+    u8 get_effective_shooting_range(const Unit& unit) const {
+        u8 range = unit.max_range;
+        if (unit.has_rule(RuleId::Darkborn)) {
+            range += 3;
+        }
+        return range;
+    }
+
     bool can_charge(bool is_unit_a) const {
         if (in_melee) return false;
         const Unit* unit = is_unit_a ? unit_a_ptr : unit_b_ptr;
@@ -213,7 +222,7 @@ struct GameState {
     bool can_shoot(bool is_unit_a) const {
         if (in_melee) return false;
         const Unit* shooter = is_unit_a ? unit_a_ptr : unit_b_ptr;
-        return shooter->max_range >= static_cast<u8>(distance_between());
+        return get_effective_shooting_range(*shooter) >= static_cast<u8>(distance_between());
     }
 
     // Game state checks

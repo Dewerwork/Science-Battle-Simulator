@@ -388,8 +388,8 @@ private:
         i8 new_pos = my_pos + (is_unit_a ? move_speed : -static_cast<i8>(move_speed));
         i8 new_dist = is_unit_a ? (state.pos_b - new_pos) : (new_pos - state.pos_a);
 
-        // Can still shoot after advancing?
-        if (unit->max_range >= static_cast<u8>(std::abs(new_dist))) {
+        // Can still shoot after advancing? (use effective range for Darkborn)
+        if (state.get_effective_shooting_range(*unit) >= static_cast<u8>(std::abs(new_dist))) {
             result.score += 40;
         }
 
