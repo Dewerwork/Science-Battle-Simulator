@@ -5983,8 +5983,7 @@ void register_combat_rules(RuleRegistry& registry) {
     registry.register_effects(RuleId::PlaegueboundBoost, PlaegueboundBoost_Effects);
     registry.register_effects(RuleId::MeleeSlayer, MeleeSlayer_Effects);
     registry.register_effects(RuleId::HeavyImpact, HeavyImpact_Effects);
-    // Watchborn handled inline in registry_combat_resolver.hpp
-    // registry.register_effects(RuleId::Watchborn, Watchborn_Effects);
+    registry.register_effects(RuleId::Watchborn, Watchborn_Effects);
 
     // Category H: Dice-Based Special Attacks effects
     registry.register_effects(RuleId::Crush, Crush_Effects);

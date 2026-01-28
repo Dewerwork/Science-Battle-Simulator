@@ -823,6 +823,21 @@ private:
             attack.triggered_rules.push_back("Indirect");
         }
 
+        // Watchborn: roll d6 to choose AP+1 (1-3) or +1 hit (4-6)
+        bool watchborn_ap_bonus = false;
+        if (attacker.has_rule(RuleId::Watchborn)) {
+            u8 watchborn_roll = dice_.roll_d6();
+            if (watchborn_roll <= 3) {
+                watchborn_ap_bonus = true;
+                attack.hit_modifiers.push_back({"Watchborn (AP+1)", 0});
+                attack.triggered_rules.push_back("Watchborn");
+            } else {
+                hit_modifier += 1;
+                attack.hit_modifiers.push_back({"Watchborn (+1 hit)", 1});
+                attack.triggered_rules.push_back("Watchborn");
+            }
+        }
+
         if (is_melee && is_charging && weapon.has_rule(RuleId::Thrust)) {
             hit_modifier += 1;
             attack.hit_modifiers.push_back({"Thrust (charging)", 1});
@@ -923,6 +938,12 @@ private:
         if (is_melee && is_charging && attacker.has_rule(RuleId::PiercingAssault)) {
             ap = std::max(ap, u8(1));
             attack.ap_modifiers.push_back({"Piercing Assault", 0});
+        }
+
+        // Watchborn AP+1 bonus (if that option was chosen)
+        if (watchborn_ap_bonus) {
+            ap += 1;
+            attack.ap_modifiers.push_back({"Watchborn (AP+1)", 1});
         }
 
         // Guardian Boost: Always reduces AP by 1 (regardless of distance)
