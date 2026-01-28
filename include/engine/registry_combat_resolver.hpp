@@ -696,6 +696,7 @@ private:
         ext.rending_hits = uctx.rending_hits;
         ext.rupture_hits = uctx.rupture_hits;
         ext.bonus_hits = uctx.bonus_hits;
+        ext.versatile_ap_chosen = uctx.versatile_ap_chosen;  // Preserve across phases
         ext.moved_this_activation = uctx.moved_this_activation;  // For Indirect penalty
         ext.logger = logger_;
         ext.dice = &dice_;
