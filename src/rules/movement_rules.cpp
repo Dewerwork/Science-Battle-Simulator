@@ -17,6 +17,7 @@ constexpr i8 SLOW_PENALTY = -2;          // Slow: -2" (4" total)
 constexpr i8 AGILE_ADVANCE_BONUS = 1;    // Agile: +1" advance
 constexpr i8 AGILE_CHARGE_BONUS = 2;     // Agile: +2" charge
 constexpr i8 RAPID_CHARGE_BONUS = 4;     // RapidCharge: +4" charge
+constexpr i8 DARKBORN_CHARGE_BONUS = 3;  // Darkborn: +3" charge
 
 constexpr u8 BASE_CHARGE_RANGE = 12;
 
@@ -95,6 +96,14 @@ void effect_teleport(MovementContext& ctx) {
 void effect_wolfborn(MovementContext& /*ctx*/) {
     // Pre-movement placement is handled in game_runner.hpp before the action switch
     // This provides a separate logged movement step as per rule specification
+}
+
+// Darkborn - +3" range when shooting, +3" when charging
+// NOTE: Range bonus is handled in UnitView::effective_max_range(), charge bonus here
+void effect_darkborn(MovementContext& ctx) {
+    if (ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.charge_bonus += DARKBORN_CHARGE_BONUS;
+    }
 }
 
 // ==============================================================================
@@ -179,6 +188,14 @@ void init_movement_rules() {
         MovementSubPhase::CALCULATE_DISTANCE,
         effect_wolfborn,
         {0.7f, 0.3f, true, false}  // Good mobility preference
+    };
+
+    // Darkborn - +3" range when shooting, +3" when charging
+    g_movement_rules[static_cast<u16>(RuleId::Darkborn)] = {
+        RuleId::Darkborn,
+        MovementSubPhase::CHARGE_DECLARE,
+        effect_darkborn,
+        {0.6f, 0.4f, true, false}  // Balanced mobility preference
     };
 
     g_movement_rules_initialized = true;

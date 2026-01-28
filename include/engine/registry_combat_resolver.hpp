@@ -1332,11 +1332,14 @@ public:
         u8 models_shooting = attacker.alive_count();
         if (models_shooting == 0) return result;
 
+        // Darkborn: +3" range when shooting
+        u8 range_bonus = attacker.has_rule(RuleId::Darkborn) ? 3 : 0;
+
         // Check if any ranged weapons are in range
         bool has_valid_weapon = false;
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
-            if (w.is_ranged() && w.range >= static_cast<u8>(distance)) {
+            if (w.is_ranged() && (w.range + range_bonus) >= static_cast<u8>(distance)) {
                 has_valid_weapon = true;
                 break;
             }
@@ -1351,7 +1354,7 @@ public:
         // Process each weapon
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
-            if (!w.is_ranged() || w.range < static_cast<u8>(distance)) continue;
+            if (!w.is_ranged() || (w.range + range_bonus) < static_cast<u8>(distance)) continue;
 
             // Limited: skip if already used this game
             if (w.has_rule(RuleId::Limited)) {
@@ -1370,10 +1373,10 @@ public:
             // Calculate attacks
             u32 attacks = static_cast<u32>(models_with_weapon) * w.attacks;
 
-            // Log weapon attack start
+            // Log weapon attack start (show effective range with Darkborn bonus)
             if (logger_) {
                 std::string rules_str = get_weapon_rules_str(w);
-                logger_->on_weapon_attack_start(w.name.c_str(), false, w.range, static_cast<u8>(distance), w.attacks, w.ap, rules_str.c_str());
+                logger_->on_weapon_attack_start(w.name.c_str(), false, static_cast<u8>(w.range + range_bonus), static_cast<u8>(distance), w.attacks, w.ap, rules_str.c_str());
                 logger_->on_attack_count(models_with_weapon, w.attacks, attacks);
             }
 
@@ -1941,11 +1944,14 @@ public:
         u8 models_shooting = attacker.alive_count();
         if (models_shooting == 0) return result;
 
+        // Darkborn: +3" range when shooting
+        u8 range_bonus = attacker.has_rule(RuleId::Darkborn) ? 3 : 0;
+
         // Check if any ranged weapons are in range
         bool has_valid_weapon = false;
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
-            if (w.is_ranged() && w.range >= static_cast<u8>(distance)) {
+            if (w.is_ranged() && (w.range + range_bonus) >= static_cast<u8>(distance)) {
                 has_valid_weapon = true;
                 break;
             }
@@ -1960,7 +1966,7 @@ public:
         // Process each weapon using phased resolution
         for (u8 i = 0; i < attacker.weapon_count(); ++i) {
             const Weapon& w = attacker.get_weapon(i);
-            if (!w.is_ranged() || w.range < static_cast<u8>(distance)) continue;
+            if (!w.is_ranged() || (w.range + range_bonus) < static_cast<u8>(distance)) continue;
 
             // Limited: skip if already used this game
             if (w.has_rule(RuleId::Limited)) {
