@@ -1124,16 +1124,35 @@ private:
 
         auto morale_result = dice_.roll_morale_logged(unit.quality(), unit.has_rule(RuleId::Fearless));
 
+        // Apply morale bonuses (+1 to roll)
+        u8 morale_bonus = 0;
+        if (unit.has_rule(RuleId::MoraleBoost)) {
+            morale_bonus += 1;
+        }
+        if (unit.has_rule(RuleId::HiveBond)) {
+            morale_bonus += 1;
+        }
+
+        // Apply bonus to roll result
+        u8 modified_roll = morale_result.roll + morale_bonus;
+        bool modified_passed = modified_roll >= unit.quality();
+
+        // Update the result with bonus applied
+        if (modified_passed && !morale_result.passed) {
+            morale_result.passed = true;
+            morale_result.fearless_used = false;  // Don't need fearless if bonus made us pass
+        }
+
         event.quality_target = unit.quality();
         event.morale_roll.context = "morale";
         event.morale_roll.target = unit.quality();
         event.morale_roll.effective_target = unit.quality();
         DieRoll die;
-        die.value = morale_result.roll;
-        die.is_success = morale_result.roll >= unit.quality();
-        die.is_six = morale_result.roll == 6;
+        die.value = modified_roll;
+        die.is_success = modified_passed;
+        die.is_six = morale_result.roll == 6;  // Keep original for natural 6 tracking
         event.morale_roll.dice.push_back(die);
-        event.initial_pass = morale_result.roll >= unit.quality();
+        event.initial_pass = modified_passed;
 
         event.has_fearless = unit.has_rule(RuleId::Fearless);
         if (morale_result.fearless_used) {
