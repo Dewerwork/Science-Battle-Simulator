@@ -112,8 +112,9 @@ void effect_darkborn(MovementContext& ctx) {
 void effect_lustbound(MovementContext& ctx) {
     if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
         ctx.distance_modifier += LUSTBOUND_ADVANCE_BONUS;
-    } else if (ctx.move_type == MovementContext::MoveType::RUSH ||
-               ctx.move_type == MovementContext::MoveType::CHARGE) {
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH) {
+        ctx.rush_bonus += LUSTBOUND_RUSH_CHARGE_BONUS;  // Applied after rush doubling
+    } else if (ctx.move_type == MovementContext::MoveType::CHARGE) {
         ctx.distance_modifier += LUSTBOUND_RUSH_CHARGE_BONUS;
     }
 }
@@ -280,6 +281,7 @@ u8 MovementCalculator::calculate_move_distance(
     // Apply rush multiplier
     if (move_type == MovementContext::MoveType::RUSH) {
         total *= 2;
+        total += ctx.rush_bonus;  // Apply rush bonus after doubling (e.g., Lustbound +3")
     }
 
     ctx.final_distance = static_cast<u8>(total);

@@ -290,6 +290,7 @@ struct MovementContext {
 
     // Charge modifiers
     i8 charge_bonus = 0;                // From Agile, RapidCharge
+    i8 rush_bonus = 0;                  // Applied after rush doubling (e.g., Lustbound)
 
     // State flags
     bool ignores_engagement = false;    // Can leave melee without penalty
