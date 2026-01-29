@@ -33,8 +33,9 @@ constexpr u8 BASE_CHARGE_RANGE = 12;
 void effect_fast(MovementContext& ctx) {
     if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
         ctx.distance_modifier += FAST_ADVANCE_BONUS;
-    } else if (ctx.move_type == MovementContext::MoveType::RUSH ||
-               ctx.move_type == MovementContext::MoveType::CHARGE) {
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH) {
+        ctx.rush_bonus += FAST_RUSH_CHARGE_BONUS;  // Applied after rush doubling
+    } else if (ctx.move_type == MovementContext::MoveType::CHARGE) {
         ctx.distance_modifier += FAST_RUSH_CHARGE_BONUS;
     }
 }
