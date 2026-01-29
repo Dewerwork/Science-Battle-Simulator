@@ -1093,6 +1093,12 @@ public:
             if (logger_) logger_->on_rule_triggered("MoraleBoost", "morale_bonus", 1);
         }
 
+        // Hive Bond: +1 to morale tests (faction rule)
+        if (unit.has_rule(RuleId::HiveBond)) {
+            roll += 1;
+            if (logger_) logger_->on_rule_triggered("HiveBond", "morale_bonus", 1);
+        }
+
         bool passed = roll >= target;
 
         if (logger_) {
