@@ -9,6 +9,7 @@
 #include "engine/ai_controller.hpp"
 #include "engine/rule_aware_ai.hpp"
 #include "rules/deployment_rules.hpp"
+#include "rules/movement_rules.hpp"
 #include <algorithm>
 #include <vector>
 
@@ -483,7 +484,8 @@ private:
             return;
         }
 
-        u8 move_speed = state_.get_move_speed(*unit.unit) * RUSH_MULTIPLIER;
+        u8 move_speed = MovementCalculator::calculate_move_distance(
+            *unit.unit, nullptr, MovementContext::MoveType::RUSH);
         if (is_unit_a) {
             my_pos = std::min(static_cast<i8>(my_pos + move_speed), enemy_pos);
         } else {
