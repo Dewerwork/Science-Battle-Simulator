@@ -58,6 +58,7 @@ struct AttackSequenceData {
     std::string defense_modifier_source;
     u32 saves = 0;
     u32 wounds = 0;
+    u32 defense_ones = 0;  // Unmodified 1s on defense rolls (for Warbound/Infected)
 
     // Regeneration
     RollData regen_rolls;
@@ -637,6 +638,13 @@ public:
         if (current_attack_) {
             trigger.phase = "combat";
             current_attack_->rule_triggers.push_back(trigger);
+
+            // Warbound/Infected: track defense 1s for visibility
+            if (trigger.rule_name == "Warbound" &&
+                (trigger.effect == "extra_wounds_on_defense_1s" ||
+                 trigger.effect == "extra_wounds_on_defense_1s_rending")) {
+                current_attack_->defense_ones += value;
+            }
         } else if (current_activation_) {
             trigger.phase = "activation";
             current_activation_->rule_triggers.push_back(trigger);
