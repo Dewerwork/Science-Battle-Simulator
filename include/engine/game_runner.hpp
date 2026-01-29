@@ -12,6 +12,7 @@
 #include "engine/match_logger.hpp"
 #include "engine/spell_caster.hpp"
 #include "rules/deployment_rules.hpp"
+#include "rules/movement_rules.hpp"
 #include <algorithm>
 
 namespace battle {
@@ -468,7 +469,8 @@ private:
 
         // Rush (double move, no shooting)
         i8 from_pos = my_pos;
-        u8 move_speed = state_.get_move_speed(*unit.unit) * RUSH_MULTIPLIER;
+        u8 move_speed = MovementCalculator::calculate_move_distance(
+            *unit.unit, nullptr, MovementContext::MoveType::RUSH);
         if (is_unit_a) {
             my_pos = std::min(static_cast<i8>(my_pos + move_speed), enemy_pos);
         } else {

@@ -5,6 +5,7 @@
 #include "core/unit.hpp"
 #include "core/rule_registry.hpp"
 #include "engine/game_state.hpp"
+#include "rules/movement_rules.hpp"
 #include <algorithm>
 #include <cmath>
 
@@ -420,8 +421,8 @@ private:
         ActionScore result{ActionType::Rush, 0, "rush"};
         const Unit* unit = is_unit_a ? state.unit_a_ptr : state.unit_b_ptr;
         i8 my_pos = is_unit_a ? state.pos_a : state.pos_b;
-        u8 move_speed = state.get_move_speed(*unit);
-        u8 rush_dist = move_speed * RUSH_MULTIPLIER;
+        u8 rush_dist = MovementCalculator::calculate_move_distance(
+            *unit, nullptr, MovementContext::MoveType::RUSH);
 
         // Base score for rushing
         result.score = 80;  // Lower base - gives up shooting
