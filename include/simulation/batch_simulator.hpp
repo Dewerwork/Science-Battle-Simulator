@@ -1102,47 +1102,53 @@ private:
 
             // Fire-and-forget task (no packaged_task allocation)
             pool_.submit_detached([&, start, end, t]() {
-                // Use thread_local to reuse GameRunner across batches
-                thread_local DiceRoller dice(
-                    std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
-                    static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-                );
-                thread_local GameRunner runner(dice);
+                try {
+                    // Use thread_local to reuse GameRunner across batches
+                    thread_local DiceRoller dice(
+                        std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
+                        static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+                    );
+                    thread_local GameRunner runner(dice);
 
-                // Thread-local accumulators to reduce atomic contention
-                u64 local_games = 0;
-                u64 local_wounds = 0;
-                u64 local_models_killed = 0;
-                u64 local_obj_rounds = 0;
-                u64 local_objective_games = 0;
+                    // Thread-local accumulators to reduce atomic contention
+                    u64 local_games = 0;
+                    u64 local_wounds = 0;
+                    u64 local_models_killed = 0;
+                    u64 local_obj_rounds = 0;
+                    u64 local_objective_games = 0;
 
-                // Write directly to pre-allocated result slots (no vector allocation)
-                for (size_t i = start; i < end; ++i) {
-                    auto [a_idx, b_idx] = matchups[i];
-                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
-                    results[i] = CompactMatchResult::from_match(mr);
+                    // Write directly to pre-allocated result slots (no vector allocation)
+                    for (size_t i = start; i < end; ++i) {
+                        auto [a_idx, b_idx] = matchups[i];
+                        MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+                        results[i] = CompactMatchResult::from_match(mr);
 
-                    // Accumulate full game stats
-                    // run_match runs 3 games (best of 3), so we get stats from all 3
-                    local_games += 3;  // Best-of-3 match
-                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
-                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
-                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+                        // Accumulate full game stats
+                        // run_match runs 3 games (best of 3), so we get stats from all 3
+                        local_games += 3;  // Best-of-3 match
+                        local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                        local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                        local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
 
-                    // Track game endings - we can infer from match results
-                    // If objective rounds are significant, it was likely an objective game
-                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
-                        local_objective_games += 3;  // Approximate - objective was contested
+                        // Track game endings - we can infer from match results
+                        // If objective rounds are significant, it was likely an objective game
+                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                            local_objective_games += 3;  // Approximate - objective was contested
+                        }
                     }
+
+                    // Update global stats atomically (batched to reduce contention)
+                    game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
+                    game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
+                    game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
+                    game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
+                    game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
+                } catch (const std::exception& e) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Exception in process_batch: " << e.what() << std::endl;
+                    std::cerr << "  Thread range: [" << start << ", " << end << ")" << std::endl;
+                } catch (...) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Unknown exception in process_batch" << std::endl;
                 }
-
-                // Update global stats atomically (batched to reduce contention)
-                game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
-                game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
-                game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
-                game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
-                game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
-
                 ++threads_done;
             });
         }
@@ -1181,47 +1187,53 @@ private:
 
             // Fire-and-forget task (no packaged_task allocation)
             pool_.submit_detached([&, start, end, t]() {
-                // Use thread_local to reuse GameRunner across batches
-                thread_local DiceRoller dice(
-                    std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
-                    static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-                );
-                thread_local GameRunner runner(dice);
+                try {
+                    // Use thread_local to reuse GameRunner across batches
+                    thread_local DiceRoller dice(
+                        std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
+                        static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+                    );
+                    thread_local GameRunner runner(dice);
 
-                // Thread-local accumulators to reduce atomic contention
-                u64 local_games = 0;
-                u64 local_wounds = 0;
-                u64 local_models_killed = 0;
-                u64 local_obj_rounds = 0;
-                u64 local_objective_games = 0;
+                    // Thread-local accumulators to reduce atomic contention
+                    u64 local_games = 0;
+                    u64 local_wounds = 0;
+                    u64 local_models_killed = 0;
+                    u64 local_obj_rounds = 0;
+                    u64 local_objective_games = 0;
 
-                // Write directly to pre-allocated result slots (no vector allocation)
-                for (size_t i = start; i < end; ++i) {
-                    auto [a_idx, b_idx] = matchups[i];
-                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
-                    results[i] = ExtendedMatchResult::from_match(mr);
+                    // Write directly to pre-allocated result slots (no vector allocation)
+                    for (size_t i = start; i < end; ++i) {
+                        auto [a_idx, b_idx] = matchups[i];
+                        MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+                        results[i] = ExtendedMatchResult::from_match(mr);
 
-                    // Accumulate full game stats
-                    // run_match runs 3 games (best of 3), so we get stats from all 3
-                    local_games += 3;  // Best-of-3 match
-                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
-                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
-                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+                        // Accumulate full game stats
+                        // run_match runs 3 games (best of 3), so we get stats from all 3
+                        local_games += 3;  // Best-of-3 match
+                        local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                        local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                        local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
 
-                    // Track game endings - we can infer from match results
-                    // If objective rounds are significant, it was likely an objective game
-                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
-                        local_objective_games += 3;  // Approximate - objective was contested
+                        // Track game endings - we can infer from match results
+                        // If objective rounds are significant, it was likely an objective game
+                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                            local_objective_games += 3;  // Approximate - objective was contested
+                        }
                     }
+
+                    // Update global stats atomically (batched to reduce contention)
+                    game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
+                    game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
+                    game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
+                    game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
+                    game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
+                } catch (const std::exception& e) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Exception in process_batch_extended: " << e.what() << std::endl;
+                    std::cerr << "  Thread range: [" << start << ", " << end << ")" << std::endl;
+                } catch (...) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Unknown exception in process_batch_extended" << std::endl;
                 }
-
-                // Update global stats atomically (batched to reduce contention)
-                game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
-                game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
-                game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
-                game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
-                game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
-
                 ++threads_done;
             });
         }
@@ -1260,47 +1272,53 @@ private:
 
             // Fire-and-forget task (no packaged_task allocation)
             pool_.submit_detached([&, start, end, t]() {
-                // Use thread_local to reuse GameRunner across batches
-                thread_local DiceRoller dice(
-                    std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
-                    static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-                );
-                thread_local GameRunner runner(dice);
+                try {
+                    // Use thread_local to reuse GameRunner across batches
+                    thread_local DiceRoller dice(
+                        std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
+                        static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+                    );
+                    thread_local GameRunner runner(dice);
 
-                // Thread-local accumulators to reduce atomic contention
-                u64 local_games = 0;
-                u64 local_wounds = 0;
-                u64 local_models_killed = 0;
-                u64 local_obj_rounds = 0;
-                u64 local_objective_games = 0;
+                    // Thread-local accumulators to reduce atomic contention
+                    u64 local_games = 0;
+                    u64 local_wounds = 0;
+                    u64 local_models_killed = 0;
+                    u64 local_obj_rounds = 0;
+                    u64 local_objective_games = 0;
 
-                // Write directly to pre-allocated result slots (no vector allocation)
-                for (size_t i = start; i < end; ++i) {
-                    auto [a_idx, b_idx] = matchups[i];
-                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
-                    results[i] = CompactExtendedMatchResult::from_match(mr);
+                    // Write directly to pre-allocated result slots (no vector allocation)
+                    for (size_t i = start; i < end; ++i) {
+                        auto [a_idx, b_idx] = matchups[i];
+                        MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+                        results[i] = CompactExtendedMatchResult::from_match(mr);
 
-                    // Accumulate full game stats
-                    // run_match runs 3 games (best of 3), so we get stats from all 3
-                    local_games += 3;  // Best-of-3 match
-                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
-                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
-                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+                        // Accumulate full game stats
+                        // run_match runs 3 games (best of 3), so we get stats from all 3
+                        local_games += 3;  // Best-of-3 match
+                        local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                        local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                        local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
 
-                    // Track game endings - we can infer from match results
-                    // If objective rounds are significant, it was likely an objective game
-                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
-                        local_objective_games += 3;  // Approximate - objective was contested
+                        // Track game endings - we can infer from match results
+                        // If objective rounds are significant, it was likely an objective game
+                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                            local_objective_games += 3;  // Approximate - objective was contested
+                        }
                     }
+
+                    // Update global stats atomically (batched to reduce contention)
+                    game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
+                    game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
+                    game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
+                    game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
+                    game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
+                } catch (const std::exception& e) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Exception in process_batch_compact_extended: " << e.what() << std::endl;
+                    std::cerr << "  Thread range: [" << start << ", " << end << ")" << std::endl;
+                } catch (...) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Unknown exception in process_batch_compact_extended" << std::endl;
                 }
-
-                // Update global stats atomically (batched to reduce contention)
-                game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
-                game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
-                game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
-                game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
-                game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
-
                 ++threads_done;
             });
         }
@@ -1350,90 +1368,98 @@ private:
             }
 
             pool_.submit_detached([&, start, end, t]() {
-                thread_local DiceRoller dice(
-                    std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
-                    static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-                );
-                thread_local GameRunner runner(dice);
+                try {
+                    thread_local DiceRoller dice(
+                        std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
+                        static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+                    );
+                    thread_local GameRunner runner(dice);
 
-                // Thread-local accumulators for global stats
-                u64 local_games = 0;
-                u64 local_wounds = 0;
-                u64 local_models_killed = 0;
-                u64 local_obj_rounds = 0;
-                u64 local_objective_games = 0;
+                    // Thread-local accumulators for global stats
+                    u64 local_games = 0;
+                    u64 local_wounds = 0;
+                    u64 local_models_killed = 0;
+                    u64 local_obj_rounds = 0;
+                    u64 local_objective_games = 0;
 
-                // OPTIMIZATION: Sequential accumulation with vector-based faction hash cache
-                // Since matchups are generated in order (all of unit 0's opponents,
-                // then unit 1's, etc.), we track the current unit and flush when it changes.
-                // Faction hashes are cached in a vector indexed by b_idx for O(1) lookup.
-                LocalAggregatedAccumulator current_accum;
-                u32 current_unit_idx = UINT32_MAX;  // Invalid initial value
+                    // OPTIMIZATION: Sequential accumulation with vector-based faction hash cache
+                    // Since matchups are generated in order (all of unit 0's opponents,
+                    // then unit 1's, etc.), we track the current unit and flush when it changes.
+                    // Faction hashes are cached in a vector indexed by b_idx for O(1) lookup.
+                    LocalAggregatedAccumulator current_accum;
+                    u32 current_unit_idx = UINT32_MAX;  // Invalid initial value
 
-                // Thread-local vector cache for faction hashes - 0 means "not yet computed"
-                // (crc16_hash never returns 0, it returns 1 instead)
-                // Cache persists across batches since units_b doesn't change during simulation
-                thread_local std::vector<u16> faction_hash_cache;
-                if (faction_hash_cache.size() < units_b.size()) {
-                    faction_hash_cache.resize(units_b.size(), 0);
+                    // Thread-local vector cache for faction hashes - 0 means "not yet computed"
+                    // (crc16_hash never returns 0, it returns 1 instead)
+                    // Cache persists across batches since units_b doesn't change during simulation
+                    thread_local std::vector<u16> faction_hash_cache;
+                    if (faction_hash_cache.size() < units_b.size()) {
+                        faction_hash_cache.resize(units_b.size(), 0);
+                    }
+                    // No clearing needed - cached hashes remain valid for entire simulation
+
+                    // Lambda to flush current accumulator to global results
+                    auto flush_accumulator = [&]() {
+                        if (current_unit_idx != UINT32_MAX && current_accum.total_matchups > 0) {
+                            std::lock_guard<std::mutex> lock(unit_mutexes[current_unit_idx % AGGREGATED_MUTEX_SHARDS]);
+                            current_accum.merge_into(aggregated[current_unit_idx]);
+                        }
+                    };
+
+                    for (size_t i = start; i < end; ++i) {
+                        auto [a_idx, b_idx] = matchups[i];
+
+                        // Check if we've switched to a new unit_a
+                        if (a_idx != current_unit_idx) {
+                            // Flush previous accumulator
+                            flush_accumulator();
+                            // Reset for new unit
+                            current_accum = LocalAggregatedAccumulator{};
+                            current_unit_idx = a_idx;
+                        }
+
+                        MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
+
+                        const Unit& unit_a = units_a[a_idx];
+                        const Unit& unit_b = units_b[b_idx];
+
+                        // Update global game stats (thread-local, no locking)
+                        local_games += 3;
+                        local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
+                        local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
+                        local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
+                        if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
+                            local_objective_games += 3;
+                        }
+
+                        // Get faction hash from cache (O(1) vector lookup)
+                        u16 faction_hash = faction_hash_cache[b_idx];
+                        if (faction_hash == 0) {
+                            faction_hash = crc16_hash(unit_b.faction.view());
+                            faction_hash_cache[b_idx] = faction_hash;
+                        }
+
+                        // Direct accumulation - no hash lookup!
+                        current_accum.add_matchup(mr, unit_a, unit_b, faction_hash);
+                    }
+
+                    // Flush final accumulator
+                    flush_accumulator();
+
+                    // Update global stats atomically
+                    game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
+                    game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
+                    game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
+                    game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
+                    game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
+                } catch (const std::exception& e) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Exception in process_batch_aggregated: " << e.what() << std::endl;
+                    std::cerr << "  Thread range: [" << start << ", " << end << ")" << std::endl;
+                    std::cerr << "  units_a.size()=" << units_a.size() << ", units_b.size()=" << units_b.size() << std::endl;
+                } catch (...) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Unknown exception in process_batch_aggregated" << std::endl;
+                    std::cerr << "  Thread range: [" << start << ", " << end << ")" << std::endl;
                 }
-                // No clearing needed - cached hashes remain valid for entire simulation
-
-                // Lambda to flush current accumulator to global results
-                auto flush_accumulator = [&]() {
-                    if (current_unit_idx != UINT32_MAX && current_accum.total_matchups > 0) {
-                        std::lock_guard<std::mutex> lock(unit_mutexes[current_unit_idx % AGGREGATED_MUTEX_SHARDS]);
-                        current_accum.merge_into(aggregated[current_unit_idx]);
-                    }
-                };
-
-                for (size_t i = start; i < end; ++i) {
-                    auto [a_idx, b_idx] = matchups[i];
-
-                    // Check if we've switched to a new unit_a
-                    if (a_idx != current_unit_idx) {
-                        // Flush previous accumulator
-                        flush_accumulator();
-                        // Reset for new unit
-                        current_accum = LocalAggregatedAccumulator{};
-                        current_unit_idx = a_idx;
-                    }
-
-                    MatchResult mr = runner.run_match(units_a[a_idx], units_b[b_idx]);
-
-                    const Unit& unit_a = units_a[a_idx];
-                    const Unit& unit_b = units_b[b_idx];
-
-                    // Update global game stats (thread-local, no locking)
-                    local_games += 3;
-                    local_wounds += mr.total_wounds_dealt_a + mr.total_wounds_dealt_b;
-                    local_models_killed += mr.total_models_killed_a + mr.total_models_killed_b;
-                    local_obj_rounds += mr.total_rounds_holding_a + mr.total_rounds_holding_b;
-                    if (mr.total_rounds_holding_a > 0 || mr.total_rounds_holding_b > 0) {
-                        local_objective_games += 3;
-                    }
-
-                    // Get faction hash from cache (O(1) vector lookup)
-                    u16 faction_hash = faction_hash_cache[b_idx];
-                    if (faction_hash == 0) {
-                        faction_hash = crc16_hash(unit_b.faction.view());
-                        faction_hash_cache[b_idx] = faction_hash;
-                    }
-
-                    // Direct accumulation - no hash lookup!
-                    current_accum.add_matchup(mr, unit_a, unit_b, faction_hash);
-                }
-
-                // Flush final accumulator
-                flush_accumulator();
-
-                // Update global stats atomically
-                game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
-                game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
-                game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
-                game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
-                game_stats_.games_ended_by_objective.fetch_add(local_objective_games, std::memory_order_relaxed);
-
                 threads_done.fetch_add(1, std::memory_order_release);
             });
         }
