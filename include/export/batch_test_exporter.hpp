@@ -679,6 +679,89 @@ private:
 
                                 attack_seq++;
                             }
+
+                            // Morale check rolls
+                            int morale_seq = 0;
+                            for (const auto& morale : activation.morale_checks) {
+                                std::string unit = morale.is_unit_a ? "A" : "B";
+
+                                // Main morale roll
+                                if (morale.morale_roll > 0) {
+                                    file << iter.matchup_id << ","
+                                         << iter.iteration << ","
+                                         << (game_idx + 1) << ","
+                                         << static_cast<int>(round.round_number) << ","
+                                         << unit << ","
+                                         << morale_seq << ","
+                                         << "morale,0,"
+                                         << static_cast<int>(morale.morale_roll) << ","
+                                         << ","  // No reroll for main morale roll
+                                         << static_cast<int>(morale.morale_target) << ","
+                                         << (morale.morale_passed ? 1 : 0) << "\n";
+                                }
+
+                                // Fearless or Hold the Line reroll
+                                if (morale.had_fearless_reroll && morale.fearless_roll > 0) {
+                                    // Determine if Fearless (target 4) or Hold the Line (target = quality = morale_target)
+                                    std::string reroll_type = (morale.fearless_target == 4) ? "fearless" : "hold_the_line";
+                                    file << iter.matchup_id << ","
+                                         << iter.iteration << ","
+                                         << (game_idx + 1) << ","
+                                         << static_cast<int>(round.round_number) << ","
+                                         << unit << ","
+                                         << morale_seq << ","
+                                         << reroll_type << ",0,"
+                                         << static_cast<int>(morale.fearless_roll) << ","
+                                         << ","  // No further reroll
+                                         << static_cast<int>(morale.fearless_target) << ","
+                                         << (morale.fearless_passed ? 1 : 0) << "\n";
+                                }
+
+                                morale_seq++;
+                            }
+
+                            // Spell cast rolls
+                            int spell_seq = 0;
+                            for (const auto& spell : activation.spell_casts) {
+                                std::string caster = spell.is_unit_a ? "A" : "B";
+
+                                // Only log if there was an actual roll (roll > 0 means spell was attempted)
+                                if (spell.roll > 0) {
+                                    file << iter.matchup_id << ","
+                                         << iter.iteration << ","
+                                         << (game_idx + 1) << ","
+                                         << static_cast<int>(round.round_number) << ","
+                                         << caster << ","
+                                         << spell_seq << ","
+                                         << "spell_cast,0,"
+                                         << static_cast<int>(spell.roll) << ","
+                                         << ","  // No reroll for spell cast
+                                         << static_cast<int>(spell.target_number) << ","
+                                         << (spell.success ? 1 : 0) << "\n";
+                                }
+
+                                spell_seq++;
+                            }
+                        }
+
+                        // Initiative roll (one per round, outside activation loop)
+                        // Initiative roll determines who goes first in the round
+                        if (round.initiative_roll > 0) {
+                            // Initiative winner is determined by roll >= 4 for round 1
+                            // For subsequent rounds, initiative goes to whoever went second last round
+                            // The initiative_roll is recorded even if not used for determination
+                            std::string winner = round.unit_a_first ? "A" : "B";
+                            file << iter.matchup_id << ","
+                                 << iter.iteration << ","
+                                 << (game_idx + 1) << ","
+                                 << static_cast<int>(round.round_number) << ","
+                                 << winner << ","
+                                 << "0,"  // No sequence for initiative
+                                 << "initiative,0,"
+                                 << static_cast<int>(round.initiative_roll) << ","
+                                 << ","  // No reroll
+                                 << "4,"  // Target is 4 for initiative
+                                 << (round.initiative_roll >= 4 ? 1 : 0) << "\n";
                         }
                     }
                 }
