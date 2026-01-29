@@ -1208,14 +1208,14 @@ private:
         u32 wounds_from_normal = 0;
         if (logger_) dice_.enable_roll_recording(true);
 
+        // Track ones for Warbound trigger (logged after defense rolls for proper ordering)
+        u32 normal_hits_ones = 0;
         if (warbound_active) {
             auto def_result = dice_.roll_defense_test_with_ones(
                 ctx.normal_hits, defense_target, ctx.effective_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
             wounds_from_normal = def_result.wounds;
             extra_wounds_from_ones = def_result.ones;
-            if (def_result.ones > 0 && logger_) {
-                logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s", def_result.ones);
-            }
+            normal_hits_ones = def_result.ones;
         } else {
             wounds_from_normal = dice_.roll_defense_test(
                 ctx.normal_hits, defense_target, ctx.effective_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
@@ -1253,10 +1253,16 @@ private:
             logger_->on_defense_rolls(defense_target, ctx.effective_ap,
                 static_cast<u8>(effective_target), ctx.forces_defense_reroll,
                 def_rolls, saves, wounds_from_normal, sixes_count, rerolls, reroll_saves);
+
+            // Log Warbound trigger AFTER defense rolls so wounds field is already set
+            if (warbound_active && normal_hits_ones > 0) {
+                logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s", normal_hits_ones);
+            }
         }
 
         // Roll defense for rending hits (AP+4)
         u32 wounds_from_rending = 0;
+        u32 rending_hits_ones = 0;
         if (ctx.rending_hits > 0) {
             u8 rending_ap = ctx.effective_ap + 4;
             if (logger_) dice_.enable_roll_recording(true);
@@ -1266,9 +1272,7 @@ private:
                     ctx.rending_hits, defense_target, rending_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
                 wounds_from_rending = def_result.wounds;
                 extra_wounds_from_ones += def_result.ones;
-                if (def_result.ones > 0 && logger_) {
-                    logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s_rending", def_result.ones);
-                }
+                rending_hits_ones = def_result.ones;
             } else {
                 wounds_from_rending = dice_.roll_defense_test(
                     ctx.rending_hits, defense_target, rending_ap, ctx.defense_modifier, ctx.forces_defense_reroll);
@@ -1281,6 +1285,11 @@ private:
                 u32 saves = ctx.rending_hits - wounds_from_rending;
                 logger_->on_defense_rolls_rending(defense_target, rending_ap,
                     static_cast<u8>(effective_target), rend_rolls, saves, wounds_from_rending);
+
+                // Log Warbound trigger AFTER defense rolls so wounds field is already set
+                if (warbound_active && rending_hits_ones > 0) {
+                    logger_->on_rule_triggered("Warbound", "extra_wounds_on_defense_1s_rending", rending_hits_ones);
+                }
             }
         }
 

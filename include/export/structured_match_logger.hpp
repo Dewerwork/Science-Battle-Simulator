@@ -637,6 +637,13 @@ public:
         if (current_attack_) {
             trigger.phase = "combat";
             current_attack_->rule_triggers.push_back(trigger);
+
+            // Warbound/Infected: add extra wounds from defense 1s to the wounds count
+            if (trigger.rule_name == "Warbound" &&
+                (trigger.effect == "extra_wounds_on_defense_1s" ||
+                 trigger.effect == "extra_wounds_on_defense_1s_rending")) {
+                current_attack_->wounds += value;
+            }
         } else if (current_activation_) {
             trigger.phase = "activation";
             current_activation_->rule_triggers.push_back(trigger);
