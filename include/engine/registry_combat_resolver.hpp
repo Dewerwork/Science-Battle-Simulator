@@ -2199,6 +2199,17 @@ public:
             }
         }
 
+        // Plaguebound: 6+ to ignore wounds (5+ with Plaguebound Boost)
+        if (unit.has_rule(RuleId::Plaguebound) && wounds > 0) {
+            u32 original_wounds = wounds;
+            u8 target = unit.has_rule(RuleId::PlaegueboundBoost) ? 5 : 6;
+            wounds = dice_.roll_regeneration(wounds, target);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Plaguebound", "blocked_wounds", blocked);
+            }
+        }
+
         // Takedown: apply wounds to specific target first (Deadly not compatible with Takedown)
         if (takedown_target >= 0 && unit.model_is_alive(static_cast<u8>(takedown_target))) {
             u8 model_idx = static_cast<u8>(takedown_target);

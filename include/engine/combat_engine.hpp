@@ -894,6 +894,17 @@ public:
             }
         }
 
+        // Plaguebound: 6+ to ignore wounds (5+ with Plaguebound Boost)
+        if (unit.has_rule(RuleId::Plaguebound) && wounds > 0) {
+            u32 original_wounds = wounds;
+            u8 target = unit.has_rule(RuleId::PlaegueboundBoost) ? 5 : 6;
+            wounds = dice_.roll_regeneration(wounds, target);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Plaguebound", "blocked_wounds", blocked);
+            }
+        }
+
         result.wounds_dealt = static_cast<u16>(wounds);
 
         // Takedown: apply wounds to specific target first
@@ -993,6 +1004,17 @@ public:
                 u32 blocked = original_wounds - wounds;
                 const char* action = from_spell ? "blocked_spell_wounds" : "blocked_wounds";
                 logger_->on_rule_triggered("Knightborn", action, blocked);
+            }
+        }
+
+        // Plaguebound: 6+ to ignore wounds (5+ with Plaguebound Boost)
+        if (unit.has_rule(RuleId::Plaguebound) && wounds > 0) {
+            u32 original_wounds = wounds;
+            u8 target = unit.has_rule(RuleId::PlaegueboundBoost) ? 5 : 6;
+            wounds = dice_.roll_regeneration(wounds, target);
+            if (logger_) {
+                u32 blocked = original_wounds - wounds;
+                logger_->on_rule_triggered("Plaguebound", "blocked_wounds", blocked);
             }
         }
 
