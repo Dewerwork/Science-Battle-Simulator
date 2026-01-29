@@ -1008,52 +1008,8 @@ private:
         // Skip destroyed/routed units
         if (unit.is_out_of_action()) return;
 
-        // Regeneration: Roll for each wound on alive models, 5+ to recover
-        if (unit.has_rule(RuleId::Regeneration)) {
-            UnitSimState& sim_state = is_unit_a ? state_.state_a : state_.state_b;
-            const Unit* unit_ptr = is_unit_a ? state_.unit_a_ptr : state_.unit_b_ptr;
-
-            // Count total wounds on alive models
-            u8 total_wounds = 0;
-            for (u8 i = 0; i < unit_ptr->model_count; ++i) {
-                if (sim_state.models[i].is_alive()) {
-                    total_wounds += sim_state.models[i].wounds_taken;
-                }
-            }
-
-            if (total_wounds > 0) {
-                u8 regen_target = unit.get_rule_value(RuleId::Regeneration);
-                if (regen_target == 0) regen_target = 5;  // Default 5+
-
-                u8 wounds_healed = 0;
-                for (u8 i = 0; i < total_wounds; ++i) {
-                    if (dice_.roll_d6() >= regen_target) {
-                        wounds_healed++;
-                    }
-                }
-
-                if (wounds_healed > 0) {
-                    // Apply healing to wounded models (most wounded first)
-                    u8 remaining_heal = wounds_healed;
-                    for (u8 i = 0; i < unit_ptr->model_count && remaining_heal > 0; ++i) {
-                        if (sim_state.models[i].is_alive() && sim_state.models[i].wounds_taken > 0) {
-                            u8 heal_amount = std::min(remaining_heal, sim_state.models[i].wounds_taken);
-                            sim_state.models[i].wounds_taken -= heal_amount;
-                            remaining_heal -= heal_amount;
-                            if (sim_state.models[i].wounds_taken == 0 &&
-                                sim_state.models[i].state == ModelState::Wounded) {
-                                sim_state.models[i].state = ModelState::Healthy;
-                            }
-                        }
-                    }
-
-                    if (logger_) {
-                        logger_->on_end_round_rule(is_unit_a, "Regeneration",
-                                                   "wounds_recovered", wounds_healed);
-                    }
-                }
-            }
-        }
+        // Note: Regeneration is handled in combat_engine.hpp during wound application
+        // (5+ to ignore each wound after defense roll, not end-of-round healing)
 
         // Fear: Log presence of fear (effect applied during morale checks in combat)
         // (Only log once at start of game, not every round)
