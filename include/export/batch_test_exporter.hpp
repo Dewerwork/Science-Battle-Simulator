@@ -412,7 +412,7 @@ private:
         file << "matchup_id,iteration,game,round,attacker,attack_seq,attack_order,"
              << "weapon,is_melee,distance,models_attacking,total_attacks,"
              << "hit_target,hits,hit_sixes,hit_fives,normal_hits,rending_hits,total_hits,"
-             << "ap_applied,defense_target,saves,wounds,"
+             << "ap_applied,defense_target,saves,defense_ones,wounds,"
              << "wounds_allocated,models_killed,overkill,"
              << "attacker_wounds_remaining,defender_wounds_remaining\n";
 
@@ -451,6 +451,7 @@ private:
                                      << static_cast<int>(attack.total_ap) << ","
                                      << static_cast<int>(attack.defense_rolls.target) << ","
                                      << attack.saves << ","
+                                     << attack.defense_ones << ","
                                      << attack.wounds << ","
                                      << attack.wounds_allocated << ","
                                      << attack.models_killed << ","
