@@ -18,6 +18,8 @@ constexpr i8 AGILE_ADVANCE_BONUS = 1;    // Agile: +1" advance
 constexpr i8 AGILE_CHARGE_BONUS = 2;     // Agile: +2" charge
 constexpr i8 RAPID_CHARGE_BONUS = 4;     // RapidCharge: +4" charge
 constexpr i8 DARKBORN_CHARGE_BONUS = 3;  // Darkborn: +3" charge
+constexpr i8 LUSTBOUND_ADVANCE_BONUS = 1;  // Lustbound: +1" advance
+constexpr i8 LUSTBOUND_RUSH_CHARGE_BONUS = 3;  // Lustbound: +3" rush/charge
 
 constexpr u8 BASE_CHARGE_RANGE = 12;
 
@@ -103,6 +105,16 @@ void effect_wolfborn(MovementContext& /*ctx*/) {
 void effect_darkborn(MovementContext& ctx) {
     if (ctx.move_type == MovementContext::MoveType::CHARGE) {
         ctx.charge_bonus += DARKBORN_CHARGE_BONUS;
+    }
+}
+
+// Lustbound - +1" Advance, +3" Rush/Charge
+void effect_lustbound(MovementContext& ctx) {
+    if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
+        ctx.distance_modifier += LUSTBOUND_ADVANCE_BONUS;
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH ||
+               ctx.move_type == MovementContext::MoveType::CHARGE) {
+        ctx.distance_modifier += LUSTBOUND_RUSH_CHARGE_BONUS;
     }
 }
 
@@ -196,6 +208,14 @@ void init_movement_rules() {
         MovementSubPhase::CHARGE_DECLARE,
         effect_darkborn,
         {0.6f, 0.4f, true, false}  // Balanced mobility preference
+    };
+
+    // Lustbound - +1" Advance, +3" Rush/Charge
+    g_movement_rules[static_cast<u16>(RuleId::Lustbound)] = {
+        RuleId::Lustbound,
+        MovementSubPhase::CALCULATE_DISTANCE,
+        effect_lustbound,
+        {0.6f, 0.3f, true, false}  // Prefers closing distance
     };
 
     g_movement_rules_initialized = true;
