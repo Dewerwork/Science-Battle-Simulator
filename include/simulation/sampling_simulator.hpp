@@ -298,100 +298,108 @@ private:
             }
 
             pool_.submit_detached([&, start, end, t]() {
-                // Thread-local resources
-                thread_local DiceRoller dice(
-                    std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
-                    static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-                );
-                thread_local GameRunner runner(dice);
-
-                // Thread-local stats
-                u64 local_games = 0;
-                u64 local_wounds = 0;
-                u64 local_models_killed = 0;
-                u64 local_obj_rounds = 0;
-
-                // Thread-local accumulator for aggregated results
-                LocalAggregatedAccumulator current_accum;
-                u32 current_unit_idx = UINT32_MAX;
-
-                // Faction hash cache
-                thread_local std::vector<u16> faction_hash_cache;
-                if (faction_hash_cache.size() < units_b.size()) {
-                    faction_hash_cache.resize(units_b.size(), 0);
-                }
-
-                // Reserve sample buffer
-                thread_samples[t].reserve((end - start) / 300 + 10);
-
-                // Lambda to flush accumulator
-                auto flush_accumulator = [&]() {
-                    if (current_unit_idx != UINT32_MAX && current_accum.total_matchups > 0) {
-                        std::lock_guard<std::mutex> lock(unit_mutexes[current_unit_idx % AGGREGATED_MUTEX_SHARDS]);
-                        current_accum.merge_into(aggregated[current_unit_idx]);
-                    }
-                };
-
-                for (size_t i = start; i < end; ++i) {
-                    auto [a_idx, b_idx] = matchups[i];
-                    const Unit& unit_a = units_a[a_idx];
-                    const Unit& unit_b = units_b[b_idx];
-
-                    // Check if switched to new unit
-                    if (a_idx != current_unit_idx) {
-                        flush_accumulator();
-                        current_accum = LocalAggregatedAccumulator{};
-                        current_unit_idx = a_idx;
-                    }
-
-                    // Track per-game winners for samples
-                    u8 game_winners[3] = {3, 3, 3};
-                    u8 games_played = 0;
-
-                    MatchResult result = run_match_with_tracking(
-                        runner, unit_a, unit_b,
-                        game_winners, games_played
+                try {
+                    // Thread-local resources
+                    thread_local DiceRoller dice(
+                        std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
+                        static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                     );
+                    thread_local GameRunner runner(dice);
 
-                    // Update global stats
-                    local_games += games_played;
-                    local_wounds += result.total_wounds_dealt_a + result.total_wounds_dealt_b;
-                    local_models_killed += result.total_models_killed_a + result.total_models_killed_b;
-                    local_obj_rounds += result.total_rounds_holding_a + result.total_rounds_holding_b;
+                    // Thread-local stats
+                    u64 local_games = 0;
+                    u64 local_wounds = 0;
+                    u64 local_models_killed = 0;
+                    u64 local_obj_rounds = 0;
 
-                    // TIER 1: Accumulate aggregated result
-                    u16 faction_hash = faction_hash_cache[b_idx];
-                    if (faction_hash == 0) {
-                        faction_hash = crc16_hash(unit_b.faction.view());
-                        faction_hash_cache[b_idx] = faction_hash;
+                    // Thread-local accumulator for aggregated results
+                    LocalAggregatedAccumulator current_accum;
+                    u32 current_unit_idx = UINT32_MAX;
+
+                    // Faction hash cache
+                    thread_local std::vector<u16> faction_hash_cache;
+                    if (faction_hash_cache.size() < units_b.size()) {
+                        faction_hash_cache.resize(units_b.size(), 0);
                     }
-                    current_accum.add_matchup(result, unit_a, unit_b, faction_hash);
 
-                    // TIER 2: Check if should sample
-                    if (sampling_config_.enable_sampling && sampler_.should_sample(a_idx, b_idx)) {
-                        MatchupSample sample = MatchupSample::from_match(
-                            result, a_idx, b_idx,
-                            unit_a.points_cost, unit_b.points_cost,
+                    // Reserve sample buffer
+                    thread_samples[t].reserve((end - start) / 300 + 10);
+
+                    // Lambda to flush accumulator
+                    auto flush_accumulator = [&]() {
+                        if (current_unit_idx != UINT32_MAX && current_accum.total_matchups > 0) {
+                            std::lock_guard<std::mutex> lock(unit_mutexes[current_unit_idx % AGGREGATED_MUTEX_SHARDS]);
+                            current_accum.merge_into(aggregated[current_unit_idx]);
+                        }
+                    };
+
+                    for (size_t i = start; i < end; ++i) {
+                        auto [a_idx, b_idx] = matchups[i];
+                        const Unit& unit_a = units_a[a_idx];
+                        const Unit& unit_b = units_b[b_idx];
+
+                        // Check if switched to new unit
+                        if (a_idx != current_unit_idx) {
+                            flush_accumulator();
+                            current_accum = LocalAggregatedAccumulator{};
+                            current_unit_idx = a_idx;
+                        }
+
+                        // Track per-game winners for samples
+                        u8 game_winners[3] = {3, 3, 3};
+                        u8 games_played = 0;
+
+                        MatchResult result = run_match_with_tracking(
+                            runner, unit_a, unit_b,
                             game_winners, games_played
                         );
-                        thread_samples[t].push_back(sample);
+
+                        // Update global stats
+                        local_games += games_played;
+                        local_wounds += result.total_wounds_dealt_a + result.total_wounds_dealt_b;
+                        local_models_killed += result.total_models_killed_a + result.total_models_killed_b;
+                        local_obj_rounds += result.total_rounds_holding_a + result.total_rounds_holding_b;
+
+                        // TIER 1: Accumulate aggregated result
+                        u16 faction_hash = faction_hash_cache[b_idx];
+                        if (faction_hash == 0) {
+                            faction_hash = crc16_hash(unit_b.faction.view());
+                            faction_hash_cache[b_idx] = faction_hash;
+                        }
+                        current_accum.add_matchup(result, unit_a, unit_b, faction_hash);
+
+                        // TIER 2: Check if should sample
+                        if (sampling_config_.enable_sampling && sampler_.should_sample(a_idx, b_idx)) {
+                            MatchupSample sample = MatchupSample::from_match(
+                                result, a_idx, b_idx,
+                                unit_a.points_cost, unit_b.points_cost,
+                                game_winners, games_played
+                            );
+                            thread_samples[t].push_back(sample);
+                        }
+
+                        // TIER 3: Check for showcase update
+                        if (sampling_config_.enable_showcases && result.overall_winner == GameWinner::UnitA) {
+                            maybe_update_showcase(a_idx, b_idx, unit_a, unit_b, result, game_winners, games_played);
+                        }
                     }
 
-                    // TIER 3: Check for showcase update
-                    if (sampling_config_.enable_showcases && result.overall_winner == GameWinner::UnitA) {
-                        maybe_update_showcase(a_idx, b_idx, unit_a, unit_b, result, game_winners, games_played);
-                    }
+                    // Flush final accumulator
+                    flush_accumulator();
+
+                    // Update global stats
+                    game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
+                    game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
+                    game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
+                    game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
+                } catch (const std::exception& e) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Exception in SamplingSimulator: " << e.what() << std::endl;
+                    std::cerr << "  Thread range: [" << start << ", " << end << ")" << std::endl;
+                    std::cerr << "  units_a.size()=" << units_a.size() << ", units_b.size()=" << units_b.size() << std::endl;
+                } catch (...) {
+                    std::cerr << "\n[THREAD " << t << " ERROR] Unknown exception in SamplingSimulator" << std::endl;
+                    std::cerr << "  Thread range: [" << start << ", " << end << ")" << std::endl;
                 }
-
-                // Flush final accumulator
-                flush_accumulator();
-
-                // Update global stats
-                game_stats_.total_games_played.fetch_add(local_games, std::memory_order_relaxed);
-                game_stats_.total_wounds_dealt.fetch_add(local_wounds, std::memory_order_relaxed);
-                game_stats_.total_models_killed.fetch_add(local_models_killed, std::memory_order_relaxed);
-                game_stats_.total_objective_rounds.fetch_add(local_obj_rounds, std::memory_order_relaxed);
-
                 threads_done.fetch_add(1, std::memory_order_release);
             });
         }
