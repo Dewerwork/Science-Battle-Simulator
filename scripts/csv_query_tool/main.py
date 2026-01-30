@@ -23,17 +23,20 @@ from pathlib import Path
 
 # Fix imports when running as standalone exe (PyInstaller)
 # This ensures the package can find its submodules
-if getattr(sys, 'frozen', False):
-    # Running as compiled exe
+_is_frozen = getattr(sys, 'frozen', False)
+
+if _is_frozen:
+    # Running as compiled exe - add MEIPASS to path for bundled modules
     _base_path = sys._MEIPASS
+    if _base_path not in sys.path:
+        sys.path.insert(0, _base_path)
 else:
     # Running as script
     _base_path = os.path.dirname(os.path.abspath(__file__))
-
-# Add parent directory to path for package imports
-_parent_path = os.path.dirname(_base_path)
-if _parent_path not in sys.path:
-    sys.path.insert(0, _parent_path)
+    # Add parent directory to path for package imports
+    _parent_path = os.path.dirname(_base_path)
+    if _parent_path not in sys.path:
+        sys.path.insert(0, _parent_path)
 
 
 def show_error_dialog(title: str, message: str) -> None:
@@ -90,6 +93,11 @@ def check_dependencies() -> bool:
     Returns:
         True if all dependencies are available.
     """
+    # Skip dependency check for frozen executables - dependencies are bundled
+    # Use multiple detection methods to be safe
+    if getattr(sys, 'frozen', False) or hasattr(sys, '_MEIPASS'):
+        return True
+
     missing = []
     warnings = []
 
