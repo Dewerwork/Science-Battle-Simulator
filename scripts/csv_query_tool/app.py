@@ -17,6 +17,7 @@ from .ui.query_editor import QueryEditor
 from .ui.results_table import ResultsTable
 from .ui.chart_panel import ChartPanel
 from .ui.schema_panel import SchemaPanel
+from .ui.log_panel import LogPanel, setup_gui_logging
 
 
 class CSVQueryApp:
@@ -28,12 +29,13 @@ class CSVQueryApp:
         Args:
             initial_file: Optional CSV file to load on startup.
         """
-        # Set up logging
+        # Set up basic logging (will be replaced by GUI logging after UI setup)
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
         self._logger = logging.getLogger(__name__)
+        self._log_panel = None  # Will be set up in _setup_ui
 
         # Load configuration
         self._config = Config.load()
@@ -179,6 +181,17 @@ class CSVQueryApp:
         self._schema_panel = SchemaPanel(schema_frame, self._db)
         self._schema_panel.pack(fill=tk.BOTH, expand=True)
         self._schema_panel.set_insert_callback(self._insert_query_text)
+
+        # Log tab
+        log_frame = ttk.Frame(self._notebook)
+        self._notebook.add(log_frame, text="Log")
+
+        self._log_panel = LogPanel(log_frame)
+        self._log_panel.pack(fill=tk.BOTH, expand=True)
+
+        # Set up GUI logging (redirect all logs and stdout/stderr to log panel)
+        setup_gui_logging(self._log_panel, capture_stdout=True, capture_stderr=True)
+        self._logger.info("GUI logging initialized")
 
         # Connect file panel insert callback (for double-click to insert)
         self._file_panel.set_insert_callback(self._insert_query_text)
@@ -643,7 +656,18 @@ LIMIT 20'''),
             ErrorSeverity.WARNING: "warning",
             ErrorSeverity.ERROR: "error"
         }
-        self._set_status(result.message, severity_map.get(result.severity, "info"))
+        level = severity_map.get(result.severity, "info")
+        self._set_status(result.message, level)
+
+        # Also log to log panel
+        if self._log_panel:
+            log_level_map = {
+                "success": "SUCCESS",
+                "info": "INFO",
+                "warning": "WARNING",
+                "error": "ERROR"
+            }
+            self._log_panel.log(result.message, log_level_map.get(level, "INFO"))
 
     def _set_status(self, message: str, level: str = "info") -> None:
         """Set status bar message.

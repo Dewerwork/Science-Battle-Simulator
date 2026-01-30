@@ -1,12 +1,15 @@
 """Query history management for CSV Query Tool."""
 
 import json
+import logging
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
 from .config import Config
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -66,7 +69,7 @@ class QueryHistory:
                     if isinstance(entry, dict) and "query" in entry
                 ]
             except (json.JSONDecodeError, TypeError, KeyError) as e:
-                print(f"Warning: Could not load query history ({e})")
+                _logger.warning(f"Could not load query history ({e})")
                 self._entries = []
 
     def _save(self) -> None:
@@ -75,7 +78,7 @@ class QueryHistory:
             with open(self._history_path, "w", encoding="utf-8") as f:
                 json.dump([asdict(e) for e in self._entries], f, indent=2)
         except (OSError, IOError) as e:
-            print(f"Warning: Could not save query history: {e}")
+            _logger.warning(f"Could not save query history: {e}")
 
     def add(self, query: str, execution_time_ms: Optional[float] = None,
             row_count: Optional[int] = None, success: bool = True) -> None:
