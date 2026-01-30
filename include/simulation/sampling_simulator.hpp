@@ -249,8 +249,10 @@ private:
     std::vector<ShowcaseCandidate> showcase_candidates_;
 
     // Number of mutex shards
-    static constexpr size_t AGGREGATED_MUTEX_SHARDS = 65536;
-    static constexpr size_t SHOWCASE_MUTEX_SHARDS = 4096;
+    // Reduced from 65536/4096 to avoid ~5MB heap allocation per chunk
+    // 1024 shards still provides excellent parallelism with 32+ threads
+    static constexpr size_t AGGREGATED_MUTEX_SHARDS = 1024;
+    static constexpr size_t SHOWCASE_MUTEX_SHARDS = 256;
     std::array<std::mutex, SHOWCASE_MUTEX_SHARDS> showcase_mutexes_;
 
     // Helper function to compute CRC16 hash for faction names
