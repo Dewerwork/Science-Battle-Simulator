@@ -94,7 +94,8 @@ def check_dependencies() -> bool:
         True if all dependencies are available.
     """
     # Skip dependency check for frozen executables - dependencies are bundled
-    if _is_frozen:
+    # Use multiple detection methods to be safe
+    if getattr(sys, 'frozen', False) or hasattr(sys, '_MEIPASS'):
         return True
 
     missing = []
