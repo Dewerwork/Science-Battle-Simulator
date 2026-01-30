@@ -7,17 +7,31 @@ import sys
 from pathlib import Path
 from typing import Optional, List
 
-from .database import DatabaseManager
-from .utils.config import Config
-from .utils.query_history import QueryHistory
-from .utils.favorites import QueryFavorites
-from .utils.error_handler import ErrorHandler, ErrorSeverity, ErrorResult
-from .ui.file_panel import FilePanel
-from .ui.query_editor import QueryEditor
-from .ui.results_table import ResultsTable
-from .ui.chart_panel import ChartPanel
-from .ui.schema_panel import SchemaPanel
-from .ui.log_panel import LogPanel, setup_gui_logging
+# Handle imports for both module and frozen/direct execution
+try:
+    from .database import DatabaseManager
+    from .utils.config import Config
+    from .utils.query_history import QueryHistory
+    from .utils.favorites import QueryFavorites
+    from .utils.error_handler import ErrorHandler, ErrorSeverity, ErrorResult
+    from .ui.file_panel import FilePanel
+    from .ui.query_editor import QueryEditor
+    from .ui.results_table import ResultsTable
+    from .ui.chart_panel import ChartPanel
+    from .ui.schema_panel import SchemaPanel
+    from .ui.log_panel import LogPanel, setup_gui_logging
+except ImportError:
+    from database import DatabaseManager
+    from utils.config import Config
+    from utils.query_history import QueryHistory
+    from utils.favorites import QueryFavorites
+    from utils.error_handler import ErrorHandler, ErrorSeverity, ErrorResult
+    from ui.file_panel import FilePanel
+    from ui.query_editor import QueryEditor
+    from ui.results_table import ResultsTable
+    from ui.chart_panel import ChartPanel
+    from ui.schema_panel import SchemaPanel
+    from ui.log_panel import LogPanel, setup_gui_logging
 
 
 class CSVQueryApp:

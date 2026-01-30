@@ -4,7 +4,11 @@ import tkinter as tk
 from tkinter import ttk
 from typing import Dict, List, Tuple, Optional
 
-from ..database import DatabaseManager
+# Handle imports for both module and frozen/direct execution
+try:
+    from ..database import DatabaseManager
+except ImportError:
+    from database import DatabaseManager
 
 
 class SchemaPanel(ttk.Frame):

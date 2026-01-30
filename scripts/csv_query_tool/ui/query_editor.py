@@ -4,9 +4,15 @@ import tkinter as tk
 from tkinter import ttk, simpledialog, messagebox
 from typing import Callable, Optional, List, Dict, Tuple
 
-from ..utils.query_history import QueryHistory
-from ..utils.favorites import QueryFavorites
-from ..utils.autocomplete import QueryAutocomplete
+# Handle imports for both module and frozen/direct execution
+try:
+    from ..utils.query_history import QueryHistory
+    from ..utils.favorites import QueryFavorites
+    from ..utils.autocomplete import QueryAutocomplete
+except ImportError:
+    from utils.query_history import QueryHistory
+    from utils.favorites import QueryFavorites
+    from utils.autocomplete import QueryAutocomplete
 
 
 class QueryEditor(ttk.Frame):

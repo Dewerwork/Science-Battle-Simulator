@@ -5,13 +5,23 @@ from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 from typing import Callable, Optional, List
 
-from ..database import DatabaseManager, TableInfo, ViewInfo
-from ..utils.config import Config
-from ..utils.data_dictionary import (
-    get_column_description,
-    get_table_description,
-    is_known_table
-)
+# Handle imports for both module and frozen/direct execution
+try:
+    from ..database import DatabaseManager, TableInfo, ViewInfo
+    from ..utils.config import Config
+    from ..utils.data_dictionary import (
+        get_column_description,
+        get_table_description,
+        is_known_table
+    )
+except ImportError:
+    from database import DatabaseManager, TableInfo, ViewInfo
+    from utils.config import Config
+    from utils.data_dictionary import (
+        get_column_description,
+        get_table_description,
+        is_known_table
+    )
 
 
 class TreeviewTooltip:
