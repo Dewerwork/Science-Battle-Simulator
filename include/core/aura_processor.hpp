@@ -159,7 +159,9 @@ public:
     void clear() { aura_count_ = 0; }
 
 private:
-    static constexpr size_t MAX_AURAS = 256;
+    // Reduced from 256 to 16 to avoid ~5KB stack allocation per GameRunner
+    // (Only 3 default auras are used; 16 provides room for future expansion)
+    static constexpr size_t MAX_AURAS = 16;
     std::array<RegisteredAura, MAX_AURAS> auras_{};
     size_t aura_count_ = 0;
 };
