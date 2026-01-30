@@ -288,6 +288,12 @@ private:
         // Thread-local sample buffers
         std::vector<std::vector<MatchupSample>> thread_samples(num_threads);
 
+        // Pre-allocate per-thread faction hash caches to avoid thread_local issues
+        std::vector<std::vector<u16>> thread_faction_caches(num_threads);
+        for (size_t t = 0; t < num_threads; ++t) {
+            thread_faction_caches[t].resize(units_b.size(), 0);
+        }
+
         for (size_t t = 0; t < num_threads; ++t) {
             size_t start = t * chunk_size;
             size_t end = std::min(start + chunk_size, batch_size);
@@ -316,11 +322,8 @@ private:
                     LocalAggregatedAccumulator current_accum;
                     u32 current_unit_idx = UINT32_MAX;
 
-                    // Faction hash cache
-                    thread_local std::vector<u16> faction_hash_cache;
-                    if (faction_hash_cache.size() < units_b.size()) {
-                        faction_hash_cache.resize(units_b.size(), 0);
-                    }
+                    // Use pre-allocated per-thread cache (avoids thread_local issues)
+                    auto& faction_hash_cache = thread_faction_caches[t];
 
                     // Reserve sample buffer
                     thread_samples[t].reserve((end - start) / 300 + 10);
