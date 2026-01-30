@@ -27,7 +27,7 @@ class GameRunner {
 public:
     explicit GameRunner(DiceRoller& dice, MatchLogger* logger = nullptr)
         : dice_(dice)
-        , registry_(create_default_registry())
+        , registry_(get_default_registry())  // Use shared singleton (avoids ~93KB stack allocation)
         , combat_(registry_, dice, logger)
         , spell_caster_(dice, logger)
         , logger_(logger)
@@ -128,7 +128,7 @@ public:
 
 private:
     DiceRoller& dice_;
-    RuleRegistry registry_;
+    const RuleRegistry& registry_;  // Reference to shared singleton (was value - caused stack overflow)
     RegistryCombatResolver combat_;
     SpellCaster spell_caster_;  // Handles spell casting phase
     MatchLogger* logger_;

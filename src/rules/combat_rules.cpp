@@ -6346,9 +6346,22 @@ void register_combat_rules(RuleRegistry& registry) {
 // Factory Function Implementation
 // ==============================================================================
 
+// Legacy function - creates a new registry each time (for tests that need isolation)
 RuleRegistry create_default_registry() {
     RuleRegistry registry;
     rules::register_combat_rules(registry);
+    return registry;
+}
+
+// Thread-safe singleton accessor - returns reference to shared registry
+// This avoids the ~93KB stack allocation per GameRunner that was causing
+// stack overflow crashes with multiple threads on Windows
+const RuleRegistry& get_default_registry() {
+    static RuleRegistry registry = []() {
+        RuleRegistry r;
+        rules::register_combat_rules(r);
+        return r;
+    }();
     return registry;
 }
 
