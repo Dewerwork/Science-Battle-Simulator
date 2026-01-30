@@ -149,8 +149,11 @@ Keyboard Shortcuts:
     if not check_dependencies():
         sys.exit(1)
 
-    # Import and run app
-    from .app import CSVQueryApp
+    # Import and run app (handle both module and direct execution)
+    try:
+        from .app import CSVQueryApp
+    except ImportError:
+        from app import CSVQueryApp
 
     # Validate file if provided
     initial_file = None
