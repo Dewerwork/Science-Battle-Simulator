@@ -417,6 +417,10 @@ inline std::vector<ApplicableRule> RuleRegistry::collect_weapon_rules(
 // Implementation in combat_rules.cpp
 RuleRegistry create_default_registry();
 
+// Get reference to shared singleton registry (thread-safe, avoids stack allocation)
+// Use this instead of create_default_registry() in multi-threaded contexts
+const RuleRegistry& get_default_registry();
+
 // Create a test registry with only specified rules
 // Useful for unit testing specific rule interactions
 inline RuleRegistry create_test_registry(std::initializer_list<RuleHotData> rules) {
