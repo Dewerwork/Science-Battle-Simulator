@@ -1358,6 +1358,12 @@ private:
 
         std::atomic<size_t> threads_done{0};
 
+        // Pre-allocate per-thread faction hash caches to avoid thread_local issues
+        std::vector<std::vector<u16>> thread_faction_caches(num_threads);
+        for (size_t t = 0; t < num_threads; ++t) {
+            thread_faction_caches[t].resize(units_b.size(), 0);
+        }
+
         for (size_t t = 0; t < num_threads; ++t) {
             size_t start = t * chunk_size;
             size_t end = std::min(start + chunk_size, batch_size);
@@ -1389,14 +1395,8 @@ private:
                     LocalAggregatedAccumulator current_accum;
                     u32 current_unit_idx = UINT32_MAX;  // Invalid initial value
 
-                    // Thread-local vector cache for faction hashes - 0 means "not yet computed"
-                    // (crc16_hash never returns 0, it returns 1 instead)
-                    // Cache persists across batches since units_b doesn't change during simulation
-                    thread_local std::vector<u16> faction_hash_cache;
-                    if (faction_hash_cache.size() < units_b.size()) {
-                        faction_hash_cache.resize(units_b.size(), 0);
-                    }
-                    // No clearing needed - cached hashes remain valid for entire simulation
+                    // Use pre-allocated per-thread cache (avoids thread_local issues)
+                    auto& faction_hash_cache = thread_faction_caches[t];
 
                     // Lambda to flush current accumulator to global results
                     auto flush_accumulator = [&]() {
