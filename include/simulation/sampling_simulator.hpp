@@ -305,12 +305,12 @@ private:
 
             pool_.submit_detached([&, start, end, t]() {
                 try {
-                    // Thread-local resources
-                    thread_local DiceRoller dice(
+                    // Create fresh instances per task to avoid thread_local issues on Windows/MSVC
+                    DiceRoller dice(
                         std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                         static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                     );
-                    thread_local GameRunner runner(dice);
+                    GameRunner runner(dice);
 
                     // Thread-local stats
                     u64 local_games = 0;

@@ -1103,14 +1103,14 @@ private:
             // Fire-and-forget task (no packaged_task allocation)
             pool_.submit_detached([&, start, end, t]() {
                 try {
-                    // Use thread_local to reuse GameRunner across batches
-                    thread_local DiceRoller dice(
+                    // Create fresh instances per task to avoid thread_local issues on Windows/MSVC
+                    DiceRoller dice(
                         std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                         static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                     );
-                    thread_local GameRunner runner(dice);
+                    GameRunner runner(dice);
 
-                    // Thread-local accumulators to reduce atomic contention
+                    // Local accumulators to reduce atomic contention
                     u64 local_games = 0;
                     u64 local_wounds = 0;
                     u64 local_models_killed = 0;
@@ -1188,14 +1188,14 @@ private:
             // Fire-and-forget task (no packaged_task allocation)
             pool_.submit_detached([&, start, end, t]() {
                 try {
-                    // Use thread_local to reuse GameRunner across batches
-                    thread_local DiceRoller dice(
+                    // Create fresh instances per task to avoid thread_local issues on Windows/MSVC
+                    DiceRoller dice(
                         std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                         static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                     );
-                    thread_local GameRunner runner(dice);
+                    GameRunner runner(dice);
 
-                    // Thread-local accumulators to reduce atomic contention
+                    // Local accumulators to reduce atomic contention
                     u64 local_games = 0;
                     u64 local_wounds = 0;
                     u64 local_models_killed = 0;
@@ -1273,14 +1273,14 @@ private:
             // Fire-and-forget task (no packaged_task allocation)
             pool_.submit_detached([&, start, end, t]() {
                 try {
-                    // Use thread_local to reuse GameRunner across batches
-                    thread_local DiceRoller dice(
+                    // Create fresh instances per task to avoid thread_local issues on Windows/MSVC
+                    DiceRoller dice(
                         std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                         static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                     );
-                    thread_local GameRunner runner(dice);
+                    GameRunner runner(dice);
 
-                    // Thread-local accumulators to reduce atomic contention
+                    // Local accumulators to reduce atomic contention
                     u64 local_games = 0;
                     u64 local_wounds = 0;
                     u64 local_models_killed = 0;
@@ -1375,13 +1375,14 @@ private:
 
             pool_.submit_detached([&, start, end, t]() {
                 try {
-                    thread_local DiceRoller dice(
+                    // Create fresh instances per task to avoid thread_local issues on Windows/MSVC
+                    DiceRoller dice(
                         std::hash<std::thread::id>{}(std::this_thread::get_id()) * 2654435761ULL +
                         static_cast<u64>(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                     );
-                    thread_local GameRunner runner(dice);
+                    GameRunner runner(dice);
 
-                    // Thread-local accumulators for global stats
+                    // Local accumulators for global stats
                     u64 local_games = 0;
                     u64 local_wounds = 0;
                     u64 local_models_killed = 0;
