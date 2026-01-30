@@ -27,49 +27,48 @@ bool SpellRegistry::faction_has_spells(std::string_view faction) const {
 }
 
 void SpellRegistry::initialize() {
-    if (initialized_) return;
-
-    register_alien_hives_spells();
-    register_battle_brothers_spells();
-    register_blood_brothers_spells();
-    register_dark_brothers_spells();
-    register_knight_brothers_spells();
-    register_watch_brothers_spells();
-    register_wolf_brothers_spells();
-    register_blessed_sisters_spells();
-    register_custodian_brothers_spells();
-    register_dao_union_spells();
-    register_dark_elf_raiders_spells();
-    register_dwarf_guilds_spells();
-    register_elven_jesters_spells();
-    register_eternal_dynasty_spells();
-    register_goblin_reclaimers_spells();
-    register_havoc_brothers_spells();
-    register_change_disciples_spells();
-    register_lust_disciples_spells();
-    register_plague_disciples_spells();
-    register_war_disciples_spells();
-    register_high_elf_fleets_spells();
-    register_human_defense_force_spells();
-    register_human_inquisition_spells();
-    register_infected_colonies_spells();
-    register_jackals_spells();
-    register_machine_cult_spells();
-    register_orc_marauders_spells();
-    register_prime_brothers_spells();
-    register_blood_prime_brothers_spells();
-    register_dark_prime_brothers_spells();
-    register_knight_prime_brothers_spells();
-    register_watch_prime_brothers_spells();
-    register_wolf_prime_brothers_spells();
-    register_ratmen_clans_spells();
-    register_rebel_guerrillas_spells();
-    register_robot_legions_spells();
-    register_saurian_starhost_spells();
-    register_soul_snatcher_cults_spells();
-    register_wormhole_daemons_spells();
-
-    initialized_ = true;
+    // Thread-safe one-time initialization using std::call_once
+    std::call_once(init_flag_, [this]() {
+        register_alien_hives_spells();
+        register_battle_brothers_spells();
+        register_blood_brothers_spells();
+        register_dark_brothers_spells();
+        register_knight_brothers_spells();
+        register_watch_brothers_spells();
+        register_wolf_brothers_spells();
+        register_blessed_sisters_spells();
+        register_custodian_brothers_spells();
+        register_dao_union_spells();
+        register_dark_elf_raiders_spells();
+        register_dwarf_guilds_spells();
+        register_elven_jesters_spells();
+        register_eternal_dynasty_spells();
+        register_goblin_reclaimers_spells();
+        register_havoc_brothers_spells();
+        register_change_disciples_spells();
+        register_lust_disciples_spells();
+        register_plague_disciples_spells();
+        register_war_disciples_spells();
+        register_high_elf_fleets_spells();
+        register_human_defense_force_spells();
+        register_human_inquisition_spells();
+        register_infected_colonies_spells();
+        register_jackals_spells();
+        register_machine_cult_spells();
+        register_orc_marauders_spells();
+        register_prime_brothers_spells();
+        register_blood_prime_brothers_spells();
+        register_dark_prime_brothers_spells();
+        register_knight_prime_brothers_spells();
+        register_watch_prime_brothers_spells();
+        register_wolf_prime_brothers_spells();
+        register_ratmen_clans_spells();
+        register_rebel_guerrillas_spells();
+        register_robot_legions_spells();
+        register_saurian_starhost_spells();
+        register_soul_snatcher_cults_spells();
+        register_wormhole_daemons_spells();
+    });
 }
 
 // ==============================================================================

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include <mutex>
 
 namespace battle {
 
@@ -38,7 +39,7 @@ private:
 
     std::unordered_map<std::string, FactionSpellList> faction_spells_;
     std::vector<std::string> factions_with_spells_;
-    bool initialized_ = false;
+    std::once_flag init_flag_;  // Thread-safe one-time initialization
 
     // Helper to register a spell
     void register_spell(const char* faction, const SpellDef& spell);
