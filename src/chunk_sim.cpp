@@ -274,6 +274,7 @@ int cmd_run(int argc, char* argv[]) {
     bool process_all = false;
     bool auto_claim = false;
     u32 batch_size = 10000;
+    u32 num_threads = 0;  // 0 = auto-detect
     bool try_resume = false;
     bool quiet = false;
 
@@ -298,6 +299,8 @@ int cmd_run(int argc, char* argv[]) {
             auto_claim = true;
         } else if (arg == "-b" && i + 1 < argc) {
             batch_size = std::stoul(argv[++i]);
+        } else if (arg == "-t" && i + 1 < argc) {
+            num_threads = std::stoul(argv[++i]);
         } else if (arg == "-r") {
             try_resume = true;
         } else if (arg == "-q") {
@@ -459,6 +462,7 @@ int cmd_run(int argc, char* argv[]) {
         // Configure batch simulator
         BatchConfig config;
         config.batch_size = batch_size;
+        config.num_threads = num_threads;
         config.checkpoint_interval = 1000000;
         config.format = static_cast<ResultFormat>(manifest.result_format);
         config.output_file = output_file;

@@ -36,7 +36,7 @@ public:
     )
         : batch_config_(batch_config)
         , sampling_config_(sampling_config)
-        , pool_()
+        , pool_(batch_config.num_threads)
         , sampler_(sampling_config)
     {}
 
