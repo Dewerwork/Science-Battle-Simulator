@@ -1,12 +1,15 @@
 """Favorites management for CSV Query Tool."""
 
 import json
+import logging
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
 from .config import Config
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -58,7 +61,7 @@ class QueryFavorites:
                     if isinstance(entry, dict) and "name" in entry and "query" in entry
                 ]
             except (json.JSONDecodeError, TypeError, KeyError) as e:
-                print(f"Warning: Could not load favorites ({e})")
+                _logger.warning(f"Could not load favorites ({e})")
                 self._favorites = []
 
     def _save(self) -> None:
@@ -67,7 +70,7 @@ class QueryFavorites:
             with open(self._favorites_path, "w", encoding="utf-8") as f:
                 json.dump([asdict(f) for f in self._favorites], f, indent=2)
         except (OSError, IOError) as e:
-            print(f"Warning: Could not save favorites: {e}")
+            _logger.warning(f"Could not save favorites: {e}")
 
     def add(self, name: str, query: str,
             description: Optional[str] = None) -> bool:

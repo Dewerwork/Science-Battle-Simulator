@@ -1,10 +1,13 @@
 """Configuration management for CSV Query Tool."""
 
 import json
+import logging
 import os
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import List, Optional
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -83,7 +86,7 @@ class Config:
                 return cls(**filtered_data)
             except (json.JSONDecodeError, TypeError, KeyError) as e:
                 # If config is corrupted, return defaults
-                print(f"Warning: Could not load config ({e}), using defaults")
+                _logger.warning(f"Could not load config ({e}), using defaults")
                 return cls()
         return cls()
 
@@ -95,7 +98,7 @@ class Config:
             with open(config_path, "w", encoding="utf-8") as f:
                 json.dump(asdict(self), f, indent=2)
         except (OSError, IOError) as e:
-            print(f"Warning: Could not save config: {e}")
+            _logger.warning(f"Could not save config: {e}")
 
     def add_recent_file(self, path: str) -> None:
         """Add a file to the recent files list.
