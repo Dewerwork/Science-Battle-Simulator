@@ -12,17 +12,21 @@ The output will be in the 'dist' folder.
 
 import sys
 from pathlib import Path
+from PyInstaller.utils.hooks import collect_all, collect_submodules
 
 # Get the directory containing this spec file
 spec_dir = Path(SPECPATH)
 
 block_cipher = None
 
+# Collect all duckdb files (binaries, data, hiddenimports)
+duckdb_datas, duckdb_binaries, duckdb_hiddenimports = collect_all('duckdb')
+
 a = Analysis(
     ['main.py'],
     pathex=[str(spec_dir)],
-    binaries=[],
-    datas=[],
+    binaries=duckdb_binaries,
+    datas=duckdb_datas,
     hiddenimports=[
         'duckdb',
         'pandas',
@@ -33,7 +37,7 @@ a = Analysis(
         'matplotlib.backends.backend_tkagg',
         'tkinter',
         'tkinter.ttk',
-    ],
+    ] + duckdb_hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

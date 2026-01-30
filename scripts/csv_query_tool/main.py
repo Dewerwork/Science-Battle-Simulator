@@ -18,7 +18,22 @@ Requirements:
 
 import argparse
 import sys
+import os
 from pathlib import Path
+
+# Fix imports when running as standalone exe (PyInstaller)
+# This ensures the package can find its submodules
+if getattr(sys, 'frozen', False):
+    # Running as compiled exe
+    _base_path = sys._MEIPASS
+else:
+    # Running as script
+    _base_path = os.path.dirname(os.path.abspath(__file__))
+
+# Add parent directory to path for package imports
+_parent_path = os.path.dirname(_base_path)
+if _parent_path not in sys.path:
+    sys.path.insert(0, _parent_path)
 
 
 def show_error_dialog(title: str, message: str) -> None:
@@ -149,8 +164,13 @@ Keyboard Shortcuts:
     if not check_dependencies():
         sys.exit(1)
 
-    # Import and run app
-    from .app import CSVQueryApp
+    # Import and run app (handle both module and direct/frozen execution)
+    if getattr(sys, 'frozen', False) or __name__ == '__main__':
+        # Running as exe or directly - use absolute imports
+        from app import CSVQueryApp
+    else:
+        # Running as module - use relative imports
+        from .app import CSVQueryApp
 
     # Validate file if provided
     initial_file = None

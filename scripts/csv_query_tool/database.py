@@ -22,7 +22,11 @@ except ImportError:
         "Pandas is required. Install with: pip install pandas"
     )
 
-from .utils.error_handler import ErrorHandler, ErrorResult, ErrorSeverity
+# Handle imports for both module and frozen/direct execution
+try:
+    from .utils.error_handler import ErrorHandler, ErrorResult, ErrorSeverity
+except ImportError:
+    from utils.error_handler import ErrorHandler, ErrorResult, ErrorSeverity
 
 
 @dataclass

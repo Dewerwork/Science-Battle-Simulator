@@ -5,7 +5,11 @@ from tkinter import ttk, filedialog, messagebox
 from typing import Optional, List, Any
 import pandas as pd
 
-from ..utils.config import Config
+# Handle imports for both module and frozen/direct execution
+try:
+    from ..utils.config import Config
+except ImportError:
+    from utils.config import Config
 
 
 class ResultsTable(ttk.Frame):

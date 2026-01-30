@@ -7,7 +7,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from .config import Config
+# Handle imports for both module and frozen/direct execution
+try:
+    from .config import Config
+except ImportError:
+    from config import Config
 
 _logger = logging.getLogger(__name__)
 
