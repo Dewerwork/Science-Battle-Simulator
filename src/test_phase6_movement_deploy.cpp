@@ -153,6 +153,19 @@ void test_agile_rule_charge() {
     ASSERT_EQ(ctx.distance_modifier, 2);  // +2" on charge
 }
 
+void test_agile_rule_rush() {
+    RuleRegistry registry = create_default_registry();
+
+    MovementContext ctx;
+    ctx.move_type = MovementContext::MoveType::RUSH;
+    ctx.distance_modifier = 0;
+
+    const auto& effects = registry.get_effects(RuleId::Agile);
+    apply_movement_effect(effects, MoveSubPhase::CALCULATE_DISTANCE, ctx, 0);
+
+    ASSERT_EQ(ctx.distance_modifier, 2);  // +2" on rush
+}
+
 void test_rapid_charge_rule() {
     RuleRegistry registry = create_default_registry();
 
@@ -392,6 +405,7 @@ int main() {
     RUN_TEST(test_strider_rule);
     RUN_TEST(test_agile_rule_advance);
     RUN_TEST(test_agile_rule_charge);
+    RUN_TEST(test_agile_rule_rush);
     RUN_TEST(test_rapid_charge_rule);
     RUN_TEST(test_hit_and_run_rule);
 

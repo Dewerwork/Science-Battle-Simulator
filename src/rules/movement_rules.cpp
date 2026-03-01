@@ -15,7 +15,7 @@ constexpr i8 FAST_ADVANCE_BONUS = 2;     // Fast: +2" when using Advance
 constexpr i8 FAST_RUSH_CHARGE_BONUS = 4; // Fast: +4" when using Rush/Charge
 constexpr i8 SLOW_PENALTY = -2;          // Slow: -2" (4" total)
 constexpr i8 AGILE_ADVANCE_BONUS = 1;    // Agile: +1" advance
-constexpr i8 AGILE_CHARGE_BONUS = 2;     // Agile: +2" charge
+constexpr i8 AGILE_RUSH_CHARGE_BONUS = 2; // Agile: +2" rush/charge
 constexpr i8 RAPID_CHARGE_BONUS = 4;     // RapidCharge: +4" charge
 constexpr i8 DARKBORN_CHARGE_BONUS = 3;  // Darkborn: +3" charge
 constexpr i8 LUSTBOUND_ADVANCE_BONUS = 1;  // Lustbound: +1" advance
@@ -58,12 +58,14 @@ void effect_strider(MovementContext& ctx) {
     ctx.terrain_flags |= MovementContext::IGNORE_DIFFICULT;
 }
 
-// Agile - +1" advance, +2" charge
+// Agile - +1" advance, +2" rush/charge
 void effect_agile(MovementContext& ctx) {
     if (ctx.move_type == MovementContext::MoveType::ADVANCE) {
         ctx.distance_modifier += AGILE_ADVANCE_BONUS;
+    } else if (ctx.move_type == MovementContext::MoveType::RUSH) {
+        ctx.rush_bonus += AGILE_RUSH_CHARGE_BONUS;  // Applied after rush doubling
     } else if (ctx.move_type == MovementContext::MoveType::CHARGE) {
-        ctx.charge_bonus += AGILE_CHARGE_BONUS;
+        ctx.charge_bonus += AGILE_RUSH_CHARGE_BONUS;
     }
 }
 
@@ -164,10 +166,10 @@ void init_movement_rules() {
         {0.5f, 0.5f, false, false}  // Neutral
     };
 
-    // Agile - +1" advance, +2" charge
+    // Agile - +1" advance, +2" rush/charge
     g_movement_rules[static_cast<u16>(RuleId::Agile)] = {
         RuleId::Agile,
-        MovementSubPhase::CHARGE_DECLARE,
+        MovementSubPhase::CALCULATE_DISTANCE,
         effect_agile,
         {0.6f, 0.4f, true, false}  // Slightly prefers close
     };
